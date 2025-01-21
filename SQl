@@ -1,1 +1,214 @@
 //Codigo Sql
+
+-- Crear tabla Departamento
+CREATE TABLE Departamento (
+    id_departamento INT PRIMARY KEY AUTO_INCREMENT,
+    Nombre VARCHAR(255),
+    descripcion VARCHAR(255),
+    fechacreacion DATE,
+    usuariocreacion VARCHAR(255),
+    fechamodificacion DATE,
+    usuariomodificacion VARCHAR(255)
+);
+
+-- Crear tabla Estado
+CREATE TABLE Estado (
+    id_estado INT PRIMARY KEY AUTO_INCREMENT,
+    descripcion VARCHAR(255)
+);
+
+-- Crear tabla Tipo_vacacion
+CREATE TABLE Tipo_vacacion (
+    id_tipo_vacacion INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(255)
+);
+
+-- Crear tabla Usuario
+CREATE TABLE Usuario (
+    id_usuario INT PRIMARY KEY AUTO_INCREMENT,
+    id_departamento INT,
+    nombre VARCHAR(255),
+    apellido VARCHAR(255),
+    fecha_nacimiento DATE,
+    fecha_ingreso DATE,
+    cargo VARCHAR(255),
+    correo_electronico VARCHAR(255),
+    numero_telefonico VARCHAR(20),
+    direccion_imagen VARCHAR(255),
+    sexo VARCHAR(10),
+    estado_civil VARCHAR(20),
+    fechacreacion DATE,
+    usuariocreacion VARCHAR(255),
+    fechamodificacion DATE,
+    usuariomodificacion VARCHAR(255),
+    CONSTRAINT fk_usuario_departamento FOREIGN KEY (id_departamento) REFERENCES Departamento(id_departamento)
+);
+
+-- Crear tabla Rol
+CREATE TABLE Rol (
+    id_rol INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario INT,
+    nombre VARCHAR(255),
+    CONSTRAINT fk_rol_usuario FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
+
+-- Crear tabla Historial_vacaciones
+CREATE TABLE Historial_vacaciones (
+    id_historial INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario INT,
+    FechaInicio DATE,
+    FechaFin DATE,
+    DiasTomados INT,
+    Razon VARCHAR(255),
+    CONSTRAINT fk_historial_usuario FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
+
+
+-- Crear tabla vacacion
+CREATE TABLE vacacion (
+    id_vacacion INT PRIMARY KEY AUTO_INCREMENT,
+    id_tipo_vacacion INT,
+    razon VARCHAR(255),
+    diasTomado INT,
+    fecha_inicio DATE,
+    observaciones VARCHAR(255),
+    id_departamento INT,
+    id_estado INT,
+    id_usuario INT,
+    id_historial INT,
+    fechacreacion DATE,
+    usuariocreacion VARCHAR(255),
+    fechamodificacion DATE,
+    usuariomodificacion VARCHAR(255),
+    CONSTRAINT fk_vacacion_tipo_vacacion FOREIGN KEY (id_tipo_vacacion) REFERENCES Tipo_vacacion(id_tipo_vacacion),
+    CONSTRAINT fk_vacacion_departamento FOREIGN KEY (id_departamento) REFERENCES Departamento(id_departamento),
+    CONSTRAINT fk_vacacion_estado FOREIGN KEY (id_estado) REFERENCES Estado(id_estado),
+    CONSTRAINT fk_vacacion_usuario FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
+    CONSTRAINT fk_vacacion_historial FOREIGN KEY (id_historial) REFERENCES Historial_vacaciones(id_historial)
+);
+
+
+-- Crear tabla Dias_Feriados
+CREATE TABLE Dias_Feriados (
+    id_fecha INT PRIMARY KEY AUTO_INCREMENT,
+    nombre_feriado VARCHAR(255),
+    fecha DATE,
+    tipo_feriado VARCHAR(255),
+    id_tipo_vacacion INT,
+    id_vacacion INT,
+    CONSTRAINT fk_dias_tipo_vacacion FOREIGN KEY (id_tipo_vacacion) REFERENCES Tipo_vacacion(id_tipo_vacacion),
+    CONSTRAINT fk_dias_vacacion FOREIGN KEY (id_vacacion) REFERENCES vacacion(id_vacacion)
+);
+-- Crear tabla eliminacion_usuario
+CREATE TABLE eliminacion_usuario (
+    id_usuario INT PRIMARY KEY,
+    fecha_retiro DATE,
+    motivo_retiro VARCHAR(255),
+    id_estado INT,
+    CONSTRAINT fk_eliminacion_usuario FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
+    CONSTRAINT fk_eliminacion_estado FOREIGN KEY (id_estado) REFERENCES Estado(id_estado)
+);
+
+-- Crear tabla Deducciones
+CREATE TABLE Deducciones (
+    id_deduccion INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario INT,
+    razon VARCHAR(255),
+    deudor VARCHAR(255),
+    concepto VARCHAR(255),
+    lugar VARCHAR(255),
+    deuda_total DOUBLE,
+    aportes DOUBLE,
+    saldo_pendiente DOUBLE,
+    saldo_pendiente_dolares DOUBLE,
+    fechacreacion DATE,
+    usuariocreacion VARCHAR(255),
+    fechamodificacion DATE,
+    usuariomodificacion VARCHAR(255),
+    CONSTRAINT fk_deducciones_usuario FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
+
+-- Crear tabla Permisos_Laborales
+CREATE TABLE Permisos_Laborales (
+    id_beneficio INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario INT,
+    tipo_permiso VARCHAR(255),
+    fecha_inicio DATE,
+    fecha_fin DATE,
+    dias_permiso INT,
+    motivo VARCHAR(255),
+    fechacreacion DATE,
+    usuariocreacion VARCHAR(255),
+    fechamodificacion DATE,
+    usuariomodificacion VARCHAR(255),
+    CONSTRAINT fk_permisos_usuario FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
+
+-- Crear tabla Bonos
+CREATE TABLE Bonos (
+    id_bono INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario INT,
+    razon VARCHAR(255),
+    monto_total VARCHAR(255),
+    fecha_aplicacion DATE,
+    fechacreacion DATE,
+    usuariocreacion VARCHAR(255),
+    fechamodificacion DATE,
+    usuariomodificacion VARCHAR(255),
+    CONSTRAINT fk_bonos_usuario FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
+
+-- Crear tabla Horas_Extra
+CREATE TABLE Horas_Extra (
+    id_horas_extra INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario INT,
+    fecha DATE,
+    horas INT,
+    monto_pago DECIMAL(10, 2),
+    fechacreacion DATE,
+    usuariocreacion VARCHAR(255),
+    fechamodificacion DATE,
+    usuariomodificacion VARCHAR(255),
+    CONSTRAINT fk_horas_extra_usuario FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
+
+-- Crear tabla Beneficios
+CREATE TABLE Beneficios (
+    id_beneficio INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario INT,
+    razon VARCHAR(255),
+    monto DOUBLE,
+    identificacion_medismart VARCHAR(255),
+    valor_plan_total DOUBLE,
+    aporte_patrono DOUBLE,
+    beneficiarios DOUBLE,
+    fechacreacion DATE,
+    usuariocreacion VARCHAR(255),
+    fechamodificacion DATE,
+    usuariomodificacion VARCHAR(255),
+    CONSTRAINT fk_beneficios_usuario FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
+
+-- Crear tabla Planilla
+CREATE TABLE Planilla (
+    id_planilla INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario INT,
+    id_horas_extra INT,
+    id_deduccion INT,
+    id_bono INT,
+    id_beneficio INT,
+    salario_base DOUBLE,
+    tipo_quincena VARCHAR(255),
+    salario_neto DOUBLE,
+    mes VARCHAR(255),
+    anio INT,
+    fechacreacion DATE,
+    usuariocreacion VARCHAR(255),
+    fechamodificacion DATE,
+    usuariomodificacion VARCHAR(255),
+    CONSTRAINT fk_planilla_usuario FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
+    CONSTRAINT fk_planilla_horas_extra FOREIGN KEY (id_horas_extra) REFERENCES Horas_Extra(id_horas_extra),
+    CONSTRAINT fk_planilla_deduccion FOREIGN KEY (id_deduccion) REFERENCES Deducciones(id_deduccion),
+    CONSTRAINT fk_planilla_bono FOREIGN KEY (id_bono) REFERENCES Bonos(id_bono),
+    CONSTRAINT fk_planilla_beneficio FOREIGN KEY (id_beneficio) REFERENCES Beneficios(id_beneficio)
+);
