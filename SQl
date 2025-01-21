@@ -1,5 +1,11 @@
 //Codigo Sql
 
+-- Crear la base de datos
+CREATE DATABASE GestionEmpleados;
+
+-- Usar la base de datos
+USE GestionEmpleados;
+
 -- Crear tabla Departamento
 CREATE TABLE Departamento (
     id_departamento INT PRIMARY KEY AUTO_INCREMENT,
