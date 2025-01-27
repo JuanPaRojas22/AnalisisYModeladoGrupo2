@@ -1,3 +1,15 @@
+<?php
+// Incluye el archivo donde tienes definida la clase UsuarioDAOSImpl
+require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
+
+// Instancia el DAO
+$UsuarioDAO = new UsuarioDAOSImpl();
+
+// Obtiene todos los usuarios
+$users = $UsuarioDAO->getAllUsers();
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,7 +19,7 @@
     <meta name="author" content="Dashboard">
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
-    <title>DASHGUM - Bootstrap Admin Template</title>
+    <title>Gestión de Usuarios</title>
 
     <!-- Bootstrap core CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet">
@@ -282,12 +294,73 @@
       <!--main content start-->
       <section id="main-content">
           <section class="wrapper site-min-height">
-          	<h3><i class="fa fa-angle-right"></i> Blank Page</h3>
-          	<div class="row mt">
-          		<div class="col-lg-12">
-          		<p>Place your content here.</p>
-          		</div>
-          	</div>
+            
+          <h1>Lista de Usuarios</h1>
+          
+          
+    <table>
+        <thead>
+         
+            <tr>
+                <th>ID Usuario</th>
+                <th>ID Departamento</th>
+                <th>ID Rol</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Fecha de Nacimiento</th>
+                <th>Fecha de Ingreso</th>
+                <th>Cargo</th>
+                <th>Correo Electrónico</th>
+                <th>Username</th>
+                <th>Teléfono</th>
+                <th>Imagen</th>
+                <th>Sexo</th>
+                <th>Estado Civil</th>
+                <th>Fecha Creación</th>
+                <th>Usuario Creación</th>
+                <th>Fecha Modificación</th>
+                <th>Usuario Modificación</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+                
+            </tr>
+        </thead>
+        
+        <tbody>
+            <?php
+            // Recorre los usuarios y los muestra en la tabla
+            foreach ($users as $user) {
+                echo "<tr>";
+                echo "<td>{$user->id_usuario}</td>";
+                echo "<td>{$user->id_departamento}</td>";
+                echo "<td>{$user->id_rol}</td>";
+                echo "<td>{$user->nombre}</td>";
+                echo "<td>{$user->apellido}</td>";
+                echo "<td>{$user->fecha_nacimiento}</td>";
+                echo "<td>{$user->fecha_ingreso}</td>";
+                echo "<td>{$user->cargo}</td>";
+                echo "<td>{$user->correo_electronico}</td>";
+                echo "<td>{$user->username}</td>";
+                echo "<td>{$user->numero_telefonico}</td>";
+                echo "<td><img src='{$user->direccion_imagen}' alt='Imagen'></td>";
+                echo "<td>{$user->sexo}</td>";
+                echo "<td>{$user->estado_civil}</td>";
+                echo "<td>{$user->fechacreacion}</td>";
+                echo "<td>{$user->usuariocreacion}</td>";
+                echo "<td>{$user->fechamodificacion}</td>";
+                echo "<td>{$user->usuariomodificacion}</td>";
+                echo "<td>{$user->id_estado}</td>";
+                echo "<td>";
+                echo "<a href='editar.php?id={$user->id_usuario}' class='btn btn-edit'>Editar</a>";
+                echo "<a href='eliminar.php?id={$user->id_usuario}' class='btn btn-delete' onclick='return confirm(\"¿Estás seguro de eliminar este usuario?\")'>Eliminar</a>";
+                echo "</td>";
+                echo "</tr>";
+            }
+            ?>
+        </tbody>
+        
+    </table>
+            
 			
 		</section><! --/wrapper -->
       </section><!-- /MAIN CONTENT -->
@@ -313,6 +386,28 @@
     <script class="include" type="text/javascript" src="assets/js/jquery.dcjqaccordion.2.7.js"></script>
     <script src="assets/js/jquery.scrollTo.min.js"></script>
     <script src="assets/js/jquery.nicescroll.js" type="text/javascript"></script>
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: '/Impl/UsuarioDAOSImpl.php', // El archivo PHP que recupera los usuarios
+                type: 'GET',
+                success: function(response) {
+                    var users = JSON.parse(response);
+                    var tableContent = '';
+                    users.forEach(function(user) {
+                        tableContent += `<tr>
+              
+                        </tr>`;
+                    });
+                    $('#userTable').html(tableContent); // Insertar las filas en la tabla
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error al cargar los usuarios:', error);
+                }
+            });
+        });
+        </script>
+        
 
 
     <!--common script for all pages-->
@@ -330,4 +425,74 @@
   </script>
 
   </body>
+  <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 1;
+            padding: 1;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 30px;
+        }
+
+        table {
+            width: 80%;
+            margin: 10px auto;
+            border-collapse: collapse;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        th {
+            background-color:rgb(102, 139, 187);
+            color: white;
+            padding: 5px;
+            text-align: center;
+        }
+
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #e9f7fc;
+        }
+
+        td img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        td img:hover {
+            transform: scale(1.1);
+        }
+
+           /* Botones */
+           .btn {
+            padding: 6px 12px;
+            margin: 0 4px;
+            cursor: pointer;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+        .btn-edit {
+            background-color: #5D9CEC;
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: #f44336;
+            color: white;
+        }
+
+    </style>
 </html>
