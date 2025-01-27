@@ -7,6 +7,10 @@ if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
 
+
+// Mostrar todos los usuarios activos
+
+
 // Se Verifica si se envió el formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Se capturar datos del formulario
@@ -25,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sexo = $_POST['sexo'];
     $estado_civil = $_POST['estado_civil'];
     $fechacreacion = date("Y-m-d H:i:s");
-    $usuariocreacion = "admin";
+    $usuariocreacion = "admin";//Esto debe mostrar el nombree de usuario no el rol
     $fechamodificacion = date("Y-m-d H:i:s");
     $usuariomodificacion = "admin";
 
@@ -84,9 +88,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Se obtienen los departamentos actuales para el formulario
 $departamentos = $conn->query("SELECT id_departamento, Nombre FROM Departamento");
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
