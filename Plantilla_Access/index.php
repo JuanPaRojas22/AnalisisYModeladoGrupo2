@@ -1,3 +1,11 @@
+<?php
+    session_start();
+    if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+        $username = $_SESSION['username'];
+    }
+
+    $username = $_SESSION['username'];
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -103,17 +111,23 @@
                     <li><p class="green">User Profile</p></li>
                     <li><a href="profile.php"><i class="fa fa-cogs"></i> Edit Profile</a></li>
                     <li><a href="settings.php"><i class="fa fa-cogs"></i> Settings</a></li>
-                     <li><a href="login.html"><i class="fa fa-sign-out"></i> Logout</a></li>
+                     <li><a href="login.php"><i class="fa fa-sign-out"></i> Logout</a></li>
                 </ul>
             </li>
 
         </ul>
-   <!--header  </div>
-     <div class="top-menu">
-        <ul class="nav pull-right top-menu">
-            <li><a class="logout" href="login.html">Logout</a></li>
-        </ul>
-    </div>-->
+        <div class="top-menu">
+            <?php if (isset($_GET['login']) && $_GET['login'] == 'success' && isset($_GET['username'])): ?>
+                <ul class="nav pull-right top-menu">
+                    <li><h3>Bienvenido, <?php echo htmlspecialchars($username); ?>!</h3></li>
+                </ul>
+            <?php elseif (isset($_GET['login']) && $_GET['login'] == 'error'): ?>
+                <ul class="nav pull-right top-menu">
+                    <li><h3>Error en el inicio de sesión. Por favor, inténtelo de nuevo.</h3></li>
+                </ul>
+            <?php endif; ?>
+        </div>
+
 </header>
 
 
@@ -169,7 +183,7 @@
                       </a>
                       <ul class="sub">
                           <li><a  href="MostrarUsuarios.php">Mostrar Usuarios</a></li>
-                          <li><a  href="login.html">Login</a></li>
+                          <li><a  href="login.php">Login</a></li>
                           <li><a  href="lock_screen.html">Lock Screen</a></li>
                       </ul>
                   </li>
