@@ -165,6 +165,7 @@
                       </ul>
                   </li>
 
+
                   <li class="sub-menu">
                       <a href="javascript:;" >
                           <i class="fa fa-cogs"></i>
@@ -185,8 +186,12 @@
                           <li><a  href="MostrarUsuarios.php">Mostrar Usuarios</a></li>
                           <li><a  href="login.php">Login</a></li>
                           <li><a  href="lock_screen.html">Lock Screen</a></li>
-                      </ul>
+                          <li><a href="Verdeducciones.php">Ver Deducciones</a></li>
+
+                        </ul>
                   </li>
+                  
+                </li>
                   <li class="sub-menu">
                       <a href="javascript:;" >
                           <i class="fa fa-tasks"></i>
