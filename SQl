@@ -222,3 +222,6 @@ CREATE TABLE Planilla (
 -- NUEVA MODIFICACION 
 ALTER TABLE Usuario MODIFY COLUMN direccion_imagen LONGBLOB;
 
+
+//Añadir columna retenciones a la tabla de planilla
+ALTER TABLE Planilla ADD COLUMN retenciones DOUBLE DEFAULT 0;

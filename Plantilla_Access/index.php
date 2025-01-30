@@ -183,7 +183,9 @@
                           <span>Extra Pages</span>
                       </a>
                       <ul class="sub">
+                          <li><a  href="registroEmpleado.php">Registrar Empleado</a></li> 
                           <li><a  href="MostrarUsuarios.php">Mostrar Usuarios</a></li>
+                          <li><a  href="aplicarRetenciones.php">Aplicar Retenciones</a></li>
                           <li><a  href="login.php">Login</a></li>
                           <li><a  href="lock_screen.html">Lock Screen</a></li>
                           <li><a href="Verdeducciones.php">Ver Deducciones</a></li>
