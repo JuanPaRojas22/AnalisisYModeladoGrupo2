@@ -1,3 +1,4 @@
+createUser.php:
 <?php
 // Se hace la conexión a la base de datos
 $conn = new mysqli("localhost", "root", "", "GestionEmpleados");
@@ -7,9 +8,7 @@ if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
 
-
 // Mostrar todos los usuarios activos
-
 
 // Se Verifica si se envió el formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -29,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sexo = $_POST['sexo'];
     $estado_civil = $_POST['estado_civil'];
     $fechacreacion = date("Y-m-d H:i:s");
-    $usuariocreacion = "admin";//Esto debe mostrar el nombree de usuario no el rol
+    $usuariocreacion = "admin"; //Esto debe mostrar el nombree de usuario no el rol
     $fechamodificacion = date("Y-m-d H:i:s");
     $usuariomodificacion = "admin";
 
@@ -37,6 +36,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($id_departamento) || empty($nombre) || empty($apellido) || empty($correo_electronico) || empty($username) || empty($password)) {
         echo "<script>alert('Por favor, complete todos los campos obligatorios.');</script>";
     } else {
+
+        // Se manejara este atributo para la subida de una imagen
+        $direccion_imagen = null; // Por defecto sera null
+
+        // Manejo de la imagen
+        if (isset($_FILES['direccion_imagen']) && $_FILES['direccion_imagen']['error'] === UPLOAD_ERR_OK) {
+            // Leer el contenido del archivo y convertirlo en binario
+            $direccion_imagen = file_get_contents($_FILES['direccion_imagen']['tmp_name']);
+        } else {
+            echo "<script>alert('No se subió ningún archivo o ocurrió un error.');</script>";
+        }
+
+
+
         // Se prepara la consulta a la base de datos
         $stmt = $conn->prepare("INSERT INTO Usuario 
             (id_departamento, id_rol, nombre, apellido, 
@@ -89,6 +102,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $departamentos = $conn->query("SELECT id_departamento, Nombre FROM Departamento");
 ?>
 
+
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -125,7 +141,7 @@ $departamentos = $conn->query("SELECT id_departamento, Nombre FROM Departamento"
 	  <div id="login-page">
 	  	<div class="container">
 	  	
-              <form class="form-login" action="createUser.php" method="POST">
+              <form class="form-login" action="createUser.php" method="POST" enctype="multipart/form-data">
 		        <h2 class="form-login-heading">Registro</h2>
 		        <div class="login-wrap">
 
@@ -152,31 +168,32 @@ $departamentos = $conn->query("SELECT id_departamento, Nombre FROM Departamento"
 		            <input type="text" id="apellido" name="apellido" class="form-control" placeholder="Ingrese sus apellidos" autofocus>
                     <br>
                     <label for="fecha_nacimiento">Nacimiento:</label>
-		            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control" placeholder="User ID" autofocus>
+		            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control" placeholder="Ingrese su fecha de nacimiento" autofocus>
                     <br>
                     <label for="cargo">Cargo:</label>
 		            <input type="text" id="cargo" name="cargo" class="form-control" placeholder="User ID" autofocus>
                     <br>
                     <label for="correo_electronico">Correo electronico:</label>
-		            <input type="text" id="correo_electronico" name="correo_electronico" class="form-control" placeholder="User ID" autofocus>
+		            <input type="text" id="correo_electronico" name="correo_electronico" class="form-control" placeholder="Ingrese su correo electronico" autofocus>
                     <br>
                     <label for="username">Username:</label>
-		            <input type="text" id="username" name="username" class="form-control" placeholder="User ID" autofocus>
+		            <input type="text" id="username" name="username" class="form-control" placeholder="Ingrese su nombre su username" autofocus>
                     <br>
                     <label for="password">Contraseña:</label>
-		            <input type="text" id="password" name="password" class="form-control" placeholder="User ID" autofocus>
+		            <input type="password" id="password" name="password" class="form-control" placeholder="Ingrese su contraseña" autofocus>
                     <br>
                     <label for="numero_telefonico">Número telefónico:</label>
-		            <input type="text" id="numero_telefonico" name="numero_telefonico" class="form-control" placeholder="User ID" autofocus>
+		            <input type="text" id="numero_telefonico" name="numero_telefonico" class="form-control" placeholder="Ingrese su numero telefonico" autofocus>
                     <br>
                     <label for="direccion_imagen">Foto Perfil:</label>
-		            <input type="text" id="direccion_imagen" name="direccion_imagen" class="form-control" placeholder="User ID" autofocus>
+		            <input type="file" id="direccion_imagen" name="direccion_imagen" class="form-control" placeholder="Ingrese su foto de perfil" autofocus>
+                    
                     <br>
                     <label for="sexo">Sexo:</label>
-		            <input type="text" id="sexo" name="sexo" class="form-control" placeholder="User ID" autofocus>
+		            <input type="text" id="sexo" name="sexo" class="form-control" placeholder="Ingresu su sexo" autofocus>
                     <br>
                     <label for="estado_civil">Estado Civil:</label>
-		            <input type="text" id="estado_civil" name="estado_civil" class="form-control" placeholder="User ID" autofocus>
+		            <input type="text" id="estado_civil" name="estado_civil" class="form-control" placeholder="Ingrese su estado civil" autofocus>
                     <br>
 					
 		            

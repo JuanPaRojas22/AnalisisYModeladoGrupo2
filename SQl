@@ -218,3 +218,7 @@ CREATE TABLE Planilla (
     CONSTRAINT fk_planilla_bono FOREIGN KEY (id_bono) REFERENCES Bonos(id_bono),
     CONSTRAINT fk_planilla_beneficio FOREIGN KEY (id_beneficio) REFERENCES Beneficios(id_beneficio)
 );
+
+-- NUEVA MODIFICACION 
+ALTER TABLE Usuario MODIFY COLUMN direccion_imagen LONGBLOB;
+
