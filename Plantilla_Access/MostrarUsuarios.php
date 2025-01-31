@@ -344,7 +344,8 @@ if ($id_departamento == 'all') {
                 <!-- Enlace para generar el reporte PDF -->
                 <div style="display: flex; flex-direction: row; gap: 20px; margin-bottom: 20px; align-items: center;">
                     <form action="generar_reporte.php" method="GET">
-                        <select name="id_departamento" id="id_departamento" required  style="padding: 5px; font-size: 14px; width: 250px;">
+                        <select name="id_departamento" id="id_departamento" required
+                            style="padding: 5px; font-size: 14px; width: 250px;">
                             <option>Seleccione un departamento</option>
                             <?php
                             // Recorre los departamentos y crea una opción para cada uno
@@ -357,6 +358,11 @@ if ($id_departamento == 'all') {
                         </select>
                         <button type="submit" class="btn btn-primary">Generar Reporte</button>
                     </form>
+                </div>
+                <div style="display: flex; flex-direction: row; gap: 20px; margin-bottom: 20px; align-items: center;">
+                    <a href="aplicarBono.php" class="btn btn-success">Aplicar Bono</a>
+                    <a href="verBono.php" class="btn btn-primary">Ver Bonos</a>
+                </div>
                 </div>
                 <!-- Tabla de usuarios -->
                 <div style="overflow-x: auto; margin-top: 20px;">
@@ -400,7 +406,6 @@ if ($id_departamento == 'all') {
                             ?>
                         </tbody>
                     </table>
-                </div>
             </section>
         </section><!-- /MAIN CONTENT -->
 
