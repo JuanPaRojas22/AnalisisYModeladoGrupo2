@@ -24,6 +24,9 @@ if ($id_departamento == 'all') {
 }
 
 
+
+
+
 ?>
 
 
@@ -387,18 +390,20 @@ if ($id_departamento == 'all') {
                             // Recorre los usuarios y los muestra en la tabla
                             foreach ($users as $user) {
                                 echo "<tr>";
-                                echo "<td><b>{$user['id_departamento']}</b></td>";
-                                echo "<td><b>{$user['id_rol']}</b></td>";
+                                echo "<td><b>{$user['departamento_nombre']}</b></td>";
+                                echo "<td><b>{$user['rol_nombre']}</b></td>";
                                 echo "<td><b>{$user['nombre']}</b></td>";
                                 echo "<td><b>{$user['apellido']}</b></td>";
                                 echo "<td><b>{$user['cargo']}</b></td>";
                                 echo "<td><b>{$user['correo_electronico']}</b></td>";
                                 echo "<td><b>{$user['numero_telefonico']}</b></td>";
+                                //Carga la imagen del usuario
                                 echo "<td><img src='{$user['direccion_imagen']}' alt='Imagen' style='width: 40px; height: 40px;'></td>";
                                 echo "<td><b>{$user['sexo']}</b></td>";
-                                echo "<td><b>{$user['id_estado']}</b></td>";
+                                echo "<td><b>{$user['estado']}</b></td>";
                                 echo "<td>";
                                 echo "<a href='editar.php?id={$user['id_usuario']}' class='btn btn-edit'>Editar</a>";
+                                echo "<a href='detalle.php?id={$user['id_usuario']}' class='btn btn-success'>Detalle</a>";
                                 echo "<a href='eliminar.php?id={$user['id_usuario']}' class='btn btn-delete' onclick='return confirm(\"¿Estás seguro de eliminar este usuario?\")'>Eliminar</a>";
                                 echo "</td>";
                                 echo "</tr>";

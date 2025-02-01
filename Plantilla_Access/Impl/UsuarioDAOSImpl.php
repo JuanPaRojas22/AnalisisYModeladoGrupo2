@@ -9,48 +9,57 @@ class UsuarioDAOSImpl implements UsuarioDAO
     public function __construct()
     {
         $this->conn = new mysqli("localhost", "root", "", "GestionEmpleados");
-        
+
     }
 
-    public function getAllUsers() {
+    public function getAllUsers()
+    {
         $function_conn = $this->conn;
         $users = array();
-    
+
         // Realiza la consulta SQL
-        $stmt = $function_conn->query("SELECT u.*, d.Nombre AS departamento_nombre, r.nombre AS rol_nombre, e.descripcion AS estado_descripcion
+        $stmt = $function_conn->query("SELECT u.*, d.Nombre AS departamento_nombre, r.nombre AS rol_nombre, e.descripcion AS estado_descripcion, e.descripcion as estado
                                         FROM Usuario u
                                         JOIN departamento d ON u.id_departamento = d.id_departamento
                                         JOIN rol r ON u.id_rol = r.id_rol
                                         JOIN estado e ON u.id_estado = e.id_estado
                                         WHERE e.descripcion = 'Activo'");
-    
+
         // Recorre los resultados y agrega cada fila al array como un array asociativo
         while ($row = $stmt->fetch_assoc()) {
+            if (!empty($row['direccion_imagen'])) {
+                $row['direccion_imagen'] = 'data:image/jpeg;base64,' . base64_encode($row['direccion_imagen']);
+            }
             $users[] = $row;  // Agrega la fila asociativa directamente al array
         }
-    
+
         // Devuelve el array de usuarios como un array asociativo
         return $users;
     }
 
-    
+
     public function getDepartmentNameById($id_departamento)
     {
         // Consulta SQL para obtener el nombre del departamento por su ID
         $sql = "SELECT nombre FROM departamento WHERE id_departamento = ?";
-        
+
+
+
         // Prepara la consulta
         $stmt = $this->conn->prepare($sql);
-        
+
         // Enlaza el parámetro
         $stmt->bind_param("i", $id_departamento); // 'i' es para entero
-        
+
+
         // Ejecuta la consulta
         $stmt->execute();
-        
+
         // Obtiene el resultado
         $result = $stmt->get_result();
-        
+
+
+
         // se verifica si se obtuvo un resultado
         if ($result->num_rows > 0) {
             // Acá se devuelve el nombre del departamento
@@ -59,20 +68,23 @@ class UsuarioDAOSImpl implements UsuarioDAO
         } else {
             return 'Desconocido'; // Devuelve un valor por defecto si no se encuentra
         }
+
+
     }
 
-    public function getAllDepartments() {
+    public function getAllDepartments()
+    {
         $sql = "SELECT id_departamento, Nombre FROM departamento"; // Asumiendo que la tabla se llama 'departamentos'
-        
+
         // Prepara la consulta
         $stmt = $this->conn->prepare($sql);
-        
+
         // Ejecuta la consulta
         $stmt->execute();
-        
+
         // Obtiene el resultado
         $result = $stmt->get_result();
-        
+
         // Devuelve los departamentos como un array asociativo
         return $result->fetch_all(MYSQLI_ASSOC);
     }
@@ -84,24 +96,31 @@ class UsuarioDAOSImpl implements UsuarioDAO
     
         // Prepara la consulta
         $stmt = $this->conn->prepare($sql);
-        
-        // Enlaza el parámetro
-        $stmt->bind_param("i", $id_departamento); // 'i' es para entero
-        
+    
+        // Enlaza el parámetro (i = entero)
+        $stmt->bind_param("i", $id_departamento);
+    
         // Ejecuta la consulta
         $stmt->execute();
-        
+    
         // Obtiene el resultado
         $result = $stmt->get_result();
-        
-        // Verifica si hay filas disponibles
-        if ($result->num_rows > 0) {
-            // Devuelve los usuarios como un array asociativo
-            return $result->fetch_all(MYSQLI_ASSOC);
-        } else {
-            return [];  // Devuelve un array vacío si no hay resultados
+    
+        // Array para almacenar los usuarios
+        $users = [];
+    
+        // Recorre cada fila y procesa la imagen
+        while ($row = $result->fetch_assoc()) {
+            if (!empty($row['direccion_imagen'])) {
+                $row['direccion_imagen'] = 'data:image/jpeg;base64,' . base64_encode($row['direccion_imagen']);
+            }
+            $users[] = $row;  // Agrega la fila asociativa al array
         }
+    
+        // Devuelve el array de usuarios
+        return $users;
     }
+    
 
     public function deleteUser($id)
     {

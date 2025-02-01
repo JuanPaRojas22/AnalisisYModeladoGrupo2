@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
     $numero_telefonico = $_POST['numero_telefonico'];
-    $direccion_imagen = $_POST['direccion_imagen'];
+    $direccion_imagen = null; // Por defecto sera null
     $sexo = $_POST['sexo'];
     $estado_civil = $_POST['estado_civil'];
     $fechacreacion = date("Y-m-d H:i:s");
@@ -38,7 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
 
         // Se manejara este atributo para la subida de una imagen
-        $direccion_imagen = null; // Por defecto sera null
 
         // Manejo de la imagen
         if (isset($_FILES['direccion_imagen']) && $_FILES['direccion_imagen']['error'] === UPLOAD_ERR_OK) {
