@@ -225,6 +225,7 @@ ALTER TABLE Usuario MODIFY COLUMN direccion_imagen LONGBLOB;
 
 //Añadir columna retenciones a la tabla de planilla
 ALTER TABLE Planilla ADD COLUMN retenciones DOUBLE DEFAULT 0;
+
 //Tabla nueva 
 CREATE TABLE Historial_Cargos (
     id_historial INT PRIMARY KEY AUTO_INCREMENT,
@@ -242,5 +243,15 @@ CREATE TABLE Historial_Cargos (
 ALTER TABLE usaurio MODIFY COLUMN direccion_imagen LONGBLOB;
 
 
-
-
+//Nueva tabla para registrar el historial de cambios de salarios
+CREATE TABLE Historial_Salarios (
+  id_historial INT PRIMARY KEY AUTO_INCREMENT,
+  id_usuario INT,
+  salario_anterior DOUBLE,
+  nuevo_salario_base DOUBLE,
+  ajuste DOUBLE,
+  nuevo_salario_neto DOUBLE,
+  fecha_cambio DATE,
+  usuariocreacion VARCHAR(255),
+  CONSTRAINT fk_historial_salarios_usuario FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
