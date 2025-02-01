@@ -1,12 +1,13 @@
-<?php
 
+<?php
 session_start();
+
+// Verificar si el usuario está logueado
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: login.php");
     exit();
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +19,7 @@ if (!isset($_SESSION['id_usuario'])) {
     <meta name="author" content="Dashboard">
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
-    <title>Deducciones</title>
+    <title>Cambio de Puesto</title>
 
     <!-- Bootstrap core CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet">
@@ -298,121 +299,183 @@ if (!isset($_SESSION['id_usuario'])) {
         <!--main content start-->
 <section id="main-content">
     <section class="wrapper site-min-height">
-        <h1>Deducciones</h1>
+        <h1>Cambio</h1>
         <!-- /MAIN CONTENT -->
         <?php
-        // Verificar si el usuario está logueado
-        
+// Conexión a la base de datos
+$host = "localhost"; 
+$usuario = "root"; 
+$clave = ""; 
+$bd = "gestionempleados"; 
 
-        $id_usuario = $_SESSION['id_usuario']; // Obtener el ID del usuario logueado
+$conn = new mysqli($host, $usuario, $clave, $bd);
 
-        // Conectar a la base de datos
-        $servername = "localhost";
-        $username = "root"; // Usuario de la base de datos
-        $password = ""; // Contraseña
-        $dbname = "GestionEmpleados"; // Nombre de tu base de datos
+// Verificar si la conexión fue exitosa
+if ($conn->connect_error) {
+    die("Error de conexión: " . $conn->connect_error);
+}
 
-        $conn = new mysqli($servername, $username, $password, $dbname);
+// Variables para almacenar los mensajes de error y éxito
+$mensaje = "";
 
-        // Verificar si la conexión fue exitosa
-        if ($conn->connect_error) {
-            die("Conexión fallida: " . $conn->connect_error);
-        }
+// Procesar el formulario cuando se envía
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Obtener los datos del formulario
+    $id_usuario = $_POST['id_usuario'];
+    $puesto_anterior = $_POST['puesto_anterior'];
+    $nuevo_puesto = $_POST['nuevo_puesto'];
+    $sueldo_anterior = $_POST['sueldo_anterior'];
+    $sueldo_nuevo = $_POST['sueldo_nuevo'];
+    $motivo = $_POST['motivo'];
+    $fecha_cambio = $_POST['fecha_cambio'];
 
-        // Obtener salario base y salario neto desde la tabla Planilla
-        $sql_planilla = "SELECT salario_base, salario_neto FROM Planilla WHERE id_usuario = ? ORDER BY anio DESC, mes DESC LIMIT 1";
-        $stmt_planilla = $conn->prepare($sql_planilla);
-        $stmt_planilla->bind_param("i", $id_usuario);
-        $stmt_planilla->execute();
-        $result_planilla = $stmt_planilla->get_result();
+    // Validar que los sueldos sean valores numéricos válidos
+    if (!is_numeric($sueldo_anterior) || $sueldo_anterior <= 0) {
+        $mensaje = "El sueldo anterior debe ser un valor numérico mayor que 0.";
+    } elseif (!is_numeric($sueldo_nuevo) || $sueldo_nuevo <= 0) {
+        $mensaje = "El sueldo nuevo debe ser un valor numérico mayor que 0.";
+    } else {
+        // Insertar los datos en la base de datos
+        $query = "INSERT INTO historial_cargos (id_usuario, puesto_anterior, nuevo_puesto, sueldo_anterior, sueldo_nuevo, motivo, fecha_cambio, fechacreacion, usuariocreacion) 
+          VALUES ('$id_usuario', '$puesto_anterior', '$nuevo_puesto', '$sueldo_anterior', '$sueldo_nuevo', '$motivo', '$fecha_cambio', CURDATE(), 'usuario_logueado')";
 
-        if ($row_planilla = $result_planilla->fetch_assoc()) {
-            $salario_base = $row_planilla['salario_base'];
-            $salario_neto = $row_planilla['salario_neto'];
+
+        if ($conn->query($query) === TRUE) {  // Cambié $mysqli a $conn aquí
+            $mensaje = "Cambio de puesto registrado con éxito.";
         } else {
-            // Si no se encuentra un registro, asignar valores por defecto
-            $salario_base = 0;
-            $salario_neto = 0;
+            $mensaje = "Error al registrar el cambio de puesto: " . $conn->error;  // Cambié $mysqli a $conn aquí
+        }
+    }
+}
+?>
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Cambio de Puesto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
         }
 
-        // Consulta para obtener las deducciones del usuario
-        $sql_deducciones = "SELECT * FROM deducciones WHERE id_usuario = ?";
-        $stmt_deducciones = $conn->prepare($sql_deducciones);
-        $stmt_deducciones->bind_param("i", $id_usuario);
-        $stmt_deducciones->execute();
-        $result_deducciones = $stmt_deducciones->get_result();
-        ?>
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-        <!-- Tabla de deducciones -->
-        <div style="overflow-x: auto; margin-top: 20px;">
-            <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
-                <thead>
-                    <tr>
-                        <th>Razón</th>
-                        <th>Deudor</th>
-                        <th>Concepto</th>
-                        <th>Lugar</th>
-                        <th>Deuda Total</th>
-                        <th>Aportes</th>
-                        <th>Saldo Pendiente</th>
-                        <th>Saldo Pendiente (USD)</th>
-                        <th>Fecha de Creación</th>
-                        <th>Salario Base</th>
-                        <th>Salario Neto</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    if ($result_deducciones->num_rows > 0) {
-                        // Recorremos las deducciones y las mostramos en la tabla
-                        while ($row_deduccion = $result_deducciones->fetch_assoc()) {
-                            echo "<tr>";
-                            // Para las columnas de texto, verificamos si está vacío
-                            echo "<td><b>" . (!empty($row_deduccion['razon']) ? $row_deduccion['razon'] : 'No hay datos') . "</b></td>";
-                            echo "<td><b>" . (!empty($row_deduccion['deudor']) ? $row_deduccion['deudor'] : 'No hay datos') . "</b></td>";
-                            echo "<td><b>" . (!empty($row_deduccion['concepto']) ? $row_deduccion['concepto'] : 'No hay datos') . "</b></td>";
-                            echo "<td><b>" . (!empty($row_deduccion['lugar']) ? $row_deduccion['lugar'] : 'No hay datos') . "</b></td>";
-                            
-                            // Para las columnas numéricas, verificamos si está vacío y mostramos 0
-                            echo "<td><b>" . (is_numeric($row_deduccion['deuda_total']) ? $row_deduccion['deuda_total'] : 0) . "</b></td>";
-                            echo "<td><b>" . (is_numeric($row_deduccion['aportes']) ? $row_deduccion['aportes'] : 0) . "</b></td>";
-                            echo "<td><b>" . (is_numeric($row_deduccion['saldo_pendiente']) ? $row_deduccion['saldo_pendiente'] : 0) . "</b></td>";
-                            echo "<td><b>" . (is_numeric($row_deduccion['saldo_pendiente_dolares']) ? $row_deduccion['saldo_pendiente_dolares'] : 0) . "</b></td>";
-                            
-                            // Fecha de creación
-                            echo "<td><b>" . (!empty($row_deduccion['fechacreacion']) ? $row_deduccion['fechacreacion'] : 'No hay datos') . "</b></td>";
-                            
-                            // Mostrar salario base y salario neto
-                            echo "<td><b>{$salario_base}</b></td>";
-                            echo "<td><b>{$salario_neto}</b></td>";
-                            echo "</tr>";
-                        }
-                    } else {
-                        // Si no se encuentran deducciones, se añaden filas con valores por defecto (0 o 'No hay datos')
-                        echo "<tr>";
-                        echo "<td><b>No hay datos</b></td>";
-                        echo "<td><b>No hay datos</b></td>";
-                        echo "<td><b>No hay datos</b></td>";
-                        echo "<td><b>No hay datos</b></td>";
-                        echo "<td><b>0</b></td>";
-                        echo "<td><b>0</b></td>";
-                        echo "<td><b>0</b></td>";
-                        echo "<td><b>0</b></td>";
-                        echo "<td><b>No hay datos</b></td>";
-                        echo "<td><b>{$salario_base}</b></td>";
-                        echo "<td><b>{$salario_neto}</b></td>";
-                        echo "</tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
-        </div>
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
 
-        <?php
-        // Cerrar la conexión
-        $conn->close();
-        ?>
-    </section>
+        .button {
+            display: inline-block;
+            background-color:#c9aa5f;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color:rgb(159, 176, 59);
+        }
+
+        form {
+            width: 100%;
+        }
+
+        label {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color:#c9aa5f;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color:rgb(114, 132, 52);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="ver_historial_cambios.php" class="button">Historial de Cambios</a> <!-- Botón para ir al historial -->
+
+        <h1>Registrar Cambio de Puesto</h1>
+
+        <!-- Mostrar mensaje de éxito o error -->
+        <?php if ($mensaje): ?>
+            <p><?php echo $mensaje; ?></p>
+        <?php endif; ?>
+
+         <!-- Formulario para registrar el cambio de puesto -->
+         <form action="registrar_cambio_puesto.php" method="POST">
+            <label for="id_usuario">ID de Usuario:</label>
+            <input type="text" name="id_usuario" required>
+
+            <label for="puesto_anterior">Puesto Anterior:</label>
+            <input type="text" name="puesto_anterior" required>
+
+            <label for="nuevo_puesto">Nuevo Puesto:</label>
+            <input type="text" name="nuevo_puesto" required>
+
+            <label for="sueldo_anterior">Sueldo Anterior:</label>
+            <input type="number" name="sueldo_anterior" step="any" required>
+
+            <label for="sueldo_nuevo">Nuevo Sueldo:</label>
+    <input type="number" name="sueldo_nuevo" step="any" required>
+
+            <label for="motivo">Motivo del Cambio:</label>
+            <textarea name="motivo" required></textarea>
+
+            <label for="fecha_cambio">Fecha de Cambio:</label>
+            <input type="date" name="fecha_cambio" required>
+
+            <button type="submit">Registrar Cambio</button>
+        </form>
+    </div>
+</body>
+</html>
+
+
+<?php
+// Cerrar la conexión
+$conn->close();
+?>
+
+</section>
 </section>
 <!--main content end-->
 
@@ -439,90 +502,3 @@ if (!isset($_SESSION['id_usuario'])) {
    
 
 
-
-    <!--common script for all pages-->
-    <script src="assets/js/common-scripts.js"></script>
-
-    <!--script for this page-->
-
-    <script>
-        //custom select box
-
-        $(function () {
-            $('select.styled').customSelect();
-        });
-
-    </script>
-
-</body>
-<style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f4f4f9;
-        margin: 1;
-        padding: 1;
-    }
-
-    h1 {
-        text-align: center;
-        color: #333;
-        margin-top: 30px;
-    }
-
-    table {
-        width: 80%;
-        margin: 10px auto;
-        border-collapse: collapse;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        background-color: #fff;
-    }
-
-    th {
-        background-color: rgb(102, 139, 187);
-        color: white;
-        padding: 5px;
-        text-align: center;
-    }
-
-    td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
-
-    tr:hover {
-        background-color: #e9f7fc;
-    }
-
-    td img {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        transition: transform 0.3s ease;
-    }
-
-    td img:hover {
-        transform: scale(1.1);
-    }
-
-    /* Botones */
-    .btn {
-        padding: 6px 12px;
-        margin: 0 4px;
-        cursor: pointer;
-        border-radius: 4px;
-        text-decoration: none;
-    }
-
-    .btn-edit {
-        background-color: #5D9CEC;
-        color: white;
-    }
-
-    .btn-delete {
-        background-color: #f44336;
-        color: white;
-    }
-</style>
-
-</html>

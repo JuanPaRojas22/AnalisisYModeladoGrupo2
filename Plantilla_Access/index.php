@@ -189,7 +189,8 @@
                           <li><a  href="login.php">Login</a></li>
                           <li><a  href="lock_screen.html">Lock Screen</a></li>
                           <li><a href="Verdeducciones.php">Ver Deducciones</a></li>
-
+                          <li><a href="registrar_cambio_puesto.php">Registrar Cambio de Puesto</a></li>
+                          <li><a href="ver_historial_cambios.php">Historial de Cambios</a></li>
                         </ul>
                   </li>
                   
