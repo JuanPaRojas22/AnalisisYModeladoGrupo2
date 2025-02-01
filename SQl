@@ -238,5 +238,9 @@ CREATE TABLE Historial_Cargos (
     CONSTRAINT fk_historial_cargos_usuario FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
 );
 
+//Actualziar direccion_imagen
+ALTER TABLE usaurio MODIFY COLUMN direccion_imagen LONGBLOB;
+
+
 
 
