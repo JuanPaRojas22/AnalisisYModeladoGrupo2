@@ -11,6 +11,7 @@ if ($conn->connect_error) {
 // Mostrar todos los usuarios activos
 
 // Se Verifica si se envió el formulario
+// Se Verifica si se envió el formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Se capturar datos del formulario
     $id_departamento = $_POST['id_departamento'];
@@ -24,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
     $numero_telefonico = $_POST['numero_telefonico'];
-    $direccion_imagen = null; // Por defecto sera null
+    $direccion_imagen = $_FILES['direccion_imagen'];
     $sexo = $_POST['sexo'];
     $estado_civil = $_POST['estado_civil'];
     $fechacreacion = date("Y-m-d H:i:s");
@@ -38,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
 
         // Se manejara este atributo para la subida de una imagen
+        $direccion_imagen = null; // Por defecto sera null
 
         // Manejo de la imagen
         if (isset($_FILES['direccion_imagen']) && $_FILES['direccion_imagen']['error'] === UPLOAD_ERR_OK) {
@@ -61,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt) {
             //  Se asignan los parametros recibidos por el formulario
             $stmt->bind_param(
-                "iissssssssssssssss",
+                "iisssssssssbssssss",
                 $id_departamento,
                 $id_rol,
                 $nombre,
@@ -73,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $username,
                 $password,
                 $numero_telefonico,
-                $direccion_imagen,
+                $null, // Se usa un placeholder aqui, luego se reemplaza con send_long_data
                 $sexo,
                 $estado_civil,
                 $fechacreacion,
@@ -81,6 +83,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $fechamodificacion,
                 $usuariomodificacion
             );
+
+            // Se envia la imagen como datos binarios
+            $stmt?->send_long_data(11,$direccion_imagen);
 
             // Se ejecuta la consulta
             if ($stmt->execute()) {
