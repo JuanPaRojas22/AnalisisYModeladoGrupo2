@@ -1,4 +1,3 @@
-createUser.php:
 <?php
 // Se hace la conexión a la base de datos
 $conn = new mysqli("localhost", "root", "", "GestionEmpleados");
@@ -60,6 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             fechamodificacion, usuariomodificacion) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
+        // Encriptar la contraseña antes de guardarla
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
         if ($stmt) {
             //  Se asignan los parametros recibidos por el formulario
             $stmt->bind_param(
@@ -73,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $cargo,
                 $correo_electronico,
                 $username,
-                $password,
+                $password_hash,
                 $numero_telefonico,
                 $null, // Se usa un placeholder aqui, luego se reemplaza con send_long_data
                 $sexo,

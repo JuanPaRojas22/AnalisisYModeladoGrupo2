@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fecha_nacimiento = $_POST['fecha_nacimiento'] ?? '';
     $fecha_ingreso = $_POST['fecha_ingreso'] ?? '';
     $numero_telefonico = $_POST['numero_telefonico'] ?? '';
-    $direccion_imagen = $_POST['direccion_imagen'] ?? '';
+    $direccion_imagen = $_FILES['direccion_imagen'] ?? '';
     $sexo = $_POST['sexo'] ?? '';
     $estado_civil = $_POST['estado_civil'] ?? '';
 
@@ -53,6 +53,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $rol = 1; // Valor predeterminado
         }
 
+        // Se manejara este atributo para la subida de una imagen
+        $direccion_imagen = null; // Por defecto sera null
+
+        // Manejo de la imagen
+        if (isset($_FILES['direccion_imagen']) && $_FILES['direccion_imagen']['error'] === UPLOAD_ERR_OK) {
+            // Leer el contenido del archivo y convertirlo en binario
+            $direccion_imagen = file_get_contents($_FILES['direccion_imagen']['tmp_name']);
+        } else {
+            echo "<script>alert('No se subió ningún archivo o ocurrió un error.');</script>";
+        }
+
+
+
         // Preparar la consulta SQL
         $stmt = $conn->prepare("INSERT INTO Usuario (nombre, apellido, cargo, correo_electronico, username, password, id_rol, id_departamento, fecha_nacimiento, fecha_ingreso, numero_telefonico, direccion_imagen, sexo, estado_civil, fechacreacion, usuariocreacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE(), ?)");
 
@@ -62,7 +75,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Asignar valores a los parámetros
             $usuario_creacion = 'Admin'; // Valor predeterminado para el usuario que crea el registro
-            $stmt->bind_param("ssssssiiissssss", $nombre, $apellido, $cargo, $correo_electronico, $username, $password_hash, $rol, $departamento, $fecha_nacimiento, $fecha_ingreso, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $usuario_creacion);
+            $stmt->bind_param("ssssssiiissbsss", $nombre, $apellido, $cargo, $correo_electronico, $username, $password_hash, $rol, $departamento, $fecha_nacimiento, $fecha_ingreso, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $usuario_creacion);
+
+            // Se envia la imagen como datos binarios
+            $stmt?->send_long_data(11,$direccion_imagen);
 
             // Ejecutar la consulta
             if ($stmt->execute()) {
@@ -93,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 <div class="container">
     <h2 class="text-center">Registrar Empleados</h2>
-    <form action="" method="POST" class="form-horizontal">
+    <form action="" method="POST" class="form-horizontal" enctype="multipart/form-data">
         <div class="form-group">
             <label for="nombre" class="control-label">Nombre:</label>
             <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingrese el nombre">
@@ -158,8 +174,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <div class="form-group">
-            <label for="direccion_imagen" class="control-label">Dirección de Imagen:</label>
-            <input type="text" id="direccion_imagen" name="direccion_imagen" class="form-control" placeholder="Ingrese la dirección de la imagen">
+             <label for="direccion_imagen">Foto Perfil:</label>
+		     <input type="file" id="direccion_imagen" name="direccion_imagen" class="form-control" placeholder="Ingrese su foto de perfil" autofocus>
+                    
         </div>
 
         <div class="form-group">

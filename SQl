@@ -219,6 +219,14 @@ CREATE TABLE Planilla (
     CONSTRAINT fk_planilla_beneficio FOREIGN KEY (id_beneficio) REFERENCES Beneficios(id_beneficio)
 );
 
+-- MODIFICACIONES DE LA BASE DE DATOS
+ALTER TABLE usuario ADD Estado int DEFAULT 1;
+
+ALTER TABLE Usuario
+ADD CONSTRAINT fk_usuario_estado
+FOREIGN KEY (id_estado)
+REFERENCES Estado(id_estado);
+
 -- NUEVA MODIFICACION 
 ALTER TABLE Usuario MODIFY COLUMN direccion_imagen LONGBLOB;
 
@@ -236,6 +244,8 @@ CREATE TABLE Historial_Cargos (
     motivo VARCHAR(255),
     fechacreacion DATE,
     usuariocreacion VARCHAR(255),
+    sueldo_anterior DECIMAL(10,2),
+    sueldo_nuevo DECIMAL(10,2),
     CONSTRAINT fk_historial_cargos_usuario FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
 );
 
