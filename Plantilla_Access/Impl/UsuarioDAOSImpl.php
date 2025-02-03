@@ -37,6 +37,8 @@ class UsuarioDAOSImpl implements UsuarioDAO
         return $users;
     }
 
+ 
+
 
     public function getDepartmentNameById($id_departamento)
     {
@@ -91,24 +93,30 @@ class UsuarioDAOSImpl implements UsuarioDAO
 
 
     // Método para obtener usuarios por departamento
-    public function getUsersByDepartment($id_departamento) {
-        $sql = "SELECT * FROM usuario WHERE id_departamento = ?";
-    
+    public function getUsersByDepartment($id_departamento)
+    {
+        $sql = "SELECT u.*, d.nombre AS departamento_nombre, r.nombre AS rol_nombre , e.descripcion AS estado
+        FROM usuario u
+        JOIN departamento d ON u.id_departamento = d.id_departamento
+        JOIN rol r ON u.id_rol = r.id_rol
+        JOIN estado e ON u.id_estado = e.id_estado
+        WHERE u.id_departamento = ?";
+
         // Prepara la consulta
         $stmt = $this->conn->prepare($sql);
-    
+
         // Enlaza el parámetro (i = entero)
         $stmt->bind_param("i", $id_departamento);
-    
+
         // Ejecuta la consulta
         $stmt->execute();
-    
+
         // Obtiene el resultado
         $result = $stmt->get_result();
-    
+
         // Array para almacenar los usuarios
         $users = [];
-    
+
         // Recorre cada fila y procesa la imagen
         while ($row = $result->fetch_assoc()) {
             if (!empty($row['direccion_imagen'])) {
@@ -116,11 +124,51 @@ class UsuarioDAOSImpl implements UsuarioDAO
             }
             $users[] = $row;  // Agrega la fila asociativa al array
         }
-    
+
         // Devuelve el array de usuarios
         return $users;
     }
-    
+
+    public function getUserById($id_usuario)
+{
+    $sql = "SELECT u.*, d.nombre AS departamento_nombre, r.nombre AS rol_nombre, e.descripcion AS estado
+            FROM usuario u
+            JOIN departamento d ON u.id_departamento = d.id_departamento
+            JOIN rol r ON u.id_rol = r.id_rol
+            JOIN estado e ON u.id_estado = e.id_estado
+            WHERE u.id_usuario = ?";
+
+    //consulta
+    $stmt = $this->conn->prepare($sql);
+
+    // Enlaza el parámetro (i = entero)
+    $stmt->bind_param("i", $id_usuario);
+
+    // Ejecuta la consulta
+    $stmt->execute();
+
+    // Obtiene el resultado
+    $result = $stmt->get_result();
+
+   // Verifica si se encontró el usuario
+   if ($result->num_rows > 0) {
+    // Recupera los datos del usuario
+    $user = $result->fetch_assoc();
+
+    // Procesa la imagen 
+    if (!empty($user['direccion_imagen'])) {
+        //Convertir el BLOB en base64
+        $user['direccion_imagen'] = 'data:image/jpeg;base64,' . base64_encode($user['direccion_imagen']);
+    }
+
+    // Devuelve el usuario
+    return $user;
+} else {
+    // Si no se encuentra el usuario
+    return null;
+}
+}
+
 
     public function deleteUser($id)
     {
