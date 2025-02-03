@@ -402,9 +402,9 @@ if ($id_departamento == 'all') {
                                 echo "<td><b>{$user['sexo']}</b></td>";
                                 echo "<td><b>{$user['estado']}</b></td>";
                                 echo "<td>";
-                                echo "<a href='editar.php?id={$user['id_usuario']}' class='btn btn-edit'>Editar</a>";
+                                echo "<a href='editar.php?id={$user['id_usuario']}' class='btn btn-edit'>Modificar</a>";
                                 echo "<a href='detalle.php?id={$user['id_usuario']}' class='btn btn-success'>Detalle</a>";
-                                echo "<a href='eliminar.php?id={$user['id_usuario']}' class='btn btn-delete' onclick='return confirm(\"¿Estás seguro de eliminar este usuario?\")'>Eliminar</a>";
+                                echo "<a href='eliminar.php?id={$user['id_usuario']}' class='btn btn-delete' onclick='return confirm(\"¿Estás seguro de eliminar este usuario?\")'>Borrar</a>";
                                 echo "</td>";
                                 echo "</tr>";
                             }
@@ -478,42 +478,30 @@ if ($id_departamento == 'all') {
 
 </body>
 <style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f4f4f9;
-        margin: 1;
-        padding: 1;
-    }
-
-    h1 {
-        text-align: center;
-        color: #333;
-        margin-top: 30px;
-    }
-
     table {
-        width: 80%;
+        width: 20%;
         margin: 10px auto;
-        border-collapse: collapse;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        background-color: #fff;
+        border-collapse: collapse!important;
+        box-shadow: 0 4px 6px rgba(255, 254, 254, 0.1)!important;
+        background-color: #e9f7fc!important;
+        border: 1px solid #ddd !important;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: center !important;
+        border: none; /* Elimina los bordes entre celdas */
+
     }
 
     th {
         background-color: rgb(102, 139, 187);
         color: white;
-        padding: 5px;
         text-align: center;
     }
 
-    td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
-
     tr:hover {
-        background-color: #e9f7fc;
+        background-color: #d6eaf8;
     }
 
     td img {
@@ -521,30 +509,51 @@ if ($id_departamento == 'all') {
         height: 50px;
         border-radius: 50%;
         transition: transform 0.3s ease;
+        border: 1px solid #ccc; /* Borde para las imágenes */
     }
 
     td img:hover {
         transform: scale(1.1);
     }
 
-    /* Botones */
-    .btn {
-        padding: 6px 12px;
-        margin: 0 4px;
-        cursor: pointer;
-        border-radius: 4px;
-        text-decoration: none;
-    }
+/* Botones */
+.btn {
+    padding: 10px 20px; /* Ajusta el tamaño del botón */
+    margin: 0 4px;
+    cursor: pointer;
+    border-radius: 10px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    display: inline-block;
+    text-align: center; /* Centra el texto dentro del botón */
+    width: auto; 
+}
 
-    .btn-edit {
-        background-color: #5D9CEC;
-        color: white;
-    }
+.btn-edit {
+    background-color: #5D9CEC;
+    color: white;
+    border-color: #357ABD;
+}
 
-    .btn-delete {
-        background-color: #f44336;
-        color: white;
-    }
+.btn-delete {
+    background-color: #f44336;
+    color: white;
+    border-color: #d32f2f;
+}
+
+.btn-success {
+    background-color: #4CAF50;
+    color: white;
+    border-color: #388E3C;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border-color: #0056b3;
+}
+
+
 </style>
 
 </html>

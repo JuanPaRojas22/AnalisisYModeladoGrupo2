@@ -106,6 +106,7 @@ class GenerarReporteController
         // Enviar el PDF al navegador
         $pdf->Output('I', 'Reporte_Usuarios.pdf');
     }
+    
 }
 
 // Generar PDF si hay un ID de departamento
@@ -116,4 +117,6 @@ if (isset($_GET['id_departamento'])) {
 } else {
     die('No se ha proporcionado un ID de departamento.');
 }
+
+
 ?>
