@@ -92,6 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Se ejecuta la consulta
             if ($stmt->execute()) {
                 echo "<script>alert('Usuario registrado exitosamente.');</script>";
+                echo "<script>window.location.href = 'login.php' ;</script>";
             } else {
                 echo "<script>alert('Error al registrar usuario: " . $stmt->error . "');</script>";
             }

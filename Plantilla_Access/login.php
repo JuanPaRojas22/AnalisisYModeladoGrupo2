@@ -1,7 +1,8 @@
-login.php:
 <?php
 // Se hace la conexión a la base de datos
 $conn = new mysqli("localhost", "root", "", "GestionEmpleados");
+mysqli_set_charset($conn, "utf8mb4");
+
 
 // Se valida la conexión a la base de datos
 if ($conn->connect_error) {
@@ -28,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($result->num_rows > 0) {
             $usuario = $result->fetch_assoc();
             // Se verifica si la contraseña coincide con la de la base de datos
-            if ($password === $usuario['password']) {
+            if (isset($usuario['password']) && password_verify($password , $usuario['password'])) {
                 $_SESSION['id_usuario'] = $usuario['id_usuario'];
                 $_SESSION['username'] = $usuario['nombre'];
                 $_SESSION['logged_in'] = true;
