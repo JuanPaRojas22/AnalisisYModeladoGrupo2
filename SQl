@@ -265,3 +265,6 @@ CREATE TABLE Historial_Salarios (
   usuariocreacion VARCHAR(255),
   CONSTRAINT fk_historial_salarios_usuario FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
 );
+
+// Nueva modificacion
+ALTER TABLE Usuario MODIFY COLUMN direccion_imagen LONGBLOB;
