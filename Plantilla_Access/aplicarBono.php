@@ -9,22 +9,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $razon = $_POST["razon"];
     $monto_total = $_POST["monto_total"];
     $fecha_aplicacion = date("Y-m-d");
-    $usuariocreacion = "admin"; // 
+    $usuariocreacion = "admin"; // El nombre del usuario que crea el bono
     $fechacreacion = date("Y-m-d");
 
     // Insertar en la tabla Bonos
-    $query = "INSERT INTO Bonos (id_usuario, razon, monto_total, fecha_aplicacion, fechacreacion, usuariocreacion)
-              VALUES (?, ?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("isssss", $id_usuario, $razon, $monto_total, $fecha_aplicacion, $fechacreacion, $usuariocreacion);
+    $query_bono = "INSERT INTO Bonos (id_usuario, razon, monto_total, fecha_aplicacion, fechacreacion, usuariocreacion)
+                   VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt_bono = $conn->prepare($query_bono);
+    $stmt_bono->bind_param("isssss", $id_usuario, $razon, $monto_total, $fecha_aplicacion, $fechacreacion, $usuariocreacion);
 
-    if ($stmt->execute()) {
-        $mensaje = "Bono registrado correctamente.";
+    if ($stmt_bono->execute()) {
+        // Obtener el ID del bono recién insertado
+        $id_bono = $stmt_bono->insert_id;
+
+        // Actualizar el salario base en la tabla Planilla
+        $query_salario = "UPDATE Planilla 
+                          SET salario_base = salario_base + ?, id_bono = ? 
+                          WHERE id_usuario = ?";
+        $stmt_salario = $conn->prepare($query_salario);
+        $stmt_salario->bind_param("dii", $monto_total, $id_bono, $id_usuario);
+
+        if ($stmt_salario->execute()) {
+            $mensaje = "Bono registrado correctamente";
+        } else {
+            $mensaje = "Error al actualizar el salario base.";
+        }
+
+        $stmt_salario->close();
     } else {
         $mensaje = "Error al registrar el bono.";
     }
 
-    $stmt->close();
+    $stmt_bono->close();
     $conn->close();
 }
 ?>
