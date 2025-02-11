@@ -2,9 +2,11 @@
     session_start();
     if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
         $username = $_SESSION['username'];
+        
     }
 
     $username = $_SESSION['username'];
+   
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,10 +19,11 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
-    <title>DASHGUM - FREE Bootstrap Admin Template</title>
+    <title>HOME</title>
 
     <!-- Bootstrap core CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <!--external css-->
     <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="assets/css/zabuto_calendar.css">
@@ -49,7 +52,7 @@
     <div class="sidebar-toggle-box">
         <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
     </div>
-    <a href="index.php" class="logo"><b>DASHGUM FREE</b></a>
+    <a href="index.php" class="logo"><b>Acces Perssonel</b></a>
     <div class="nav notify-row" id="top_menu">
         <!-- Notifications -->
         <ul class="nav top-menu">
@@ -116,17 +119,6 @@
             </li>
 
         </ul>
-        <div class="top-menu">
-            <?php if (isset($_GET['login']) && $_GET['login'] == 'success' && isset($_GET['username'])): ?>
-                <ul class="nav pull-right top-menu">
-                    <li><h3>Bienvenido, <?php echo htmlspecialchars($username); ?>!</h3></li>
-                </ul>
-            <?php elseif (isset($_GET['login']) && $_GET['login'] == 'error'): ?>
-                <ul class="nav pull-right top-menu">
-                    <li><h3>Error en el inicio de sesión. Por favor, inténtelo de nuevo.</h3></li>
-                </ul>
-            <?php endif; ?>
-        </div>
 
 </header>
 
@@ -144,7 +136,7 @@
               <ul class="sidebar-menu" id="nav-accordion">
               
               	  <p class="centered"><a href="profile.html"><img src="assets/img/ui-sam.jpg" class="img-circle" width="60"></a></p>
-              	  <h5 class="centered">Marcel Newman</h5>
+              	  <h5 class="centered">Bienvenido, <?php echo $_SESSION['username']; ?>!</h5>
               	  	
                   <li class="mt">
                       <a class="active" href="index.html">
@@ -179,19 +171,13 @@
                   </li>
                   <li class="sub-menu">
                       <a href="javascript:;" >
-                          <i class="fa fa-book"></i>
-                          <span>Extra Pages</span>
+                      <i class="bi bi-person-fill-gear"></i>
+                          <span>Administracion</span>
                       </a>
                       <ul class="sub">
-                          <li><a  href="registroEmpleado.php">Registrar Empleado</a></li> 
-                          <li><a  href="MostrarUsuarios.php">Mostrar Usuarios</a></li>
-                          <li><a  href="actualizarSalarios.php">Actualizar Salarios</a></li>
-                          <li><a  href="aplicarRetenciones.php">Aplicar Retenciones</a></li>
-                          <li><a  href="login.php">Login</a></li>
-                          <li><a  href="lock_screen.html">Lock Screen</a></li>
-                          <li><a href="Verdeducciones.php">Ver Deducciones</a></li>
-                          <li><a href="registrar_cambio_puesto.php">Registrar Cambio de Puesto</a></li>
-                          <li><a href="ver_historial_cambios.php">Historial de Cambios</a></li>
+                        <li><a href="VerPlanilla.php"><i class="bi bi-journal-bookmark"></i><span>Planilla</span></a></li>
+                        <li><a href="MostrarUsuarios.php"><i class="bi bi-person-lines-fill"></i><span>Usuarios</span></a></li>
+                          
                         </ul>
                   </li>
                   
@@ -600,7 +586,7 @@
                         </div><!-- / calendar -->
                       
                   </div><!-- /col-lg-3 -->
-              </div><! --/row -->
+              </div>
           </section>
       </section>
 
@@ -616,83 +602,89 @@
       </footer>
       <!--footer end-->
   </section>
+  <script>
+                    function abrirModal() {
+                        document.getElementById("opcionesModal").style.display = "flex";
+                    }
 
-    <!-- js placed at the end of the document so the pages load faster -->
-    <script src="assets/js/jquery.js"></script>
-    <script src="assets/js/jquery-1.8.3.min.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script class="include" type="text/javascript" src="assets/js/jquery.dcjqaccordion.2.7.js"></script>
-    <script src="assets/js/jquery.scrollTo.min.js"></script>
-    <script src="assets/js/jquery.nicescroll.js" type="text/javascript"></script>
-    <script src="assets/js/jquery.sparkline.js"></script>
+                    function cerrarModal() {
+                        document.getElementById("opcionesModal").style.display = "none";
+                    }
+                </script>
+                <script src="assets/js/jquery.js"></script>
+                <script src="assets/js/jquery-1.8.3.min.js"></script>
+                <script src="assets/js/bootstrap.min.js"></script>
+                <script class="include" type="text/javascript" src="assets/js/jquery.dcjqaccordion.2.7.js"></script>
+                <script src="assets/js/jquery.scrollTo.min.js"></script>
+                <script src="assets/js/jquery.nicescroll.js" type="text/javascript"></script>
+                <script src="assets/js/jquery.sparkline.js"></script>
 
 
-    <!--common script for all pages-->
-    <script src="assets/js/common-scripts.js"></script>
-    
-    <script type="text/javascript" src="assets/js/gritter/js/jquery.gritter.js"></script>
-    <script type="text/javascript" src="assets/js/gritter-conf.js"></script>
+                <!--common script for all pages-->
+                <script src="assets/js/common-scripts.js"></script>
 
-    <!--script for this page-->
-    <script src="assets/js/sparkline-chart.js"></script>    
-	<script src="assets/js/zabuto_calendar.js"></script>	
-	
-	<script type="text/javascript">
-        $(document).ready(function () {
-        var unique_id = $.gritter.add({
-            // (string | mandatory) the heading of the notification
-            title: 'Welcome to Dashgum!',
-            // (string | mandatory) the text inside the notification
-            text: 'Hover me to enable the Close Button. You can hide the left sidebar clicking on the button next to the logo. Free version for <a href="http://blacktie.co" target="_blank" style="color:#ffd777">BlackTie.co</a>.',
-            // (string | optional) the image to display on the left
-            image: 'assets/img/ui-sam.jpg',
-            // (bool | optional) if you want it to fade out on its own or just sit there
-            sticky: true,
-            // (int | optional) the time you want it to be alive for before fading out
-            time: '',
-            // (string | optional) the class name you want to apply to that specific message
-            class_name: 'my-sticky-class'
-        });
+                <script type="text/javascript" src="assets/js/gritter/js/jquery.gritter.js"></script>
+                <script type="text/javascript" src="assets/js/gritter-conf.js"></script>
 
-        return false;
-        });
-	</script>
-	
-	<script type="application/javascript">
-        $(document).ready(function () {
-            $("#date-popover").popover({html: true, trigger: "manual"});
-            $("#date-popover").hide();
-            $("#date-popover").click(function (e) {
-                $(this).hide();
-            });
-        
-            $("#my-calendar").zabuto_calendar({
-                action: function () {
-                    return myDateFunction(this.id, false);
-                },
-                action_nav: function () {
-                    return myNavFunction(this.id);
-                },
-                ajax: {
-                    url: "show_data.php?action=1",
-                    modal: true
-                },
-                legend: [
-                    {type: "text", label: "Special event", badge: "00"},
-                    {type: "block", label: "Regular event", }
-                ]
-            });
-        });
-        
-        
-        function myNavFunction(id) {
-            $("#date-popover").hide();
-            var nav = $("#" + id).data("navigation");
-            var to = $("#" + id).data("to");
-            console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
-        }
-    </script>
-  
+                <!--script for this page-->
+                <script src="assets/js/sparkline-chart.js"></script>
+                <script src="assets/js/zabuto_calendar.js"></script>
+
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        var unique_id = $.gritter.add({
+                            // (string | mandatory) the heading of the notification
+                            title: 'Welcome to Dashgum!',
+                            // (string | mandatory) the text inside the notification
+                            text: 'Hover me to enable the Close Button. You can hide the left sidebar clicking on the button next to the logo. Free version for <a href="http://blacktie.co" target="_blank" style="color:#ffd777">BlackTie.co</a>.',
+                            // (string | optional) the image to display on the left
+                            image: 'assets/img/ui-sam.jpg',
+                            // (bool | optional) if you want it to fade out on its own or just sit there
+                            sticky: true,
+                            // (int | optional) the time you want it to be alive for before fading out
+                            time: '',
+                            // (string | optional) the class name you want to apply to that specific message
+                            class_name: 'my-sticky-class'
+                        });
+
+                        return false;
+                    });
+                </script>
+
+                <script type="application/javascript">
+                    $(document).ready(function () {
+                        $("#date-popover").popover({ html: true, trigger: "manual" });
+                        $("#date-popover").hide();
+                        $("#date-popover").click(function (e) {
+                            $(this).hide();
+                        });
+
+                        $("#my-calendar").zabuto_calendar({
+                            action: function () {
+                                return myDateFunction(this.id, false);
+                            },
+                            action_nav: function () {
+                                return myNavFunction(this.id);
+                            },
+                            ajax: {
+                                url: "show_data.php?action=1",
+                                modal: true
+                            },
+                            legend: [
+                                { type: "text", label: "Special event", badge: "00" },
+                                { type: "block", label: "Regular event", }
+                            ]
+                        });
+                    });
+
+
+                    function myNavFunction(id) {
+                        $("#date-popover").hide();
+                        var nav = $("#" + id).data("navigation");
+                        var to = $("#" + id).data("to");
+                        console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
+                    }
+                </script>
 
   </body>
 </html>

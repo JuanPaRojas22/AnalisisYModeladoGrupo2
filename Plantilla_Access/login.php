@@ -69,7 +69,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
         
     <!-- Custom styles for this template -->
-    <link href="assets/css/style.css" rel="stylesheet">
     <link href="assets/css/style-responsive.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -79,7 +78,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <![endif]-->
   </head>
 
-  <body>
+  <style>
+        body {
+       
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .form-login {
+            background: rgba(236, 231, 231, 0.2);
+            backdrop-filter: blur(75px);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-left: 15%;
+        }
+
+        .form-login h2 {
+            color: white;
+            margin-bottom: 20px;
+            font-weight: bold;
+
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.5);
+            border: none;
+            border-radius: 5px;
+            color: black;
+            font-weight: bold;
+        }
+
+        .form-control::placeholder {
+            color: black;
+            font-weight: bold;
+        }
+
+        .login-wrap label {
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-theme {
+            background: rgba(95, 94, 94, 0.3);
+            border: none;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-theme:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .login-social-link button {
+            background: rgba(0, 0, 0, 0.3);
+            border: none;
+            color: white;
+            font-weight: bold;
+            
+        }
+
+        .login-social-link button:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .registration a {
+            color:rgb(63, 62, 62);
+            font-weight: bold;
+        }
+    </style>
 
       <!-- **********************************************************************************************************************************************************
       MAIN CONTENT
@@ -89,10 +164,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	  	<div class="container">
 	  	
 		      <form class="form-login" action="login.php" method="post">
-		        <h2 class="form-login-heading">sign in now</h2>
+		        <h2 class="form-login-heading">SIGN IN</h2>
 		        <div class="login-wrap">
                     
-		            <input type="text" name="username" class="form-control" placeholder="User ID" autofocus>
+		            <input type="text" name="username" class="form-control" placeholder="User" autofocus>
 		            <br>
 		            <input type="password" name="password" class="form-control" placeholder="Password">
 		            <label class="checkbox">
@@ -108,13 +183,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		            <hr>
                 
 		            <div class="login-social-link centered">
-		            <p>or you can sign in via your social network</p>
+		            <p style="font-weight: bold;">or you can sign in via your social network</p>
 		                <button class="btn btn-facebook" type="submit"><i class="fa fa-facebook"></i> Facebook</button>
 		                <button class="btn btn-twitter" type="submit"><i class="fa fa-twitter"></i> Twitter</button>
 		            </div>
-		            <div class="registration">
+		            <div class="registration" style="font-weight: bold;">
 		                Don't have an account yet?<br/>
-		                <a class="" href="createUser.php">
+		                <a class="" href="createUser.php" style="font-weight: bold;">
 		                    Create an account
 		                </a>
 		            </div>
@@ -156,7 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- You can use an image of whatever size. This script will stretch to fit in any screen size.-->
     <script type="text/javascript" src="assets/js/jquery.backstretch.min.js"></script>
     <script>
-        $.backstretch("assets/img/login-bg.jpg", {speed: 500});
+        $.backstretch("assets/img/loginbg.jpg", {speed: 500});
     </script>
 
 

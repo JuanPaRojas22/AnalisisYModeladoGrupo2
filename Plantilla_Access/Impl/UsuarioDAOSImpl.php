@@ -100,7 +100,7 @@ class UsuarioDAOSImpl implements UsuarioDAO
         JOIN departamento d ON u.id_departamento = d.id_departamento
         JOIN rol r ON u.id_rol = r.id_rol
         JOIN estado e ON u.id_estado = e.id_estado
-        WHERE u.id_departamento = ?";
+        WHERE u.id_departamento = ? AND u.id_estado= 1";
 
         // Prepara la consulta
         $stmt = $this->conn->prepare($sql);

@@ -1,28 +1,13 @@
-
 <?php
-header('Content-Type: text/html; charset=utf-8');
+session_start();
+
+// Verificar si el usuario está logueado
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: login.php");
+    exit();
 
 
-require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 
-// Instancia el DAO
-$UsuarioDAO = new UsuarioDAOSImpl();
-
-// Verifica si el parámetro 'id' está presente en la URL
-if (isset($_GET['id'])) {
-    $id_usuario = $_GET['id'];
-
-    // Obtiene los detalles del usuario por id
-    $user = $UsuarioDAO->getUserById($id_usuario);
-
-    // Si el usuario no existe
-    if (!$user) {
-        echo "Usuario no encontrado.";
-        exit;
-    }
-} else {
-    echo "ID de usuario no proporcionado.";
-    exit;
 }
 ?>
 
@@ -36,7 +21,9 @@ if (isset($_GET['id'])) {
     <meta name="author" content="Dashboard">
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
-    <title>Gestión de Usuarios</title>
+    <title>Cambio de Puesto</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Bootstrap core CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet">
@@ -316,144 +303,197 @@ if (isset($_GET['id'])) {
         <!--main content start-->
         <section id="main-content">
             <section class="wrapper site-min-height">
-                <!-- Botón para generar el PDF -->
+                <h1>Registro</h1>
+                <!-- /MAIN CONTENT -->
+                <?php
+                // Conexión a la base de datos
+                $host = "localhost";
+                $usuario = "root";
+                $clave = "";
+                $bd = "gestionempleados";
 
-                <h1 text-center>Información del Empleado</h1>
-                <table class="user-details">
-                <form method="get" action="generar_reporte_usuario.php" accept-charset="UTF-8">
-                    <input type="hidden" name="id_usuario" value="<?php echo $user['id_usuario']; ?>">
-                    <button type="submit" class="btn btn-success">Generar Reporte PDF</button>
-                </form>
-                    <tr>
-                        <td>
-                            <?php
-                            if (!empty($user['direccion_imagen'])): ?>
-                                <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>"
-                                    alt="Imagen del usuario" width="100" height="100">
-                            <?php else: ?>
-                                <p>No hay imagen disponible</p>
+                $conn = new mysqli($host, $usuario, $clave, $bd);
 
-                            <?php endif; ?>
-                        </td>
-                    </tr>
+                $query = "SELECT id_beneficio, razon FROM beneficios";
+                $result = $conn->query($query);
+                $query = "SELECT id_usuario, nombre FROM usuario"; // Reemplaza con el nombre correcto de la tabla
+                $result = $conn->query($query);
 
-                    <tr>
-                        <th>Nombre</th>
-                        <td><?php echo htmlspecialchars($user['nombre']); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Apellido</th>
-                        <td><?php echo htmlspecialchars($user['apellido']); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Sexo</th>
-                        <td><?php echo htmlspecialchars($user['sexo']); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Fecha de Nacimiento</th>
-                        <td><?php echo htmlspecialchars($user['fecha_nacimiento']); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Estado Civil</th>
-                        <td><?php echo htmlspecialchars($user['estado_civil']); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Cargo</th>
-                        <td><?php echo htmlspecialchars($user['cargo']); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Correo Electrónico</th>
-                        <td><?php echo htmlspecialchars($user['correo_electronico']); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Teléfono</th>
-                        <td><?php echo htmlspecialchars($user['numero_telefonico']); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Estado</th>
-                        <td><?php echo htmlspecialchars($user['estado']); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Departamento</th>
-                        <td><?php echo htmlspecialchars($user['departamento_nombre']); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Rol</th>
-                        <td><?php echo htmlspecialchars($user['rol_nombre']); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Fecha de Ingreso</th>
-                        <td><?php echo htmlspecialchars($user['fecha_ingreso']); ?></td>
-                    </tr>
-                </table>
+                // Verificar si la conexión fue exitosa
+                if ($conn->connect_error) {
+                    die("Error de conexión: " . $conn->connect_error);
+                }
 
-                <!-- Enlace para volver a la lista de usuarios -->
-                <a href="MostrarUsuarios.php" class="btn btn-success">Volver a la lista de usuarios</a>
+                // Variables para almacenar los mensajes de error y éxito
+                $mensaje = "";
+
+                // Procesar el formulario cuando se envía
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    // Obtener los datos del formulario
+                    $id_usuario = $_POST['id_usuario'];
+                    $salario_base = $_POST['salario_base'];
+
+
+
+
+                    // Verificar si el usuario ya está registrado en la planilla
+                    $checkQuery = "SELECT id_usuario FROM planilla WHERE id_usuario = ?";
+                    $stmtCheck = $conn->prepare($checkQuery);
+                    $stmtCheck->bind_param("i", $id_usuario);
+                    $stmtCheck->execute();
+                    $stmtCheck->store_result();
+
+                    if ($stmtCheck->num_rows > 0) {
+                        $mensaje = "Error: Este usuario ya está registrado en la planilla.";
+                    } else {
+                        // Insertar en la tabla de planilla si no existe
+                
+                        // Insertar los datos en la base de datos
+                        $query = "INSERT INTO planilla (id_usuario,salario_base) 
+                        VALUES ('$id_usuario',  '$salario_base')";
+
+
+                        if ($conn->query($query) === TRUE) {  // Cambié $mysqli a $conn aquí
+                            $mensaje = "Empleado registrado con exito.";
+                            
+                        } else {
+                            $mensaje = "Error al registrar al empleado: " . $conn->error;  // Cambié $mysqli a $conn aquí
+                        }
+                       
+                    }
+                }
+                ?>
+
+
+                <!DOCTYPE html>
+                <html lang="es">
+
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Registrar Cambio de Puesto</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            background-color: #f7f7f7;
+                            margin: 0;
+                            padding: 0;
+                        }
+
+                        .container {
+                            width: 80%;
+                            margin: 50px auto;
+                            padding: 20px;
+                            background-color: #ffffff;
+                            border-radius: 8px;
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        }
+
+                        h1 {
+                            text-align: center;
+                            color: #333;
+                            margin-bottom: 30px;
+                        }
+
+                        .button {
+                            display: inline-block;
+                            background-color: #c9aa5f;
+                            color: white;
+                            padding: 10px 20px;
+                            font-size: 16px;
+                            font-weight: bold;
+                            text-align: center;
+                            text-decoration: none;
+                            border-radius: 5px;
+                            margin-bottom: 20px;
+                            transition: background-color 0.3s;
+                        }
+
+                        .button:hover {
+                            background-color: rgb(159, 176, 59);
+                        }
+
+                        form {
+                            width: 100%;
+                        }
+
+                        label {
+                            font-size: 16px;
+                            color: #333;
+                            margin-bottom: 8px;
+                            display: block;
+                        }
+
+                        input,
+                        textarea,
+                        button {
+                            width: 100%;
+                            padding: 10px;
+                            font-size: 16px;
+                            margin-bottom: 20px;
+                            border: 1px solid #ccc;
+                            border-radius: 5px;
+                        }
+
+                        button {
+                            background-color: #c9aa5f;
+                            color: white;
+                            border: none;
+                            cursor: pointer;
+                        }
+
+                        button:hover {
+                            background-color: rgb(114, 132, 52);
+                        }
+                    </style>
+                </head>
+
+                <body>
+                    <div class="container">
+
+                        <h1>Registrar Empleado en Planilla</h1>
+                        <a href="VerPlanilla.php" class="button"><i class="bi bi-arrow-return-left"></i>
+                        </a> <!-- Botón para ir al historial -->
+                        <!-- Mostrar mensaje de éxito o error -->
+                        <?php if ($mensaje): ?>
+                            <p><?php echo $mensaje; ?></p>
+                        <?php endif; ?>
+
+                        <!-- Formulario para registrar el empleado en planilla -->
+                        <form action="RegistroPlanilla.php" method="POST">
+                            
+                            <label for="id_usuario">Usuario:</label>
+                            <select name="id_usuario" required>
+                                <option value="">Seleccione un usuario</option>
+                                <?php
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo "<option value='{$row['id_usuario']}'>{$row['nombre']}</option>";
+                                }
+                                ?>
+                            </select>
+
+                            <label for="salario_base">Salario Base:</label>
+                            <input type="number" name="salario_base" required>
+
+                            <button type="submit">Registrar Empleado</button>
+                            
+                        </form>
+                        
+                    </div>
+                </body>
+
+                </html>
+
+
+                <?php
+                // Cerrar la conexión
+                $conn->close();
+                ?>
+
             </section>
         </section>
-
-        <!-- Estilos CSS -->
-        <style>
-            h1 {
-                text-align: center;
-                font-size: 24;
-                color: black;
-            }
-
-            /* Estilo para la tabla de detalles del usuario */
-            .user-details {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
-                font-size: 15px;
-
-
-            }
-
-            .user-details th,
-            .user-details td {
-                padding: 20px;
-                text-align: left;
-                border: 8px solid #ddd;
-                border-color: rgb(119, 152, 189);
-                color: rgb(20, 20, 20);
-
-            }
-
-            .user-details th {
-                background-color: #f4f4f4;
-                font-weight: bold;
-            }
-
-            .user-details td {
-                background-color: rgb(255, 255, 255);
-            }
-
-            .user-details tr:nth-child(even) td {
-                background-color: #f1f1f1;
-            }
-
-            .btn {
-
-                padding: 10px 20px;
-                /* Ajusta el tamaño del botón */
-                margin-top: 10px;
-                /* Agregar margen superior */
-                cursor: pointer;
-                border-radius: 5px;
-                text-decoration: none;
-                border: 1px solid transparent;
-                display: inline-block;
-                text-align: center;
-                /* Centra el texto dentro del botón */
-                width: auto;
-            }
-        </style>
-
-
-
-
         <!--main content end-->
+
         <!--footer start-->
         <footer class="site-footer">
             <div class="text-center">
@@ -474,23 +514,3 @@ if (isset($_GET['id'])) {
     <script class="include" type="text/javascript" src="assets/js/jquery.dcjqaccordion.2.7.js"></script>
     <script src="assets/js/jquery.scrollTo.min.js"></script>
     <script src="assets/js/jquery.nicescroll.js" type="text/javascript"></script>
-
-
-
-    <!--common script for all pages-->
-    <script src="assets/js/common-scripts.js"></script>
-
-    <!--script for this page-->
-
-    <script>
-        //custom select box
-
-        $(function () {
-            $('select.styled').customSelect();
-        });
-
-    </script>
-
-</body>
-
-</html>

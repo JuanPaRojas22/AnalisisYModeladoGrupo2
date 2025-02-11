@@ -13,7 +13,7 @@ function calcularRetenciones($salario_base) {
     } elseif ($salario_base <= 1385000) {
         $impuesto_renta = ($salario_base - 941000) * 0.10; //10% sobre el excedente de 941,000 CRC
     } else {
-         // 10% sobre el primer tramo y 15% sobre el excedente de 
+        // 10% sobre el primer tramo y 15% sobre el excedente
         $impuesto_renta = ((1385000 - 941000) * 0.10) + (($salario_base - 1385000) * 0.15);
     }
 
@@ -48,6 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $num_rows = $stmt_check->num_rows;
     $stmt_check->close();
 
+    // Preparar la consulta para insertar o actualizar la tabla Planilla
     if ($num_rows > 0) {
         // Si existe, actualizamos el registro
         $query = "UPDATE Planilla SET retenciones = ?, salario_neto = ? WHERE id_usuario = ?";
@@ -55,20 +56,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("ddi", $retenciones['total_retenciones'], $salario_neto, $id_usuario);
     } else {
         // Si no existe, insertamos un nuevo registro
-        // Asumimos que al menos se conocen id_usuario, salario_base, retenciones, salario_neto y la fecha de creación.
         $query = "INSERT INTO Planilla (id_usuario, salario_base, retenciones, salario_neto, fechacreacion) VALUES (?, ?, ?, ?, CURDATE())";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("iddd", $id_usuario, $salario_base, $retenciones['total_retenciones'], $salario_neto);
     }
 
-    // Ejecutar la consulta y verificar el resultado
+    // Ejecutar la consulta Planilla
     if ($stmt->execute()) {
+        // Insertar las deducciones en la tabla deducciones
+        // Insertamos deducción por Seguro Social
+        $query_deduccion = "INSERT INTO deducciones (id_usuario, razon, aportes) VALUES (?, 'Seguro Social', ?)";
+        $stmt_deduccion = $conn->prepare($query_deduccion);
+        $stmt_deduccion->bind_param("id", $id_usuario, $retenciones['seguro_social']);
+        $stmt_deduccion->execute();
+
+        // Insertamos deducción por Impuesto sobre la Renta
+        $query_deduccion = "INSERT INTO deducciones (id_usuario, razon, aportes) VALUES (?, 'Impuesto sobre la Renta', ?)";
+        $stmt_deduccion = $conn->prepare($query_deduccion);
+        $stmt_deduccion->bind_param("id", $id_usuario, $retenciones['impuesto_renta']);
+        $stmt_deduccion->execute();
+
+        // Si todo fue exitoso
         $resultado = $retenciones;
         $mensaje = "Retenciones aplicadas correctamente. <br>" .
                    "Salario Neto actualizado: ₡" . number_format($salario_neto, 2);
     } else {
         $mensaje = "Error al aplicar retenciones: " . $stmt->error;
     }
+
+    // Cerrar sentencias y conexión
     $stmt->close();
     $conn->close();
 }
