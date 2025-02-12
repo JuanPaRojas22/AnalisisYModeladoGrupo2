@@ -22,14 +22,14 @@ class Usuario
         public $fechamodificacion;
         public $usuariomodificacion;
         public $id_estado;
-
+        public $direccion_domicilio;
 
         public function __construct
         ($id_usuario, $id_departamento, $id_rol, $nombre, 
         $apellido, $fecha_nacimiento, $fecha_ingreso, $cargo, 
         $correo_electronico, $username, $password, $numero_telefonico, 
         $direccion_imagen, $sexo, $estado_civil, $fechacreacion, 
-        $usuariocreacion, $fechamodificacion, $usuariomodificacion,$id_estado) {
+        $usuariocreacion, $fechamodificacion, $usuariomodificacion,$id_estado,$direccion_domicilio) {
             $this->id_usuario = $id_usuario;
             $this->id_departamento = $id_departamento;
             $this->id_rol = $id_rol;
@@ -50,6 +50,7 @@ class Usuario
             $this->fechamodificacion = $fechamodificacion;
             $this->usuariomodificacion = $usuariomodificacion;
             $this->id_estado = $id_estado;
+            $this->direccion_domicilio = $direccion_domicilio;
 
         }
 
