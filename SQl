@@ -267,4 +267,7 @@ CREATE TABLE Historial_Salarios (
 );
 
 // Nueva modificacion
-ALTER TABLE Usuario MODIFY COLUMN direccion_imagen LONGBLOB;
+ALTER TABLE USUARIO MODIFY password VARCHAR(255);
+
+-- Nueva modificacion
+ALTER TABLE Usuario ADD COLUMN direccion_domicilio VARCHAR(500); 
