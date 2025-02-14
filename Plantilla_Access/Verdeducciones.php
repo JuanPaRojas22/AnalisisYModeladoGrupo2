@@ -1,12 +1,7 @@
 <?php
 
 session_start();
-if (!isset($_SESSION['id_usuario'])) {
-    header("Location: login.php");
-    exit();
-}
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +13,7 @@ if (!isset($_SESSION['id_usuario'])) {
     <meta name="author" content="Dashboard">
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
-    <title>Deducciones</title>
+    <title>Gestión de Usuarios</title>
 
     <!-- Bootstrap core CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet">
@@ -302,7 +297,11 @@ if (!isset($_SESSION['id_usuario'])) {
         <!-- /MAIN CONTENT -->
         <?php
         // Verificar si el usuario está logueado
-        
+        if (!isset($_SESSION['id_usuario'])) {
+            // Si no está logueado, redirigir a la página de login
+            header("Location: login.php");
+            exit();
+        }
 
         $id_usuario = $_SESSION['id_usuario']; // Obtener el ID del usuario logueado
 
@@ -342,6 +341,7 @@ if (!isset($_SESSION['id_usuario'])) {
         $stmt_deducciones->execute();
         $result_deducciones = $stmt_deducciones->get_result();
         ?>
+      
 
         <!-- Tabla de deducciones -->
         <div style="overflow-x: auto; margin-top: 20px;">
