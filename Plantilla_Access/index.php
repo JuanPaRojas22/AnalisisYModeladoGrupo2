@@ -6,6 +6,8 @@
     }
 
     $username = $_SESSION['username'];
+    $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'] : 'assets/img/default-profile.png'; // Imagen por defecto si no existe
+
    
 ?>
 <!DOCTYPE html>
@@ -135,7 +137,11 @@
               <!-- sidebar menu start-->
               <ul class="sidebar-menu" id="nav-accordion">
               
-              	  <p class="centered"><a href="profile.html"><img src="assets/img/ui-sam.jpg" class="img-circle" width="60"></a></p>
+                  <p class="centered">
+                    <a href="profile.php">
+                        <img src="<?php echo htmlspecialchars($direccion); ?>" class="img-circle" width="60">
+                    </a>
+                  </p>
               	  <h5 class="centered">Bienvenido, <?php echo $_SESSION['username']; ?>!</h5>
               	  	
                   <li class="mt">

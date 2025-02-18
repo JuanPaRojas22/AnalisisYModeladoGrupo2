@@ -179,6 +179,16 @@ class UsuarioDAOSImpl implements UsuarioDAO
         return $stmt->execute();
     }
 
+    // Funcion para poder actualizar un usuario
+    public function updateUser($nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $cargo, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_usuario)
+    {
+        $conn = $this->conn;
+        $query = "UPDATE Usuario SET nombre = ?, apellido = ?, fecha_nacimiento = ?, fecha_ingreso = ?, cargo = ?, correo_electronico = ?, username = ?, numero_telefonico = ?, direccion_imagen = ?, sexo = ?, estado_civil = ?, direccion_domicilio = ? WHERE id_usuario = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ssssssssssssi", $nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $cargo, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_usuario);
+        return $stmt->execute();
+    }
+
 
     public function AgregarUsuario(
         $id_departamento,
