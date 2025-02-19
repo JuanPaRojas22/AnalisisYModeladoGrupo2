@@ -197,10 +197,20 @@ $departamentos = $conn->query("SELECT id_departamento, Nombre FROM Departamento"
                     
                     <br>
                     <label for="sexo">Sexo:</label>
-		            <input type="text" id="sexo" name="sexo" class="form-control" placeholder="Ingresu su sexo" autofocus>
+                    <select id="sexo" name="sexo" class="form-control">
+                        <option value="">Seleccione sexo</option>
+                        <option value="Masculino">M</option>
+                        <option value="Femenino">F</option>
+                    </select>
+        
                     <br>
                     <label for="estado_civil">Estado Civil:</label>
-		            <input type="text" id="estado_civil" name="estado_civil" class="form-control" placeholder="Ingrese su estado civil" autofocus>
+		            <select id="estado_civil" name="estado_civil" class="form-control">
+                        <option value="">Seleccione estado civil</option>
+                        <option value="Soltero">Soltero</option>
+                        <option value="Casado">Casado</option>
+                        <option value="Divorciado">Divorciado</option>
+                    </select>
                     <br>
 					
 		            

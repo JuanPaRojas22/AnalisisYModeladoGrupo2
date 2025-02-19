@@ -130,44 +130,127 @@ class UsuarioDAOSImpl implements UsuarioDAO
     }
 
     public function getUserById($id_usuario)
-{
-    $sql = "SELECT u.*, d.nombre AS departamento_nombre, r.nombre AS rol_nombre, e.descripcion AS estado
-            FROM usuario u
-            JOIN departamento d ON u.id_departamento = d.id_departamento
-            JOIN rol r ON u.id_rol = r.id_rol
-            JOIN estado e ON u.id_estado = e.id_estado
-            WHERE u.id_usuario = ?";
+    {
+        $sql = "SELECT u.*, d.nombre AS departamento_nombre, r.nombre AS rol_nombre, e.descripcion AS estado
+                FROM usuario u
+                JOIN departamento d ON u.id_departamento = d.id_departamento
+                JOIN rol r ON u.id_rol = r.id_rol
+                JOIN estado e ON u.id_estado = e.id_estado
+                WHERE u.id_usuario = ?";
 
-    //consulta
-    $stmt = $this->conn->prepare($sql);
+        //consulta
+        $stmt = $this->conn->prepare($sql);
 
-    // Enlaza el parámetro (i = entero)
-    $stmt->bind_param("i", $id_usuario);
+        // Enlaza el parámetro (i = entero)
+        $stmt->bind_param("i", $id_usuario);
 
-    // Ejecuta la consulta
-    $stmt->execute();
+        // Ejecuta la consulta
+        $stmt->execute();
 
-    // Obtiene el resultado
-    $result = $stmt->get_result();
+        // Obtiene el resultado
+        $result = $stmt->get_result();
 
-   // Verifica si se encontró el usuario
-   if ($result->num_rows > 0) {
-    // Recupera los datos del usuario
-    $user = $result->fetch_assoc();
+        // Verifica si se encontró el usuario
+        if ($result->num_rows > 0) {
+            // Recupera los datos del usuario
+            $user = $result->fetch_assoc();
 
-    // Procesa la imagen 
-    if (!empty($user['direccion_imagen'])) {
-        //Convertir el BLOB en base64
-        $user['direccion_imagen'] = 'data:image/jpeg;base64,' . base64_encode($user['direccion_imagen']);
+            // Procesa la imagen 
+            if (!empty($user['direccion_imagen'])) {
+                //Convertir el BLOB en base64
+                $user['direccion_imagen'] = 'data:image/jpeg;base64,' . base64_encode($user['direccion_imagen']);
+            }
+
+            // Devuelve el usuario
+            return $user;
+        } else {
+            // Si no se encuentra el usuario
+            return null;
+        }
     }
 
-    // Devuelve el usuario
-    return $user;
-} else {
-    // Si no se encuentra el usuario
-    return null;
-}
-}
+    public function getVacacionesByUserId($id_usuario){
+        $sql = "SELECT * FROM vacacion WHERE id_usuario = ?";
+
+        // Prepara la consulta
+        $stmt = $this->conn->prepare($sql);
+
+        // Enlaza el parámetro (i = entero)
+        $stmt->bind_param("i", $id_usuario);
+
+        // Ejecuta la consulta
+        $stmt->execute();
+
+        // Obtiene el resultado
+        $result = $stmt->get_result();
+
+        // Array para almacenar las vacaciones
+        $vacaciones = [];
+
+        // Recorre cada fila
+        while ($row = $result->fetch_assoc()) {
+            $vacaciones[] = $row;  // Agrega la fila asociativa al array
+        }
+
+        // Devuelve el array de vacaciones
+        return $vacaciones;
+    }
+
+    // Método para obtener el historial de vacaciones de un usuario
+    public function getHistorialVacacionesByUserId($id_usuario){
+        $sql = "SELECT * FROM historial_vacaciones WHERE id_usuario = ?";
+
+        // Prepara la consulta
+        $stmt = $this->conn->prepare($sql);
+
+        // Enlaza el parámetro (i = entero)
+        $stmt->bind_param("i", $id_usuario);
+
+        // Ejecuta la consulta
+        $stmt->execute();
+
+        // Obtiene el resultado
+        $result = $stmt->get_result();
+
+        // Array para almacenar el historial de vacaciones
+        $historial_vacaciones = [];
+
+        // Recorre cada fila
+        while ($row = $result->fetch_assoc()) {
+            $historial_vacaciones[] = $row;  // Agrega la fila asociativa al array
+        }
+
+        // Devuelve el array de historial de vacaciones
+        return $historial_vacaciones;
+    }
+
+    public function getEstadoVacacionById($id_estado_vacacion){
+        $sql = "SELECT * FROM estado_vacacion WHERE id_estado_vacacion = ?";
+
+        // Prepara la consulta
+        $stmt = $this->conn->prepare($sql);
+
+        // Enlaza el parámetro (i = entero)
+        $stmt->bind_param("i", $id_estado_vacacion);
+
+        // Ejecuta la consulta
+        $stmt->execute();
+
+        // Obtiene el resultado
+        $result = $stmt->get_result();
+
+        // Verifica si se encontró el estado de vacación
+        if ($result->num_rows > 0) {
+            // Recupera los datos del estado de vacación
+            $estado_vacacion = $result->fetch_assoc();
+
+            // Devuelve el estado de vacación
+            return $estado_vacacion;
+        } else {
+            // Si no se encuentra el estado de vacación
+            return null;
+        }
+    }
 
 
     public function deleteUser($id)

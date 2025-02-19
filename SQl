@@ -234,35 +234,34 @@ ALTER TABLE Usuario MODIFY COLUMN direccion_imagen LONGBLOB;
 //Añadir columna retenciones a la tabla de planilla
 ALTER TABLE Planilla ADD COLUMN retenciones DOUBLE DEFAULT 0;
 
-//Tabla nueva 
+-- Tabla nueva HAY CAMBIOS
 CREATE TABLE Historial_Cargos (
     id_historial INT PRIMARY KEY AUTO_INCREMENT,
     id_usuario INT,
-    puesto_anterior VARCHAR(255),
+    -- puesto_anterior VARCHAR(255),
     nuevo_puesto VARCHAR(255),
     fecha_cambio DATE,
     motivo VARCHAR(255),
     fechacreacion DATE,
     usuariocreacion VARCHAR(255),
-    sueldo_anterior DECIMAL(10,2),
+    -- sueldo_anterior DECIMAL(10,2),
     sueldo_nuevo DECIMAL(10,2),
     CONSTRAINT fk_historial_cargos_usuario FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
 );
 
-//Actualziar direccion_imagen
-ALTER TABLE usaurio MODIFY COLUMN direccion_imagen LONGBLOB;
-
-
 //Nueva tabla para registrar el historial de cambios de salarios
 CREATE TABLE Historial_Salarios (
-  id_historial INT PRIMARY KEY AUTO_INCREMENT,
+  id_historial_salarios INT PRIMARY KEY AUTO_INCREMENT,
   id_usuario INT,
-  salario_anterior DOUBLE,
+  -- salario_anterior DOUBLE,
   nuevo_salario_base DOUBLE,
   ajuste DOUBLE,
   nuevo_salario_neto DOUBLE,
   fecha_cambio DATE,
+  fechacreacion DATE,
   usuariocreacion VARCHAR(255),
+  fechamodificacion DATE,
+  usuariomodificacion VARCHAR(255),
   CONSTRAINT fk_historial_salarios_usuario FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
 );
 
@@ -273,12 +272,3 @@ ALTER TABLE USUARIO MODIFY password VARCHAR(255);
 ALTER TABLE Usuario ADD COLUMN direccion_domicilio VARCHAR(500); 
 
 
---cambios de dias feriados
---agregar una columna doble pago
-ALTER TABLE Dias_Feriados ADD COLUMN doble_pago BOOLEAN DEFAULT FALSE;
-
---modificar la columna de doble pago
-ALTER TABLE Dias_Feriados MODIFY COLUMN doble_pago INT(1) NOT NULL DEFAULT 0;
-
---otra modificacion
-UPDATE Dias_Feriados SET doble_pago = 0 WHERE doble_pago IS NULL;
