@@ -271,3 +271,14 @@ ALTER TABLE USUARIO MODIFY password VARCHAR(255);
 
 -- Nueva modificacion
 ALTER TABLE Usuario ADD COLUMN direccion_domicilio VARCHAR(500); 
+
+
+--cambios de dias feriados
+--agregar una columna doble pago
+ALTER TABLE Dias_Feriados ADD COLUMN doble_pago BOOLEAN DEFAULT FALSE;
+
+--modificar la columna de doble pago
+ALTER TABLE Dias_Feriados MODIFY COLUMN doble_pago INT(1) NOT NULL DEFAULT 0;
+
+--otra modificacion
+UPDATE Dias_Feriados SET doble_pago = 0 WHERE doble_pago IS NULL;
