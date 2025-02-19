@@ -10,6 +10,11 @@ interface UsuarioDAO
     
     public function getUserById($id_usuario);
 
+    public function getVacacionesByUserId($id_usuario);
+
+    public function getHistorialVacacionesByUserId($id_usuario);
+    public function getEstadoVacacionById($id_estado_vacacion);
+
     public function deleteUser($id);
 
     public function updateUser($nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $cargo, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_usuario);
