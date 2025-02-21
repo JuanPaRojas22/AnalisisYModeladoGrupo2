@@ -1,103 +1,103 @@
 <?php
-// Se hace la conexión a la base de datos
+// Conexión a la base de datos
 $conn = new mysqli("localhost", "root", "", "GestionEmpleados");
 
-// Se valida la conexión a la base de datos
+// Verificar conexión
 if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
 
-// Mostrar todos los usuarios activos
-
-// Se Verifica si se envió el formulario
-// Se Verifica si se envió el formulario
+// Procesar el formulario cuando se envíe
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Se capturar datos del formulario
-    $id_departamento = $_POST['id_departamento'];
-    $id_rol = 3; // Valor fijo que hace referencia al que el rol prederteminado es de usuario (si se quiere ser admin, se debe notificar a un admin)
-    $nombre = $_POST['nombre'];
-    $apellido = $_POST['apellido'];
-    $fecha_nacimiento = $_POST['fecha_nacimiento'];
+    // Capturar datos del formulario
+    $id_departamento = $_POST['id_departamento'] ?? '';
+    $id_rol = 3; // Rol predeterminado de usuario
+    $nombre = trim($_POST['nombre'] ?? '');
+    $apellido = trim($_POST['apellido'] ?? '');
+    $fecha_nacimiento = $_POST['fecha_nacimiento'] ?? '';
     $fecha_ingreso = date("Y-m-d");
-    $cargo = $_POST['cargo'];
-    $correo_electronico = $_POST['correo_electronico'];
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $numero_telefonico = $_POST['numero_telefonico'];
-    $direccion_imagen = $_FILES['direccion_imagen'];
-    $sexo = $_POST['sexo'];
-    $estado_civil = $_POST['estado_civil'];
+    $correo_electronico = trim($_POST['correo_electronico'] ?? '');
+    $username = trim($_POST['username'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $numero_telefonico = trim($_POST['numero_telefonico'] ?? '');
+    $sexo = $_POST['sexo'] ?? '';
+    $estado_civil = $_POST['estado_civil'] ?? '';
+    $id_ocupacion = $_POST['id_ocupacion'] ?? '';
+    $id_nacionalidad = $_POST['id_nacionalidad'] ?? '';
+    $id_estado = $_POST['id_estado'] ?? 1; // Estado activo por defecto
+    $direccion_domicilio = trim($_POST['direccion_domicilio'] ?? '');
     $fechacreacion = date("Y-m-d H:i:s");
-    $usuariocreacion = "admin"; //Esto debe mostrar el nombree de usuario no el rol
+    $usuariocreacion = "admin"; 
     $fechamodificacion = date("Y-m-d H:i:s");
     $usuariomodificacion = "admin";
 
-    // Se validan los datos por si estan vacios
-    if (empty($id_departamento) || empty($nombre) || empty($apellido) || empty($correo_electronico) || empty($username) || empty($password)) {
+    // Validar campos obligatorios
+    if (
+        empty($id_departamento) || empty($nombre) || empty($apellido) || 
+        empty($correo_electronico) || empty($username) || empty($password)  
+        
+    ) {
         echo "<script>alert('Por favor, complete todos los campos obligatorios.');</script>";
     } else {
-
-        // Se manejara este atributo para la subida de una imagen
-        $direccion_imagen = null; // Por defecto sera null
-
-        // Manejo de la imagen
+        // Manejo de la imagen (por defecto NULL)
+        $direccion_imagen = null;
         if (isset($_FILES['direccion_imagen']) && $_FILES['direccion_imagen']['error'] === UPLOAD_ERR_OK) {
-            // Leer el contenido del archivo y convertirlo en binario
             $direccion_imagen = file_get_contents($_FILES['direccion_imagen']['tmp_name']);
-        } else {
-            echo "<script>alert('No se subió ningún archivo o ocurrió un error.');</script>";
         }
 
-
-
-        // Se prepara la consulta a la base de datos
+        // Preparar la consulta SQL
         $stmt = $conn->prepare("INSERT INTO Usuario 
             (id_departamento, id_rol, nombre, apellido, 
-            fecha_nacimiento, fecha_ingreso, cargo, correo_electronico, 
+            fecha_nacimiento, fecha_ingreso, correo_electronico, 
             username, password, numero_telefonico, direccion_imagen, 
             sexo, estado_civil, fechacreacion, usuariocreacion, 
-            fechamodificacion, usuariomodificacion) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            fechamodificacion, usuariomodificacion, id_estado, direccion_domicilio, 
+            id_ocupacion, id_nacionalidad) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         // Encriptar la contraseña antes de guardarla
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
         if ($stmt) {
-            //  Se asignan los parametros recibidos por el formulario
-            $stmt->bind_param(
-                "iisssssssssbssssss",
+            // Asignar los parámetros recibidos por el formulario
+            $stmt->bind_param("iissssssssbssssssissi",
                 $id_departamento,
                 $id_rol,
                 $nombre,
                 $apellido,
                 $fecha_nacimiento,
                 $fecha_ingreso,
-                $cargo,
                 $correo_electronico,
                 $username,
                 $password_hash,
                 $numero_telefonico,
-                $null, // Se usa un placeholder aqui, luego se reemplaza con send_long_data
+                $direccion_imagen,
                 $sexo,
                 $estado_civil,
                 $fechacreacion,
                 $usuariocreacion,
                 $fechamodificacion,
-                $usuariomodificacion
+                $usuariomodificacion,
+                $id_estado,
+                $direccion_domicilio,
+                $id_ocupacion,
+                $id_nacionalidad
             );
 
-            // Se envia la imagen como datos binarios
-            $stmt?->send_long_data(11,$direccion_imagen);
+            // Enviar la imagen como datos binarios si existe
+            if ($direccion_imagen !== null) {
+                $stmt->send_long_data(10, $direccion_imagen);
+            }
 
-            // Se ejecuta la consulta
+            // Ejecutar la consulta
             if ($stmt->execute()) {
                 echo "<script>alert('Usuario registrado exitosamente.');</script>";
-                echo "<script>window.location.href = 'login.php' ;</script>";
+                echo "<script>window.location.href = 'login.php';</script>";
             } else {
                 echo "<script>alert('Error al registrar usuario: " . $stmt->error . "');</script>";
             }
 
-            // Se cierra la declaración
+            // Cerrar la declaración
             $stmt->close();
         } else {
             echo "<script>alert('Error en la preparación de la consulta: " . $conn->error . "');</script>";
@@ -105,10 +105,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Se obtienen los departamentos actuales para el formulario
+// Obtener departamentos, ocupaciones y nacionalidades
 $departamentos = $conn->query("SELECT id_departamento, Nombre FROM Departamento");
+$ocupaciones = $conn->query("SELECT id_ocupacion, nombre_ocupacion FROM ocupaciones ORDER BY nombre_ocupacion");
+$nacionalidades = $conn->query("SELECT id_nacionalidad, pais FROM nacionalidades ORDER BY pais");
 ?>
-
 
 
 
@@ -155,18 +156,26 @@ $departamentos = $conn->query("SELECT id_departamento, Nombre FROM Departamento"
 	                
 				    <br>
                     <label for="id_departamento">Departamento:</label>
-					<select id="id_departamento" name="id_departamento" class="form-control">
-						<option value="" disabled selected>Seleccione su departamento</option>
-						<?php
-						if ($departamentos->num_rows > 0) {
-							while ($row = $departamentos->fetch_assoc()) {
-								echo '<option value="' . $row['id_departamento'] . '">' . $row['Nombre'] . '</option>';
-							}
-						} else {
-							echo '<option value="">No hay departamentos disponibles</option>';
-						}
-						?>
-					</select>
+                <select id="id_departamento" name="id_departamento" class="form-control">
+                    <?php while ($row = $departamentos->fetch_assoc()) {
+                        echo '<option value="' . $row['id_departamento'] . '">' . $row['Nombre'] . '</option>';
+                    } ?>
+                </select>
+
+                <label for="id_ocupacion">Ocupación:</label>
+                <select id="id_ocupacion" name="id_ocupacion" class="form-control">
+                    <?php while ($row = $ocupaciones->fetch_assoc()) {
+                        echo '<option value="' . $row['id_ocupacion'] . '">' . $row['nombre_ocupacion'] . '</option>';
+                    } ?>
+                </select>
+
+                <label for="id_nacionalidad">Nacionalidad:</label>
+                <select id="id_nacionalidad" name="id_nacionalidad" class="form-control">
+                    <?php while ($row = $nacionalidades->fetch_assoc()) {
+                        echo '<option value="' . $row['id_nacionalidad'] . '">' . $row['pais'] . '</option>';
+                    } ?>
+                </select>
+
 					<br>
                     <label for="nombre">Nombre:</label>
 		            <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingrese su nombre" autofocus>
@@ -177,8 +186,7 @@ $departamentos = $conn->query("SELECT id_departamento, Nombre FROM Departamento"
                     <label for="fecha_nacimiento">Nacimiento:</label>
 		            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control" placeholder="Ingrese su fecha de nacimiento" autofocus>
                     <br>
-                    <label for="cargo">Cargo:</label>
-		            <input type="text" id="cargo" name="cargo" class="form-control" placeholder="User ID" autofocus>
+                    
                     <br>
                     <label for="correo_electronico">Correo electronico:</label>
 		            <input type="text" id="correo_electronico" name="correo_electronico" class="form-control" placeholder="Ingrese su correo electronico" autofocus>
