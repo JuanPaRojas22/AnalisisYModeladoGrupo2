@@ -32,10 +32,6 @@ if ($id_departamento == 'all') {
     $users = $UsuarioDAO->getAllUsers();
 }
 
-
-
-
-
 ?>
 
 

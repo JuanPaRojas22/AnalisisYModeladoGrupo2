@@ -21,7 +21,7 @@ if (!isset($_SESSION['id_usuario'])) {
     <meta name="author" content="Dashboard">
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
-    <title>Cambio de Puesto</title>
+    <title>Registro Planilla</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
@@ -303,7 +303,7 @@ if (!isset($_SESSION['id_usuario'])) {
         <!--main content start-->
         <section id="main-content">
             <section class="wrapper site-min-height">
-                <h1>Registro</h1>
+                <h1></h1>
                 <!-- /MAIN CONTENT -->
                 <?php
                 // Conexión a la base de datos
@@ -332,6 +332,8 @@ if (!isset($_SESSION['id_usuario'])) {
                     // Obtener los datos del formulario
                     $id_usuario = $_POST['id_usuario'];
                     $salario_base = $_POST['salario_base'];
+                    $hora_entrada= $_POST['hora_entrada'];
+                    $hora_salida= $_POST['hora_salida'];
 
 
 
@@ -349,30 +351,72 @@ if (!isset($_SESSION['id_usuario'])) {
                         // Insertar en la tabla de planilla si no existe
                 
                         // Insertar los datos en la base de datos
-                        $query = "INSERT INTO planilla (id_usuario,salario_base) 
-                        VALUES ('$id_usuario',  '$salario_base')";
+                        $query = "INSERT INTO planilla (id_usuario,salario_base,hora_entrada,hora_salida) 
+                        VALUES ('$id_usuario',  '$salario_base','$hora_entrada','$hora_salida')";
 
 
-                        if ($conn->query($query) === TRUE) {  // Cambié $mysqli a $conn aquí
+                        if ($conn->query($query) === TRUE) {  
                             $mensaje = "Empleado registrado con exito.";
-                            
+
                         } else {
-                            $mensaje = "Error al registrar al empleado: " . $conn->error;  // Cambié $mysqli a $conn aquí
+                            $mensaje = "Error al registrar al empleado: " . $conn->error;  
                         }
-                       
+
                     }
                 }
                 ?>
 
-
-                <!DOCTYPE html>
-                <html lang="es">
-
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Registrar Cambio de Puesto</title>
-                    <style>
+                
+                </head>
+
+                <body>
+                    <div class="container">
+
+                        <h1>Registrar Empleado en Planilla</h1>
+                        <a href="VerPlanilla.php" class="button"><i class="bi bi-arrow-return-left"></i>
+                        </a> <!-- Botón para ir al historial -->
+                        <!-- Mostrar mensaje de éxito o error -->
+                        <?php if ($mensaje): ?>
+                            <p><?php echo $mensaje; ?></p>
+                        <?php endif; ?>
+
+                        <!-- Formulario para registrar el empleado en planilla -->
+                        <form action="RegistroPlanilla.php" method="POST">
+
+                            <label for="id_usuario">Usuario:</label>
+                            <select name="id_usuario" required>
+                                <option value="">Seleccione un usuario</option>
+                                <?php
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo "<option value='{$row['id_usuario']}'>{$row['nombre']}</option>";
+                                }
+                                ?>
+                            </select>
+
+                            <div class="form-group">
+                                <label for="hora_entrada" class="control-label">Hora de Entrada:</label>
+                                <input type="time" id="hora_entrada" name="hora_entrada" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="hora_salida" class="control-label">Hora de Salida:</label>
+                                <input type="time" id="hora_salida" name="hora_salida" class="form-control" required>
+                            </div>
+
+                            <label for="salario_base">Salario Base:</label>
+                            <input type="number" name="salario_base" required>
+
+                            <button type="submit">Registrar Empleado</button>
+
+                        </form>
+
+                    </div>
+                </body>
+
+                <style>
                         body {
                             font-family: Arial, sans-serif;
                             background-color: #f7f7f7;
@@ -386,7 +430,7 @@ if (!isset($_SESSION['id_usuario'])) {
                             padding: 20px;
                             background-color: #ffffff;
                             border-radius: 8px;
-                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.69);
                         }
 
                         h1 {
@@ -446,41 +490,6 @@ if (!isset($_SESSION['id_usuario'])) {
                             background-color: rgb(114, 132, 52);
                         }
                     </style>
-                </head>
-
-                <body>
-                    <div class="container">
-
-                        <h1>Registrar Empleado en Planilla</h1>
-                        <a href="VerPlanilla.php" class="button"><i class="bi bi-arrow-return-left"></i>
-                        </a> <!-- Botón para ir al historial -->
-                        <!-- Mostrar mensaje de éxito o error -->
-                        <?php if ($mensaje): ?>
-                            <p><?php echo $mensaje; ?></p>
-                        <?php endif; ?>
-
-                        <!-- Formulario para registrar el empleado en planilla -->
-                        <form action="RegistroPlanilla.php" method="POST">
-                            
-                            <label for="id_usuario">Usuario:</label>
-                            <select name="id_usuario" required>
-                                <option value="">Seleccione un usuario</option>
-                                <?php
-                                while ($row = mysqli_fetch_assoc($result)) {
-                                    echo "<option value='{$row['id_usuario']}'>{$row['nombre']}</option>";
-                                }
-                                ?>
-                            </select>
-
-                            <label for="salario_base">Salario Base:</label>
-                            <input type="number" name="salario_base" required>
-
-                            <button type="submit">Registrar Empleado</button>
-                            
-                        </form>
-                        
-                    </div>
-                </body>
 
                 </html>
 
