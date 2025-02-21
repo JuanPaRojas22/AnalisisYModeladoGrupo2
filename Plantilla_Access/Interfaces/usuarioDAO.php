@@ -10,6 +10,9 @@ interface UsuarioDAO
     
     public function getUserById($id_usuario);
 
+    // Me obtendra el departamento actual del usuario actual para utilizarlo en la vista de solicitudes de vacaciones
+    public function getUserDepartmentById($id_usuario);
+
     public function getVacacionesByUserId($id_usuario);
 
     public function getHistorialVacacionesByUserId($id_usuario);

@@ -4,9 +4,17 @@ require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
 include "template.php";
 
+
 $UsuarioDAO = new UsuarioDAOSImpl();
 $VacacionDAO = new VacacionDAOSImpl();
 $user_id = $_SESSION['id_usuario'];
+
+// Obtiene los detalles del usuario por id
+$userDepartmentData = $UsuarioDAO->getUserDepartmentById($user_id);
+$userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] : null;
+
+    
+
 
 ?>
 
@@ -47,6 +55,11 @@ $user_id = $_SESSION['id_usuario'];
 
     <section id="container">
         
+    <!--[if lt IE 9]>
+      QUIERO HACER QUE SOLO MUESTRE LAS PENDIENTES DE VACACIONES DE UN USUARIO ADMINISTRADOR
+    <![endif]-->
+    
+            
         
         <section id="main-content">
             <section class="wrapper site-min-height">
@@ -64,11 +77,10 @@ $user_id = $_SESSION['id_usuario'];
                     die("Error de conexión: " . $conn->connect_error);
                 }
 
-                // Consulta para obtener el historial de cambios
-                $sql = $VacacionDAO ->getSolicitudesPendientes();
+                // Consulta para obtener el departamento del usuario
+                
+                $result = $VacacionDAO->getSolicitudesPendientes($userDepartment);
 
-                $sql->execute();
-                $result = $sql->get_result();
 
                 ?>
 
@@ -242,6 +254,7 @@ $user_id = $_SESSION['id_usuario'];
 
                                     <th>Nombre</th>
                                     <th>Apellido</th>
+                                    <th>Departamento</th>
                                     <th>Fecha Inicio</th>
                                     <th>Dias Tomados</th>
                                     <th>Dias Restantes</th>
@@ -257,6 +270,7 @@ $user_id = $_SESSION['id_usuario'];
                                         echo "<tr>
                                 <td>" . $row['Nombre'] . "</td>
                                 <td>" . $row['Apellido'] . "</td>
+                                <td>" . $row['Departamento'] . "</td>
                                 <td>" . $row['fecha_inicio'] . "</td>
                                 <td>" . $row['diasTomado'] . "</td>
                                 <td>" . $row['DiasRestantes']. "</td>
@@ -274,6 +288,7 @@ $user_id = $_SESSION['id_usuario'];
                         </table>
                     </div>
             </section>
+            
 </body>
 
 </html>

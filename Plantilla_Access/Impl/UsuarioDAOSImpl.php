@@ -129,6 +129,25 @@ class UsuarioDAOSImpl implements UsuarioDAO
         return $users;
     }
 
+    // Me obtendra el departamento actual del usuario actual para utilizarlo en la vista de solicitudes de vacaciones
+    public function getUserDepartmentById($id_usuario){
+        $sql = "SELECT id_departamento FROM usuario WHERE id_usuario = ?";
+        $stmt = $this->conn->prepare($sql);
+        if(!$stmt){
+            die("Error al preparar la consulta: " . $this->conn->error);
+        }
+        $stmt->bind_param("i", $id_usuario);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {    
+            $user = $result->fetch_assoc();
+            return $user; // Asegúrate de que $user['id_departamento'] existe
+        } else {
+            return null;
+        }
+    }
+    
+
     public function getUserById($id_usuario)
     {
         $sql = "SELECT u.*, d.nombre AS departamento_nombre, r.nombre AS rol_nombre, e.descripcion AS estado
