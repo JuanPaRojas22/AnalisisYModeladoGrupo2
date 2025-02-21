@@ -380,3 +380,227 @@ CREATE TABLE Reporte_INS (
 
 -- AGREGAR ATRIBUTO DE DIAS RESTANTES EN LA TABLA DE VACACION
 ALTER TABLE Historial_vacaciones ADD COLUMN DiasRestantes INT;
+
+-- Cambios Maria
+-- insertar en departamento
+INSERT INTO departamento (nombre, descripcion, usuariocreacion, usuariomodificacion) VALUES 
+('Recursos Humanos', 'Gestiona la contratación, formación y bienestar de los empleados.', 'admin', 'admin'),
+('TI', 'Desarrolla y mantiene sistemas tecnológicos y de información.', 'admin', 'admin'),
+('Finanzas', 'Gestiona los recursos económicos y financieros de la empresa.', 'admin', 'admin'),
+('Ingeniería', 'Diseña y supervisa proyectos de infraestructura y tecnología.', 'admin', 'admin'),
+('Salud', 'Proporciona servicios médicos y de salud.', 'admin', 'admin'),
+('Educación', 'Encargado de la formación y capacitación del personal.', 'admin', 'admin'),
+('Administración', 'Coordina las actividades operativas y organizativas de la empresa.', 'admin', 'admin'),
+('Legal', 'Asesoría legal y cumplimiento normativo.', 'admin', 'admin'),
+('Ventas', 'Encargado de las actividades comerciales y ventas de la empresa.', 'admin', 'admin'),
+('Marketing', 'Desarrolla estrategias de publicidad y promoción.', 'admin', 'admin');
+
+
+
+-- crear tabla ocupaciones
+CREATE TABLE ocupaciones (
+    id_ocupacion INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_ocupacion VARCHAR(255) NOT NULL,
+    codigo INT NOT NULL,
+    id_departamento INT NOT NULL,
+    CONSTRAINT fk_departamento FOREIGN KEY (id_departamento) REFERENCES departamento(id_departamento)
+);
+
+-- datos de ocupaciones
+-- Recursos Humanos (id_departamento = 1)
+INSERT INTO ocupaciones (nombre_ocupacion, codigo, id_departamento) VALUES 
+('Director de Recursos Humanos', 1212, 1),
+('Especialista en Reclutamiento', 2423, 1),
+('Analista de Recursos Humanos', 2424, 1);
+
+-- TI (Tecnología de la Información) (id_departamento = 2)
+INSERT INTO ocupaciones (nombre_ocupacion, codigo, id_departamento) VALUES 
+('Desarrollador de Software', 2512, 2),
+('Administrador de Sistemas', 2522, 2),
+('Ingeniero de Redes', 2523, 2),
+('Especialista en Ciberseguridad', 2529, 2),
+('Analista de Datos', 2511, 2);
+
+-- Finanzas (id_departamento = 3)
+INSERT INTO ocupaciones (nombre_ocupacion, codigo, id_departamento) VALUES 
+('Contador', 2411, 3),
+('Analista Financiero', 2413, 3),
+('Auditor', 2412, 3),
+('Asesor de Inversiones', 2414, 3);
+
+-- Ingeniería (id_departamento = 4)
+INSERT INTO ocupaciones (nombre_ocupacion, codigo, id_departamento) VALUES 
+('Ingeniero Civil', 2142, 4),
+('Ingeniero Mecánico', 2144, 4),
+('Ingeniero Industrial', 2141, 4),
+('Ingeniero en Telecomunicaciones', 2153, 4),
+('Ingeniero Químico', 2145, 4);
+
+-- Salud (id_departamento = 5)
+INSERT INTO ocupaciones (nombre_ocupacion, codigo, id_departamento) VALUES 
+('Médico General', 2211, 5),
+('Enfermero Profesional', 2220, 5),
+('Psicólogo', 2634, 5),
+('Fisioterapeuta', 2264, 5);
+
+-- Educación (id_departamento = 6)
+INSERT INTO ocupaciones (nombre_ocupacion, codigo, id_departamento) VALUES 
+('Profesor de Educación Primaria', 2341, 6),
+('Profesor de Educación Secundaria', 2330, 6),
+('Profesor Universitario', 2310, 6);
+
+-- Administración (id_departamento = 7)
+INSERT INTO ocupaciones (nombre_ocupacion, codigo, id_departamento) VALUES 
+('Administrador de Empresas', 1211, 7),
+('Gerente de Operaciones', 1120, 7),
+('Asistente Administrativo', 4110, 7);
+
+-- Legal (id_departamento = 8)
+INSERT INTO ocupaciones (nombre_ocupacion, codigo, id_departamento) VALUES 
+('Abogado', 2611, 8),
+('Asesor Legal', 2619, 8),
+('Notario', 2612, 8);
+
+-- Ventas (id_departamento = 9)
+INSERT INTO ocupaciones (nombre_ocupacion, codigo, id_departamento) VALUES 
+('Vendedor', 5221, 9),
+('Ejecutivo de Ventas', 5222, 9),
+('Representante Comercial', 3322, 9);
+
+-- Marketing (id_departamento = 10)
+INSERT INTO ocupaciones (nombre_ocupacion, codigo, id_departamento) VALUES 
+('Especialista en Marketing', 2431, 10),
+('Community Manager', 2432, 10),
+('Diseñador Gráfico', 2166, 10);
+
+
+-- crear tabla de nacionalidades
+CREATE TABLE nacionalidades (
+    id_nacionalidad INT AUTO_INCREMENT PRIMARY KEY,
+    pais VARCHAR(100) NOT NULL,
+    codigo_iso VARCHAR(3) NOT NULL UNIQUE
+);
+-- datos de nacionalidades
+INSERT INTO nacionalidades (pais, codigo_iso) VALUES 
+('Afganistán', 'AF'), ('Albania', 'AL'), ('Alemania', 'DE'), ('Andorra', 'AD'),
+('Angola', 'AO'), ('Argentina', 'AR'), ('Australia', 'AU'), ('Austria', 'AT'),
+('Brasil', 'BR'), ('Canadá', 'CA'), ('Chile', 'CL'), ('China', 'CN'),
+('Colombia', 'CO'), ('Costa Rica', 'CR'), ('Cuba', 'CU'), ('Ecuador', 'EC'),
+('Egipto', 'EG'), ('El Salvador', 'SV'), ('España', 'ES'), ('Estados Unidos', 'US'),
+('Francia', 'FR'), ('Italia', 'IT'), ('México', 'MX'), ('Panamá', 'PA'),
+('Paraguay', 'PY'), ('Perú', 'PE'), ('Portugal', 'PT'), ('Reino Unido', 'GB'),
+('Rusia', 'RU'), ('Suecia', 'SE'), ('Suiza', 'CH'), ('Uruguay', 'UY'),
+('Venezuela', 'VE'), ('Vietnam', 'VN'), ('Zimbabue', 'ZW');
+
+-- modificación en la tabla usuario
+ALTER TABLE usuario ADD COLUMN id_ocupacion INT;
+ALTER TABLE usuario ADD COLUMN id_nacionalidad INT;
+
+ALTER TABLE usuario ADD CONSTRAINT fk_usuario_ocupacion 
+FOREIGN KEY (id_ocupacion) REFERENCES ocupaciones(id_ocupacion);
+
+ALTER TABLE usuario ADD CONSTRAINT fk_usuario_nacionalidad 
+FOREIGN KEY (id_nacionalidad) REFERENCES nacionalidades(id_nacionalidad);
+
+--  borrar la tabla cargo
+ALTER TABLE usuario DROP COLUMN cargo;
+
+--cambios maria
+CREATE TABLE reporte_ins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    fecha_nacimiento DATE NOT NULL,
+    telefono VARCHAR(15) NOT NULL,
+    correo VARCHAR(150) NOT NULL,
+    sexo ENUM('Masculino','Femenino','Otro') NOT NULL,
+    estado_civil ENUM('Soltero','Casado','Divorciado','Viudo') NOT NULL,
+    nacionalidad VARCHAR(50) NOT NULL,
+    jornada ENUM('Completa','Medio tiempo','Por horas') NOT NULL,
+    dias INT NOT NULL,
+    hrs INT NOT NULL,
+    salario DECIMAL(10,2) NOT NULL,
+    observacion TEXT NULL,
+    ocupacion VARCHAR(100) NOT NULL,
+    descripcion_ocupacion TEXT NULL,
+    direccion_domicilio VARCHAR(255) NULL,
+    salario_base DOUBLE NULL,
+    salario_neto DOUBLE NULL,
+    tipo_quincena VARCHAR(255) NULL,
+    mes VARCHAR(10) NULL,
+    anio INT NULL,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+INSERT INTO reporte_ins (
+    id_usuario, nombre, apellido, fecha_nacimiento, telefono, correo, sexo, estado_civil, 
+    nacionalidad, jornada, dias, hrs, salario, observacion, ocupacion, descripcion_ocupacion, 
+    direccion_domicilio, salario_base, salario_neto, tipo_quincena, mes, anio
+)
+
+
+
+SELECT 
+    u.id_usuario, 
+    u.nombre, 
+    u.apellido, 
+    u.fecha_nacimiento, 
+    u.numero_telefonico, 
+    u.correo_electronico, 
+    u.sexo, 
+    u.estado_civil, 
+    n.pais,  
+    COALESCE(p.jornada, 'No definida'),  
+    p.dias,  
+    p.hrs,  
+    p.jornada,
+    p.salario_base, 
+    p.observacion,  
+    o.nombre_ocupacion,  
+    o.descripcion,  
+    u.direccion_domicilio,  
+    p.salario_base, 
+    p.salario_neto, 
+    p.tipo_quincena, 
+    p.mes, 
+    p.anio
+FROM usuario u
+LEFT JOIN planilla p ON u.id_usuario = p.id_usuario
+LEFT JOIN nacionalidades n ON u.id_nacionalidad = n.id_nacionalidad
+LEFT JOIN ocupaciones o ON u.id_ocupacion = o.id_ocupacion;
+
+
+ALTER TABLE planilla ADD COLUMN jornada VARCHAR(50);
+
+
+UPDATE planilla 
+SET jornada = 'Completa' 
+WHERE tipo_quincena = 'Mensual';
+
+UPDATE planilla 
+SET jornada = 'Medio Tiempo' 
+WHERE tipo_quincena = 'Quincenal';
+
+UPDATE planilla 
+SET jornada = 'Por Horas' 
+WHERE tipo_quincena = 'Semanal';
+
+
+UPDATE ocupaciones 
+SET descripcion = 'Gestión del talento humano'
+WHERE nombre_ocupacion = 'Director de Recursos Humanos';
+
+UPDATE ocupaciones 
+SET descripcion = 'Selección y contratación de personal'
+WHERE nombre_ocupacion = 'Especialista en Reclutamiento';
+
+UPDATE ocupaciones 
+SET descripcion = 'Optimización de procesos de RRHH'
+WHERE nombre_ocupacion = 'Analista de Recursos Humanos';
+
+UPDATE ocupaciones 
+SET descripcion = 'Desarrollo y mantenimiento de software'
+WHERE nombre_ocupacion = 'Desarrollador de Software';
+
+
+
