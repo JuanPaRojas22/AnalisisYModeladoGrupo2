@@ -165,6 +165,17 @@
                                     <li><a href="calendar.html">Calendar</a></li>
                                     <li><a href="gallery.html">Gallery</a></li>
                                     <li><a href="todo_list.html">Todo List</a></li>
+                                    <li><a href="Dias_Feriados.php">Feriados</a></li>
+                                </ul>
+                            </li>
+                            <li class="sub-menu">
+                                <a href="javascript:;">
+                                    <i class="fa fa-desktop"></i>
+                                    <span>Reportes</span>
+                                </a>
+                                <ul class="sub">
+                                    <li><a href="reporte_ins.php">INS</a></li>
+                                    
                                 </ul>
                             </li>
                             <li class="sub-menu">
