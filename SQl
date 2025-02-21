@@ -602,5 +602,12 @@ UPDATE ocupaciones
 SET descripcion = 'Desarrollo y mantenimiento de software'
 WHERE nombre_ocupacion = 'Desarrollador de Software';
 
+---- columnas a planilla 
+ALTER TABLE planilla ADD COLUMN hrs INT NOT NULL DEFAULT 0;
+
+ALTER TABLE planilla ADD COLUMN tipo_quincena VARCHAR(50) NOT NULL DEFAULT 'Mensual';
+ALTER TABLE planilla ADD COLUMN tipo_quincena ENUM('Mensual', 'Quincenal', 'Semanal') NOT NULL DEFAULT 'Mensual';
+
+ALTER TABLE planilla ADD COLUMN dias INT NOT NULL DEFAULT 0;
 
 
