@@ -505,6 +505,102 @@ FOREIGN KEY (id_nacionalidad) REFERENCES nacionalidades(id_nacionalidad);
 --  borrar la tabla cargo
 ALTER TABLE usuario DROP COLUMN cargo;
 
+--cambios maria
+CREATE TABLE reporte_ins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    fecha_nacimiento DATE NOT NULL,
+    telefono VARCHAR(15) NOT NULL,
+    correo VARCHAR(150) NOT NULL,
+    sexo ENUM('Masculino','Femenino','Otro') NOT NULL,
+    estado_civil ENUM('Soltero','Casado','Divorciado','Viudo') NOT NULL,
+    nacionalidad VARCHAR(50) NOT NULL,
+    jornada ENUM('Completa','Medio tiempo','Por horas') NOT NULL,
+    dias INT NOT NULL,
+    hrs INT NOT NULL,
+    salario DECIMAL(10,2) NOT NULL,
+    observacion TEXT NULL,
+    ocupacion VARCHAR(100) NOT NULL,
+    descripcion_ocupacion TEXT NULL,
+    direccion_domicilio VARCHAR(255) NULL,
+    salario_base DOUBLE NULL,
+    salario_neto DOUBLE NULL,
+    tipo_quincena VARCHAR(255) NULL,
+    mes VARCHAR(10) NULL,
+    anio INT NULL,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+INSERT INTO reporte_ins (
+    id_usuario, nombre, apellido, fecha_nacimiento, telefono, correo, sexo, estado_civil, 
+    nacionalidad, jornada, dias, hrs, salario, observacion, ocupacion, descripcion_ocupacion, 
+    direccion_domicilio, salario_base, salario_neto, tipo_quincena, mes, anio
+)
+
+
+
+SELECT 
+    u.id_usuario, 
+    u.nombre, 
+    u.apellido, 
+    u.fecha_nacimiento, 
+    u.numero_telefonico, 
+    u.correo_electronico, 
+    u.sexo, 
+    u.estado_civil, 
+    n.pais,  
+    COALESCE(p.jornada, 'No definida'),  
+    p.dias,  
+    p.hrs,  
+    p.jornada,
+    p.salario_base, 
+    p.observacion,  
+    o.nombre_ocupacion,  
+    o.descripcion,  
+    u.direccion_domicilio,  
+    p.salario_base, 
+    p.salario_neto, 
+    p.tipo_quincena, 
+    p.mes, 
+    p.anio
+FROM usuario u
+LEFT JOIN planilla p ON u.id_usuario = p.id_usuario
+LEFT JOIN nacionalidades n ON u.id_nacionalidad = n.id_nacionalidad
+LEFT JOIN ocupaciones o ON u.id_ocupacion = o.id_ocupacion;
+
+
+ALTER TABLE planilla ADD COLUMN jornada VARCHAR(50);
+
+
+UPDATE planilla 
+SET jornada = 'Completa' 
+WHERE tipo_quincena = 'Mensual';
+
+UPDATE planilla 
+SET jornada = 'Medio Tiempo' 
+WHERE tipo_quincena = 'Quincenal';
+
+UPDATE planilla 
+SET jornada = 'Por Horas' 
+WHERE tipo_quincena = 'Semanal';
+
+
+UPDATE ocupaciones 
+SET descripcion = 'Gestión del talento humano'
+WHERE nombre_ocupacion = 'Director de Recursos Humanos';
+
+UPDATE ocupaciones 
+SET descripcion = 'Selección y contratación de personal'
+WHERE nombre_ocupacion = 'Especialista en Reclutamiento';
+
+UPDATE ocupaciones 
+SET descripcion = 'Optimización de procesos de RRHH'
+WHERE nombre_ocupacion = 'Analista de Recursos Humanos';
+
+UPDATE ocupaciones 
+SET descripcion = 'Desarrollo y mantenimiento de software'
+WHERE nombre_ocupacion = 'Desarrollador de Software';
 
 
 
