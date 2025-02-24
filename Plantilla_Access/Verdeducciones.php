@@ -1,5 +1,5 @@
 <?php
-
+require 'conexion.php';
 session_start();
 ?>
 
@@ -13,7 +13,7 @@ session_start();
     <meta name="author" content="Dashboard">
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
-    <title>Gestión de Usuarios</title>
+    <title>Ver Deducciones</title>
 
     <!-- Bootstrap core CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet">
@@ -291,130 +291,189 @@ session_start();
       MAIN CONTENT
       *********************************************************************************************************************************************************** -->
         <!--main content start-->
-<section id="main-content">
-    <section class="wrapper site-min-height">
-        <h1>Deducciones</h1>
-        <!-- /MAIN CONTENT -->
-        <?php
-        // Verificar si el usuario está logueado
-        if (!isset($_SESSION['id_usuario'])) {
-            // Si no está logueado, redirigir a la página de login
-            header("Location: login.php");
-            exit();
-        }
+        <section id="main-content">
+            <section class="wrapper site-min-height">
+                <h1>Deducciones</h1>
+                <!-- /MAIN CONTENT -->
+                <?php
+                // Obtener el ID de usuario logueado
+                $id_usuario_logueado = $_SESSION['id_usuario'];
 
-        $id_usuario = $_SESSION['id_usuario']; // Obtener el ID del usuario logueado
+                // Obtener el ID de usuario seleccionado (si existe)
+                $id_usuario_seleccionado = isset($_POST['id_usuario']) ? $_POST['id_usuario'] : null;
 
-        // Conectar a la base de datos
-        $servername = "localhost";
-        $username = "root"; // Usuario de la base de datos
-        $password = ""; // Contraseña
-        $dbname = "GestionEmpleados"; // Nombre de tu base de datos
+                // Si no se selecciona un usuario, mostramos todos
+                if ($id_usuario_seleccionado === null || $id_usuario_seleccionado === '') {
+                    $sql_deducciones = "
+        SELECT 
+            d.id_deduccion, 
+            d.id_usuario, 
+            u.nombre, 
+            u.apellido, 
+            d.razon, 
+            d.deudor, 
+            d.concepto, 
+            d.lugar, 
+            d.deuda_total, 
+            d.aportes, 
+            d.saldo_pendiente, 
+            d.saldo_pendiente_dolares, 
+            d.fechacreacion
+        FROM 
+            Deducciones d
+        INNER JOIN 
+            Usuario u ON d.id_usuario = u.id_usuario";
+                } else {
+                    // Si se selecciona un usuario específico
+                    $sql_deducciones = "
+        SELECT 
+            d.id_deduccion, 
+            d.id_usuario, 
+            u.nombre, 
+            u.apellido, 
+            d.razon, 
+            d.deudor, 
+            d.concepto, 
+            d.lugar, 
+            d.deuda_total, 
+            d.aportes, 
+            d.saldo_pendiente, 
+            d.saldo_pendiente_dolares, 
+            d.fechacreacion
+        FROM 
+            Deducciones d
+        INNER JOIN 
+            Usuario u ON d.id_usuario = u.id_usuario
+        WHERE 
+            d.id_usuario = ?";
+                }
 
-        $conn = new mysqli($servername, $username, $password, $dbname);
+                // Preparar la consulta
+                $stmt_deducciones = $conn->prepare($sql_deducciones);
 
-        // Verificar si la conexión fue exitosa
-        if ($conn->connect_error) {
-            die("Conexión fallida: " . $conn->connect_error);
-        }
+                // Si se selecciona un usuario específico, bind_param para el id_usuario
+                if ($id_usuario_seleccionado !== null && $id_usuario_seleccionado !== '') {
+                    $stmt_deducciones->bind_param("i", $id_usuario_seleccionado);
+                }
 
-        // Obtener salario base y salario neto desde la tabla Planilla
-        $sql_planilla = "SELECT salario_base, salario_neto FROM Planilla WHERE id_usuario = ? ORDER BY anio DESC, mes DESC LIMIT 1";
-        $stmt_planilla = $conn->prepare($sql_planilla);
-        $stmt_planilla->bind_param("i", $id_usuario);
-        $stmt_planilla->execute();
-        $result_planilla = $stmt_planilla->get_result();
+                // Ejecutar la consulta
+                $stmt_deducciones->execute();
+                $result_deducciones = $stmt_deducciones->get_result();
 
-        if ($row_planilla = $result_planilla->fetch_assoc()) {
-            $salario_base = $row_planilla['salario_base'];
-            $salario_neto = $row_planilla['salario_neto'];
-        } else {
-            // Si no se encuentra un registro, asignar valores por defecto
-            $salario_base = 0;
-            $salario_neto = 0;
-        }
+                // Obtener todos los usuarios para el dropdown
+                $sql_usuarios = "SELECT id_usuario, nombre, apellido FROM Usuario";
+                $result_usuarios = $conn->query($sql_usuarios);
+                ?>
 
-        // Consulta para obtener las deducciones del usuario
-        $sql_deducciones = "SELECT * FROM deducciones WHERE id_usuario = ?";
-        $stmt_deducciones = $conn->prepare($sql_deducciones);
-        $stmt_deducciones->bind_param("i", $id_usuario);
-        $stmt_deducciones->execute();
-        $result_deducciones = $stmt_deducciones->get_result();
-        ?>
-      
+                <!DOCTYPE html>
+                <html lang="es">
 
-        <!-- Tabla de deducciones -->
-        <div style="overflow-x: auto; margin-top: 20px;">
-            <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
-                <thead>
-                    <tr>
-                        <th>Razón</th>
-                        <th>Deudor</th>
-                        <th>Concepto</th>
-                        <th>Lugar</th>
-                        <th>Deuda Total</th>
-                        <th>Aportes</th>
-                        <th>Saldo Pendiente</th>
-                        <th>Saldo Pendiente (USD)</th>
-                        <th>Fecha de Creación</th>
-                        <th>Salario Base</th>
-                        <th>Salario Neto</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    if ($result_deducciones->num_rows > 0) {
-                        // Recorremos las deducciones y las mostramos en la tabla
-                        while ($row_deduccion = $result_deducciones->fetch_assoc()) {
-                            echo "<tr>";
-                            // Para las columnas de texto, verificamos si está vacío
-                            echo "<td><b>" . (!empty($row_deduccion['razon']) ? $row_deduccion['razon'] : 'No hay datos') . "</b></td>";
-                            echo "<td><b>" . (!empty($row_deduccion['deudor']) ? $row_deduccion['deudor'] : 'No hay datos') . "</b></td>";
-                            echo "<td><b>" . (!empty($row_deduccion['concepto']) ? $row_deduccion['concepto'] : 'No hay datos') . "</b></td>";
-                            echo "<td><b>" . (!empty($row_deduccion['lugar']) ? $row_deduccion['lugar'] : 'No hay datos') . "</b></td>";
-                            
-                            // Para las columnas numéricas, verificamos si está vacío y mostramos 0
-                            echo "<td><b>" . (is_numeric($row_deduccion['deuda_total']) ? $row_deduccion['deuda_total'] : 0) . "</b></td>";
-                            echo "<td><b>" . (is_numeric($row_deduccion['aportes']) ? $row_deduccion['aportes'] : 0) . "</b></td>";
-                            echo "<td><b>" . (is_numeric($row_deduccion['saldo_pendiente']) ? $row_deduccion['saldo_pendiente'] : 0) . "</b></td>";
-                            echo "<td><b>" . (is_numeric($row_deduccion['saldo_pendiente_dolares']) ? $row_deduccion['saldo_pendiente_dolares'] : 0) . "</b></td>";
-                            
-                            // Fecha de creación
-                            echo "<td><b>" . (!empty($row_deduccion['fechacreacion']) ? $row_deduccion['fechacreacion'] : 'No hay datos') . "</b></td>";
-                            
-                            // Mostrar salario base y salario neto
-                            echo "<td><b>{$salario_base}</b></td>";
-                            echo "<td><b>{$salario_neto}</b></td>";
-                            echo "</tr>";
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Listado de Deducciones</title>
+                    <style>
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            table-layout: fixed;
                         }
-                    } else {
-                        // Si no se encuentran deducciones, se añaden filas con valores por defecto (0 o 'No hay datos')
-                        echo "<tr>";
-                        echo "<td><b>No hay datos</b></td>";
-                        echo "<td><b>No hay datos</b></td>";
-                        echo "<td><b>No hay datos</b></td>";
-                        echo "<td><b>No hay datos</b></td>";
-                        echo "<td><b>0</b></td>";
-                        echo "<td><b>0</b></td>";
-                        echo "<td><b>0</b></td>";
-                        echo "<td><b>0</b></td>";
-                        echo "<td><b>No hay datos</b></td>";
-                        echo "<td><b>{$salario_base}</b></td>";
-                        echo "<td><b>{$salario_neto}</b></td>";
-                        echo "</tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
-        </div>
 
-        <?php
-        // Cerrar la conexión
-        $conn->close();
-        ?>
-    </section>
-</section>
-<!--main content end-->
+                        th,
+                        td {
+                            border: 1px solid #ddd;
+                            padding: 8px;
+                            text-align: left;
+                        }
+
+                        th {
+                            background-color: #f2f2f2;
+                        }
+
+                        select {
+                            padding: 8px;
+                            margin: 20px 0;
+                        }
+                    </style>
+                </head>
+
+                <body>
+                    <h1>Listado de Deducciones</h1>
+
+                    <!-- Formulario para seleccionar un usuario -->
+                    <form method="POST" action="">
+                        <label for="id_usuario">Seleccionar usuario:</label>
+                        <select name="id_usuario" id="id_usuario">
+                            <option value="">Ver todos</option>
+                            <?php while ($row_usuario = $result_usuarios->fetch_assoc()) { ?>
+                                <option value="<?= $row_usuario['id_usuario']; ?>"
+                                    <?= ($id_usuario_seleccionado == $row_usuario['id_usuario']) ? 'selected' : ''; ?>>
+                                    <?= $row_usuario['nombre'] . " " . $row_usuario['apellido']; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                        <button type="submit">Filtrar</button>
+                    </form>
+
+                    <!-- Mostrar los resultados -->
+                    <div style="overflow-x: auto; margin-top: 20px;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID Deducción</th>
+                                    <th>Nombre del Usuario</th>
+                                    <th>Razón</th>
+                                    <th>Deudor</th>
+                                    <th>Concepto</th>
+                                    <th>Lugar</th>
+                                    <th>Deuda Total</th>
+                                    <th>Aportes</th>
+                                    <th>Saldo Pendiente</th>
+                                    <th>Saldo Pendiente (USD)</th>
+                                    <th>Fecha de Creación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                if ($result_deducciones->num_rows > 0) {
+                                    while ($row_deduccion = $result_deducciones->fetch_assoc()) {
+                                        echo "<tr>";
+                                        echo "<td>" . $row_deduccion['id_deduccion'] . "</td>";
+                                        echo "<td>" . $row_deduccion['nombre'] . " " . $row_deduccion['apellido'] . "</td>";
+                                        echo "<td>" . $row_deduccion['razon'] . "</td>";
+                                        echo "<td>" . $row_deduccion['deudor'] . "</td>";
+                                        echo "<td>" . $row_deduccion['concepto'] . "</td>";
+                                        echo "<td>" . $row_deduccion['lugar'] . "</td>";
+                                        echo "<td>" . $row_deduccion['deuda_total'] . "</td>";
+                                        echo "<td>" . $row_deduccion['aportes'] . "</td>";
+                                        echo "<td>" . $row_deduccion['saldo_pendiente'] . "</td>";
+                                        echo "<td>" . $row_deduccion['saldo_pendiente_dolares'] . "</td>";
+                                        echo "<td>" . $row_deduccion['fechacreacion'] . "</td>";
+                                        echo "</tr>";
+                                    }
+                                } else {
+                                    echo "<tr><td colspan='11'>No hay deducciones para este usuario.</td></tr>";
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group text-center mt-3">
+
+                        <a href="VerPlanilla.php" class="btn btn-secondary">Volver</a>
+                    </div>
+
+                    <?php
+                    // Cerrar la conexión
+                    $conn->close();
+                    ?>
+                </body>
+
+                </html>
+
+            </section>
+        </section>
+        <!--main content end-->
 
         <!--footer start-->
         <footer class="site-footer">
@@ -436,7 +495,7 @@ session_start();
     <script class="include" type="text/javascript" src="assets/js/jquery.dcjqaccordion.2.7.js"></script>
     <script src="assets/js/jquery.scrollTo.min.js"></script>
     <script src="assets/js/jquery.nicescroll.js" type="text/javascript"></script>
-   
+
 
 
 
