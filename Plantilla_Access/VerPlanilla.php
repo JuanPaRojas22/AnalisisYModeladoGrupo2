@@ -274,17 +274,19 @@ if (!isset($_SESSION['id_usuario'])) {
                 u.nombre,
                 u.apellido,
                 u.correo_electronico,
-                u.cargo,
-                p.retenciones,
+                u.id_ocupacion,
+                p.total_deducciones,
                 p.salario_base, 
                 p.salario_neto, 
+                o.nombre_ocupacion,
                 COALESCE(GROUP_CONCAT(DISTINCT '- ', d.razon SEPARATOR '\n'), 'Sin deducciones') AS nombre_deduccion,
                 COALESCE(GROUP_CONCAT(DISTINCT '- ', b.razon SEPARATOR '\n'), 'Sin bonos') AS nombre_bono
             FROM planilla p
             JOIN Usuario u ON p.id_usuario = u.id_usuario
             LEFT JOIN deducciones d ON p.id_usuario = d.id_usuario  
             LEFT JOIN bonos b ON p.id_usuario = b.id_usuario
-            GROUP BY u.nombre, u.apellido, u.correo_electronico, u.cargo, p.retenciones, p.salario_base, p.salario_neto, p.id_beneficio
+            LEFT JOIN ocupaciones o ON o.id_ocupacion = u.id_ocupacion
+            GROUP BY u.nombre, u.apellido, u.correo_electronico, u.id_ocupacion, p.total_deducciones, p.salario_base, p.salario_neto, p.id_beneficio
             ORDER BY u.nombre DESC";
 
 
@@ -307,12 +309,12 @@ if (!isset($_SESSION['id_usuario'])) {
                         }
 
                         .container {
-                            width: 80%;
-                            margin: 50px auto;
+                            width: 100%;
+                            margin: 100px auto;
                             padding: 20px;
                             background-color: #ffffff;
-                            border-radius: 8px;
-                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                            border-radius: 12px;
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
                         }
 
                         h1 {
@@ -366,7 +368,7 @@ if (!isset($_SESSION['id_usuario'])) {
                         th,
                         td {
                             padding: 12px;
-                            text-align: left;
+                            text-align: center;
                             font-size: 16px;
                             color: #555;
                             border-bottom: 1px solid #ddd;
@@ -375,6 +377,7 @@ if (!isset($_SESSION['id_usuario'])) {
                         th {
                             background-color: #c9aa5f;
                             color: #fff;
+                            text-align: center;
                         }
 
                         tr:hover {
@@ -471,7 +474,9 @@ if (!isset($_SESSION['id_usuario'])) {
                         <div id="modal1" class="modal">
                             <div class="modal-content">
                                 <span class="close" onclick="cerrarModal('modal1')">&times;</span>
-                                <h3>Ajsutes de Planilla</h3>
+                                <h3>Ajustes de Planilla</h3>
+                                <a href="registrar_horas_extras.php">Registrar Horas extras</a>
+                                <a href="RegistroPlanilla.php">Registrar Planilla</a>
                                 <a href="aplicarBono.php">Aplicar Bono</a>
                                 <a href="actualizarSalarios.php">Ajustar Salario</a>
                                 <a href="aplicarRetenciones.php">Aplicar Deducción</a>
@@ -493,19 +498,20 @@ if (!isset($_SESSION['id_usuario'])) {
 
 
 
+
                         <!-- Mostrar tabla con los cambios de puesto -->
                         <table>
                             <thead>
                                 <tr>
 
-                                    <th>Nombre</th>
+                                    <th >Nombre</th>
                                     <th>Apellido</th>
                                     <th>Correo</th>
                                     <th>Cargo</th>
+                                    <th>Salario base</th>
                                     <th>Bonos</th>
                                     <th>Deduccion</th>
-                                    <th>Total Deduccion</th>
-                                    <th>Salario base</th>
+                                    <th style="text-align: center;">Total Deduccion<br>Quincenal</br>  
                                     <th>Salario neto</th>
                                 </tr>
                             </thead>
@@ -518,11 +524,12 @@ if (!isset($_SESSION['id_usuario'])) {
                                 <td>" . $row['nombre'] . "</td>
                                 <td>" . $row['apellido'] . "</td>
                                 <td>" . $row['correo_electronico'] . "</td>
-                                <td>" . $row['cargo'] . "</td>
+                                <td>" . $row['nombre_ocupacion'] . "</td>
+                                <td>" . $row['salario_base'] . "</td>
                                 <td>" . nl2br($row['nombre_bono']) . "</td>
                                 <td>" . nl2br($row['nombre_deduccion']) . "</td>
-                                <td>" . $row['retenciones'] . "</td>
-                                <td>" . $row['salario_base'] . "</td>
+                                <td style='text-align: center;'>" . $row['total_deducciones'] . "</td>
+
                                 <td>" . $row['salario_neto'] . "</td>
                               </tr>";
                                     }
