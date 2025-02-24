@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
+require_once __DIR__ . '/Impl/Historial_Solicitud_Modificacion_VacacionesDAOSImpl.php';
 include "template.php";
 
 // $UsuarioDAO = new UsuarioDAOSImpl();
@@ -8,19 +9,26 @@ include "template.php";
 
 // Instancia el DAO
 $UsuarioDAO = new UsuarioDAOSImpl();
+$Historial_Solicitud_Modificacion_VacacionesDAO = new Historial_Solicitud_Modificacion_VacacionesDAOSImpl();
 
 // Verifica si el parámetro 'id' está presente en la URL
 if (isset($_GET['id'])) {
     $id_usuario = $_GET['id'];
 
+    
     // Obtiene los detalles del usuario por id
     $user = $UsuarioDAO->getUserById($id_usuario);
-
+/*
     // Obtiene las vacaciones del usuario actual
     $vacaciones = $UsuarioDAO->getVacacionesByUserId($id_usuario);
 
     // Obtiene los historiales de vacaciones del usuario actual
     $historial_vacaciones = $UsuarioDAO->getHistorialVacacionesByUserId($id_usuario);
+*/
+    
+
+    // Obtiene el historial de solicitudes de vacacionesa a modificar de los usuarios del departamento del administrador actual
+    $Historial_Solicitud_Modificacion_Vacaciones = $Historial_Solicitud_Modificacion_VacacionesDAO->getHistorialSolicitudModificacionVacaciones($id_usuario);
 
     
 
@@ -77,10 +85,10 @@ if (isset($_GET['id'])) {
             <section class="wrapper site-min-height">
                 <!-- Botón para generar el PDF -->
 
-                <h1 text-center>Solicitud de vacacion</h1>
+                <h1 text-center>Solicitud de modificación de vacación</h1>
                 <table class="user-details">
                 <!-- Enlace para volver a la lista de usuarios -->
-                <a href="vacaciones.php" class="btn btn-success">Volver</a>
+                <a href="EditarVacaciones.php" class="btn btn-success">Volver</a>
                     <tr>
                         <td>
                             <?php
@@ -96,64 +104,64 @@ if (isset($_GET['id'])) {
 
                     <tr>
                         <th>Nombre</th>
-                        <td><?php echo htmlspecialchars($user['nombre']); ?></td>
+                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Nombre']); ?></td>
                     </tr>
+
                     <tr>
                         <th>Apellido</th>
-                        <td><?php echo htmlspecialchars($user['apellido']); ?></td>
+                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Apellido']); ?></td>
                     </tr>
-                    <?php foreach ($vacaciones as $vacacion): ?>
+
                     <tr>
-                        <th>Fecha de inicio</th>
-                        <td><?php echo htmlspecialchars($vacacion['fecha_inicio']); ?></td>
+                        <th>Departamento</th>
+                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Departamento']); ?></td>
                     </tr>
-                    <?php endforeach; ?>
-                    <?php foreach ($vacaciones as $vacacion): ?>
+
                     <tr>
-                        <th>Fecha Fin</th>
-                        <td><?php echo htmlspecialchars($vacacion['fecha_fin']); ?></td>
+                        <th>Nueva fecha de inicio</th>
+                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevaFechaInicio']); ?></td>
                     </tr>
-                    <?php endforeach; ?>
-                    <?php foreach ($vacaciones as $vacacion): ?>
+
                     <tr>
-                        <th>Dias tomados</th>
-                        <td><?php echo htmlspecialchars($vacacion['diasTomado']); ?></td>
+                        <th>Nueva fecha Fin</th>
+                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevaFechaFin']); ?></td>
                     </tr>
-                    <?php endforeach; ?>
-                    <?php foreach ($historial_vacaciones as $historial_vacacion): ?>
+
+                    <tr>
+                        <th>Nuevos dias solicitdados</th>
+                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevosDiasSolicitados']); ?></td>
+                    </tr>
+
+                    <tr>
+                        <th>Fecha inicio original</th>
+                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['OriginalFechaInicio']); ?></td>
+                    </tr>
+
+                    <tr>
+                        <th>Fecha fin original</th>
+                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['OriginalFechaFin']); ?></td>
+                    </tr>
+                    
+                    <tr>
+                        <th>Dias solicitados originalmente</th>
+                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['OriginalDiasSolicitados']); ?></td>
+                    </tr>
                     <tr>
                         <th>Dias restantes</th>
-                        <td><?php echo htmlspecialchars($historial_vacacion['DiasRestantes']); ?></td>
+                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['DiasRestantes']); ?></td>
                     </tr>
-                    <?php endforeach; ?>
-                    <?php foreach ($vacaciones as $vacacion): ?>
-                    <tr>
-                        <th>Razon</th>
-                        <td><?php echo htmlspecialchars($vacacion['razon']); ?></td>
-                    </tr>
-                    <?php endforeach; ?>
-                    <?php foreach ($vacaciones as $vacacion): ?>
-                    <tr>
-                        <th>Estado</th>
-                        <td>
-                            <?php
-                            // Obtener la descripción del estado de vacación
-                            $estado_vacacion = $UsuarioDAO->getEstadoVacacionById($vacacion['id_estado_vacacion']);
-                            echo htmlspecialchars($estado_vacacion['descripcion']);
-                            ?>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
 
-                    
-                    
+                    <tr>
+                        <th>Estado solicitud modificacion vacacaion</th>
+                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['EstadoSolicitudVacacion']); ?></td>
+                    </tr>
                     
                 </table>
 
                 <!-- Botones para poder aprobar o d enegar vacaciones con los metodos del usuarioDAOSImpl -->
                 
-                <a href="procesarVacacion.php?id=<?php echo $id_usuario; ?>&accion=aprobar" class="btn btn-success">Aprobar</a>
-                <a href="procesarVacacion.php?id=<?php echo $id_usuario; ?>&accion=rechazar" class="btn btn-danger">Denegar</a>
+                <a href="procesarEditarVacacion.php?id=<?php echo $id_usuario; ?>&accion=aprobar" class="btn btn-success">Aprobar</a>
+                <a href="procesarEditarVacacion.php?id=<?php echo $id_usuario; ?>&accion=rechazar" class="btn btn-danger">Denegar</a>
             </section>
         </section>
 

@@ -17,7 +17,7 @@ class VacacionDAOSImpl implements VacacionDAO
         $function_conn = $this->conn;
         // Se obtienen las solicitudes de vacaciones pendientes y que comparten el departamento del administrador
         $stmt = $function_conn->prepare(
-            "SELECT V.id_usuario, U.Nombre, U.Apellido, Dep.Nombre AS Departamento, V.fecha_inicio, V.diasTomado, HV.DiasRestantes, EH.descripcion
+            "SELECT V.id_usuario, U.Nombre, U.Apellido, Dep.Nombre AS Departamento, V.fecha_inicio, V.fecha_fin, V.diasTomado, HV.DiasRestantes, EH.descripcion
             FROM vacacion V
             INNER JOIN usuario U ON V.id_usuario = U.id_usuario
             INNER JOIN departamento Dep ON U.id_departamento = Dep.id_departamento

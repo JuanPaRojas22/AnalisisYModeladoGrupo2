@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+//include "template.php";
 // Verificar si el usuario está logueado
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: login.php");

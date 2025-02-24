@@ -766,3 +766,26 @@ CREATE TRIGGER `actualizar_total_deducciones` AFTER INSERT ON `deducciones`
     ) 
     WHERE id_usuario = NEW.id_usuario;
 END
+
+-- Nuevos cambios de Leonardo!!!!!!!!!
+
+
+-- Se crea tabla para poder almacenar el historial de solicitudes de vacaciones a modificar.
+CREATE TABLE Historial_Solicitud_Modificacion_Vacaciones (
+    id_historial_solicitud_modificacion INT PRIMARY KEY AUTO_INCREMENT,
+    id_vacacion INT,
+    fecha_solicitud DATE,
+    fecha_resolucion DATE,
+    fecha_inicio DATE,
+    fecha_fin DATE,
+    dias_solicitados INT,
+    id_usuario INT,
+    usuario_aprobador VARCHAR(255) NOT NULL,
+    razon_modificacion VARCHAR(255),
+    estado ENUM('Pendiente', 'Aprobado', 'Rechazado') NOT NULL DEFAULT 'Pendiente',
+    CONSTRAINT fk_historial_solicitud_vacaciones_usuario FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
+    CONSTRAINT fk_historial_solicitud_vacaciones_vacacion FOREIGN KEY (id_vacacion) REFERENCES vacacion(id_vacacion)
+);
+
+-- Atributo para poder determinar el ultimo dia solocitado de la vacacion
+ALTER TABLE vacacion ADD COLUMN fecha_fin DATE ;
