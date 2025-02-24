@@ -1,17 +1,13 @@
 <?php
-require 'conexion.php';
+// Conexión a la base de datos
+$conexion = new mysqli("localhost", "root", "", "gestionempleados");
+if ($conexion->connect_error) {
+    die("Error de conexión: " . $conexion->connect_error);
+}
 session_start();
 
-
-
-//validación para que solo el administrador master acceda
-// if (!isset($_SESSION['id_rol']) || (int)$_SESSION['id_rol'] !== 3) {
-//     header("Location: index.php");
-//     exit;
-// }
-
-$mensaje = "";
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,7 +20,7 @@ $mensaje = "";
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <title>Actualizar Salarios</title>
+    <title>Reporte CCSS</title>
 
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -260,136 +256,12 @@ $mensaje = "";
         <section id="main-content">
             <section class="wrapper site-min-height">
 
-
                 <?php
-                if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                    $id_usuario = $_POST["id_usuario"];
-                    $nuevo_salario_base = $_POST["nuevo_salario_base"];
 
-                    // Función para calcular las retenciones quincenales
-                    function calcularRetencionesQuincenales($salario_base)
-                    {
-                        $salario_base = (float) $salario_base;
 
-                        // Calcular Seguro Social (10.5% del salario)
-                        $seguro_social = $salario_base * 0.105;
-
-                        // Calcular Impuesto sobre la Renta
-                        if ($salario_base <= 941000) {
-                            $impuesto_renta = 0;
-                        } elseif ($salario_base <= 1385000) {
-                            $impuesto_renta = ($salario_base - 941000) * 0.10;
-                        } else {
-                            $impuesto_renta = ((1385000 - 941000) * 0.10) + (($salario_base - 1385000) * 0.15);
-                        }
-
-                        // Convertir retenciones a valores quincenales
-                        $seguro_social_quincenal = $seguro_social / 2;
-                        $impuesto_renta_quincenal = $impuesto_renta / 2;
-                        $total_retenciones_quincenal = $seguro_social_quincenal + $impuesto_renta_quincenal;
-
-                        return [
-                            'seguro_social' => $seguro_social_quincenal,
-                            'impuesto_renta' => $impuesto_renta_quincenal,
-                            'total_retenciones' => $total_retenciones_quincenal
-                        ];
-                    }
-
-                    // Verificar si el usuario existe en Planilla
-                    $query_select = "SELECT salario_base FROM Planilla WHERE id_usuario = ?";
-                    $stmt_select = $conn->prepare($query_select);
-                    $stmt_select->bind_param("i", $id_usuario);
-                    $stmt_select->execute();
-                    $stmt_select->store_result();
-
-                    if ($stmt_select->num_rows > 0) {
-                        $stmt_select->bind_result($salario_anterior);
-                        $stmt_select->fetch();
-                        $stmt_select->close();
-
-                        // Calcular el ajuste salarial (diferencia entre el nuevo y el anterior)
-                        $ajuste_salarial = $nuevo_salario_base - $salario_anterior;
-
-                        // Calcular retenciones quincenales con el nuevo salario
-                        $retenciones = calcularRetencionesQuincenales($nuevo_salario_base);
-                        $seguro_social_quincenal = $retenciones['seguro_social'];
-                        $total_retenciones_quincenal = $retenciones['total_retenciones'];
-
-                        // Calcular el nuevo salario neto después de retenciones
-                        $nuevo_salario_neto = ($nuevo_salario_base / 2) - $total_retenciones_quincenal;
-
-                        // Actualizar Planilla con los nuevos valores
-                        $query_update = "UPDATE Planilla SET salario_base = ?, retenciones = ?, salario_neto = ? WHERE id_usuario = ?";
-                        $stmt_update = $conn->prepare($query_update);
-                        $stmt_update->bind_param("dddi", $nuevo_salario_base, $total_retenciones_quincenal, $nuevo_salario_neto, $id_usuario);
-
-                        if ($stmt_update->execute()) {
-                            // Insertar el cambio en Historial_Salarios
-                            $fecha_cambio = date("Y-m-d");
-                            $usuariocreacion = "admin"; // Cambia según la sesión de usuario
-                
-                            $query_historial = "INSERT INTO Historial_Salarios (id_usuario, nuevo_salario_base, ajuste, nuevo_salario_neto, fecha_cambio, usuariocreacion) 
-                                                VALUES (?, ?, ?, ?, ?, ?)";
-                            $stmt_historial = $conn->prepare($query_historial);
-                            $stmt_historial->bind_param("idddss", $id_usuario, $nuevo_salario_base, $ajuste_salarial, $nuevo_salario_neto, $fecha_cambio, $usuariocreacion);
-
-                            if ($stmt_historial->execute()) {
-                                $mensaje = "✅ Salario actualizado correctamente.<br>
-                                            Nuevo Salario Base: ₡" . number_format($nuevo_salario_base, 2) . "<br>
-                                            Ajuste Salarial: ₡" . number_format($ajuste_salarial, 2) . "<br>
-                                            Nuevo Salario Neto Quincenal: ₡" . number_format($nuevo_salario_neto, 2);
-                            } else {
-                                $mensaje = "Error al guardar en Historial_Salarios: " . $stmt_historial->error;
-                            }
-                            $stmt_historial->close();
-
-                            // Actualizar la tabla de deducciones
-                            $query_select_deduccion = "SELECT id_deduccion FROM deducciones WHERE id_usuario = ?";
-                            $stmt_select_deduccion = $conn->prepare($query_select_deduccion);
-                            $stmt_select_deduccion->bind_param("i", $id_usuario);
-                            $stmt_select_deduccion->execute();
-                            $stmt_select_deduccion->store_result();
-
-                            if ($stmt_select_deduccion->num_rows > 0) {
-                                $stmt_select_deduccion->bind_result($id_deduccion);
-                                $stmt_select_deduccion->fetch();
-                                $stmt_select_deduccion->close();
-
-                                // Calcular el monto mensual de seguro social
-                                $seguro_social_mensual = $seguro_social_quincenal * 2;
-
-                                // Actualizar deducción con los nuevos valores
-                                $query_update_deduccion = "UPDATE deducciones 
-                                                            SET monto_quincenal = ?, monto_mensual = ?, saldo_pendiente = ?, deuda_total = ? 
-                                                            WHERE id_deduccion = ?";
-                                $stmt_update_deduccion = $conn->prepare($query_update_deduccion);
-                                $stmt_update_deduccion->bind_param("ddddd", $seguro_social_quincenal, $seguro_social_mensual, $seguro_social_quincenal, $seguro_social_quincenal, $id_deduccion);
-
-                                if ($stmt_update_deduccion->execute()) {
-                                    $mensaje .= "<br>✅ Deducción actualizada correctamente.";
-                                } else {
-                                    $mensaje .= "<br>Error al actualizar la deducción: " . $stmt_update_deduccion->error;
-                                }
-                                $stmt_update_deduccion->close();
-                            } else {
-                                $mensaje .= "<br>No se encontró la deducción para el usuario.";
-                            }
-                        } else {
-                            $mensaje = "Error al actualizar Planilla: " . $stmt_update->error;
-                        }
-                        $stmt_update->close();
-                    } else {
-                        $mensaje = "El usuario no está registrado en Planilla.";
-                    }
-                }
-
-                // Obtener la lista de empleados desde Planilla
-                $query_empleados = "SELECT u.id_usuario, u.nombre, p.salario_base FROM Usuario u 
-                                    JOIN Planilla p ON u.id_usuario = p.id_usuario";
-                $result_empleados = $conn->query($query_empleados);
-
-                $conn->close();
-
+                // Consulta para obtener los datos de Reporte_Caja
+                $sql = "SELECT id_reporte_caja, id_usuario, cedula_caja, salario_colones, fecha_generacion, link_archivo FROM Reporte_Caja";
+                $resultado = $conexion->query($sql);
                 ?>
 
                 <!DOCTYPE html>
@@ -398,44 +270,53 @@ $mensaje = "";
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Actualizar Salarios</title>
-                    <link href="assets/css/bootstrap.css" rel="stylesheet">
-                    <link href="assets/css/style.css" rel="stylesheet">
+                    <title>Reporte de CCSS</title>
+                    <link rel="stylesheet"
+                        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
                 </head>
 
                 <body>
-                    <div class="container">
-                        <h2 class="text-center mt-4">Actualizar Salarios</h2>
-                        <form action="" method="POST" class="mt-4">
-                            <div class="form-group">
-                                <label for="id_usuario">Empleado:</label>
-                                <select id="id_usuario" name="id_usuario" class="form-control" required>
-                                    <option value="">Seleccione un empleado</option>
-                                    <?php while ($row = $result_empleados->fetch_assoc()): ?>
-                                        <option value="<?php echo $row['id_usuario']; ?>">
-                                            <?php echo $row['nombre']; ?> - Salario:
-                                            ₡<?php echo number_format($row['salario_base'], 2); ?>
-                                        </option>
-                                    <?php endwhile; ?>
-                                </select>
+                    <div class="container mt-4">
+                        <h2 class="text-center">Reporte de Caja</h2>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table table-bordered">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>ID Reporte</th>
+                                            <th>ID Usuario</th>
+                                            <th>Cédula Caja</th>
+                                            <th>Salario (Colones)</th>
+                                            <th>Fecha Generación</th>
+                                            <th>Link Archivo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php while ($fila = $resultado->fetch_assoc()) { ?>
+                                            <tr>
+                                                <td><?php echo $fila['id_reporte_caja']; ?></td>
+                                                <td><?php echo $fila['id_usuario']; ?></td>
+                                                <td><?php echo $fila['cedula_caja']; ?></td>
+                                                <td><?php echo number_format($fila['salario_colones'], 2); ?></td>
+                                                <td><?php echo $fila['fecha_generacion']; ?></td>
+                                                <td><a href="<?php echo $fila['link_archivo']; ?>" target="_blank">Ver
+                                                        Archivo</a></td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                                <a href="exportar_ccss_excel.php" class="btn btn-success">Exportar a Excel</a>
                             </div>
-                            <div class="form-group">
-                                <label for="nuevo_salario_base">Nuevo Salario Base:</label>
-                                <input type="number" step="0.01" id="nuevo_salario_base" name="nuevo_salario_base"
-                                    class="form-control" required>
-                            </div>
-                            <div class="form-group text-center mt-3">
-                                <button type="submit" class="btn btn-primary">Actualizar Salario</button>
-                                <a href="VerPlanilla.php" class="btn btn-secondary">Volver</a>
-                            </div>
-                        </form>
-                        <?php if (!empty($mensaje)): ?>
-                            <div class="alert alert-info mt-3"><?php echo $mensaje; ?></div>
-                        <?php endif; ?>
+                        </div>
                     </div>
                 </body>
 
                 </html>
+
+                <?php
+                // Cerrar la conexión
+                $conexion->close();
+                ?>
 
                 <script>
                     // Función para abrir el modal

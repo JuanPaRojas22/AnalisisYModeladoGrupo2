@@ -175,6 +175,8 @@
                                 </a>
                                 <ul class="sub">
                                     <li><a href="reporte_ins.php">INS</a></li>
+                                    <li><a href="reporte_ccss.php">CCSS</a></li>
+                                    <li><a href="reporte_bac.php">BAC</a></li>
                                     
                                 </ul>
                             </li>
