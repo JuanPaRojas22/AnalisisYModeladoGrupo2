@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -113,21 +114,7 @@
                     </li>
 
                 </ul>
-                <div class="top-menu">
-                    <?php if (isset($_GET['login']) && $_GET['login'] == 'success' && isset($_GET['username'])): ?>
-                        <ul class="nav pull-right top-menu">
-                            <li>
-                                <h3>Bienvenido, <?php echo htmlspecialchars($username); ?>!</h3>
-                            </li>
-                        </ul>
-                    <?php elseif (isset($_GET['login']) && $_GET['login'] == 'error'): ?>
-                        <ul class="nav pull-right top-menu">
-                            <li>
-                                <h3>Error en el inicio de sesión. Por favor, inténtelo de nuevo.</h3>
-                            </li>
-                        </ul>
-                    <?php endif; ?>
-                </div>
+                
 
 
         </header>
@@ -146,8 +133,7 @@
                         <!-- sidebar menu start-->
                         <ul class="sidebar-menu" id="nav-accordion">
 
-                            <p class="centered"><a href="profile.php"><img src="assets/img/ui-sam.jpg"
-                                        class="img-circle" width="60"></a></p>
+                            
                             <h5 class="centered">Bienvenido, <?php echo $_SESSION['username']; ?>!</h5>
 
                             <li class="mt">
@@ -208,35 +194,7 @@
                             </li>
 
                             </li>
-                            <li class="sub-menu">
-                                <a href="javascript:;">
-                                    <i class="fa fa-tasks"></i>
-                                    <span>Forms</span>
-                                </a>
-                                <ul class="sub">
-                                    <li><a href="form_component.html">Form Components</a></li>
-                                </ul>
-                            </li>
-                            <li class="sub-menu">
-                                <a href="javascript:;">
-                                    <i class="fa fa-th"></i>
-                                    <span>Data Tables</span>
-                                </a>
-                                <ul class="sub">
-                                    <li><a href="basic_table.html">Basic Table</a></li>
-                                    <li><a href="responsive_table.html">Responsive Table</a></li>
-                                </ul>
-                            </li>
-                            <li class="sub-menu">
-                                <a href="javascript:;">
-                                    <i class=" fa fa-bar-chart-o"></i>
-                                    <span>Charts</span>
-                                </a>
-                                <ul class="sub">
-                                    <li><a href="morris.html">Morris</a></li>
-                                    <li><a href="chartjs.html">Chartjs</a></li>
-                                </ul>
-                            </li>
+                            
 
                         </ul>
                         <!-- sidebar menu end-->

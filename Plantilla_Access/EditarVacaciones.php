@@ -1,26 +1,21 @@
 <?php 
 session_start();
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
-require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
+require_once __DIR__ . '/Impl/Historial_Solicitud_Modificacion_VacacionesDAOSImpl.php';
 include "template.php";
 
-
 $UsuarioDAO = new UsuarioDAOSImpl();
-$VacacionDAO = new VacacionDAOSImpl();
+$Historial_Solicitud_Modificacion_VacacionesDAO = new Historial_Solicitud_Modificacion_VacacionesDAOSImpl();
 $user_id = $_SESSION['id_usuario'];
 
 // Obtiene los detalles del usuario por id
 $userDepartmentData = $UsuarioDAO->getUserDepartmentById($user_id);
 $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] : null;
 
-    
-
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,12 +50,6 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
 
     <section id="container">
         
-    <!--[if lt IE 9]>
-      QUIERO HACER QUE SOLO MUESTRE LAS PENDIENTES DE VACACIONES DE UN USUARIO ADMINISTRADOR
-    <![endif]-->
-    
-            
-        
         <section id="main-content">
             <section class="wrapper site-min-height">
 
@@ -76,20 +65,16 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                 if ($conn->connect_error) {
                     die("Error de conexión: " . $conn->connect_error);
                 }
-
-                // Consulta para obtener el departamento del usuario
-                
-                $result = $VacacionDAO->getSolicitudesPendientes($userDepartment);
-
+                // Consulta para obtener el departamento del usuario              
+                $result = $Historial_Solicitud_Modificacion_VacacionesDAO->getSolicitudesEditarPendientes_O_Aprobadas($userDepartment);
 
                 ?>
-
                 <html lang="es">
-
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Listado Vacaciones</title>
+                    
+                    
                     <style>
                         body {
                             font-family: 'Ruda', sans-serif;
@@ -97,7 +82,6 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             margin: 0;
                             padding: 0;
                         }
-
                         .container {
                             width: 80%;
                             margin: 50px auto;
@@ -106,7 +90,6 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             border-radius: 8px;
                             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
                         }
-
                         h1 {
                             text-align: center;
                             color: #333;
@@ -114,7 +97,6 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             margin-right: 10%;
                             font-weight: bold;
                         }
-
                         h3 {
                             text-align: center;
                             color: black;
@@ -122,7 +104,6 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             margin-right: 10%;
                             font-weight: bold;
                         }
-
                         .btn {
                             display: inline-block;
                             background-color: #c9aa5f;
@@ -136,17 +117,12 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             margin-bottom: 20px;
                             transition: background-color 0.3s;
                         }
-
-
-
                         .btn:hover {
                             background-color: #c9aa5f;
                         }
-
                         .btn:active {
                             background-color: #c9aa5f;
                         }
-
                         table {
                             width: 100%;
                             border-collapse: collapse;
@@ -154,7 +130,6 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             border-radius: 8px;
                             overflow: hidden;
                         }
-
                         th,
                         td {
                             padding: 12px;
@@ -163,26 +138,21 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             color: #555;
                             border-bottom: 1px solid #ddd;
                         }
-
                         th {
                             background-color: #c9aa5f;
                             color: #fff;
                         }
-
                         tr:hover {
                             background-color: #f1f1f1;
                         }
-
                         td {
                             background-color: #f9f9f9;
                         }
-
                         .no-records {
                             text-align: center;
                             font-style: italic;
                             color: #888;
                         }
-
                         /* Estilos del fondo del modal */
                         .modal {
                             display: none;
@@ -196,7 +166,6 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             justify-content: center;
                             align-items: center;
                         }
-
                         /* Contenido del modal */
                         .modal-content {
                             background-color: white;
@@ -207,7 +176,6 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             margin-bottom: 5%;
 
                         }
-
                         /* Botón de cerrar */
                         .close {
                             position: absolute;
@@ -216,7 +184,6 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             font-size: 25px;
                             cursor: pointer;
                         }
-
                         /* Botones dentro del modal */
                         .modal-content a {
                             display: block;
@@ -228,11 +195,9 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             border-radius: 5px;
                             background-color: #c9aa5f;
                         }
-
                         .modal-content a:hover {
                             background-color: darkgray;
                         }
-
                         /* Estilos para los botones alineados */
                         .button-container {
                             display: flex;
@@ -242,38 +207,22 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                         }
                     </style>
                 </head>
-
-                <body>
+                <body>               
                     <div class="container">
-                        <h1>Listado Vacaciones</h1>
-
-                        <div class="button-container">
-
-                            <!-- Botón para abrir el segundo modal (resto de los botones) -->
-                            <button class="btn" onclick="abrirModal('modal2')">
-                                <i class="bi bi-journal-medical"></i>
-                            </button>
-                        </div>
-
-
-                        <!-- Modal 2 con el resto de los botones -->
-                        <div id="modal2" class="modal">
-                            <div class="modal-content">
-                                <span class="close" onclick="cerrarModal('modal2')">&times;</span>
-                                <h3>Detalles Planilla</h3>
-                                <a href="EditarVacaciones.php">Editar Vacaciones</a>
-                            </div>
-                        </div>
-
+                        <h1>Editar Vacaciones</h1>
+                        <?php
+                            $solicitudesCount = $result->num_rows;
+                        ?>
+                        <h4>Bienvenido, <?php echo $_SESSION['username']; ?> tienes <?php echo $solicitudesCount; ?> solicitudes de edición de vacaciones.</h4>
                         <!-- Mostrar tabla con los cambios de puesto -->
                         <table>
                             <thead>
                                 <tr>
-
                                     <th>Nombre</th>
                                     <th>Apellido</th>
                                     <th>Departamento</th>
                                     <th>Fecha Inicio</th>
+                                    <th>Fecha Fin</th>
                                     <th>Dias Tomados</th>
                                     <th>Dias Restantes</th>
                                     <th>Estado</th>
@@ -289,11 +238,12 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                                 <td>" . $row['Nombre'] . "</td>
                                 <td>" . $row['Apellido'] . "</td>
                                 <td>" . $row['Departamento'] . "</td>
-                                <td>" . $row['fecha_inicio'] . "</td>
-                                <td>" . $row['diasTomado'] . "</td>
+                                <td>" . $row['NuevaFechaInicio'] . "</td>
+                                <td>" . $row['NuevaFechaFin'] . "</td>
+                                <td>" . $row['dias_solicitados'] . "</td>
                                 <td>" . $row['DiasRestantes']. "</td>
-                                <td>" . $row['descripcion'] . "</td>
-                                <td><a class='btn btn-success' style='font-size: 2.5rem;' href='detalleVacacion.php?id=" . $row['id_usuario'] . "' >
+                                <td>" . $row['estado']. "</td>
+                                <td><a class='btn btn-success' style='font-size: 2.5rem;' href='detalleEditarVacacion.php?id=" . $row['id_usuario'] . "' >
                                     <i class='bi bi-file-earmark-person'></i> 
                                 </a></td>
                               </tr>";
@@ -306,19 +256,15 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                         </table>
                     </div>
             </section>
-
             <script>
-            // Función para abrir el modal
-            function abrirModal(modalId) {
-                document.getElementById(modalId).style.display = 'flex';
-            }
-
-            // Función para cerrar el modal
-            function cerrarModal(modalId) {
-                document.getElementById(modalId).style.display = 'none';
-            }
+    // Función para abrir el modal
+    function abrirModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex';
+    }
+    // Función para cerrar el modal
+    function cerrarModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
 </script>
-            
 </body>
-
 </html>

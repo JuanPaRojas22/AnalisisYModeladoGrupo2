@@ -18,11 +18,13 @@ class UsuarioDAOSImpl implements UsuarioDAO
         $users = array();
 
         // Realiza la consulta SQL
-        $stmt = $function_conn->query("SELECT u.*, d.Nombre AS departamento_nombre, r.nombre AS rol_nombre, e.descripcion AS estado_descripcion, e.descripcion as estado
+        $stmt = $function_conn->query("SELECT u.*, d.Nombre AS departamento_nombre, r.nombre AS rol_nombre, e.descripcion AS estado_descripcion, e.descripcion as estado, Ocup.nombre_ocupacion, nac.pais
                                         FROM Usuario u
                                         JOIN departamento d ON u.id_departamento = d.id_departamento
                                         JOIN rol r ON u.id_rol = r.id_rol
                                         JOIN estado e ON u.id_estado = e.id_estado
+                                        JOIN ocupaciones Ocup ON u.id_ocupacion = Ocup.id_ocupacion
+                                        JOIN nacionalidades nac ON u.id_nacionalidad = nac.id_nacionalidad
                                         WHERE e.descripcion = 'Activo'");
 
         // Recorre los resultados y agrega cada fila al array como un array asociativo
@@ -100,6 +102,8 @@ class UsuarioDAOSImpl implements UsuarioDAO
         JOIN departamento d ON u.id_departamento = d.id_departamento
         JOIN rol r ON u.id_rol = r.id_rol
         JOIN estado e ON u.id_estado = e.id_estado
+        JOIN ocupaciones Ocup ON u.id_ocupacion = Ocup.id_ocupacion
+        JOIN nacionalidades nac ON u.id_nacionalidad = nac.id_nacionalidad
         WHERE u.id_departamento = ? AND u.id_estado= 1";
 
         // Prepara la consulta
@@ -128,6 +132,25 @@ class UsuarioDAOSImpl implements UsuarioDAO
         // Devuelve el array de usuarios
         return $users;
     }
+
+    // Me obtendra el departamento actual del usuario actual para utilizarlo en la vista de solicitudes de vacaciones
+    public function getUserDepartmentById($id_usuario){
+        $sql = "SELECT id_departamento FROM usuario WHERE id_usuario = ?";
+        $stmt = $this->conn->prepare($sql);
+        if(!$stmt){
+            die("Error al preparar la consulta: " . $this->conn->error);
+        }
+        $stmt->bind_param("i", $id_usuario);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {    
+            $user = $result->fetch_assoc();
+            return $user; // Asegúrate de que $user['id_departamento'] existe
+        } else {
+            return null;
+        }
+    }
+    
 
     public function getUserById($id_usuario)
     {
@@ -263,12 +286,12 @@ class UsuarioDAOSImpl implements UsuarioDAO
     }
 
     // Funcion para poder actualizar un usuario
-    public function updateUser($nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $cargo, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_usuario)
+    public function updateUser($nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_ocupacion, $id_nacionalidad, $id_usuario)
     {
         $conn = $this->conn;
-        $query = "UPDATE Usuario SET nombre = ?, apellido = ?, fecha_nacimiento = ?, fecha_ingreso = ?, cargo = ?, correo_electronico = ?, username = ?, numero_telefonico = ?, direccion_imagen = ?, sexo = ?, estado_civil = ?, direccion_domicilio = ? WHERE id_usuario = ?";
+        $query = "UPDATE Usuario SET nombre = ?, apellido = ?, fecha_nacimiento = ?, fecha_ingreso = ?,  correo_electronico = ?, username = ?, numero_telefonico = ?, direccion_imagen = ?, sexo = ?, estado_civil = ?, direccion_domicilio = ?, id_ocupacion = ?, id_nacionalidad = ? WHERE id_usuario = ?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("ssssssssssssi", $nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $cargo, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_usuario);
+        $stmt->bind_param("sssssssssssiii", $nombre, $apellido, $fecha_nacimiento, $fecha_ingreso,$correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_ocupacion, $id_nacionalidad, $id_usuario);
         return $stmt->execute();
     }
 

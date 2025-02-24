@@ -2,8 +2,8 @@
 interface VacacionDAO
 {
 
-    // Funcion que obtiene las solicitudes pendientes de vacaciones de empleados
-    public function getSolicitudesPendientes();
+    // Funcion que obtiene las solicitudes pendientes de vacaciones de empleados del departamento del administrador actual.
+    public function getSolicitudesPendientes($id_departamento);
 
     // Funcion para aprobar una solicitud de vacaciones
     public function aprobarSolicitud($id_usuario);

@@ -3,22 +3,34 @@ session_start();
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 include "template.php";
 
+// Conexión a la base de datos
+$conn = new mysqli("localhost", "root", "", "GestionEmpleados");
+
+// Verificar conexión
+if ($conn->connect_error) {
+    die("Error de conexión: " . $conn->connect_error);
+}
+
 $UsuarioDAO = new UsuarioDAOSImpl();
 $user_id = $_SESSION['id_usuario'];
 $user = $UsuarioDAO->getUserById($user_id);
+$ocupaciones = $conn->query("SELECT id_ocupacion, nombre_ocupacion FROM ocupaciones ORDER BY nombre_ocupacion");
+$nacionalidades = $conn->query("SELECT id_nacionalidad, pais FROM nacionalidades ORDER BY pais");
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = trim($_POST['nombre']);
     $apellido = trim($_POST['apellido']);
     $fecha_nacimiento = trim($_POST['fecha_nacimiento']);
     $fecha_ingreso = trim($_POST['fecha_ingreso']);
-    $cargo = trim($_POST['cargo']);
     $correo_electronico = trim($_POST['correo_electronico']);
     $username = trim($_POST['username']);
     $numero_telefonico = trim($_POST['numero_telefonico']);
     $direccion_domicilio = trim($_POST['direccion_domicilio']);
     $estado_civil = trim($_POST['estado_civil']);
     $sexo = trim($_POST['sexo']);
+    $id_ocupacion = trim($_POST['id_ocupacion']);
+    $id_nacionalidad = trim($_POST['id_nacionalidad']);
     $direccion_imagen = $_FILES['direccion_imagen'];
     $errores = [];
 
@@ -36,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
     if (empty($errores)) {
-        $UsuarioDAO->updateUser($nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $cargo, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $user_id);
+        $UsuarioDAO->updateUser($nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_ocupacion, $id_nacionalidad, $user_id);
         $_SESSION['nombre'] = $nombre;
         $_SESSION['apellido'] = $apellido;
         $_SESSION['direccion_imagen'] = $direccion_imagen;
@@ -106,9 +118,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label>Fecha de Ingreso:</label>
             <input type="date" name="fecha_ingreso" value="<?php echo htmlspecialchars($user['fecha_ingreso']); ?>" required>
             <br>
-            <label>Cargo:</label>
-            <input type="text" name="cargo" value="<?php echo htmlspecialchars($user['cargo']); ?>" required>
-            <br>
             <label>Correo Electrónico:</label>
             <input type="email" name="correo_electronico" value="<?php echo htmlspecialchars($user['correo_electronico']); ?>" required>
             <br>
@@ -127,6 +136,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label>Sexo:</label>
             <input type="text" name="sexo" value="<?php echo htmlspecialchars($user['sexo']); ?>" required>
             <br>
+            <label for="id_ocupacion">Ocupación:</label>
+                <select id="id_ocupacion" name="id_ocupacion" class="form-control">
+                    <?php while ($row = $ocupaciones->fetch_assoc()) {
+                        $selected = ($row['id_ocupacion'] == $user['id_ocupacion']) ? 'selected' : '';
+                        echo '<option value="' . $row['id_ocupacion'] . '" ' . $selected . '>' . $row['nombre_ocupacion'] . '</option>';
+                    } ?>
+                </select>
+
+            <label for="id_nacionalidad">Nacionalidad:</label>
+                <select id="id_nacionalidad" name="id_nacionalidad" class="form-control">
+                    <?php while ($row = $nacionalidades->fetch_assoc()) {
+                        $selected = ($row['id_nacionalidad'] == $user['id_nacionalidad']) ? 'selected' : '';
+                        echo '<option value="' . $row['id_nacionalidad'] . '" ' . $selected . '>' . $row['pais'] . '</option>';
+                    } ?>
+                </select>
             <label>Foto de perfil:</label>
             <input type="file" name="direccion_imagen" accept="image/*">
             <br>

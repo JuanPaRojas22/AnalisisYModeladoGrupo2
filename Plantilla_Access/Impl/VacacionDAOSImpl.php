@@ -12,20 +12,26 @@ class VacacionDAOSImpl implements VacacionDAO
 
     }
 
-    // Funcion que obtiene las solicitudes pendientes de vacaciones de empleados
-    public function getSolicitudesPendientes(){
+    // Funcion que obtiene las solicitudes pendientes de vacaciones de empleados y que sean del departamento del administrador
+    public function getSolicitudesPendientes($id_departamento){
         $function_conn = $this->conn;
+        // Se obtienen las solicitudes de vacaciones pendientes y que comparten el departamento del administrador
         $stmt = $function_conn->prepare(
-            "SELECT V.id_usuario, U.Nombre, U.Apellido, V.fecha_inicio, V.diasTomado, HV.DiasRestantes, EH.descripcion
+            "SELECT V.id_usuario, U.Nombre, U.Apellido, Dep.Nombre AS Departamento, V.fecha_inicio, V.fecha_fin, V.diasTomado, HV.DiasRestantes, EH.descripcion
             FROM vacacion V
             INNER JOIN usuario U ON V.id_usuario = U.id_usuario
-            inner join estado_vacacion EH ON V.id_estado_vacacion = EH.id_estado_vacacion
+            INNER JOIN departamento Dep ON U.id_departamento = Dep.id_departamento
+            INNER JOIN estado_vacacion EH ON V.id_estado_vacacion = EH.id_estado_vacacion
             INNER JOIN historial_vacaciones HV ON V.id_usuario = HV.id_usuario
-            WHERE V.id_estado_vacacion = 1
-            ORDER BY U.nombre ASC");
+            WHERE V.id_estado_vacacion = 1 AND
+            U.id_departamento = ?
+            ORDER BY U.Nombre ASC");
         
-        return $stmt;
-        $stmt->close();
+        // Se ejecuta el comando
+        $stmt->bind_param("i", $id_departamento);
+        $stmt->execute();
+
+        return $stmt->get_result(); // Se retorna el resultado de la consulta
     }
 
     // Funcion para aprobar una solicitud de vacaciones
