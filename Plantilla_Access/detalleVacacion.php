@@ -16,6 +16,9 @@ if (isset($_GET['id'])) {
     // Obtiene los detalles del usuario por id
     $user = $UsuarioDAO->getUserById($id_usuario);
 
+    // Obtiene la vacacion actual del usuario
+    //$vacacion = $UsuarioDAO->getVacacionByUserId($id_usuario);
+
     // Obtiene las vacaciones del usuario actual
     $vacaciones = $UsuarioDAO->getVacacionesByUserId($id_usuario);
 

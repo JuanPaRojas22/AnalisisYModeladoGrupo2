@@ -18,7 +18,9 @@ class UsuarioDAOSImpl implements UsuarioDAO
         $users = array();
 
         // Realiza la consulta SQL
-        $stmt = $function_conn->query("SELECT u.*, d.Nombre AS departamento_nombre, r.nombre AS rol_nombre, e.descripcion AS estado_descripcion, e.descripcion as estado, Ocup.nombre_ocupacion, nac.pais
+        $stmt = $function_conn->query("SELECT u.*, d.Nombre AS departamento_nombre, r.nombre AS rol_nombre, 
+                                        e.descripcion AS estado_descripcion, e.descripcion as estado, 
+                                        nac.pais AS Nombre_Pais, ocup.nombre_ocupacion AS Nombre_Ocupacion
                                         FROM Usuario u
                                         JOIN departamento d ON u.id_departamento = d.id_departamento
                                         JOIN rol r ON u.id_rol = r.id_rol
@@ -97,7 +99,8 @@ class UsuarioDAOSImpl implements UsuarioDAO
     // Método para obtener usuarios por departamento
     public function getUsersByDepartment($id_departamento)
     {
-        $sql = "SELECT u.*, d.nombre AS departamento_nombre, r.nombre AS rol_nombre , e.descripcion AS estado
+        $sql = "SELECT u.*, d.nombre AS departamento_nombre, r.nombre AS rol_nombre , 
+        e.descripcion AS estado, nac.pais AS Nombre_Pais, ocup.nombre_ocupacion AS Nombre_Ocupacion
         FROM usuario u
         JOIN departamento d ON u.id_departamento = d.id_departamento
         JOIN rol r ON u.id_rol = r.id_rol
@@ -154,11 +157,14 @@ class UsuarioDAOSImpl implements UsuarioDAO
 
     public function getUserById($id_usuario)
     {
-        $sql = "SELECT u.*, d.nombre AS departamento_nombre, r.nombre AS rol_nombre, e.descripcion AS estado
+        $sql = "SELECT u.*, d.nombre AS departamento_nombre, r.nombre AS rol_nombre, e.descripcion AS estado, 
+                            nac.pais AS Nombre_Pais, ocup.nombre_ocupacion AS Nombre_Ocupacion
                 FROM usuario u
                 JOIN departamento d ON u.id_departamento = d.id_departamento
                 JOIN rol r ON u.id_rol = r.id_rol
                 JOIN estado e ON u.id_estado = e.id_estado
+                JOIN nacionalidades nac ON u.id_nacionalidad = nac.id_nacionalidad
+                JOIN ocupaciones ocup ON u.id_ocupacion = ocup.id_ocupacion
                 WHERE u.id_usuario = ?";
 
         //consulta
@@ -193,7 +199,7 @@ class UsuarioDAOSImpl implements UsuarioDAO
     }
 
     public function getVacacionesByUserId($id_usuario){
-        $sql = "SELECT * FROM vacacion WHERE id_usuario = ?";
+        $sql = "SELECT * FROM vacacion WHERE id_usuario = ? AND id_estado_vacacion = 1";
 
         // Prepara la consulta
         $stmt = $this->conn->prepare($sql);

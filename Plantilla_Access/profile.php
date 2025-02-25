@@ -62,103 +62,110 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="Dashboard">
-    <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
-
-    <title>Gestión de Usuarios</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="assets/css/bootstrap.css" rel="stylesheet">
-    <!--external css-->
-    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
-
-    <!-- Custom styles for this template -->
-    <link href="assets/css/style.css" rel="stylesheet">
-    <link href="assets/css/style-responsive.css" rel="stylesheet">
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <title>Perfil de Usuario</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
     <style>
+        .profile-header {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .profile-header img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
         .profile-container {
-            margin-left: 250px;
-            padding: 60px;
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        #perfil-usuario {
+            margin-top: 35px; 
+            margin-left: 210px;
+            width: 80%;
+        }
+        .header-section {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .card.p-4.shadow-lg {
+            padding: 40px;
+            min-height: 500px;
         }
     </style>
+
+
 </head>
 
+
 <body>
+    <div id="perfil-usuario" class="container mt-5">
+        <div class="card p-4 shadow-lg">
+            
+            <div class="row">
+                <!-- Imagen de perfil -->
+                <div class="col-md-3 text-center">
+                    <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" width="200" class="img-fluid rounded-circle">
+                </div>
+                
+                <!-- Información del usuario -->
+                <div class="col-md-9">
+                    <h3 class="mb-4">Información del Usuario</h3>
+                    <div class="row">
+                        <!-- Botones -->
+                        <br/>
+                        <div class="mt-4">
+                            <button class="btn btn-primary">Información del Usuario</button>
+                        </div>
+                        <br/>
 
-    <section id="container">
-        <!-- **********************************************************************************************************************************************************
-      TOP BAR CONTENT & NOTIFICATIONS
-      *********************************************************************************************************************************************************** -->
-        <!--header start-->
-        
-        <div class="profile-container">
-        <h2>Actualizar Perfil</h2>
-        <form action="profile.php" method="POST" enctype="multipart/form-data">
-            <label>Nombre:</label>
-            <input type="text" name="nombre" value="<?php echo htmlspecialchars($user['nombre']); ?>" required>
-            <br>
-            <label>Apellido:</label>
-            <input type="text" name="apellido" value="<?php echo htmlspecialchars($user['apellido']); ?>" required>
-            <br>
-            <label>Fecha de Nacimiento:</label>
-            <input type="date" name="fecha_nacimiento" value="<?php echo htmlspecialchars($user['fecha_nacimiento']); ?>" required>
-            <br>
-            <label>Fecha de Ingreso:</label>
-            <input type="date" name="fecha_ingreso" value="<?php echo htmlspecialchars($user['fecha_ingreso']); ?>" required>
-            <br>
-            <label>Correo Electrónico:</label>
-            <input type="email" name="correo_electronico" value="<?php echo htmlspecialchars($user['correo_electronico']); ?>" required>
-            <br>
-            <label>Username:</label>
-            <input type="text" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required>
-            <br>
-            <label>Teléfono:</label>
-            <input type="text" name="numero_telefonico" value="<?php echo htmlspecialchars($user['numero_telefonico']); ?>" required>
-            <br>
-            <label>Dirección:</label>
-            <input type="text" name="direccion_domicilio" value="<?php echo htmlspecialchars($user['direccion_domicilio']); ?>" required>
-            <br>
-            <label>Estado Civil:</label>
-            <input type="text" name="estado_civil" value="<?php echo htmlspecialchars($user['estado_civil']); ?>" required>
-            <br>
-            <label>Sexo:</label>
-            <input type="text" name="sexo" value="<?php echo htmlspecialchars($user['sexo']); ?>" required>
-            <br>
-            <label for="id_ocupacion">Ocupación:</label>
-                <select id="id_ocupacion" name="id_ocupacion" class="form-control">
-                    <?php while ($row = $ocupaciones->fetch_assoc()) {
-                        $selected = ($row['id_ocupacion'] == $user['id_ocupacion']) ? 'selected' : '';
-                        echo '<option value="' . $row['id_ocupacion'] . '" ' . $selected . '>' . $row['nombre_ocupacion'] . '</option>';
-                    } ?>
-                </select>
-
-            <label for="id_nacionalidad">Nacionalidad:</label>
-                <select id="id_nacionalidad" name="id_nacionalidad" class="form-control">
-                    <?php while ($row = $nacionalidades->fetch_assoc()) {
-                        $selected = ($row['id_nacionalidad'] == $user['id_nacionalidad']) ? 'selected' : '';
-                        echo '<option value="' . $row['id_nacionalidad'] . '" ' . $selected . '>' . $row['pais'] . '</option>';
-                    } ?>
-                </select>
-            <label>Foto de perfil:</label>
-            <input type="file" name="direccion_imagen" accept="image/*">
-            <br>
-            <button type="submit">Actualizar</button>
-        </form>
-            <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" width="100">
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Nombre y Apellido:</strong> <?php echo htmlspecialchars($user['nombre'] . ' ' . $user['apellido']); ?></p>
+                                    <p><strong>Departamento:</strong> <?php echo htmlspecialchars($user['departamento_nombre']); ?></p>
+                                    <p><strong>Fecha de nacimiento:</strong> <?php echo htmlspecialchars($user['fecha_nacimiento']); ?></p>
+                                    <p><strong>Fecha de ingreso:</strong> <?php echo htmlspecialchars($user['fecha_ingreso']); ?></p>
+                                    <p><strong>Correo:</strong> <?php echo htmlspecialchars($user['correo_electronico']); ?></p>
+                                    <p><strong>Username:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Numero:</strong> <?php echo htmlspecialchars($user['numero_telefonico']); ?></p>
+                                    <p><strong>Direccion:</strong> <?php echo htmlspecialchars($user['direccion_domicilio']); ?></p>
+                                    <p><strong>Estado Civil:</strong> <?php echo htmlspecialchars($user['estado_civil']); ?></p>
+                                    <p><strong>Sexo:</strong> <?php echo htmlspecialchars($user['sexo']); ?></p>
+                                    <p><strong>Ocupación:</strong> <?php echo htmlspecialchars($user['Nombre_Ocupacion']); ?></p>
+                                    <p><strong>Nacionalidad:</strong> <?php echo htmlspecialchars($user['Nombre_Pais']); ?></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="btn btn-secondary" href="editarPerfil.php?id=<?php echo $user['id_usuario']; ?>">Editar Información</a>
+                </div>
+            </div>
         </div>
-
+    </div>
 </body>
-
 </html>
