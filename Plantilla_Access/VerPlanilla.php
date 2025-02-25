@@ -23,6 +23,8 @@ if (!isset($_SESSION['id_usuario'])) {
 
     <title>Ver Planilla</title>
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Bootstrap core CSS -->
@@ -464,11 +466,27 @@ if (!isset($_SESSION['id_usuario'])) {
                                 <i class="bi bi-gear"></i>
                             </button>
 
+
+                            <button id="ejecutar_pago" class="btn">
+                                <i class="bi bi-cash-stack"></i> Ejecutar Pagos
+                            </button>
+
+
+
                             <!-- Botón para abrir el segundo modal (resto de los botones) -->
                             <button class="btn" onclick="abrirModal('modal2')">
                                 <i class="bi bi-journal-medical"></i>
                             </button>
+
+                            <?php if (isset($mensaje)): ?>
+                                <div class="alert alert-success mt-3">
+                                    <?php echo $mensaje; ?>
+                                </div>
+                            <?php endif; ?>
+
                         </div>
+
+
 
                         <!-- Modal 1 con 3 botones -->
                         <div id="modal1" class="modal">
@@ -476,6 +494,7 @@ if (!isset($_SESSION['id_usuario'])) {
                                 <span class="close" onclick="cerrarModal('modal1')">&times;</span>
                                 <h3>Ajustes de Planilla</h3>
                                 <a href="registrar_horas_extras.php">Registrar Horas extras</a>
+                                <a href="calcular_aguinaldo.php">Calcular Aguinaldos</a>
                                 <a href="RegistroPlanilla.php">Registrar Planilla</a>
                                 <a href="aplicarBono.php">Aplicar Bono</a>
                                 <a href="actualizarSalarios.php">Ajustar Salario</a>
@@ -495,8 +514,7 @@ if (!isset($_SESSION['id_usuario'])) {
                             </div>
                         </div>
 
-
-
+                        <div id="mensaje_alerta"></div>
 
 
                         <!-- Mostrar tabla con los cambios de puesto -->
@@ -504,14 +522,14 @@ if (!isset($_SESSION['id_usuario'])) {
                             <thead>
                                 <tr>
 
-                                    <th >Nombre</th>
+                                    <th>Nombre</th>
                                     <th>Apellido</th>
                                     <th>Correo</th>
                                     <th>Cargo</th>
                                     <th>Salario base</th>
                                     <th>Bonos</th>
                                     <th>Deduccion</th>
-                                    <th style="text-align: center;">Total Deduccion<br>Quincenal</br>  
+                                    <th style="text-align: center;">Total Deduccion<br>Quincenal</br>
                                     <th>Salario neto</th>
                                 </tr>
                             </thead>
@@ -575,6 +593,31 @@ if (!isset($_SESSION['id_usuario'])) {
 <script src="assets/js/sparkline-chart.js"></script>
 <script src="assets/js/zabuto_calendar.js"></script>
 
+<script>
+    $(document).ready(function () {
+        $('#ejecutar_pago').click(function () {
+            // Enviar la solicitud AJAX al archivo PHP
+            $.ajax({
+                url: 'pago_planilla.php',
+                type: 'POST',
+                data: { ejecutar_pago: true },
+                dataType: 'json',
+                success: function (response) {
+                    // Mostrar el mensaje en el HTML
+                    if (response.mensaje) {
+                        $('#mensaje_alerta').html('<div class="alert alert-success text-center">' + response.mensaje + '</div>');
+                    } else {
+                        $('#mensaje_alerta').html('<div class="alert alert-danger text-center">Hubo un error al ejecutar los pagos.</div>');
+                    }
+                },
+                error: function () {
+                    $('#mensaje_alerta').html('<div class="alert alert-danger text-center">Ya se ha generado un pago para esta Quincena.</div>');
+                }
+            });
+        });
+    });
+</script>
+
 <script type="text/javascript">
     $(document).ready(function () {
         var unique_id = $.gritter.add({
@@ -629,7 +672,10 @@ if (!isset($_SESSION['id_usuario'])) {
         var to = $("#" + id).data("to");
         console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
     }
+
 </script>
+
+
 
 <?php
 // Cerrar la conexión

@@ -85,6 +85,8 @@ if (isset($_POST['calcular_horas_extra'])) {
     $stmt_salario_base->fetch();
     $stmt_salario_base->close();
 
+    $nuevo_salario_neto= $salario_base;
+
     // Validar que el salario base no sea nulo
     if (!$salario_base) {
         die("Error: No se encontró el salario base para este usuario.");
@@ -128,6 +130,7 @@ if (isset($_POST['calcular_horas_extra'])) {
     }
 
     // Sumar el monto de horas extras al salario neto actual
+    
     $nuevo_salario_neto = $salario_neto_actual + $monto_hora_extra;
 
     // Actualizar el salario neto con el nuevo valor calculado
