@@ -789,3 +789,77 @@ CREATE TABLE Historial_Solicitud_Modificacion_Vacaciones (
 
 -- Atributo para poder determinar el ultimo dia solocitado de la vacacion
 ALTER TABLE vacacion ADD COLUMN fecha_fin DATE ;
+
+
+
+
+-- Nuevos Cambios Esteven:
+
+-- Tabla hisotrial aguinaldo
+CREATE TABLE `historial_aguinaldo` (
+  `id_aguinaldo` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `total_aguinaldo` decimal(10,2) NOT NULL,
+  `fecha_pago` date NOT NULL DEFAULT curdate(),
+  `metodo_pago` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Indices de la tabla `historial_aguinaldo`
+--
+ALTER TABLE `historial_aguinaldo`
+  ADD PRIMARY KEY (`id_aguinaldo`),
+  ADD KEY `id_usuario` (`id_usuario`);
+
+
+ALTER TABLE `historial_aguinaldo`
+  MODIFY `id_aguinaldo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=94;
+
+--
+-- Fk `historial_aguinaldo`
+--
+ALTER TABLE `historial_aguinaldo`
+  ADD CONSTRAINT `historial_aguinaldo_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE;
+COMMIT;
+
+
+
+-- Estructura de tabla para la tabla `pago_planilla`
+CREATE TABLE `pago_planilla` (
+  `id_pago` int(11) NOT NULL,
+  `id_planilla` int(11) NOT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
+  `fecha_pago` date DEFAULT NULL,
+  `salario_base` double DEFAULT NULL,
+  `total_deducciones` double NOT NULL DEFAULT 0,
+  `total_bonos` double DEFAULT 0,
+  `salario_neto` double DEFAULT NULL,
+  `pago_horas_extras` double DEFAULT 0,
+  `metodo_pago` varchar(50) NOT NULL DEFAULT 'Transferencia',
+  `tipo_quincena` varchar(50) DEFAULT 'Quincenal',
+  `fecha_modificacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Indices de la tabla `pago_planilla`
+--
+ALTER TABLE `pago_planilla`
+  ADD PRIMARY KEY (`id_pago`),
+  ADD UNIQUE KEY `unique_pago` (`id_usuario`,`fecha_pago`),
+  ADD KEY `id_planilla` (`id_planilla`);
+
+--
+-- AUTO_INCREMENT de la tabla `pago_planilla`
+--
+ALTER TABLE `pago_planilla`
+  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=265;
+
+
+
+--
+-- Fk para la tabla `pago_planilla`
+--
+ALTER TABLE `pago_planilla`
+  ADD CONSTRAINT `fk_usario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`),
+  ADD CONSTRAINT `pago_planilla_ibfk_1` FOREIGN KEY (`id_planilla`) REFERENCES `planilla` (`id_planilla`) ON DELETE CASCADE;
+COMMIT;
+
+
