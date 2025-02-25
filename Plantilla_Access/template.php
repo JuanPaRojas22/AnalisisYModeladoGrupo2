@@ -177,6 +177,7 @@
                                     <li><a href="reporte_ins.php">INS</a></li>
                                     <li><a href="reporte_ccss.php">CCSS</a></li>
                                     <li><a href="reporte_bac.php">BAC</a></li>
+                                    <li><a href="ver_reporte.php">Vacaciones</a></li>
                                     
                                 </ul>
                             </li>
