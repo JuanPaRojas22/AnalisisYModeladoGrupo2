@@ -262,6 +262,7 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                                 <span class="close" onclick="cerrarModal('modal2')">&times;</span>
                                 <h3>Detalles Planilla</h3>
                                 <a href="EditarVacaciones.php">Editar Vacaciones</a>
+                                <a href="Consulta_permisos_vacaciones.php">Historial</a>
                             </div>
                         </div>
 

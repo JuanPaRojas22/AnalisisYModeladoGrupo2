@@ -354,8 +354,8 @@ if ($id_departamento == 'all') {
                         echo "<td><b>{$user['rol_nombre']}</b></td>";
                         echo "<td><b>{$user['nombre']}</b></td>";
                         echo "<td><b>{$user['apellido']}</b></td>";
-                        echo "<td><b>{$user['nombre_ocupacion']}</b></td>";
-                        echo "<td><b>{$user['pais']}</b></td>";
+                        echo "<td><b>{$user['Nombre_Ocupacion']}</b></td>";
+                        echo "<td><b>{$user['Nombre_Pais']}</b></td>";
                         echo "<td><b>{$user['correo_electronico']}</b></td>";
                         echo "<td><b>{$user['numero_telefonico']}</b></td>";
                         //Carga la imagen del usuario
