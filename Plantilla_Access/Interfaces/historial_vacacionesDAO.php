@@ -8,6 +8,9 @@ interface Historial_vacacionesDAO
     // Funcion para validar si el empleado puede obtener la vacacion o no
     public function ValidarVacaciones($id_usuario, $FechaInicio, $FechaFin, $fecha_ingreso, $DiasTomados );
 
+    // Funcion que devuelve el historial de vacaciones de un empleado en especifico
+    public function getHistorialVacaciones($id_usuario);
+
 }
 
 

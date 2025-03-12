@@ -3,7 +3,10 @@ interface Historial_Solicitud_Modificacion_VacacionesDAO
     {
 
         // Funcion para obtener el historial de solicitudes de modificacion de vacaciones de un empleado en especifico y su vacacion original solicitada.
-        public function getHistorialSolicitudModificacionVacaciones($id_usuario);
+        public function getHistorialSolicitudModificacionVacaciones($id_historial_solicitud_modificacion);
+
+        // Funcion para obtener el id_usuario de una vacacion modificada
+        public function getUserByIdHistorialSolicitudModificacion($id_historial_solicitud_modificacion);
 
         // Funcion que obtiene las solicitudes de editar vacaciones aprobadas o pendientes de empleados del departamento del administrador actual. 
         public function getSolicitudesEditarPendientes_O_Aprobadas($id_departamento);

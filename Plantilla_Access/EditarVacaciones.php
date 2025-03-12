@@ -243,7 +243,7 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                                 <td>" . $row['dias_solicitados'] . "</td>
                                 <td>" . $row['DiasRestantes']. "</td>
                                 <td>" . $row['estado']. "</td>
-                                <td><a class='btn btn-success' style='font-size: 2.5rem;' href='detalleEditarVacacion.php?id=" . $row['id_usuario'] . "' >
+                                <td><a class='btn btn-success' style='font-size: 2.5rem;' href='detalleEditarVacacion.php?id=" . $row['id_historial_solicitud_modificacion'] . "' >
                                     <i class='bi bi-file-earmark-person'></i> 
                                 </a></td>
                               </tr>";

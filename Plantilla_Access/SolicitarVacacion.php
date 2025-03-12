@@ -2,18 +2,70 @@
 session_start();
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
+require_once __DIR__ . '/Impl/historialVacacionesDAOSImpl.php';
 include "template.php";
 
-
+// Se inicializan las clases UsuarioDAO, VacacionDAO y HistorialVacacionDAO
 $UsuarioDAO = new UsuarioDAOSImpl();
 $VacacionDAO = new VacacionDAOSImpl();
+$HistorialVacacionDAO = new historialVacacionesDAOSImpl();
 $user_id = $_SESSION['id_usuario'];
 
 // Obtiene los detalles del usuario por id
 $userDepartmentData = $UsuarioDAO->getUserDepartmentById($user_id);
 $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] : null;
 
-    
+// Logica para crear una vacacion utilizando el metodo de IngresarVacacion 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Capturar datos del formulario
+    $fecha_inicio = $_POST['fecha_inicio'] ?? '';
+    $fecha_fin = $_POST['fecha_fin'] ?? '';
+    $diasTomado = $_POST['diasTomado'] ?? '';
+    $razon = $_POST['razon'] ?? '';
+    $observaciones = $_POST['observaciones'] ?? '';
+    $id_usuario = $user_id;
+    // Tengo que ingresar el historial de vacaciones del usuario actual
+    $id_historial = $HistorialVacacionDAO->getHistorialVacaciones($id_usuario);
+    $fechacreacion = date("Y-m-d H:i:s");
+    $usuariocreacion = "admin"; 
+    $fechamodificacion = date("Y-m-d H:i:s");
+    $usuariomodificacion = "admin";
+    $id_estado_vacacion = 1;
+    $SolicitudEditar = 'No';
+
+    // Validar campos obligatorios
+    $errores = [];
+    if (empty($fecha_inicio)) $errores[] = "La fecha de inicio es obligatoria.";
+    if (empty($fecha_fin)) $errores[] = "La fecha de fin es obligatoria.";
+    if (empty($diasTomado)) $errores[] = "Los días tomados son obligatorios.";
+    if (empty($razon)) $errores[] = "La razón es obligatoria.";
+    if (empty($observaciones)) $errores[] = "Las observaciones son obligatorias.";
+    if (empty($id_usuario)) $errores[] = "El id del usuario es obligatorio.";
+    if (empty($id_historial)) $errores[] = "El id del historial es obligatorio.";
+    if (empty($fechacreacion)) $errores[] = "La fecha de creación es obligatoria.";
+    if (empty($usuariocreacion)) $errores[] = "El usuario de creación es obligatorio.";
+    if (empty($fechamodificacion)) $errores[] = "La fecha de modificación es obligatoria.";
+    if (empty($usuariomodificacion)) $errores[] = "El usuario de modificación es obligatorio.";
+    if (empty($id_estado_vacacion)) $errores[] = "El id del estado de vacación es obligatorio.";
+    if (empty($SolicitudEditar)) $errores[] = "La solicitud de edición es obligatoria.";
+    if (empty($fecha_fin)) $errores[] = "La fecha de fin";
+
+    // Si hay errores, mostrarlos
+    if (!empty($errores)) {
+        foreach ($errores as $error) {
+            echo "<script>alert('$error');</script>";
+        }
+    } else {
+        // Validar si el usuario tiene suficientes días disponibles
+        if ($VacacionDAO->validarDiasDisponibles($id_usuario, $fecha_inicio, $fecha_fin)) {
+            // Ingresar la solicitud de vacaciones
+            $VacacionDAO->IngresarVacacion($razon, $diasTomado, $fecha_inicio, $observaciones, $id_usuario, $id_historial, $fechacreacion, $usuariocreacion, $fechamodificacion, $usuariomodificacion, $id_estado_vacacion, $SolicitudEditar, $fecha_fin);
+            echo "<script>alert('Solicitud de vacaciones ingresada correctamente.');</script>";
+        } else {
+            echo "<script>alert('El empleado no tiene suficientes días de vacaciones disponibles.');</script>";
+        }
+    }
+}    
 
 
 ?>
@@ -38,6 +90,8 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
     <!-- Custom styles for this template -->
     <link href="assets/css/style.css" rel="stylesheet">
     <link href="assets/css/style-responsive.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style2.css">
+
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -240,6 +294,25 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             /* Distribuye el espacio entre los botones */
                             width: 100%;
                         }
+                        .close-button {
+                        border: none;
+                        display: inline-block;
+                        padding: 8px 16px;
+                        vertical-align: middle;
+                        overflow: hidden;
+                        text-decoration: none;
+                        color: inherit;
+                        background-color: inherit;
+                        text-align: center;
+                        cursor: pointer;
+                        white-space: nowrap
+                        }
+
+                        .topright {
+                        position: absolute;
+                        right: 0;
+                        top: 0
+                        }
                     </style>
                 </head>
 
@@ -247,24 +320,47 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                     <div class="container">
                         <h1>Listado Vacaciones</h1>
 
-                        <div class="button-container">
-
+                        
                             <!-- Botón para abrir el segundo modal (resto de los botones) -->
-                            <button class="btn" onclick="abrirModal('modal2')">
-                                <i class="bi bi-journal-medical"></i>
-                            </button>
+                        
+                        <button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Solicitar Vacacion</button>
+
+                        <div id="id01" class="modal">
+                            <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+                            <form class="modal-content" action="SolicitarVacacion.php" method="POST" enctype="multipart/form-data">
+                                <div class="container">
+                                <header style="background-color:#000;color:#fff;">
+                                <span onclick="document.getElementById('id01').style.display='none'" class="close-button topright">&times;</span>
+                                </header>
+                                <h1>Registrar Vacacion</h1>
+                                <p>Ingrese los datos correspondientes</p>
+                                <br>
+                                <label for="razon">Razon:</label>
+                                <input type="text" id="razon" name="razon" class="form-control" placeholder="Ingrese su razon" autofocus>
+
+                                <label for="diasTomado">Dias Tomados:</label>
+                                <input type="int" id="diasTomado" name="diasTomado" class="form-control" placeholder="Ingrese los dias tomados" autofocus>
+
+                                <label for="fecha_inicio">Fecha Inicio:</label>
+                                <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" placeholder="Ingrese la fecha de inicio" autofocus>
+
+                                <label for="fecha_fin">Fecha Fin:</label>
+                                <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" placeholder="Ingrese la fecha de fin" autofocus>
+
+                                <label for="observaciones">Observaciones:</label>
+                                <input type="text" id="observaciones" name="observaciones" class="form-control" placeholder="Ingrese sus observaciones" autofocus>
+
+                                <div class="clearfix">
+                                    <button type="submit" class="signupbtn">Ingresar</button>
+                                </div>
+                                </div>
+                            </form>
                         </div>
+                            <!-- <a href="EditarVacaciones.php">Editar Vacaciones</a> -->
+                        
+                        
 
 
-                        <!-- Modal 2 con el resto de los botones -->
-                        <div id="modal2" class="modal">
-                            <div class="modal-content">
-                                <span class="close" onclick="cerrarModal('modal2')">&times;</span>
-                                <h3>Detalles Planilla</h3>
-                                <a href="EditarVacaciones.php">Editar Vacaciones</a>
-                                <a href="Consulta_permisos_vacaciones.php">Historial</a>
-                            </div>
-                        </div>
 
                         <!-- Mostrar tabla con los cambios de puesto -->
                         <table>
@@ -318,6 +414,17 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
             function cerrarModal(modalId) {
                 document.getElementById(modalId).style.display = 'none';
             }
+            
+            // Get the modal
+            var modal = document.getElementById('id01');
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+            }
+
 </script>
             
 </body>

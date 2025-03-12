@@ -2,6 +2,12 @@
 interface VacacionDAO
 {
 
+    // Funcion para obtener el usuario de la vacacion actual
+    public function getUserByIdVacacion($id_vacacion);
+
+    // Funcion para obtener el detalle de la vacacion actual
+    public function getDetalleVacacion($id_vacacion);
+
     // Funcion que obtiene las solicitudes pendientes de vacaciones de empleados del departamento del administrador actual.
     public function getSolicitudesPendientes($id_departamento);
 
@@ -15,10 +21,14 @@ interface VacacionDAO
     public function calcularDiasDisponibles($id_usuario, $diasTomado, $fecha_inicio, $DiasRestantes);
 
     // Funcion para comprobar dias feriados y dias habiles
-    public function validaFechas($fecha_inicio, $fecha_fin);
+    public function validaFechasFeriados($fecha_inicio, $fecha_fin);
 
-    // Funcion verificar que el empleado no exceda su limite anueal de vacaciones
+    // Funcion para verificar que el empleado no exceda su limite anual de vacaciones
     public function validarDiasDisponibles($id_usuario, $FechaInicio, $FechaFin);
+
+    // Funcion para ingresar una solicitud de vacaciones
+    public function IngresarVacacion($razon, $diasTomado, $FechaInicio, $observaciones, $id_usuario, $id_historial, $fechacreacion, 
+                                     $usuariocreacion, $fechamodificacion, $usuariomodificacion, $id_estado_vacacion, $SolicitudEditar, $fecha_fin);
 
 }
 

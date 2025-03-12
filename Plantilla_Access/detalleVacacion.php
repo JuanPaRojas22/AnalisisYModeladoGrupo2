@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
+require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
 include "template.php";
 
 // $UsuarioDAO = new UsuarioDAOSImpl();
@@ -8,10 +9,12 @@ include "template.php";
 
 // Instancia el DAO
 $UsuarioDAO = new UsuarioDAOSImpl();
-
+$VacacionDAO = new VacacionDAOSImpl(); 
 // Verifica si el parámetro 'id' está presente en la URL
 if (isset($_GET['id'])) {
-    $id_usuario = $_GET['id'];
+    $id_vacacion = $_GET['id'];
+    // Obtiene el id del usuario de la vacacion actual
+    $id_usuario = $VacacionDAO->getUserByIdVacacion($id_vacacion);
 
     // Obtiene los detalles del usuario por id
     $user = $UsuarioDAO->getUserById($id_usuario);
@@ -20,13 +23,10 @@ if (isset($_GET['id'])) {
     //$vacacion = $UsuarioDAO->getVacacionByUserId($id_usuario);
 
     // Obtiene las vacaciones del usuario actual
-    $vacaciones = $UsuarioDAO->getVacacionesByUserId($id_usuario);
+    $vacaciones = $VacacionDAO->getDetalleVacacion($id_vacacion);
 
     // Obtiene los historiales de vacaciones del usuario actual
     $historial_vacaciones = $UsuarioDAO->getHistorialVacacionesByUserId($id_usuario);
-
-    
-
     // Si el usuario no existe
     if (!$user) {
         echo "Usuario no encontrado.";

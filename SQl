@@ -863,3 +863,25 @@ ALTER TABLE `pago_planilla`
 COMMIT;
 
 
+-- NUEVOS CAMBIOS LEO !!!!!!
+
+-- Si es que tienen vacaciones con tipo de vacaciones asignadas, aplicarlos en cada uno siguiendo como ejemplo el siguiente comando.
+UPDATE vacacion 
+SET id_tipo_vacacion = NULL 
+WHERE id_vacacion = 1;
+
+
+
+-- Eliminar referencias de tipo de vacaciones con vacaciones
+ALTER TABLE `vacacion` DROP `id_tipo_vacacion`
+
+ALTER TABLE vacacion DROP FOREIGN KEY fk_vacacion_tipo_vacacion;
+
+-- Eliminar referencias de tipo de vacaciones con dias feriados
+
+ALTER TABLE `dias_feriados` DROP INDEX `fk_dias_tipo_vacacion`;
+
+ALTER TABLE dias_feriados DROP FOREIGN KEY fk_dias_tipo_vacacion;
+
+-- Eliminar tabla tipo de vacaciones
+DROP TABLE `tipo_vacacion`
