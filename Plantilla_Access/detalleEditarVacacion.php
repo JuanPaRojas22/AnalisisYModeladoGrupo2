@@ -4,33 +4,22 @@ require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 require_once __DIR__ . '/Impl/Historial_Solicitud_Modificacion_VacacionesDAOSImpl.php';
 include "template.php";
 
-// $UsuarioDAO = new UsuarioDAOSImpl();
-// $user_id = $_SESSION['id_usuario'];
-
 // Instancia el DAO
 $UsuarioDAO = new UsuarioDAOSImpl();
 $Historial_Solicitud_Modificacion_VacacionesDAO = new Historial_Solicitud_Modificacion_VacacionesDAOSImpl();
 
 // Verifica si el parámetro 'id' está presente en la URL
 if (isset($_GET['id'])) {
-    $id_usuario = $_GET['id'];
+    $id_historial_solicitud_modificacion = $_GET['id'];
 
+    // Obtiene el id del usuario de la vacacion actual
+    $id_usuario = $Historial_Solicitud_Modificacion_VacacionesDAO->getUserByIdHistorialSolicitudModificacion($id_historial_solicitud_modificacion);
     
     // Obtiene los detalles del usuario por id
     $user = $UsuarioDAO->getUserById($id_usuario);
-/*
-    // Obtiene las vacaciones del usuario actual
-    $vacaciones = $UsuarioDAO->getVacacionesByUserId($id_usuario);
-
-    // Obtiene los historiales de vacaciones del usuario actual
-    $historial_vacaciones = $UsuarioDAO->getHistorialVacacionesByUserId($id_usuario);
-*/
-    
 
     // Obtiene el historial de solicitudes de vacacionesa a modificar de los usuarios del departamento del administrador actual
-    $Historial_Solicitud_Modificacion_Vacaciones = $Historial_Solicitud_Modificacion_VacacionesDAO->getHistorialSolicitudModificacionVacaciones($id_usuario);
-
-    
+    $Historial_Solicitud_Modificacion_Vacaciones = $Historial_Solicitud_Modificacion_VacacionesDAO->getHistorialSolicitudModificacionVacaciones($id_historial_solicitud_modificacion);    
 
     // Si el usuario no existe
     if (!$user) {

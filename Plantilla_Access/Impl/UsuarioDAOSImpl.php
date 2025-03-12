@@ -198,8 +198,10 @@ class UsuarioDAOSImpl implements UsuarioDAO
         }
     }
 
+    // Metodo para obtener en el details la vacacion del usuario seleccionado
+    
     public function getVacacionesByUserId($id_usuario){
-        $sql = "SELECT * FROM vacacion WHERE id_usuario = ? AND id_estado_vacacion = 1";
+        $sql = "SELECT * FROM vacacion WHERE id_usuario = ? AND (id_estado_vacacion = 1 OR id_estado_vacacion = 4)";
 
         // Prepara la consulta
         $stmt = $this->conn->prepare($sql);
@@ -224,7 +226,7 @@ class UsuarioDAOSImpl implements UsuarioDAO
         // Devuelve el array de vacaciones
         return $vacaciones;
     }
-
+    
     // Método para obtener el historial de vacaciones de un usuario
     public function getHistorialVacacionesByUserId($id_usuario){
         $sql = "SELECT * FROM historial_vacaciones WHERE id_usuario = ?";

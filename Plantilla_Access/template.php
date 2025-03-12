@@ -1,4 +1,9 @@
 
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -191,8 +196,14 @@
                                                 class="bi bi-journal-bookmark"></i><span>Planilla</span></a></li>
                                     <li><a href="MostrarUsuarios.php"><i
                                                 class="bi bi-person-lines-fill"></i><span>Usuarios</span></a></li>
-                                    <li><a href="vacaciones.php"><i
+                                    <li><a href="SolicitarVacacion.php"><i
                                                 class="bi bi-sun"></i><span>Vacaciones</span></a></li>
+                                    <li class="nav-item">
+                                        <a href="vacaciones.php" class="nav-link">
+                                            <i class="bi bi-gear"></i> Vacaciones
+                                        </a>
+                                    </li>
+                                    
                                 </ul>
                             </li>
 

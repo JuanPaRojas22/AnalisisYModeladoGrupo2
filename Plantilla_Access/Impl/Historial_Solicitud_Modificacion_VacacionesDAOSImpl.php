@@ -13,9 +13,9 @@ class Historial_Solicitud_Modificacion_VacacionesDAOSImpl implements Historial_S
     }
 
     // Funcion para obtener el historial de solicitudes de modificacion de vacaciones de un empleado en especifico y su vacacion original solicitada.
-    public function getHistorialSolicitudModificacionVacaciones($id_usuario)
+    public function getHistorialSolicitudModificacionVacaciones($id_historial_solicitud_modificacion)
     {
-        $sql = "SELECT HSMV.id_usuario, U.Nombre, U.Apellido, Dep.Nombre AS Departamento, -- Informacion del usuario
+        $sql = "SELECT HSMV.id_historial_solicitud_modificacion, HSMV.id_usuario, U.Nombre, U.Apellido, Dep.Nombre AS Departamento, -- Informacion del usuario
                 -- Se muestra la NUEVA fecha de inicio, nueva fecha de fin y nuevos dias solicitados
                 HSMV.fecha_inicio AS NuevaFechaInicio, HSMV.fecha_fin AS NuevaFechaFin, HSMV.dias_solicitados AS NuevosDiasSolicitados, HSMV.razon_modificacion,
                 -- Se muestra la ORIGINAL fecha de inicio, fecha de fin solicitada y dias solicitados
@@ -33,13 +33,13 @@ class Historial_Solicitud_Modificacion_VacacionesDAOSImpl implements Historial_S
                 INNER JOIN vacacion V ON HSMV.id_vacacion = V.id_vacacion
                 -- Uno la tabla de estado_vacacion e vacacion con el id_estado_vacacion
                 INNER JOIN historial_vacaciones HV ON V.id_historial = HV.id_historial
-                WHERE HSMV.estado = 'Pendiente' AND U.id_usuario = ?
+                WHERE HSMV.estado = 'Pendiente' AND HSMV.id_historial_solicitud_modificacion = ?
                 ORDER BY U.Nombre ASC ";
         //consulta
         $stmt = $this->conn->prepare($sql);
 
         // Enlaza el parámetro (i = entero)
-        $stmt->bind_param("i", $id_usuario);
+        $stmt->bind_param("i", $id_historial_solicitud_modificacion);
 
         // Ejecuta la consulta
         $stmt->execute();
@@ -60,12 +60,39 @@ class Historial_Solicitud_Modificacion_VacacionesDAOSImpl implements Historial_S
         }
     }
 
+    // Funcion para obtener el id_usuario de una vacacion modificada
+    public function getUserByIdHistorialSolicitudModificacion($id_historial_solicitud_modificacion){
+        $sql = "SELECT id_usuario FROM historial_solicitud_modificacion_vacaciones WHERE id_historial_solicitud_modificacion = ?";
+
+        // Prepara la consulta
+        $stmt = $this->conn->prepare($sql);
+
+        // Enlaza el parámetro (i = entero)
+        $stmt->bind_param("i", $id_historial_solicitud_modificacion);
+
+        // Ejecuta la consulta
+        $stmt->execute();
+
+        // Obtiene el resultado
+        $result = $stmt->get_result();
+
+        // Obtiene el id_usuario
+        $id_usuario = null;
+        if ($row = $result->fetch_assoc()) {
+            $id_usuario = $row['id_usuario'];
+        }
+
+        // Devuelve el id_usuario
+        return $id_usuario;
+
+    }
+
     // Funcion que obtiene las solicitudes de editar vacaciones aprobadas o pendientes de empleados del departamento del administrador actual. 
     public function getSolicitudesEditarPendientes_O_Aprobadas($id_departamento){
         $function_conn = $this->conn;
         // Se obtienen las solicitudes de editar vacaciones aprobadas o pendientes de empleados del departamento del administrador actual. 
         $stmt = $function_conn->prepare(
-            "SELECT HSMV.id_usuario, U.Nombre, U.Apellido, Dep.Nombre AS Departamento, 
+            "SELECT HSMV.id_historial_solicitud_modificacion, HSMV.id_usuario, U.Nombre, U.Apellido, Dep.Nombre AS Departamento, 
             HSMV.fecha_inicio AS NuevaFechaInicio, HSMV.fecha_fin AS NuevaFechaFin, HSMV.dias_solicitados, HV.DiasRestantes, HSMV.estado
             FROM Historial_Solicitud_Modificacion_Vacaciones HSMV
             INNER JOIN usuario U ON HSMV.id_usuario = U.id_usuario

@@ -75,6 +75,33 @@ class HistorialVacacionesDAOSImpl implements historial_vacacionesDAO
         }
     }
 
+    // Funcion que devuelve el historial de vacaciones de un empleado en especifico
+    public function getHistorialVacaciones($id_usuario){
+        $sql = "SELECT id_historial FROM historial_vacaciones WHERE id_usuario = ?";
+
+        // Prepara la consulta
+        $stmt = $this->conn->prepare($sql);
+
+        // Enlaza el parámetro (i = entero)
+        $stmt->bind_param("i", $id_usuario);
+
+        // Ejecuta la consulta
+        $stmt->execute();
+
+        // Obtiene el resultado
+        $result = $stmt->get_result();
+
+        // Obtiene el id_historial
+        $id_historial = null;
+        if ($row = $result->fetch_assoc()) {
+            $id_historial = $row['id_historial'];
+        }
+            
+        // Devuelve el id_historial
+        return $id_historial;
+
+    }
+
 }
 
 

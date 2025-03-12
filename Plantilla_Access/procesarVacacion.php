@@ -14,7 +14,7 @@ if(isset($_GET['id']) && isset($_GET['accion'])){
     }
     
     // Se redirije de nuevo a la pagina de detalle de vacaciones
-    header('Location: detalleVacacion.php?id='.$id_usuario);
+    header('Location: vacaciones.php?id='.$id_usuario);
     exit();
 } else {
     echo "Parametros incorrectos";
