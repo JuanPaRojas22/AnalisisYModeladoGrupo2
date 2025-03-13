@@ -189,10 +189,14 @@
                                 <ul class="sub">
                                     <li><a href="VerPlanilla.php"><i
                                                 class="bi bi-journal-bookmark"></i><span>Planilla</span></a></li>
+                                                <li><a href="admin_beneficios.php">Beneficios de Empleados</a></li>
                                     <li><a href="MostrarUsuarios.php"><i
                                                 class="bi bi-person-lines-fill"></i><span>Usuarios</span></a></li>
                                     <li><a href="vacaciones.php"><i
                                                 class="bi bi-sun"></i><span>Vacaciones</span></a></li>
+                                </ul>
+                                <li><a href="beneficios.php"><i
+                                                class="bi bi-sun"></i><span>Beneficios</span></a></li>
                                 </ul>
                             </li>
 
