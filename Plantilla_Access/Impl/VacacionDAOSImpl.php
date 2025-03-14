@@ -68,6 +68,28 @@ class VacacionDAOSImpl implements VacacionDAO
 
     }
 
+    // Funcion que obtiene las vacaciones solicitadas por el usuario actual. Se obtienen todas las vacaciones que esten en estado pendiente
+    public function getVacacionesSolicitadas($id_usuario){
+        $function_conn = $this->conn;
+        // Se obtienen las solicitudes de vacaciones pendientes y que comparten el departamento del administrador
+        $stmt = $function_conn->prepare(
+            "SELECT V.id_vacacion, V.id_usuario, U.Nombre, U.Apellido, Dep.Nombre AS Departamento, V.fecha_inicio, V.fecha_fin, V.diasTomado, HV.DiasRestantes, EH.descripcion
+            FROM vacacion V
+            INNER JOIN usuario U ON V.id_usuario = U.id_usuario
+            INNER JOIN departamento Dep ON U.id_departamento = Dep.id_departamento
+            INNER JOIN estado_vacacion EH ON V.id_estado_vacacion = EH.id_estado_vacacion
+            INNER JOIN historial_vacaciones HV ON V.id_usuario = HV.id_usuario
+            WHERE (V.id_estado_vacacion = 1 OR V.id_estado_vacacion = 4) AND
+            U.id_usuario = ?
+            ORDER BY U.Nombre ASC");
+        
+        // Se ejecuta el comando
+        $stmt->bind_param("i", $id_usuario);
+        $stmt->execute();
+
+        return $stmt->get_result(); // Se retorna el resultado de la consulta
+    }
+
     // Funcion que obtiene las solicitudes pendientes de vacaciones de empleados y que sean del departamento del administrador
     public function getSolicitudesPendientes($id_departamento){
         $function_conn = $this->conn;
@@ -91,15 +113,15 @@ class VacacionDAOSImpl implements VacacionDAO
     }
 
     // Funcion para aprobar una solicitud de vacaciones
-    public function aprobarSolicitud($id_usuario){
+    public function aprobarSolicitud($id_vacacion){
         $function_conn = $this->conn;
         $stmt = $function_conn->prepare(
             "UPDATE vacacion
             SET id_estado_vacacion = 2 -- Estado 2 es Aprobado
-            WHERE id_usuario = ?");
+            WHERE id_vacacion = ?");
         $stmt->bind_param(
             "i",
-            $id_usuario
+            $id_vacacion
         );
         $stmt->execute();
         echo "Solicitud aprobada" . "<br>";
@@ -108,15 +130,15 @@ class VacacionDAOSImpl implements VacacionDAO
     }
 
     // Funcion para rechazar una solicitud de vacaciones
-    public function rechazarSolicitud($id_usuario){
+    public function rechazarSolicitud($id_vacacion){
         $function_conn = $this->conn;
         $stmt = $function_conn->prepare(
             "UPDATE vacacion
             SET id_estado_vacacion = 3 -- Estado 3 es Rechazado
-            WHERE id_usuario = ?");
+            WHERE id_vacacion = ?");
         $stmt->bind_param(
             "i",
-            $id_usuario
+            $id_vacacion
         );
         $stmt->execute();
         echo "Solicitud rechazada" . "<br>";
@@ -177,10 +199,8 @@ class VacacionDAOSImpl implements VacacionDAO
         );
     }
 
-    // Hacer funcion que valide si el usuario tiene dias disponibles de vacaciones antes de que el admin las ingrese.
-    // Para hacer este calculo, cada mes desde que empezo a trabajar el empleado cuenta como un dia de vacacion y se acumula hasta el mes actual
-    // Con estos dias sumados, se resta la cantidad de dias que ya ha tomado de vacaciones y se compara con los dias que se quieren tomar
-    public function validarDiasDisponibles($id_usuario, $FechaInicio, $FechaFin){
+    // Funcion que calcula los dias de vacaciones disponibles de un empleado
+    public function validarDiasDisponibles($id_usuario, $diasTomados){
         $function_conn = $this->conn;
         // Se obtiene la cantidad de dias restantes que el usuario tiene de vacaciones
         $stmt = $function_conn->prepare(
@@ -199,35 +219,34 @@ class VacacionDAOSImpl implements VacacionDAO
         $stmt->fetch();
         $stmt->close();
 
-        // Se calcula la cantidad de dias solicitados
-        $fecha_inicio = new DateTime($FechaInicio);
-        $fecha_fin = new DateTime($FechaFin);
-        // Se suma 1 porque si se toma vacaciones del 1 al 1, se cuenta como 1 dia 
-        $dias_solicitados = $fecha_fin->diff($fecha_inicio)->days + 1;
-
         // Se verifica si el empleado tiene suficientes dias de vacaciones disponibles
-        if ($DiasRestantes >= $dias_solicitados) {
-            echo "El empleado tiene suficientes días de vacaciones disponibles";
+        if ($DiasRestantes >= $diasTomados) {
+            return true;
         } else {
-            echo "El empleado no tiene suficientes días de vacaciones disponibles";
+            return false;
         }
     }
+    
 
     public function IngresarVacacion($razon, $diasTomado, $FechaInicio, $observaciones, $id_usuario, $id_historial, $fechacreacion, 
     $usuariocreacion, $fechamodificacion, $usuariomodificacion, $id_estado_vacacion, $SolicitudEditar, $fecha_fin)
     {
         $function_conn = $this->conn;
         // Se tiene que comprobar antes de ingresar la vacacion que el empleado tiene suficientes dias de vacaciones disponibles
-        if (!$this->validarDiasDisponibles($id_usuario, $FechaInicio, $fecha_fin)) {
-            echo "El empleado no tiene suficientes días de vacaciones disponibles";
+        
+        if (!$this->validarDiasDisponibles($id_usuario, $diasTomado)) {
+            echo "<script>alert('El empleado no tiene suficientes días de vacaciones disponibles.');</script>";
             return;
         }
         
+        
         // Se tiene que comprobar que las fechas de inicio y fin no sean feriados o fines de semana
+        /*
         if (!$this->validaFechasFeriados($FechaInicio, $fecha_fin)) {
             echo "Las fechas de inicio y fin no pueden ser feriados o fines de semana";
             return;
         }
+        */
         
 
         // Se ingresa la vacacion por el administrador
