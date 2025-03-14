@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($razon)) $errores[] = "La razón es obligatoria.";
     if (empty($observaciones)) $errores[] = "Las observaciones son obligatorias.";
     if (empty($id_usuario)) $errores[] = "El id del usuario es obligatorio.";
-    if (empty($id_historial)) $errores[] = "El id del historial es obligatorio.";
+    //if (empty($id_historial)) $errores[] = "El id del historial es obligatorio.";
     if (empty($fechacreacion)) $errores[] = "La fecha de creación es obligatoria.";
     if (empty($usuariocreacion)) $errores[] = "El usuario de creación es obligatorio.";
     if (empty($fechamodificacion)) $errores[] = "La fecha de modificación es obligatoria.";

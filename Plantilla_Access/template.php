@@ -184,6 +184,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                     <li><a href="reporte_bac.php">BAC</a></li>
                                     <li><a href="ver_reporte.php">Vacaciones</a></li>
                                     
+                                    
                                 </ul>
                             </li>
                             <li class="sub-menu">
