@@ -56,13 +56,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo "<script>alert('$error');</script>";
         }
     } else {
+        // Ingresar la solicitud de vacaciones
+        $resultadoValidacion = $VacacionDAO->validarDiasDisponibles($id_usuario, $diasTomado);
+        var_dump($resultadoValidacion); // Esto debería imprimir `bool(false)` si no tiene días suficientes
         // Validar si el usuario tiene suficientes días disponibles
-        if ($VacacionDAO->validarDiasDisponibles($id_usuario, $fecha_inicio, $fecha_fin)) {
-            // Ingresar la solicitud de vacaciones
+        if (!$VacacionDAO->validarDiasDisponibles($id_usuario, $diasTomado)) {
+            // Si no tiene suficientes días disponibles, mostrar mensaje de error
+            echo "<script>alert('El empleado no tiene suficientes días de vacaciones disponibles.');</script>";
+        } else {
+            
             $VacacionDAO->IngresarVacacion($razon, $diasTomado, $fecha_inicio, $observaciones, $id_usuario, $id_historial, $fechacreacion, $usuariocreacion, $fechamodificacion, $usuariomodificacion, $id_estado_vacacion, $SolicitudEditar, $fecha_fin);
             echo "<script>alert('Solicitud de vacaciones ingresada correctamente.');</script>";
-        } else {
-            echo "<script>alert('El empleado no tiene suficientes días de vacaciones disponibles.');</script>";
         }
     }
 }    
@@ -133,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // Consulta para obtener el departamento del usuario
                 
-                $result = $VacacionDAO->getSolicitudesPendientes($userDepartment);
+                $result = $VacacionDAO->getVacacionesSolicitadas($user_id);
 
 
                 ?>
@@ -324,7 +328,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <!-- Botón para abrir el segundo modal (resto de los botones) -->
                         
                         <button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Solicitar Vacacion</button>
-
+                        
                         <div id="id01" class="modal">
                             <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
                             <form class="modal-content" action="SolicitarVacacion.php" method="POST" enctype="multipart/form-data">
@@ -357,10 +361,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </form>
                         </div>
                             <!-- <a href="EditarVacaciones.php">Editar Vacaciones</a> -->
-                        
-                        
-
-
 
                         <!-- Mostrar tabla con los cambios de puesto -->
                         <table>
@@ -374,7 +374,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <th>Dias Tomados</th>
                                     <th>Dias Restantes</th>
                                     <th>Estado</th>
-                                    <th>Detalles</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -390,9 +390,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <td>" . $row['diasTomado'] . "</td>
                                 <td>" . $row['DiasRestantes']. "</td>
                                 <td>" . $row['descripcion'] . "</td>
-                                <td><a class='btn btn-success' style='font-size: 2.5rem;' href='detalleVacacion.php?id=" . $row['id_vacacion'] . "' >
-                                    <i class='bi bi-file-earmark-person'></i> 
-                                </a></td>
+                                <td>
+                                    <div class='d-flex flex-column gap-2'>  
+                                        <a class='btn btn-primary' style='font-size: 2.5rem;' href='detalleVacacion.php?id=" . $row['id_vacacion'] . "' >
+                                            <i class='bi bi-file-earmark-person'></i> 
+                                        </a>
+                                        <a class='btn btn-success' style='font-size: 2.5rem;' href='SolicitarEdicionVacacion.php?id=" . $row['id_vacacion'] . "' >
+                                            <i class='bi bi-pencil-square'></i> 
+                                        </a>
+                                    </div>
+                                </td>
+                                
+
+                                
                               </tr>";
                                     }
                                 } else {

@@ -149,8 +149,8 @@ if (isset($_GET['id'])) {
 
                 <!-- Botones para poder aprobar o d enegar vacaciones con los metodos del usuarioDAOSImpl -->
                 
-                <a href="procesarEditarVacacion.php?id=<?php echo $id_usuario; ?>&accion=aprobar" class="btn btn-success">Aprobar</a>
-                <a href="procesarEditarVacacion.php?id=<?php echo $id_usuario; ?>&accion=rechazar" class="btn btn-danger">Denegar</a>
+                <a href="procesarEditarVacacion.php?id=<?php echo $id_historial_solicitud_modificacion; ?>&accion=aprobar" class="btn btn-success">Aprobar</a>
+                <a href="procesarEditarVacacion.php?id=<?php echo $id_historial_solicitud_modificacion; ?>&accion=rechazar" class="btn btn-danger">Denegar</a>
             </section>
         </section>
 

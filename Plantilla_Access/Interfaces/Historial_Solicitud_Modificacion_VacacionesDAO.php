@@ -2,6 +2,11 @@
 interface Historial_Solicitud_Modificacion_VacacionesDAO
     {
 
+        // Funcion que ingresa un historial de solicitud de modificacion de vacaciones
+        public function IngresarHistorialSolicitudModificacionVacaciones
+        ($id_vacacion, $fecha_solicitud, $fecha_resolucion, $fecha_inicio, $fecha_fin, $dias_solicitados, 
+        $id_usuario, $usuario_aprobador, $razon_modificacion, $estado);
+
         // Funcion para obtener el historial de solicitudes de modificacion de vacaciones de un empleado en especifico y su vacacion original solicitada.
         public function getHistorialSolicitudModificacionVacaciones($id_historial_solicitud_modificacion);
 
@@ -14,11 +19,12 @@ interface Historial_Solicitud_Modificacion_VacacionesDAO
         // Funcion que aprueba o rechaza una solicitud de modificacion de vacacione 
         // Cuando apruebbe la solicitud de vacacions, se modifique los dias restantes del empleado y se cambie el estado de la solicitud a aprobada.
         public function aprobarSolicitudModificacionVacaciones
-        ($id_usuario, $id_vacacion_usuario_solicitado, $id_tipo_vacacion_usuario_solicitado, $razon_modificacion, $NuevosDiasSolicitados, $NuevaFechaInicio, $Observacion_Administrador_Actual, $Id_historial_usuario_solicitado, $NuevaFechaFin);
+        ($id_historial_solicitud_modificacion, $id_vacacion_usuario_solicitado, $id_usuario, $razon_modificacion, 
+        $NuevosDiasSolicitados, $NuevaFechaInicio, $Observacion_Administrador_Actual, $Id_historial_usuario_solicitado, $NuevaFechaFin);
 
         // Funcion que rechaza una solicitud de modificacion de vacacione 
         // Cuando se rechace la solicitud de vacacions, se cambie el estado de la solicitud a rechazada.
-        public function rechazarSolicitudModificacionVacaciones($id_usuario);
+        public function rechazarSolicitudModificacionVacaciones($id_historial_solicitud_modificacion);
 
     }
 

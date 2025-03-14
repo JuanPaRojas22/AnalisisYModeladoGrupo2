@@ -3,16 +3,37 @@ session_start();
 require_once __DIR__ . '/Impl/Historial_Solicitud_Modificacion_VacacionesDAOSImpl.php';
 // Verifica si se recicbio el id del usuario y la accion a realizar
 if(isset($_GET['id']) && isset($_GET['accion'])){
-    $id_usuario = $_GET['id'];
+    $id_historial_solicitud_modificacion = $_GET['id'];
+    // $id_usuario = $_GET['id'];
     // Función para obtener el id_vacacion basado en el id_usuario
-    function obtenerIdVacacionPorUsuario($id_usuario) {
+    // *****************************************************************************************
+
+    // Funcion para obtener el id_usuario basado en el id_historial_solicitud_modificacion
+    function obtenerIdUsuarioPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion) {
         $conexion = new mysqli("localhost", "root", "", "GestionEmpleados");
         if ($conexion->connect_error) {
             die("Conexión fallida: " . $conexion->connect_error);
         }
-        $sql = "SELECT id_vacacion FROM vacacion WHERE id_usuario = ?";
+        $sql = "SELECT id_usuario FROM historial_solicitud_modificacion_vacaciones WHERE id_historial_solicitud_modificacion = ?";
         $stmt = $conexion->prepare($sql);
-        $stmt->bind_param("i", $id_usuario);
+        $stmt->bind_param("i", $id_historial_solicitud_modificacion);
+        $stmt->execute();
+        $stmt->bind_result($id_usuario);
+        $stmt->fetch();
+        $stmt->close();
+        $conexion->close();
+        return $id_usuario;
+    }
+
+    // Funcion para obtener el id_vacacion basado en el id_historial_solicitud_modificacion
+    function obtenerIdVacacionPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion) {
+        $conexion = new mysqli("localhost", "root", "", "GestionEmpleados");
+        if ($conexion->connect_error) {
+            die("Conexión fallida: " . $conexion->connect_error);
+        }
+        $sql = "SELECT id_vacacion FROM historial_solicitud_modificacion_vacaciones WHERE id_historial_solicitud_modificacion = ?";
+        $stmt = $conexion->prepare($sql);
+        $stmt->bind_param("i", $id_historial_solicitud_modificacion);
         $stmt->execute();
         $stmt->bind_result($id_vacacion);
         $stmt->fetch();
@@ -21,36 +42,19 @@ if(isset($_GET['id']) && isset($_GET['accion'])){
         return $id_vacacion;
     }
 
-    // Función para obtener el id_vacacion basado en el id_usuario
-    function obtenerIdTipoVacacionPorUsuario($id_usuario) {
-        $conexion = new mysqli("localhost", "root", "", "GestionEmpleados");
-        if ($conexion->connect_error) {
-            die("Conexión fallida: " . $conexion->connect_error);
-        }
-        $sql = "SELECT id_tipo_vacacion FROM vacacion WHERE id_usuario = ?";
-        $stmt = $conexion->prepare($sql);
-        $stmt->bind_param("i", $id_usuario);
-        $stmt->execute();
-        $stmt->bind_result($id_tipo_vacacion);
-        $stmt->fetch();
-        $stmt->close();
-        $conexion->close();
-        return $id_tipo_vacacion;
-    }
-
-    // Función para obtener nuevos datos basado en el id_usuario
-    function obtenerDatosNuevosPorUsuario($id_usuario) {
+    // Función para obtener nuevos datos basado en el id_historial_solicitud_modificacion
+    function obtenerDatosNuevosPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion) {
         $conn = new mysqli("localhost", "root", "", "GestionEmpleados");
         
         $sql = "SELECT HSMV.fecha_inicio AS NuevaFechaInicio, HSMV.fecha_fin AS NuevaFechaFin, 
                 HSMV.dias_solicitados AS NuevosDiasSolicitados, HSMV.razon_modificacion
                 FROM Historial_Solicitud_Modificacion_Vacaciones HSMV
-                WHERE HSMV.id_usuario = ?";
+                WHERE HSMV.id_historial_solicitud_modificacion = ?";
         //consulta
         $stmt = $conn->prepare($sql);
 
         // Enlaza el parámetro (i = entero)
-        $stmt->bind_param("i", $id_usuario);
+        $stmt->bind_param("i", $id_historial_solicitud_modificacion);
 
         // Ejecuta la consulta
         $stmt->execute();
@@ -72,13 +76,14 @@ if(isset($_GET['id']) && isset($_GET['accion'])){
     
     }
 
-    // Obtener el atributo id_vacacion en base al id_usuario del usuario solicitado
-    $id_vacacion_usuario_solicitado = obtenerIdVacacionPorUsuario($id_usuario);
+    // Obtener el id_usuario en base al id_historial_solicitud_modificacion
+    $id_usuario = obtenerIdUsuarioPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion);
 
-    // Obtener el atributo id_tipo_vacacion en base al id_usuario del usuario solicitado
-    $id_tipo_vacacion_usuario_solicitado = obtenerIdTipoVacacionPorUsuario($id_usuario);
+    // Obtener el atributo id_vacacion en base al id_historial_solicitud_modificacion del usuario solicitado
+    $id_vacacion_usuario_solicitado = obtenerIdVacacionPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion);
 
-    $Historial_Solicitud_Modificacion_Vacaciones = obtenerDatosNuevosPorUsuario($id_usuario);
+    // Obtiene los nuevos datos de la solicitud de modificacion de vacaciones
+    $Historial_Solicitud_Modificacion_Vacaciones = obtenerDatosNuevosPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion);
 
 
     // Obtiene la razon de modificacion de vacaciones
@@ -121,15 +126,14 @@ if(isset($_GET['id']) && isset($_GET['accion'])){
     // Verifica si la accion es aprobar o rechazar
     if($accion == 'aprobar'){
         $Historial_Solicitud_ModificacionDAO->
-        aprobarSolicitudModificacionVacaciones($id_usuario, $id_vacacion_usuario_solicitado, 
-        $id_tipo_vacacion_usuario_solicitado, $razon_modificacion, $NuevosDiasSolicitados, 
+        aprobarSolicitudModificacionVacaciones($id_historial_solicitud_modificacion, $id_vacacion_usuario_solicitado, $id_usuario, $razon_modificacion, $NuevosDiasSolicitados, 
         $NuevaFechaInicio, $Observacion_Administrador_Actual, $Id_historial_usuario_solicitado, $NuevaFechaFin);
     }else if($accion == 'rechazar'){
         $Historial_Solicitud_ModificacionDAO->rechazarSolicitudModificacionVacaciones($id_usuario);
     }
     
     // Se redirije de nuevo a la pagina de detalle de vacaciones
-    header('Location: EditarVacaciones.php?id='.$id_usuario);
+    header('Location: EditarVacaciones.php');
     exit();
 } else {
     echo "Parametros incorrectos";
