@@ -1,6 +1,8 @@
 <?php
 session_start();
 require_once __DIR__ . '/Impl/Historial_Solicitud_Modificacion_VacacionesDAOSImpl.php';
+require_once __DIR__ . '/mailer.php'; //  PHPMailer para enviar correos
+
 // Verifica si se recicbio el id del usuario y la accion a realizar
 if(isset($_GET['id']) && isset($_GET['accion'])){
     $id_historial_solicitud_modificacion = $_GET['id'];
@@ -24,6 +26,24 @@ if(isset($_GET['id']) && isset($_GET['accion'])){
         $conexion->close();
         return $id_usuario;
     }
+    // Función para obtener el correo del usuario basado en su ID
+function obtenerCorreoUsuario($id_usuario) {
+    $conexion = new mysqli("localhost", "root", "", "GestionEmpleados");
+    if ($conexion->connect_error) {
+        die("Conexión fallida: " . $conexion->connect_error);
+    }
+    $sql = "SELECT correo_electronico FROM usuario WHERE id_usuario = ?";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->bind_param("i", $id_usuario);
+    $stmt->execute();
+    $stmt->bind_result($correo);
+    $stmt->fetch();
+    $stmt->close();
+    $conexion->close();
+    return $correo;
+}
+
 
     // Funcion para obtener el id_vacacion basado en el id_historial_solicitud_modificacion
     function obtenerIdVacacionPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion) {
@@ -79,6 +99,10 @@ if(isset($_GET['id']) && isset($_GET['accion'])){
     // Obtener el id_usuario en base al id_historial_solicitud_modificacion
     $id_usuario = obtenerIdUsuarioPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion);
 
+     // obtener el correo de usuario
+     $correo_usuario = obtenerCorreoUsuario($id_usuario); // Obtener el correo del usuario
+
+
     // Obtener el atributo id_vacacion en base al id_historial_solicitud_modificacion del usuario solicitado
     $id_vacacion_usuario_solicitado = obtenerIdVacacionPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion);
 
@@ -121,16 +145,105 @@ if(isset($_GET['id']) && isset($_GET['accion'])){
 
     
 
-    $accion = $_GET['accion'];
-    $Historial_Solicitud_ModificacionDAO = new Historial_Solicitud_Modificacion_VacacionesDAOSImpl();
-    // Verifica si la accion es aprobar o rechazar
-    if($accion == 'aprobar'){
-        $Historial_Solicitud_ModificacionDAO->
-        aprobarSolicitudModificacionVacaciones($id_historial_solicitud_modificacion, $id_vacacion_usuario_solicitado, $id_usuario, $razon_modificacion, $NuevosDiasSolicitados, 
-        $NuevaFechaInicio, $Observacion_Administrador_Actual, $Id_historial_usuario_solicitado, $NuevaFechaFin);
-    }else if($accion == 'rechazar'){
-        $Historial_Solicitud_ModificacionDAO->rechazarSolicitudModificacionVacaciones($id_usuario);
-    }
+$accion = $_GET['accion'];
+$Historial_Solicitud_ModificacionDAO = new Historial_Solicitud_Modificacion_VacacionesDAOSImpl();
+
+// 📌 Obtener el ID del usuario
+$id_usuario = obtenerIdUsuarioPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion);
+
+// 📌 Obtener el correo real del usuario desde la base de datos
+$correo_usuario = obtenerCorreoUsuario($id_usuario);  
+
+// 📌 Estilos CSS separados
+$css = "
+    <style>
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+        .header {
+            color: white;
+            padding: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            border-radius: 8px 8px 0 0;
+        }
+        .content {
+            margin: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+        .footer {
+            font-size: 14px;
+            color: #777;
+            margin-top: 20px;
+        }
+    </style>
+";
+
+if ($accion == 'aprobar') {
+    $Historial_Solicitud_ModificacionDAO->aprobarSolicitudModificacionVacaciones(
+        $id_historial_solicitud_modificacion, $id_vacacion_usuario_solicitado, 
+        $id_usuario, $razon_modificacion, $NuevosDiasSolicitados, 
+        $NuevaFechaInicio, $Observacion_Administrador_Actual, 
+        $Id_historial_usuario_solicitado, $NuevaFechaFin
+    );
+
+    // 📌 Mensaje con HTML para la aprobación
+    $asunto = "✅ Solicitud de Vacaciones Aprobada";
+    $mensaje = "
+        <html>
+        <head>
+            $css
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header' style='background-color: #4CAF50;'>Solicitud Aprobada</div>
+                <div class='content'>
+                    <p>🎉 Hola, tu solicitud de modificación de vacaciones ha sido <b>aprobada</b>.</p>
+                    <p>Disfruta de tu descanso. 🌴</p>
+                </div>
+                <div class='footer'>Este es un mensaje automático de Gestión de Vacaciones</div>
+            </div>
+        </body>
+        </html>
+    ";
+
+    enviarCorreo($correo_usuario, $asunto, $mensaje);
+
+} else if ($accion == 'rechazar') {
+    $Historial_Solicitud_ModificacionDAO->rechazarSolicitudModificacionVacaciones($id_historial_solicitud_modificacion);
+
+
+    // 📌 Mensaje con HTML para el rechazo
+    $asunto = "❌ Solicitud de Vacaciones Rechazada";
+    $mensaje = "
+        <html>
+        <head>
+            $css
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header' style='background-color: #d9534f;'>Solicitud Rechazada</div>
+                <div class='content'>
+                    <p>⚠️ Hola, lamentamos informarte que tu solicitud de modificación de vacaciones ha sido <b>rechazada</b>.</p>
+                    <p>Si tienes dudas, por favor contacta con tu supervisor. 📞</p>
+                </div>
+                <div class='footer'>Este es un mensaje automático de Gestión de Vacaciones</div>
+            </div>
+        </body>
+        </html>
+    ";
+
+    enviarCorreo($correo_usuario, $asunto, $mensaje);
+}
+
     
     // Se redirije de nuevo a la pagina de detalle de vacaciones
     header('Location: EditarVacaciones.php');
