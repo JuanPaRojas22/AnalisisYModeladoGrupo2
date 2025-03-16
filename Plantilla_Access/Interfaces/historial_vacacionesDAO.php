@@ -11,6 +11,9 @@ interface Historial_vacacionesDAO
     // Funcion que devuelve el historial de vacaciones de un empleado en especifico
     public function getHistorialVacaciones($id_usuario);
 
+    // Funcion para mostrar la cantidad de dias restanes de vacaciones de un empleado
+    public function getDiasRestantes($id_usuario);
+
 }
 
 

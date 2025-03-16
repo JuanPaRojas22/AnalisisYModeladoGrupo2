@@ -5,7 +5,7 @@ require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
 require_once __DIR__ . '/Impl/historialVacacionesDAOSImpl.php';
 include "template.php";
 
-// Se inicializan las clases UsuarioDAO, VacacionDAO y HistorialVacacionDAO
+// Se inicializan las clases UsuarioDAO, VacacionDAO y HistorialVacacionDAO 
 $UsuarioDAO = new UsuarioDAOSImpl();
 $VacacionDAO = new VacacionDAOSImpl();
 $HistorialVacacionDAO = new historialVacacionesDAOSImpl();
@@ -14,6 +14,8 @@ $user_id = $_SESSION['id_usuario'];
 // Obtiene los detalles del usuario por id
 $userDepartmentData = $UsuarioDAO->getUserDepartmentById($user_id);
 $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] : null;
+
+$diasRestantes = $HistorialVacacionDAO->getDiasRestantes($user_id);
 
 // Logica para crear una vacacion utilizando el metodo de IngresarVacacion 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -50,24 +52,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($SolicitudEditar)) $errores[] = "La solicitud de edición es obligatoria.";
     if (empty($fecha_fin)) $errores[] = "La fecha de fin";
 
-    // Si hay errores, mostrarlos
-    if (!empty($errores)) {
-        foreach ($errores as $error) {
-            echo "<script>alert('$error');</script>";
-        }
-    } else {
-        // Ingresar la solicitud de vacaciones
-        $resultadoValidacion = $VacacionDAO->validarDiasDisponibles($id_usuario, $diasTomado);
-        var_dump($resultadoValidacion); // Esto debería imprimir `bool(false)` si no tiene días suficientes
-        // Validar si el usuario tiene suficientes días disponibles
-        if (!$VacacionDAO->validarDiasDisponibles($id_usuario, $diasTomado)) {
-            // Si no tiene suficientes días disponibles, mostrar mensaje de error
-            echo "<script>alert('El empleado no tiene suficientes días de vacaciones disponibles.');</script>";
-        } else {
-            
-            $VacacionDAO->IngresarVacacion($razon, $diasTomado, $fecha_inicio, $observaciones, $id_usuario, $id_historial, $fechacreacion, $usuariocreacion, $fechamodificacion, $usuariomodificacion, $id_estado_vacacion, $SolicitudEditar, $fecha_fin);
-            echo "<script>alert('Solicitud de vacaciones ingresada correctamente.');</script>";
-        }
+    // Validación de días disponibles
+    if (!$VacacionDAO->validarDiasDisponibles($id_usuario, $diasTomado)) {
+        $errores[] = "El empleado no tiene suficientes días de vacaciones disponibles.";
+    }
+
+    // Validación de fechas
+    if ($fecha_inicio > $fecha_fin) {
+        $errores[] = "La fecha de inicio no puede ser mayor a la fecha de fin.";
+    }
+
+    if (empty($errores)) {
+        $VacacionDAO->IngresarVacacion($razon, $diasTomado, $fecha_inicio, $observaciones, 
+            $id_usuario, $id_historial, $fechacreacion, $usuariocreacion, 
+            $fechamodificacion, $usuariomodificacion, $id_estado_vacacion, 
+            $SolicitudEditar, $fecha_fin);
+        $mensaje_exito = "Solicitud de vacaciones ingresada correctamente.";
     }
 }    
 
@@ -322,14 +322,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <body>
                     <div class="container">
-                        <h1>Listado Vacaciones</h1>
+                        <h1>Mis Vacaciones</h1>
 
                         
                             <!-- Botón para abrir el segundo modal (resto de los botones) -->
                         
-                        <button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Solicitar Vacacion</button>
-                        
+                        <div class="row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <button onclick="document.getElementById('id01').style.display='block'" style="width:auto; background-color: #c9aa5f; color: white; padding: 10px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">Solicitar Vacacion</button>
+                            <div style="background-color: #d4edda; color: #155724; padding: 10px 20px; border-radius: 5px; text-align: center; font-size: 16px;">
+                                <strong>Días Restantes:</strong> <?php echo $diasRestantes; ?>
+                            </div>
+                        </div>
                         <div id="id01" class="modal">
+                            <!-- Mostrar errores -->
+                            <?php if (!empty($errores)): ?>
+                                <div style="color: red; background: #ffcccc; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                                    <strong>Errores:</strong>
+                                    <ul>
+                                        <?php foreach ($errores as $error): ?>
+                                            <li><?php echo $error; ?></li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </div>
+                            <?php endif; ?>
+
+                            <!-- Mostrar mensaje de éxito -->
+                            <?php if (!empty($mensaje_exito)): ?>
+                                <div style="color: green; background: #ccffcc; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                                    <?php echo $mensaje_exito; ?>
+                                </div>
+                            <?php endif; ?>
+
                             <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
                             <form class="modal-content" action="SolicitarVacacion.php" method="POST" enctype="multipart/form-data">
                                 <div class="container">
@@ -392,7 +415,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <td>" . $row['descripcion'] . "</td>
                                 <td>
                                     <div class='d-flex flex-column gap-2'>  
-                                        <a class='btn btn-primary' style='font-size: 2.5rem;' href='detalleVacacion.php?id=" . $row['id_vacacion'] . "' >
+                                        <a class='btn btn-primary' style='font-size: 2.5rem;' href='detalleVacacionSolicitada.php?id=" . $row['id_vacacion'] . "' >
                                             <i class='bi bi-file-earmark-person'></i> 
                                         </a>
                                         <a class='btn btn-success' style='font-size: 2.5rem;' href='SolicitarEdicionVacacion.php?id=" . $row['id_vacacion'] . "' >

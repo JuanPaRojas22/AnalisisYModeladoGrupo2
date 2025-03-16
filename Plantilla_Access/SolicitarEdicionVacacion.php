@@ -127,9 +127,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .container {
             padding: 16px;
-            max-width: 1400px;
+            max-width: 1000px;
             width: 80%;
-            margin: 80px auto;
+            margin: 70px auto;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
@@ -145,8 +145,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 
 <div class="container">
+    <a href="SolicitarVacacion.php" class="btn btn-success">Volver</a>
     <h1>Solicitar Edición de Vacaciones</h1>
-    <p>Por favor, complete este formulario para solicitar la edición de sus vacaciones.</p>
+    <p>Por favor, complete este formulario para solicitar la edición de sus vacacion.</p>
     <hr>
 
     <form action="SolicitarEdicionVacacion.php" method="post">
