@@ -1,15 +1,12 @@
 <?php
-    session_start();
-    include "template.php";
-    if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
-        $username = $_SESSION['username'];
-        
-    }
-
-    $username = $_SESSION['username'];
-    $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'] : 'assets/img/default-profile.png'; // Imagen por defecto si no existe
-
-   
+	session_start();
+	if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+		header("Location: login.php");
+		exit;
+	}
+	include "template.php";
+	$username = $_SESSION['username'];
+	$direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'] : 'assets/img/default-profile.png'; // Imagen por defecto si no existe
 ?>
 <!DOCTYPE html>
 <html lang="en">

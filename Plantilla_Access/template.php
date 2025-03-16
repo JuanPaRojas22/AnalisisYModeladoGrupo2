@@ -114,7 +114,7 @@ if (session_status() == PHP_SESSION_NONE) {
                             </li>
                             <li><a href="profile.php"><i class="fa fa-cogs"></i> Edit Profile</a></li>
                             <li><a href="settings.php"><i class="fa fa-cogs"></i> Settings</a></li>
-                            <li><a href="login.php"><i class="fa fa-sign-out"></i> Logout</a></li>
+                            <li><a href="logout.php"><i class="fa fa-sign-out"></i> Logout</a></li>
                         </ul>
                     </li>
 
