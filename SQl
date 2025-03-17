@@ -885,3 +885,22 @@ ALTER TABLE dias_feriados DROP FOREIGN KEY fk_dias_tipo_vacacion;
 
 -- Eliminar tabla tipo de vacaciones
 DROP TABLE `tipo_vacacion`
+
+
+--- NUEVOS CAMBIOS LEO
+-- Crear procedimiento para aumentar un día en el atributo DiasRestantes cada mes
+DELIMITER //
+
+CREATE PROCEDURE AumentarDiasRestantes()
+BEGIN
+  UPDATE Historial_vacaciones
+  SET DiasRestantes = DiasRestantes + 1;
+END //
+
+DELIMITER ;
+
+-- Crear evento para ejecutar el procedimiento cada mes
+CREATE EVENT AumentarDiasRestantesMensual
+ON SCHEDULE EVERY 1 MONTH
+DO
+  CALL AumentarDiasRestantes();
