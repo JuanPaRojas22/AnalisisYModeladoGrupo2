@@ -188,15 +188,24 @@ class VacacionDAOSImpl implements VacacionDAO
     // SE TIENE QUE DESAROLLAR ESTA FUNCION, AUN NO ESTA LISTA
     public function validaFechasFeriados($fecha_inicio, $fecha_fin){
         $function_conn = $this->conn;
-        // Se obtienen los dias feriados y se comparan con los correspondientes a las fechas de inicio y fin
+        // Se tiene que obtener todos los dias desde la fecha de inicio hasta la fecha de fin
         $stmt = $function_conn->prepare(
-            "SELECT SUM(HV.DiasTomados) as DiasTomados
-            FROM historial_vacaciones HV 
-            WHERE HV.id_usuario = ?");
+            "SELECT COUNT(*) as DiasFeriados
+            FROM dias_feriados DF
+            WHERE DF.Fecha BETWEEN ? AND ?");
         $stmt->bind_param(
-            "i",
-            $id_usuario
+            "ss",
+            $fecha_inicio,
+            $fecha_fin
         );
+        // Se ejecuta el comando
+        $stmt->execute();
+        $stmt->bind_result($DiasFeriados);
+        $stmt->fetch();
+        $stmt->close();
+
+        // Luego se tiene que devolver estos dias para que el usuario pueda elegir otras fechas y no las de feriados
+        
     }
 
     // Funcion que calcula los dias de vacaciones disponibles de un empleado
@@ -240,12 +249,12 @@ class VacacionDAOSImpl implements VacacionDAO
         }
         
         // Se tiene que comprobar que las fechas de inicio y fin no sean feriados o fines de semana
-        /*
+        //  Para eso, se tiene que devolver estos dias para que el usuario pueda elegir otras fechas y no las de feriados
+
         if (!$this->validaFechasFeriados($FechaInicio, $fecha_fin)) {
-            echo "Las fechas de inicio y fin no pueden ser feriados o fines de semana";
+            echo "<script>alert('Las fechas de inicio y fin no pueden ser feriados o fines de semana.');</script>";
             return;
         }
-        */
         
         // Se comprueba que el usuario no haya ingresado una fecha de inicio mayor a la fecha de fin
         if ($FechaInicio > $fecha_fin) {
