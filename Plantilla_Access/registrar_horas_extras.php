@@ -1,45 +1,53 @@
 <?php
-// Establecer la zona horaria a Costa Rica
-// Esto asegura que todas los calculos con fechas y horas se realicen según la hora local de Costa Rica
+// Establecer zona horaria
 date_default_timezone_set('America/Costa_Rica');
 
-// Conexión a la base de datos
 require 'conexion.php';
 session_start();
 
-
-
-// Obtener el ID del usuario desde la sesión
-// Se obtiene el ID del usuario de la sesión, si no existe se asigna null
-// Verificar si se presionó el botón para calcular horas extras
 if (isset($_POST['calcular_horas_extra'])) {
-    // Obtener el ID del usuario desde la sesión
     $id_usuario = $_SESSION['id_usuario'] ?? null;
 
-    // Validar si hay un usuario en sesión
+    // Validación de sesión
     if (!$id_usuario) {
         die("Error: Usuario no autenticado.");
     }
 
-    // Obtener la fecha actual
+    // Obtener fecha actual
     $fecha_hora_extra = date("Y-m-d");
 
+    // **Verificar si ya se registró horas extras hoy**
+    $query_verificar = "SELECT COUNT(*) FROM horas_extra WHERE id_usuario = ? AND fecha = ?";
+    $stmt_verificar = $conn->prepare($query_verificar);
+    $stmt_verificar->bind_param("is", $id_usuario, $fecha_hora_extra);
+    $stmt_verificar->execute();
+    $stmt_verificar->bind_result($existe_registro);
+    $stmt_verificar->fetch();
+    $stmt_verificar->close();
 
-    // Verificar si ya se han registrado horas extras para este usuario en la misma fecha
-    $query_verificar_existencia = "SELECT COUNT(*) FROM horas_extra WHERE id_usuario = ? AND fecha = ?";
-    $stmt_verificar_existencia = $conn->prepare($query_verificar_existencia);
-    $stmt_verificar_existencia->bind_param("is", $id_usuario, $fecha_hora_extra);
-    $stmt_verificar_existencia->execute();
-    $stmt_verificar_existencia->bind_result($existe_registro);
-    $stmt_verificar_existencia->fetch();
-    $stmt_verificar_existencia->close();
-
-    // Si ya existe un registro de horas extras para el mismo día, no permitir el registro
     if ($existe_registro > 0) {
-        // Redirigir con el mensaje de error
         header("Location: registrar_horas_extras.php?hora_registrada=error");
-        exit;  // Asegúrate de detener el script después de la redirección
+        exit();
     }
+
+    // Obtener tipo de día seleccionado por el usuario
+    $tipo_dia = isset($_POST['tipo_dia']) ? $_POST['tipo_dia'] : 'Regular'; // Default: Regular
+
+    // Obtener fecha actual y día de la semana
+    $fecha_hora_extra = date("Y-m-d");
+    $dia_semana = date("N", strtotime($fecha_hora_extra)); // 1 = Lunes, 7 = Domingo
+
+    // Consultar si es un feriado en la base de datos
+    $query_feriado = "SELECT COUNT(*) FROM dias_feriados WHERE fecha = ?";
+    $stmt_feriado = $conn->prepare($query_feriado);
+    $stmt_feriado->bind_param("s", $fecha_hora_extra);
+    $stmt_feriado->execute();
+    $stmt_feriado->bind_result($es_feriado);
+    $stmt_feriado->fetch();
+    $stmt_feriado->close();
+
+    // Verificar si es domingo
+    $es_domingo = ($dia_semana == 7);
 
     // Obtener horas de entrada y salida del usuario
     $query_horas = "SELECT hora_entrada, hora_salida FROM planilla WHERE id_usuario = ?";
@@ -50,33 +58,38 @@ if (isset($_POST['calcular_horas_extra'])) {
     $stmt_horas->fetch();
     $stmt_horas->close();
 
-    // Validar si hay datos de horas
+    // Verificar si se encontraron las horas de entrada y salida
     if (!$hora_entrada || !$hora_salida) {
         die("No se encontraron las horas de entrada y salida para este usuario.");
     }
 
-    // Convertir las horas a timestamp
+    // Convertir horas a timestamps
     $timestamp_entrada = strtotime("$fecha_hora_extra $hora_entrada");
     $timestamp_salida = strtotime("$fecha_hora_extra $hora_salida");
+    $timestamp_actual = time();
 
-    // Obtener la hora actual del servidor
-    $hora_actual = date("H:i:s");
-    $timestamp_actual = strtotime("$fecha_hora_extra $hora_actual");
-
-    // Manejo de turnos nocturnos (salida después de medianoche)
+    // Ajustar para turnos nocturnos
     if ($hora_salida < $hora_entrada) {
         $timestamp_salida = strtotime("+1 day", $timestamp_salida);
     }
 
-    // Calcular horas extras
+    // Calcular horas extras solo si se ha pasado la hora de salida
+
+    $horas_extra = 0;
     if ($timestamp_actual > $timestamp_salida) {
-        $diferencia_segundos = $timestamp_actual - $timestamp_salida;
-        $horas_extra = $diferencia_segundos / 3600;
-    } else {
-        $horas_extra = 0; // Si aún no ha pasado la hora de salida, no hay horas extras
+        $horas_extra = round(($timestamp_actual - $timestamp_salida) / 3600.0, 2); // Asegurar precisión decimal
+    }
+    // Convertir horas extras a horas y minutos
+    $horas_int = floor($horas_extra);
+    $minutos_int = round(($horas_extra - $horas_int) * 60);
+
+    // Si los minutos son 60, corregir a 0 minutos y aumentar 1 hora
+    if ($minutos_int == 60) {
+        $minutos_int = 0;
+        $horas_int += 1;
     }
 
-    // Obtener el salario base del usuario
+    // Obtener salario base
     $query_salario_base = "SELECT salario_base FROM planilla WHERE id_usuario = ?";
     $stmt_salario_base = $conn->prepare($query_salario_base);
     $stmt_salario_base->bind_param("i", $id_usuario);
@@ -85,37 +98,43 @@ if (isset($_POST['calcular_horas_extra'])) {
     $stmt_salario_base->fetch();
     $stmt_salario_base->close();
 
-    $nuevo_salario_neto= $salario_base;
-
-    // Validar que el salario base no sea nulo
+    // Verificar si se encontró el salario base
     if (!$salario_base) {
         die("Error: No se encontró el salario base para este usuario.");
     }
 
-    // Calcular monto de horas extras (1.5x el salario por hora)
-    $tarifa_hora_extra = $salario_base / 208;  // Jornada mensual estándar en Costa Rica
-    $monto_hora_extra = $horas_extra * $tarifa_hora_extra * 1.5;
+    // Tarifa base por hora
+    $salario_quincenal = round($salario_base / 2, 2); // salario quincenal
 
-    // Definir el usuario que realiza la inserción (debe venir de la sesión o sistema)
+    $tarifa_hora = round($salario_quincenal / 8, 2); 
+    // Se divide entre 8 para obtener el valor por hora
+
+    // Determinar factor de pago por horas extras
+    if ($es_feriado && $es_domingo) {
+        $factor_pago = 4.0; // (2x por feriado * 2x por domingo)
+    } elseif ($es_feriado) {
+        $factor_pago = 2.0; // Feriado entre semana
+    } elseif ($es_domingo) {
+        $factor_pago = 2.0; // Domingos 2x
+    } else {
+        $factor_pago = 1.5; // Días regulares
+    }
+
+
+    // Calcular monto de horas extras
+    $monto_hora_extra = round($horas_extra * $tarifa_hora * $factor_pago, 2); // Redondeo final a 2 decimales
+
+
+    // Registrar las horas extras en la base de datos
     $usuario_creacion = $_SESSION['usuario'] ?? 'Sistema';
+    $query_insert = "INSERT INTO horas_extra (id_usuario, fecha, horas, monto_pago, fechacreacion, usuariocreacion) 
+                     VALUES (?, ?, ?, ?, NOW(), ?)";
+    $stmt_insert = $conn->prepare($query_insert);
+    $stmt_insert->bind_param("isids", $id_usuario, $fecha_hora_extra, $horas_extra, $monto_hora_extra, $usuario_creacion);
+    $stmt_insert->execute();
+    $stmt_insert->close();
 
-    // Insertar las horas extras en la base de datos
-    $query_insert_horas_extra = "INSERT INTO horas_extra (id_usuario, fecha, horas, monto_pago, fechacreacion, usuariocreacion) 
-                                 VALUES (?, ?, ?, ?, NOW(), ?)";
-    $stmt_insert_horas_extra = $conn->prepare($query_insert_horas_extra);
-    $stmt_insert_horas_extra->bind_param("isids", $id_usuario, $fecha_hora_extra, $horas_extra, $monto_hora_extra, $usuario_creacion);
-    $stmt_insert_horas_extra->execute();
-    $stmt_insert_horas_extra->close();
-
-    // Redondear el monto de las horas extras a dos decimales
-    $monto_hora_extra = round($monto_hora_extra, 2);
-
-    // Verificar el valor del monto de horas extras antes de actualizar
-    echo "Monto de horas extras (redondeado): " . $monto_hora_extra . "<br>";
-
-    // Verificar que el ID de usuario es válido
-    echo "ID de usuario: " . $id_usuario . "<br>";
-    // Obtener el salario neto actual del usuario
+    // Obtener salario neto actual
     $query_salario_neto = "SELECT salario_neto FROM planilla WHERE id_usuario = ?";
     $stmt_salario_neto = $conn->prepare($query_salario_neto);
     $stmt_salario_neto->bind_param("i", $id_usuario);
@@ -124,31 +143,41 @@ if (isset($_POST['calcular_horas_extra'])) {
     $stmt_salario_neto->fetch();
     $stmt_salario_neto->close();
 
-    // Si el salario neto es nulo, se asigna un valor de 0
-    if ($salario_neto_actual === null) {
-        $salario_neto_actual = 0;
-    }
+    // Si el salario neto actual es null o 0, inicializarlo correctamente
+    $salario_neto_actual = $salario_neto_actual ?? 0;
 
-    // Sumar el monto de horas extras al salario neto actual
-    
-    $nuevo_salario_neto = $salario_neto_actual + $monto_hora_extra;
+    // Solo sumar el monto de las horas extras si el salario neto ya existe
+    $nuevo_salario_neto = round($salario_neto_actual + $monto_hora_extra,1); // Aquí es donde sumas las horas extras
 
-    // Actualizar el salario neto con el nuevo valor calculado
-    $query_actualizar_salario_neto = "UPDATE planilla SET salario_neto = ? WHERE id_usuario = ?";
-    $stmt_actualizar_salario_neto = $conn->prepare($query_actualizar_salario_neto);
-    $stmt_actualizar_salario_neto->bind_param("di", $nuevo_salario_neto, $id_usuario);
-    $stmt_actualizar_salario_neto->execute();
 
-    // Verificar si la actualización fue exitosa
-    if ($stmt_actualizar_salario_neto->affected_rows > 0) {
-        echo "Salario neto actualizado exitosamente.";
-    } else {
-        echo "Error al actualizar el salario neto: " . $stmt_actualizar_salario_neto->error;
-    }
 
-    $stmt_actualizar_salario_neto->close();
+
+    // Actualizar salario neto en la base de datos
+    $query_update_salario = "UPDATE planilla SET salario_neto = ? WHERE id_usuario = ?";
+    $stmt_update = $conn->prepare($query_update_salario);
+    $stmt_update->bind_param("di", $nuevo_salario_neto, $id_usuario);
+    $stmt_update->execute();
+    $stmt_update->close();
+
+    /*
+        // Mostrar resultados
+        echo "Detalles de Horas Extras:<br>";
+        echo "Hora de Entrada: $hora_entrada<br>";
+        echo "Hora de Salida: $hora_salida<br>";
+        echo "Factor: $factor_pago <br>";
+        echo "Horas extras calculadas: $horas_extra horas<br>";
+        echo "Horas Extras Calculadas: $horas_int horas y $minutos_int minutos<br>";
+        echo "Monto por Horas Extras: ¢" . number_format($monto_hora_extra , 2, '.', ',') . "<br>";
+        echo "Nuevo Salario Neto: ¢" . number_format($nuevo_salario_neto, 2, '.', ',') . "<br>";
+        echo "Hora actual: " . date("Y-m-d H:i:s", $timestamp_actual) . "<br>";
+        echo "Es feriado: " . ($es_feriado ? 'Sí' : 'No') . "<br>";
+        echo "Es domingo: " . ($es_domingo ? 'Sí' : 'No') . "<br>";
+        echo "Salario neto actual: ¢" . number_format($salario_neto_actual, 2, '.', ',') . "<br>";
+        echo "Nuevo salario neto: ¢" . number_format($nuevo_salario_neto, 2, '.', ',') . "<br>";
+        */
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -163,10 +192,11 @@ if (isset($_POST['calcular_horas_extra'])) {
 
     <title>Registar Horas Extra</title>
 
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Bootstrap core CSS -->
-    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!--external css-->
     <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
     <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
@@ -404,54 +434,73 @@ if (isset($_POST['calcular_horas_extra'])) {
 
                 </head>
 
-                <body>
-                    <div class="container">
-                        <a href="VerPlanilla.php" class="button"><i class="bi bi-arrow-return-left"></i>
-                        </a>
-                        <h1 class="text-center">Calcular Horas Extras</h1>
+                <div class="container" >
+                    <a href="VerPlanilla.php" class="button"><i class="bi bi-arrow-return-left"></i></a>
+                    <h1 class="text-center" style="margin-left: 10%;">Calcular Horas Extras</h1>
 
-                        <!-- Formulario con un botón para calcular horas extras -->
-                        <div class="text-center">
+                    <!-- Formulario con un botón para calcular horas extras -->
+                    <div class="text-center">
+                        <form id="calcularHorasExtrasForm" method="POST">
 
-                            <form id="calcularHorasExtrasForm" method="POST">
+                          
+                            <select style="text-align: center; border-color: #333; font-size: 15px;" name="tipo_dia" id="tipo_dia" class="form-control">
+                                <option >Seleccione una opción</option>    
+                                <option value="Regular">Regular</option>
+                                <option value="Domingo">Domingo</option>
+                                <option value="Feriado">Feriado</option>
+                            </select>
 
+                            <button style="margin-top: 1%;" type="submit" name="calcular_horas_extra" id="calcular_horas_extra"
+                                class="btn">
+                                <i class="bi bi-calculator"> Calcular</i>
+                            </button>
+                            <a href="Usuario_Horasextra.php" class="btn btn" style="margin-top: 1%;"><i class="bi bi-search"></i></a>
 
+                            <a href="Eliminar_horas_extra.php" class="btn btn" style="margin-top: 1%;"><i class="bi bi-trash3-fill">Eliminar</i></a>
+                        </form>
+                    </div>
 
-                                <button type="submit" name="calcular_horas_extra" id="calcular_horas_extra"
-                                    class="btn btn-primary">Calcular Horas Extras</button>
+                    
+                    
 
-                                <a href="Eliminar_horas_extra.php" class="btn btn">Eliminar Horas Extras</a>
+                    <div>
+                        <?php if (isset($horas_extra) && isset($monto_hora_extra)): ?>
+                            <div class="alert alert-success mt-3 text-center mx-auto">
+                                <h4>Detalles de Horas Extras</h4>
+                                <p><strong>Hora de Entrada:</strong> <?php echo $hora_entrada; ?></p>
+                                <p><strong>Hora de Salida:</strong> <?php echo $hora_salida; ?></p>
 
-                            </form>
-                        </div>
+                                <?php if (isset($es_feriado) && $es_feriado): ?>
+                                    <p><strong>¡Hoy es un día feriado!</strong></p>
+                                <?php else: ?>
+                                    <p><strong>Pago de horas regulares.</strong></p>
+                                <?php endif; ?>
 
-                        <div>
-                            <?php if (isset($horas_extra) && isset($monto_hora_extra)): ?>
-                                <div class="alert alert-success mt-3 text-center mx-auto">
-                                    <h4>Detalles de Horas Extras</h4>
+                                <p><strong>Horas Extras Calculadas:</strong> <?php echo floor($horas_extra); ?> horas y
+                                    <?php echo round(($horas_extra - floor($horas_extra)) * 60); ?> minutos
+                                </p>
+                                <p><strong>Monto Pago por Horas Extras:</strong>
+                                    ¢<?php echo number_format($monto_hora_extra, 2); ?></p>
+                                <p><strong>Horas Extras registradas exitosamente</strong></p>
+                            </div>
+                        <?php endif; ?>
+                    </div>
 
-                                    <p><strong>Hora de Entrada:</strong> <?php echo $hora_entrada; ?></p>
-                                    <p><strong>Hora de Salida:</strong> <?php echo $hora_salida; ?></p>
-                                    <p><strong>Hora Actual (Servidor):</strong> <?php echo $hora_actual; ?></p>
-                                    <p><strong>Horas Extras Calculadas:</strong> <?php echo floor($horas_extra); ?> horas y
-                                        <?php echo round(($horas_extra - floor($horas_extra)) * 60); ?> minutos
-                                    </p>
-                                    <p><strong>Monto por Horas Extras:</strong>
-                                        ¢<?php echo number_format($monto_hora_extra, 2); ?></p>
-                                </div>
-                            <?php endif; ?>
+                    <div>
+                        <?php
+                        // Mostrar el mensaje de error si la URL contiene el parámetro hora_registrada=error
+                        if (isset($_GET['hora_registrada']) && $_GET['hora_registrada'] == 'error'): ?>
+                            <div class="alert alert-danger mt-3 text-center mx-auto">
+                                <strong> Ya se han registrado horas extras para este día</strong>.
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                    
+                    
+                </div>
 
-                        </div>
-
-                        <div>
-                            <?php
-                            // Mostrar el mensaje de error si la URL contiene el parámetro hora_registrada=error
-                            if (isset($_GET['hora_registrada']) && $_GET['hora_registrada'] == 'error'): ?>
-                                <div class="alert alert-success mt-3 text-center mx-auto">
-                                    ¡Ya se han registrado horas extras para este día!
-                                </div>
-                            <?php endif; ?>
-                        </div>
+                
+                
             </section>
 
 

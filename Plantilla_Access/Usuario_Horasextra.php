@@ -1,68 +1,23 @@
 <?php
 session_start();
-include "template.php";
+require 'template.php';
 require 'conexion.php';
 
-// Si se elimina una hora extra
-if (isset($_POST['eliminar_hora_extra'], $_POST['id_hora_extra'], $_POST['id_usuario'])) {
-    $id_hora_extra = $_POST['id_hora_extra']; // ID de la hora extra a eliminar
-    $id_usuario = $_POST['id_usuario']; // ID del usuario
+//include "template.php";
+// Verificar si el usuario está logueado
+$id_usuario = $_SESSION['id_usuario'];
 
-    // Verificar si la hora extra existe
-    $query_hora_extra = "SELECT horas, monto_pago FROM horas_extra WHERE id_horas_extra = ? AND id_usuario = ?";
-    if ($stmt_hora_extra = $conn->prepare($query_hora_extra)) {
-        $stmt_hora_extra->bind_param("ii", $id_hora_extra, $id_usuario);
-        $stmt_hora_extra->execute();
-        $stmt_hora_extra->bind_result($horas_extra, $monto_pago);
-        $stmt_hora_extra->fetch();
-        $stmt_hora_extra->close();
-
-        if ($horas_extra && $monto_pago) {
-            // Eliminar la hora extra
-            $query_eliminar = "DELETE FROM horas_extra WHERE id_horas_extra = ?";
-            if ($stmt_eliminar = $conn->prepare($query_eliminar)) {
-                $stmt_eliminar->bind_param("i", $id_hora_extra);
-                $stmt_eliminar->execute();
-                $stmt_eliminar->close();
-
-                // Obtener el salario neto actual
-                $query_salario_neto = "SELECT salario_neto FROM planilla WHERE id_usuario = ?";
-                if ($stmt_salario_neto = $conn->prepare($query_salario_neto)) {
-                    $stmt_salario_neto->bind_param("i", $id_usuario);
-                    $stmt_salario_neto->execute();
-                    $stmt_salario_neto->bind_result($salario_neto_actual);
-                    $stmt_salario_neto->fetch();
-                    $stmt_salario_neto->close();
-
-                    // Si el salario neto actual es mayor que el monto de la hora extra
-                    // solo restamos el monto de la hora extra
-                    if ($salario_neto_actual > $monto_pago) {
-                        // Restar el monto de las horas extras al salario neto
-                        $nuevo_salario_neto = round($salario_neto_actual - $monto_pago,1);
-                    } else {
-                        // Si el salario neto es menor o igual al monto, setear salario_neto a 0
-                        $nuevo_salario_neto = 0;
-                    }
-
-                    // Actualizar el salario neto en la base de datos
-                    $query_actualizar_salario = "UPDATE planilla SET salario_neto = ? WHERE id_usuario = ?";
-                    if ($stmt_actualizar_salario = $conn->prepare($query_actualizar_salario)) {
-                        $stmt_actualizar_salario->bind_param("di", $nuevo_salario_neto, $id_usuario);
-                        $stmt_actualizar_salario->execute();
-                        $stmt_actualizar_salario->close();
-                    }
-
-                    $_SESSION['mensaje_exito'] = "La hora extra ha sido eliminada correctamente.";
-                }
-
-            }
-        }
-    } else {
-        // Mensaje de error si no se encuentra la hora extra
-        $_SESSION['mensaje_error'] = "Hubo un problema al eliminar la hora extra. Intenta de nuevo.";
-    }
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: login.php");
+    exit();
 }
+
+
+
+
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -70,14 +25,17 @@ if (isset($_POST['eliminar_hora_extra'], $_POST['id_hora_extra'], $_POST['id_usu
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horas Extras Registradas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <title>Eliminar Horas Extra</title>
+    <title>Registar Horas Extra</title>
 
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Bootstrap core CSS -->
-    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!--external css-->
     <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
     <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
@@ -89,12 +47,20 @@ if (isset($_POST['eliminar_hora_extra'], $_POST['id_hora_extra'], $_POST['id_usu
     <link href="assets/css/style.css" rel="stylesheet">
     <link href="assets/css/style-responsive.css" rel="stylesheet">
 
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
 </head>
 
 <body>
     <section id="main-content">
         <section class="wrapper site-min-height">
-            <div class="container">
+
+        <div class="container">
+            
                 <a href="VerPlanilla.php" class="button"><i class="bi bi-arrow-return-left"></i>
                 </a>
                 <?php
@@ -110,7 +76,7 @@ if (isset($_POST['eliminar_hora_extra'], $_POST['id_hora_extra'], $_POST['id_usu
                 }
                 ?>
 
-                <h1>EliminarHoras Extras</h1>
+                <h1>Listado de Horas Extras</h1>
 
                 <table>
                     <thead>
@@ -118,15 +84,16 @@ if (isset($_POST['eliminar_hora_extra'], $_POST['id_hora_extra'], $_POST['id_usu
 
                             <th>Empleado</th>
                             <th>Usuario</th>
-                            <th>Horas Extra</th>
+                            <th>fecha</th>
+                            <th>Horas Extra Trabajadas</th>
                             <th>Monto Pago</th>
-                            <th>Acción</th>
+                            <th>Tipo</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         // Mostrar los resultados de las horas extras
-                        $sql_horas_extra = "SELECT u.username, u.nombre, u.apellido, 
+                        $sql_horas_extra = "SELECT u.username, u.nombre, u.apellido,h.fecha,h.tipo, 
                         SECOND(h.horas) AS horas, 
                         h.monto_pago, h.id_horas_extra, h.id_usuario 
                  FROM horas_extra h 
@@ -138,16 +105,11 @@ if (isset($_POST['eliminar_hora_extra'], $_POST['id_hora_extra'], $_POST['id_usu
                                 echo "<tr>
                             <td>" . $row['nombre'], " ", $row['apellido'] . "</td>
                             <td>" . $row['username'] . "</td>
+                            <td>" . $row['fecha'] . "</td>                       
                             <td>" . $row['horas'] . "</td>
                             <td>¢" . number_format($row['monto_pago'], 2) . "</td>
-                            <td>
-                                <form method='POST' action=''>
-                                    <input type='hidden' name='id_hora_extra' value='" . $row['id_horas_extra'] . "'>
-                                    <input type='hidden' name='id_usuario' value='" . $row['id_usuario'] . "'>
-                                    <button type='submit' name='eliminar_hora_extra' class='btn btn-danger'>
-                                    <i class='bi bi-trash'></i></button>
-                                </form>
-                            </td>
+                            <td>" . $row['tipo'] . "</td>
+
                         </tr>";
                             }
                         } else {
@@ -157,8 +119,8 @@ if (isset($_POST['eliminar_hora_extra'], $_POST['id_hora_extra'], $_POST['id_usu
                     </tbody>
                 </table>
             </div>
-        </section>
-    </section>
+
+
 </body>
 <style>
     body {
@@ -169,14 +131,12 @@ if (isset($_POST['eliminar_hora_extra'], $_POST['id_hora_extra'], $_POST['id_usu
     }
 
     .container {
-        width: 80%;
+        width: 100%;
         margin: 100px auto;
         padding: 20px;
         background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-
-
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
     }
 
     h1 {
@@ -211,6 +171,7 @@ if (isset($_POST['eliminar_hora_extra'], $_POST['id_hora_extra'], $_POST['id_usu
 
     .btn {
         display: inline-block;
+        background-color: #c9aa5f;
         color: white;
         padding: 10px 20px;
         font-size: 25px;
@@ -224,9 +185,13 @@ if (isset($_POST['eliminar_hora_extra'], $_POST['id_hora_extra'], $_POST['id_usu
 
 
 
-    .btn:hover {}
+    .btn:hover {
+        background-color: #c9aa5f;
+    }
 
-    .btn:active {}
+    .btn:active {
+        background-color: #c9aa5f;
+    }
 
     table {
         width: 100%;
@@ -234,9 +199,8 @@ if (isset($_POST['eliminar_hora_extra'], $_POST['id_hora_extra'], $_POST['id_usu
         margin-top: 20px;
         border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-
-   
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+        
     }
 
     th,
@@ -255,7 +219,7 @@ if (isset($_POST['eliminar_hora_extra'], $_POST['id_hora_extra'], $_POST['id_usu
     }
 
     tr:hover {
-        background-color: #f1f1f1;
+        background-color: #c9aa5f;
     }
 
     td {
@@ -266,7 +230,6 @@ if (isset($_POST['eliminar_hora_extra'], $_POST['id_hora_extra'], $_POST['id_usu
         text-align: center;
         font-style: italic;
         color: #888;
-        
     }
 
     /* Estilos del fondo del modal */
@@ -327,5 +290,24 @@ if (isset($_POST['eliminar_hora_extra'], $_POST['id_hora_extra'], $_POST['id_usu
         width: 100%;
     }
 </style>
+<script src="assets/js/jquery.js"></script>
+<script src="assets/js/jquery-1.8.3.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script class="include" type="text/javascript" src="assets/js/jquery.dcjqaccordion.2.7.js"></script>
+<script src="assets/js/jquery.scrollTo.min.js"></script>
+<script src="assets/js/jquery.nicescroll.js" type="text/javascript"></script>
+<script src="assets/js/jquery.sparkline.js"></script>
+
+
+<!--common script for all pages-->
+<script src="assets/js/common-scripts.js"></script>
+
+<script type="text/javascript" src="assets/js/gritter/js/jquery.gritter.js"></script>
+<script type="text/javascript" src="assets/js/gritter-conf.js"></script>
+
+<!--script for this page-->
+<script src="assets/js/sparkline-chart.js"></script>
+<script src="assets/js/zabuto_calendar.js"></script>
+
 
 </html>

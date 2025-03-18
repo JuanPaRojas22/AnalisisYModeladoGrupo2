@@ -1,14 +1,13 @@
 <?php
+require 'conexion.php';
 session_start();
-
+//include "template.php";
 // Verificar si el usuario está logueado
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: login.php");
     exit();
-
-
-
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -22,6 +21,7 @@ if (!isset($_SESSION['id_usuario'])) {
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
     <title>Registro Planilla</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
@@ -307,12 +307,6 @@ if (!isset($_SESSION['id_usuario'])) {
                 <!-- /MAIN CONTENT -->
                 <?php
                 // Conexión a la base de datos
-                $host = "localhost";
-                $usuario = "root";
-                $clave = "";
-                $bd = "gestionempleados";
-
-                $conn = new mysqli($host, $usuario, $clave, $bd);
 
                 $query = "SELECT id_beneficio, razon FROM beneficios";
                 $result = $conn->query($query);

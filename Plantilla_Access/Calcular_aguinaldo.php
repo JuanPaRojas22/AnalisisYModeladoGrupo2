@@ -241,6 +241,8 @@ ob_end_flush();  // Envía todo el contenido del búfer al navegador
         border-radius: 5px;
         margin-bottom: 20px;
         transition: background-color 0.3s;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+
     }
 
 
@@ -259,6 +261,8 @@ ob_end_flush();  // Envía todo el contenido del búfer al navegador
         margin-top: 20px;
         border-radius: 8px;
         overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+
     }
 
     th,

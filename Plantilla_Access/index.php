@@ -35,10 +35,11 @@
     <![endif]-->
     <style>
         .profile-container {
-            margin-left: 250px;
-            padding: 60px;
+            margin-left: 300px;
+            padding: 100px;
         }
     </style>
+	
 </head>
 
   <body>
@@ -283,6 +284,7 @@
       *********************************************************************************************************************************************************** -->                  
                   
                   <div class="col-lg-3 ds">
+					
                     <!--COMPLETED ACTIONS DONUTS CHART-->
 						<h3>NOTIFICATIONS</h3>
                                         
