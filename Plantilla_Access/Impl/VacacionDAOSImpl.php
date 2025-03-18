@@ -276,7 +276,7 @@ class VacacionDAOSImpl implements VacacionDAO
             echo "<script>alert('El empleado no tiene suficientes días de vacaciones disponibles.');</script>";
             return;
         }
-    
+
         // Se comprueba que el usuario no haya ingresado una fecha de inicio mayor a la fecha de fin
         if ($FechaInicio > $fecha_fin) {
             echo "La fecha de inicio no puede ser mayor a la fecha de fin";
