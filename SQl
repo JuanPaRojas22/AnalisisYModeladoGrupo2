@@ -909,6 +909,8 @@ DO
 
 --Cambios Esteven:
 
+ALTER TABLE permisos_laborales RENAME COLUMN id_beneficio TO id_permiso;
+
 ALTER TABLE horas_extra ADD COLUMN tipo ENUM('Regular', 'Domingo', 'Feriado') NOT NULL DEFAULT 'Regular';
 
 CREATE TABLE `historial_permisos` (
