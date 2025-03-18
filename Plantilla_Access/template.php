@@ -204,6 +204,8 @@ if (session_status() == PHP_SESSION_NONE) {
                                         <a href="vacaciones.php" class="nav-link">
                                             <i class="bi bi-gear"></i> Vacaciones
                                         </a>
+                                        <li><a href="SolicitarMedioDia.php"><i
+                                                class="bi bi-sun"></i><span>Medio dia de Vacaciones</span></a></li>
                                     </li>
                                     
                                 </ul>
