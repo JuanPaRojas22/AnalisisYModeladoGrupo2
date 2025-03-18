@@ -102,6 +102,32 @@ class HistorialVacacionesDAOSImpl implements historial_vacacionesDAO
 
     }
 
+    // Funcion para mostrar la cantidad de dias restanes de vacaciones de un empleado
+    public function getDiasRestantes($id_usuario){
+        $sql = "SELECT DiasRestantes FROM historial_vacaciones WHERE id_usuario = ?";
+
+        // Prepara la consulta
+        $stmt = $this->conn->prepare($sql);
+
+        // Enlaza el parámetro (i = entero)
+        $stmt->bind_param("i", $id_usuario);
+
+        // Ejecuta la consulta
+        $stmt->execute();
+
+        // Obtiene el resultado
+        $result = $stmt->get_result();
+
+        // Obtiene los dias tomados
+        $dias_tomados = null;
+        if ($row = $result->fetch_assoc()) {
+            $dias_tomados = $row['DiasRestantes'];
+        }
+            
+        // Devuelve los dias tomados
+        return $dias_tomados;
+    }
+
 }
 
 

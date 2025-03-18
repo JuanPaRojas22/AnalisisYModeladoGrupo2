@@ -115,7 +115,7 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
                             </li>
                             <li><a href="profile.php"><i class="fa fa-cogs"></i> Edit Profile</a></li>
                             <li><a href="settings.php"><i class="fa fa-cogs"></i> Settings</a></li>
-                            <li><a href="login.php"><i class="fa fa-sign-out"></i> Logout</a></li>
+                            <li><a href="logout.php"><i class="fa fa-sign-out"></i> Logout</a></li>
                         </ul>
                     </li>
 
@@ -206,6 +206,8 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
                                         <a href="vacaciones.php" class="nav-link">
                                             <i class="bi bi-gear"></i> Vacaciones
                                         </a>
+                                        <li><a href="SolicitarMedioDia.php"><i
+                                                class="bi bi-sun"></i><span>Medio dia de Vacaciones</span></a></li>
                                     </li>
 
                                 </ul>
