@@ -5,7 +5,7 @@ require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
 require_once __DIR__ . '/Impl/historialVacacionesDAOSImpl.php';
 include "template.php";
 
-// Inicializar las clases DAO
+ //Inicializar las clases DAO
 $UsuarioDAO = new UsuarioDAOSImpl();
 $VacacionDAO = new VacacionDAOSImpl();
 $HistorialVacacionDAO = new historialVacacionesDAOSImpl();
