@@ -6,6 +6,8 @@ class Vacacion
         public $razon;
         public $diasTomado;
         public $fecha_inicio;
+        public $fecha_fin;
+
         public $observaciones;
         public $id_departamento;
         public $id_estado;
