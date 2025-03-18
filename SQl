@@ -992,3 +992,36 @@ ALTER TABLE `permisos_laborales`
 ALTER TABLE `permisos_laborales`
   ADD CONSTRAINT `fk_permisos_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 COMMIT;
+
+-------------------------------
+Cambios para medio dia:
+cambiar DiasRestantes y diastomados a double en las tablas historailvaciones y vacaciones 
+
+
+
+CREATE TABLE `estado_permiso` (
+  `id_estado` int(11) NOT NULL,
+  `descripcion` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+
+
+ALTER TABLE `estado_permiso`
+  ADD PRIMARY KEY (`id_estado`);
+
+
+ALTER TABLE `estado_permiso`
+  MODIFY `id_estado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+COMMIT;
+
+
+insertar en la tabla Estado_permiso
+1 para Acetado
+2 para Pendiente
+3 para Rechazado
+
+
+
+
+
