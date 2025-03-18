@@ -7,6 +7,9 @@ if (!isset($_SESSION['id_usuario'])) {
     exit();
 }
 
+
+
+
 ?>
 
 
@@ -308,6 +311,7 @@ if (!isset($_SESSION['id_usuario'])) {
                             background-color: #f7f7f7;
                             margin: 0;
                             padding: 0;
+                            
                         }
 
                         .container {
@@ -325,6 +329,7 @@ if (!isset($_SESSION['id_usuario'])) {
                             margin-bottom: 50px;
                             margin-right: 10%;
                             font-weight: bold;
+                            
                         }
 
                         h3 {
@@ -347,16 +352,22 @@ if (!isset($_SESSION['id_usuario'])) {
                             border-radius: 5px;
                             margin-bottom: 20px;
                             transition: background-color 0.3s;
+                            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+
                         }
 
 
 
                         .btn:hover {
                             background-color: #c9aa5f;
+                            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+
                         }
 
                         .btn:active {
                             background-color: #c9aa5f;
+                            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+
                         }
 
                         table {
@@ -365,6 +376,8 @@ if (!isset($_SESSION['id_usuario'])) {
                             margin-top: 20px;
                             border-radius: 8px;
                             overflow: hidden;
+                            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+
                         }
 
                         th,
@@ -408,6 +421,8 @@ if (!isset($_SESSION['id_usuario'])) {
                             background-color: rgba(0, 0, 0, 0.5);
                             justify-content: center;
                             align-items: center;
+                            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+
                         }
 
                         /* Contenido del modal */
@@ -418,7 +433,7 @@ if (!isset($_SESSION['id_usuario'])) {
                             width: 300px;
                             text-align: center;
                             margin-bottom: 5%;
-
+                            
                         }
 
                         /* Botón de cerrar */
@@ -452,6 +467,7 @@ if (!isset($_SESSION['id_usuario'])) {
                             justify-content: space-between;
                             /* Distribuye el espacio entre los botones */
                             width: 100%;
+                            
                         }
                     </style>
                 </head>
@@ -496,6 +512,7 @@ if (!isset($_SESSION['id_usuario'])) {
                                 <a href="registrar_horas_extras.php">Registrar Horas extras</a>
                                 <a href="calcular_aguinaldo.php">Calcular Aguinaldos</a>
                                 <a href="RegistroPlanilla.php">Registrar Planilla</a>
+                                <a href="permisos_laborales.php">Permisos Laborales</a>
                                 <a href="aplicarBono.php">Aplicar Bono</a>
                                 <a href="actualizarSalarios.php">Ajustar Salario</a>
                                 <a href="aplicarRetenciones.php">Aplicar Deducción</a>
@@ -516,6 +533,8 @@ if (!isset($_SESSION['id_usuario'])) {
 
                         <div id="mensaje_alerta"></div>
 
+                       
+
 
                         <!-- Mostrar tabla con los cambios de puesto -->
                         <table>
@@ -530,7 +549,7 @@ if (!isset($_SESSION['id_usuario'])) {
                                     <th>Bonos</th>
                                     <th>Deduccion</th>
                                     <th style="text-align: center;">Total Deduccion<br>Quincenal</br>
-                                    <th>Salario neto</th>
+                                    <th>Salario neto Quincenal</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -556,7 +575,9 @@ if (!isset($_SESSION['id_usuario'])) {
                                 }
                                 ?>
                             </tbody>
+
                         </table>
+
                     </div>
             </section>
 </body>
@@ -671,6 +692,16 @@ if (!isset($_SESSION['id_usuario'])) {
         var nav = $("#" + id).data("navigation");
         var to = $("#" + id).data("to");
         console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
+    }
+
+
+
+    // Cerrar el modal si se hace clic fuera de él
+    window.onclick = function (event) {
+        var modal = document.getElementById("modalHorasExtras");
+        if (event.target == modal) {
+            cerrarModal("modalHorasExtras");
+        }
     }
 
 </script>
