@@ -256,7 +256,7 @@ session_start();
         <section id="main-content">
             <section class="wrapper site-min-height">
 
-            <?php
+                <?php
                 // Consulta para obtener los datos
                 $sql = "SELECT id_reporte_bac, id_usuario, cedula_bac, salario_neto, fecha_generacion, link_archivo FROM
                 Reporte_Bac";
@@ -270,13 +270,134 @@ session_start();
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <title>Reporte BAC</title>
-                    <link rel="stylesheet"
-                        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
                 </head>
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Ruda:wght@400;700&display=swap');
+
+                    body {
+                        font-family: 'Ruda', sans-serif;
+                        background-color: #f7f7f7;
+                        margin: 0;
+                        padding: 20px;
+                    }
+
+                    .container {
+                        max-width: 1000px;
+                        margin: auto;
+                        background: white;
+                        padding: 20px;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                        text-align: center;
+                    }
+
+                    h1 {
+                        color: #333;
+                        font-weight: bold;
+                        margin-bottom: 20px;
+                    }
+
+                    .btn-export {
+                        display: inline-block;
+                        background-color: #c9aa5f;
+                        color: white;
+                        padding: 12px 20px;
+                        font-size: 16px;
+                        font-weight: bold;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        margin-bottom: 20px;
+                        transition: background-color 0.3s;
+                        cursor: pointer;
+                        border: none;
+                    }
+
+                    .btn-export:hover {
+                        background-color: #b5935b;
+                    }
+
+                    .table-container {
+                        overflow-x: auto;
+                    }
+
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 10px;
+                    }
+
+                    th,
+                    td {
+                        padding: 12px;
+                        text-align: center;
+                        border-bottom: 1px solid #ddd;
+                    }
+
+                    th {
+                        background-color: #c9aa5f;
+                        color: white;
+                    }
+
+                    tr:hover {
+                        background-color: #f1f1f1;
+                    }
+
+                    .btn-more {
+                        background-color: #c9aa5f;
+                        color: white;
+                        padding: 6px 12px;
+                        font-size: 14px;
+                        font-weight: bold;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        transition: background-color 0.3s;
+                    }
+
+                    .btn-more:hover {
+                        background-color: #b5935b;
+                    }
+
+                    /* Estilos del detalle oculto */
+                    .details {
+                        display: none;
+                        background: #fff7e6;
+                        padding: 15px;
+                        border-radius: 8px;
+                        margin-top: 5px;
+                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                        transition: all 0.3s ease-in-out;
+                    }
+
+                    .details p {
+                        margin: 5px 0;
+                        font-size: 15px;
+                        text-align: left;
+                    }
+
+                    /* Animación para mostrar detalles */
+                    .details.show {
+                        display: block;
+                        animation: fadeIn 0.3s ease-in-out;
+                    }
+
+                    @keyframes fadeIn {
+                        from {
+                            opacity: 0;
+                            transform: translateY(-5px);
+                        }
+
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+                </style>
 
                 <body>
                     <div class="container mt-4">
-                        <h2 class="text-center">Reporte BAC</h2>
+                        <h1 class="text-center">Reporte BAC</h1>
                         <div class="row">
                             <div class="col-md-12">
                                 <table class="table table-bordered">
