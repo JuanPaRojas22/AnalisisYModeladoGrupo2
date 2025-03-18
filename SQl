@@ -904,3 +904,60 @@ CREATE EVENT AumentarDiasRestantesMensual
 ON SCHEDULE EVERY 1 MONTH
 DO
   CALL AumentarDiasRestantes();
+
+
+
+--Cambios Esteven:
+
+ALTER TABLE horas_extra ADD COLUMN tipo ENUM('Regular', 'Domingo', 'Feriado') NOT NULL DEFAULT 'Regular';
+
+CREATE TABLE `historial_permisos` (
+  `id_historial_permiso` int(11) NOT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
+  `FechaInicio` date DEFAULT NULL,
+  `FechaFin` int(11) DEFAULT NULL,
+  `DiasTomados` int(11) DEFAULT NULL,
+  `Razon` varchar(2500) DEFAULT NULL,
+  `Estado` enum('Pendiente','Aceptada','Rechazada') DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Indices de la tabla `historial_permisos`
+--
+ALTER TABLE `historial_permisos`
+  ADD PRIMARY KEY (`id_historial_permiso`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `historial_permisos`
+--
+ALTER TABLE `historial_permisos`
+  MODIFY `id_historial_permiso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+COMMIT;
+
+
+
+CREATE TRIGGER `actualizar_salario_neto` AFTER INSERT ON `deducciones`
+ FOR EACH ROW BEGIN
+    UPDATE planilla
+    SET salario_neto = salario_base - (
+        SELECT SUM(monto_quincenal) 
+        FROM deducciones 
+        WHERE id_usuario = NEW.id_usuario
+    )
+    WHERE id_usuario = NEW.id_usuario;
+END
+
+CREATE TRIGGER `historial_permisos` AFTER DELETE ON `permisos_laborales`
+ FOR EACH ROW BEGIN
+    INSERT INTO historial_permisos (id_historial_permiso, id_usuario, FechaInicio, FechaFin, DiasTomados, Razon, Estado)
+    VALUES (OLD.id_permiso, OLD.id_usuario, OLD.Fecha_inicio, OLD.Fecha_fin, OLD.dias_permiso, OLD.motivo, OLD.id_estado);
+END
+
+CREATE TRIGGER `set_salario_neto_before_insert` BEFORE INSERT ON `planilla`
+ FOR EACH ROW BEGIN
+    -- Se establece el salario_neto igual al salario_base al momento de la inserción
+    SET NEW.salario_neto = NEW.salario_base/2;
+END
