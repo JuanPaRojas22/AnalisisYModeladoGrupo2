@@ -937,17 +937,9 @@ ALTER TABLE `historial_permisos`
   MODIFY `id_historial_permiso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 COMMIT;
 
-
-
-CREATE TRIGGER `actualizar_salario_neto` AFTER INSERT ON `deducciones`
- FOR EACH ROW BEGIN
-    UPDATE planilla
-    SET salario_neto = salario_base - (
-        SELECT SUM(monto_quincenal) 
-        FROM deducciones 
-        WHERE id_usuario = NEW.id_usuario
-    )
-    WHERE id_usuario = NEW.id_usuario;
+BEGIN
+    -- Se establece el salario_neto igual al salario_base al momento de la inserción
+    SET NEW.salario_neto = NEW.salario_base/2;
 END
 
 CREATE TRIGGER `historial_permisos` AFTER DELETE ON `permisos_laborales`
