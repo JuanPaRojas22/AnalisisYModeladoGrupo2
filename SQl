@@ -939,21 +939,56 @@ ALTER TABLE `historial_permisos`
   MODIFY `id_historial_permiso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 COMMIT;
 
-CREATE TRIGGER `set_salario_neto_before_insert` BEFORE INSERT ON `planilla`
- FOR EACH ROW BEGIN
+DELIMITER $$
+
+CREATE TRIGGER `set_salario_neto_before_insert` 
+BEFORE INSERT ON `planilla`
+FOR EACH ROW 
+BEGIN
     -- Se establece el salario_neto igual al salario_base al momento de la inserción
-    SET NEW.salario_neto = NEW.salario_base/2;
-END
+    SET NEW.salario_neto = NEW.salario_base / 2;
+END $$
 
+DELIMITER ;
 
-CREATE TRIGGER `historial_permisos` AFTER DELETE ON `permisos_laborales`
- FOR EACH ROW BEGIN
+--------------------------------
+
+CREATE TABLE `permisos_laborales` (
+  `id_permiso` int(11) NOT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
+  `tipo_permiso` varchar(255) DEFAULT NULL,
+  `fecha_inicio` date DEFAULT NULL,
+  `fecha_fin` date DEFAULT NULL,
+  `dias_permiso` int(11) DEFAULT NULL,
+  `motivo` varchar(255) DEFAULT NULL,
+  `fechacreacion` date DEFAULT NULL,
+  `usuariocreacion` varchar(255) DEFAULT NULL,
+  `fechamodificacion` date DEFAULT NULL,
+  `usuariomodificacion` varchar(255) DEFAULT NULL,
+  `id_estado` int(11) DEFAULT 2
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+ 
+ 
+DELIMITER $$
+CREATE TRIGGER `historial_permisos` AFTER DELETE ON `permisos_laborales` FOR EACH ROW BEGIN
     INSERT INTO historial_permisos (id_historial_permiso, id_usuario, FechaInicio, FechaFin, DiasTomados, Razon, Estado)
     VALUES (OLD.id_permiso, OLD.id_usuario, OLD.Fecha_inicio, OLD.Fecha_fin, OLD.dias_permiso, OLD.motivo, OLD.id_estado);
 END
-
-CREATE TRIGGER `set_salario_neto_before_insert` BEFORE INSERT ON `planilla`
- FOR EACH ROW BEGIN
-    -- Se establece el salario_neto igual al salario_base al momento de la inserción
-    SET NEW.salario_neto = NEW.salario_base/2;
-END
+$$
+DELIMITER ;
+ 
+ 
+ALTER TABLE `permisos_laborales`
+  ADD PRIMARY KEY (`id_permiso`),
+  ADD KEY `fk_permisos_usuario` (`id_usuario`),
+  ADD KEY `fk_permisos_estado` (`id_estado`) USING BTREE;
+ 
+ 
+ALTER TABLE `permisos_laborales`
+  MODIFY `id_permiso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+ 
+ 
+ 
+ALTER TABLE `permisos_laborales`
+  ADD CONSTRAINT `fk_permisos_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
+COMMIT;
