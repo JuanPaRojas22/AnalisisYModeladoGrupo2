@@ -7,7 +7,11 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
 require_once __DIR__ . '/Impl/historialVacacionesDAOSImpl.php';
+include 'conexion.php'; 
 include "template.php";
+
+// Obtener el ID del departamento del usuario desde la sesión
+//$id_departamento = $_GET['id_departamento'] ?? null;
 
 // Se inicializan las clases UsuarioDAO, VacacionDAO y HistorialVacacionDAO 
 $UsuarioDAO = new UsuarioDAOSImpl();
@@ -15,10 +19,11 @@ $VacacionDAO = new VacacionDAOSImpl();
 $HistorialVacacionDAO = new historialVacacionesDAOSImpl();
 $user_id = $_SESSION['id_usuario'];
 
-// Obtiene los detalles del usuario por id
+// Obtiene los detalles del departamento de usuario por id
 $userDepartmentData = $UsuarioDAO->getUserDepartmentById($user_id);
 $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] : null;
 
+// Obtiene los dias restantes de vacaciones del usuario para mostrarselos en la vista
 $diasRestantes = $HistorialVacacionDAO->getDiasRestantes($user_id);
 
 // Logica para crear una vacacion utilizando el metodo de IngresarVacacion 
@@ -93,7 +98,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mensaje_exito = "Solicitud de vacaciones ingresada correctamente.";
         }
     }
+
+    /*
+    // Generar PDF
+    // Generar reporte de vacaciones
+    $sql = "SELECT 
+                    v.id_vacacion,
+                    u.nombre AS empleado,
+                    d.nombre AS departamento,
+                    v.razon,
+                    v.diasTomado,
+                    v.fecha_inicio,
+                    v.fecha_fin,
+                    h.DiasRestantes,
+                    ev.descripcion AS estado
+            FROM vacacion v
+                    LEFT JOIN usuario u ON v.id_usuario = u.id_usuario
+                    LEFT JOIN departamento d ON u.id_departamento = d.id_departamento
+                    LEFT JOIN estado_vacacion ev ON v.id_estado_vacacion = ev.id_estado_vacacion
+                    INNER JOIN historial_vacaciones h ON v.id_historial = h.id_historial
+            WHERE 
+                    (v.fecha_inicio BETWEEN ? AND ? 
+                    OR v.fecha_fin BETWEEN ? AND ? 
+                    OR (v.fecha_inicio <= ? AND v.fecha_fin >= ?))";
+
+    $params = [$fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin];
+
+    $params = [];
+    if ($id_usuario) { 
+    $sql .= " AND h.id_usuario = ?";
+    $params[] = $id_usuario;
+    }
+    if ($userDepartment) { 
+    $sql .= " AND u.id_departamento = ?";
+    $params[] = $userDepartment;
+    }
+
+    $stmt = $conn->prepare($sql);
+    if (!empty($params)) {
+        $stmt->bind_param(str_repeat("s", count($params)), ...$params); // Ensure the correct type and count
+    }
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $historial = $result->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+    */
 }
+
+
 
 
 ?>
@@ -365,6 +417,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 style="width:auto; background-color: #c9aa5f; color: white; padding: 10px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">
                                 Solicitar Medio Día
                             </button>
+
 
                             <div
                                 style="background-color: #d4edda; color: #155724; padding: 10px 20px; border-radius: 5px; text-align: center; font-size: 16px;">
