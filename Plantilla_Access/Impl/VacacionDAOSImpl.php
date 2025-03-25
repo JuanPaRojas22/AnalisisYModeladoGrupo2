@@ -257,7 +257,45 @@ class VacacionDAOSImpl implements VacacionDAO
 
     }
 
+    // Funcion para obtener las fechas ya reservadas por el empleado para que no pueda solicitar vacaciones en esas fechas
+    public function getFechasReservadas($id_usuario, $fecha_inicio, $fecha_fin){
+        $function_conn = $this->conn;
+        $stmt = $function_conn->prepare(
+            "SELECT V.fecha_inicio, V.fecha_fin
+            FROM vacacion V
+            WHERE V.id_estado_vacacion = 2 
+            AND V.id_usuario = ?
+            AND (
+                (V.fecha_inicio BETWEEN ? AND ?) OR
+                (V.fecha_fin BETWEEN ? AND ?) OR
+                (? BETWEEN V.fecha_inicio AND V.fecha_fin) OR
+                (? BETWEEN V.fecha_inicio AND V.fecha_fin)
+            )"
+        );
+        $stmt->bind_param(
+            "issssss",
+            $id_usuario,
+            $fecha_inicio,
+            $fecha_fin,
+            $fecha_inicio,
+            $fecha_fin,
+            $fecha_inicio,
+            $fecha_fin
+        );
+    
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $fechas_reservadas = [];
+        while ($row = $result->fetch_assoc()) {
+            $fechas_reservadas[] = $row;
+        }
+        $stmt->close();
+    
+        return $fechas_reservadas;
+    }
+    
 
+    // Funcion para ingresar una solicitud de vacaciones
     public function IngresarVacacion(
         $razon,
         $diasTomado,
@@ -299,8 +337,13 @@ class VacacionDAOSImpl implements VacacionDAO
             $errores[] = "La cantidad de días solicitados no coincide con las fechas ingresadas";
         }
 
-        
-
+        // Se compruebas que las fechas ingresadas no estén reservadas por el empleado
+        $fechas_reservadas = $this->getFechasReservadas($id_usuario, $FechaInicio, $fecha_fin->format('Y-m-d'));
+        if (!empty($fechas_reservadas)) {
+            foreach ($fechas_reservadas as $reservada) {
+                $errores[] = "El empleado ya tiene vacaciones reservadas del " . $reservada['fecha_inicio'] . " al " . $reservada['fecha_fin'];
+            }
+        }        
         
         // Se comprueba que las fechas ingresadas no sean feriados
         $feriados = $this->validaFechasFeriados($FechaInicio, $fecha_fin->format('Y-m-d'));
@@ -318,7 +361,8 @@ class VacacionDAOSImpl implements VacacionDAO
         }
     
         // Si es un medio día, el cálculo de días es 0.5
-        /*
+
+        
         if ($diasTomado == 0.5) {
             // Si el empleado pide medio día, solo se valida la fecha de inicio
             $dias_solicitados = 0.5;  // Medio día
@@ -338,7 +382,8 @@ class VacacionDAOSImpl implements VacacionDAO
         } else {
             $fecha_fin_str = null; // No se necesita la fecha de fin para medio día
         }
-            */
+
+        
     
         // Se ingresa la vacacion por el administrador
         $stmt = $function_conn->prepare(
@@ -349,6 +394,7 @@ class VacacionDAOSImpl implements VacacionDAO
         );
     
         // Se enlazan los parametros
+        $fecha_fin_formateada = $fecha_fin->format('Y-m-d');
         $stmt->bind_param(
             "ssssiissssiss",
             $razon,
@@ -363,7 +409,7 @@ class VacacionDAOSImpl implements VacacionDAO
             $usuariomodificacion,
             $id_estado_vacacion,
             $SolicitudEditar,
-            $fecha_fin->format('Y-m-d')
+            $fecha_fin_formateada
         );
     
         // Ejecuta la inserción

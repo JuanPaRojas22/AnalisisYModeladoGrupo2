@@ -29,6 +29,9 @@ interface VacacionDAO
     // Funcion para verificar que el empleado no exceda su limite anual de vacaciones
     public function validarDiasDisponibles($id_usuario, $diasTomado);
 
+    // Funcion para obtener las fechas ya reservadas por el empleado para que no pueda solicitar vacaciones en esas fechas
+    public function getFechasReservadas($id_usuario, $fecha_inicio, $fecha_fin);
+
     // Funcion para ingresar una solicitud de vacaciones
     public function IngresarVacacion($razon, $diasTomado, $FechaInicio, $observaciones, $id_usuario, $id_historial, $fechacreacion, 
                                      $usuariocreacion, $fechamodificacion, $usuariomodificacion, $id_estado_vacacion, $SolicitudEditar, $fecha_fin);
