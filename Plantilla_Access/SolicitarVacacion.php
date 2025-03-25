@@ -1,5 +1,9 @@
 <?php
 session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: login.php");
+    exit;
+}
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
 require_once __DIR__ . '/Impl/historialVacacionesDAOSImpl.php';
@@ -65,18 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($fecha_fin))
         $errores[] = "La fecha de fin";
 
-    // Validación de días disponibles
-    if (!$VacacionDAO->validarDiasDisponibles($id_usuario, $diasTomado)) {
-        $errores[] = "El empleado no tiene suficientes días de vacaciones disponibles.";
-    }
-
-    // Validación de fechas
-    if ($fecha_inicio > $fecha_fin) {
-        $errores[] = "La fecha de inicio no puede ser mayor a la fecha de fin.";
-    }
-
     if (empty($errores)) {
-        $VacacionDAO->IngresarVacacion(
+        $resultado = $VacacionDAO->IngresarVacacion(
             $razon,
             $diasTomado,
             $fecha_inicio,
@@ -91,7 +85,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $SolicitudEditar,
             $fecha_fin
         );
-        $mensaje_exito = "Solicitud de vacaciones ingresada correctamente.";
+
+        if(!empty($resultado)){
+            // Si el metodo devuelve errores, se guardan en el array de errores
+            $errores = array_merge($errores, $resultado);
+        } else{
+            $mensaje_exito = "Solicitud de vacaciones ingresada correctamente.";
+        }
     }
 }
 
@@ -382,7 +382,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <strong>Errores:</strong>
                                 <ul>
                                     <?php foreach ($errores as $error): ?>
-                                        <li><?php echo $error; ?></li>
+                                        <li><?= htmlspecialchars($error); ?></li>
                                     <?php endforeach; ?>
                                 </ul>
                             </div>
@@ -392,7 +392,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <?php if (!empty($mensaje_exito)): ?>
                             <div
                                 style="color: green; background: #ccffcc; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                                <?php echo $mensaje_exito; ?>
+                                <?= htmlspecialchars($mensaje_exito); ?>
                             </div>
                         <?php endif; ?>
 
@@ -445,6 +445,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <th>Apellido</th>
                                 <th>Departamento</th>
                                 <th>Fecha Inicio</th>
+                                <th>Fecha Fin</th>
                                 <th>Dias Tomados</th>
                                 <th>Dias Restantes</th>
                                 <th>Estado</th>
@@ -461,6 +462,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <td>" . $row['Apellido'] . "</td>
                                 <td>" . $row['Departamento'] . "</td>
                                 <td>" . $row['fecha_inicio'] . "</td>
+                                <td>" . $row['fecha_fin'] . "</td>
                                 <td>" . $row['diasTomado'] . "</td>
                                 <td>" . $row['DiasRestantes'] . "</td>
                                 <td>" . $row['descripcion'] . "</td>
