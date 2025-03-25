@@ -1,5 +1,9 @@
 <?php
 session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: login.php");
+    exit;
+}
 $conexion = new mysqli("localhost", "root", "", "gestionempleados");
 if ($conexion->connect_error) {
     die("Error de conexión: " . $conexion->connect_error);
