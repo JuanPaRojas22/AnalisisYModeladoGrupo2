@@ -1,12 +1,20 @@
-<?php
+<?php 
 // Conexión a la base de datos
 $conexion = new mysqli("localhost", "root", "", "gestionempleados");
 if ($conexion->connect_error) {
     die("Error de conexión: " . $conexion->connect_error);
 }
 
-// Consulta para obtener los datos de reporte_ins
-$sql = "SELECT * FROM reporte_ins";
+// Consulta para obtener los datos de las tablas usuario, planilla, nacionalidades, ocupaciones y departamento
+$sql = "SELECT u.id_usuario, u.nombre, u.apellido, u.correo_electronico, u.numero_telefonico, u.fecha_nacimiento, u.sexo, u.estado_civil, 
+               n.pais AS nacionalidad, o.nombre_ocupacion, p.jornada, p.hrs, p.salario_base, p.salario_neto, 
+               u.direccion_domicilio, p.tipo_quincena, d.nombre AS departamento 
+        FROM usuario u
+        JOIN planilla p ON u.id_usuario = p.id_usuario
+        JOIN nacionalidades n ON u.id_nacionalidad = n.id_nacionalidad
+        LEFT JOIN ocupaciones o ON u.id_ocupacion = o.id_ocupacion
+        LEFT JOIN departamento d ON u.id_departamento = d.id_departamento"; // Agregado JOIN a departamento
+
 $resultado = $conexion->query($sql);
 
 session_start();
@@ -159,7 +167,13 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
                     <th>Apellido</th>
                     <th>Correo</th>
                     <th>Teléfono</th>
-                    <th>Salario</th>
+                    <th>Salario Base</th>
+                    <th>Salario Neto</th>
+                    <th>Nacionalidad</th>
+                    <th>Ocupación</th>
+                    <th>Departamento</th>
+                    <th>Tipo de Quincena</th>
+                   
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -168,9 +182,17 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
                 <tr>
                     <td><?php echo $fila['nombre']; ?></td>
                     <td><?php echo $fila['apellido']; ?></td>
-                    <td><?php echo $fila['correo']; ?></td>
-                    <td><?php echo $fila['telefono']; ?></td>
-                    <td>₡<?php echo number_format($fila['salario'], 2); ?></td>
+                    <td><?php echo $fila['correo_electronico']; ?></td>
+                    <td><?php echo $fila['numero_telefonico']; ?></td>
+                    <td>₡<?php echo number_format($fila['salario_base'], 2); ?></td>
+                    <td>₡<?php echo number_format($fila['salario_neto'], 2); ?></td>
+                    <td><?php echo $fila['nacionalidad']; ?></td>
+                    <td><?php echo $fila['nombre_ocupacion']; ?></td>
+                    <td><?php echo $fila['departamento']; ?></td>
+                    <td><?php echo $fila['tipo_quincena']; ?></td>
+                    
+
+                    
                     <td>
                         <button class="btn-more" onclick="toggleDetails('details-<?php echo $fila['id_usuario']; ?>')">
                             Ver más
@@ -178,15 +200,12 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
                     </td>
                 </tr>
                 <tr class="details" id="details-<?php echo $fila['id_usuario']; ?>">
-                    <td colspan="6">
+                    <td colspan="10">
                         <p><strong>Fecha Nacimiento:</strong> <?php echo $fila['fecha_nacimiento']; ?></p>
                         <p><strong>Sexo:</strong> <?php echo $fila['sexo']; ?></p>
                         <p><strong>Estado Civil:</strong> <?php echo $fila['estado_civil']; ?></p>
-                        <p><strong>Nacionalidad:</strong> <?php echo $fila['nacionalidad']; ?></p>
                         <p><strong>Jornada:</strong> <?php echo $fila['jornada']; ?></p>
-                        <p><strong>Días Trabajados:</strong> <?php echo $fila['dias']; ?></p>
                         <p><strong>Horas Trabajadas:</strong> <?php echo $fila['hrs']; ?></p>
-                        <p><strong>Ocupación:</strong> <?php echo $fila['ocupacion']; ?></p>
                     </td>
                 </tr>
                 <?php } ?>
@@ -209,9 +228,7 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
 </body>
 </html>
 
-
 <?php
 // Cerrar la conexión
 $conexion->close();
 ?>
-

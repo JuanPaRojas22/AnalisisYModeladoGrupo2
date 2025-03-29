@@ -171,7 +171,7 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
                                 <ul class="sub">
                                     <li><a href="calendar.html">Calendar</a></li>
                                     <li><a href="gallery.html">Gallery</a></li>
-                                    <li><a href="todo_list.html">Todo List</a></li>
+                                
                                     <li><a href="Dias_Feriados.php">Feriados</a></li>
                                 </ul>
                             </li>
@@ -214,7 +214,8 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
                             <li><a href="beneficios.php"><i class="bi bi-sun"></i><span>Beneficios</span></a></li>
                         </ul>
                         </li>
-
+                        <li><a href="preguntasfreq.php">Preguntas Frecuentes</a></li>
+ 
                         </li>
 
 
