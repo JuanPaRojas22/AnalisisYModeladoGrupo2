@@ -11,20 +11,20 @@ include 'conexion.php';
 include "template.php";
 
 // Obtener el ID del departamento del usuario desde la sesión
-//$id_departamento = $_GET['id_departamento'] ?? null;
+$id_departamento = $_GET['id_departamento'] ?? null;
 
 // Se inicializan las clases UsuarioDAO, VacacionDAO y HistorialVacacionDAO 
 $UsuarioDAO = new UsuarioDAOSImpl();
 $VacacionDAO = new VacacionDAOSImpl();
 $HistorialVacacionDAO = new historialVacacionesDAOSImpl();
-$user_id = $_SESSION['id_usuario'];
+$id_usuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null;
 
 // Obtiene los detalles del departamento de usuario por id
-$userDepartmentData = $UsuarioDAO->getUserDepartmentById($user_id);
+$userDepartmentData = $UsuarioDAO->getUserDepartmentById($id_usuario);
 $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] : null;
 
 // Obtiene los dias restantes de vacaciones del usuario para mostrarselos en la vista
-$diasRestantes = $HistorialVacacionDAO->getDiasRestantes($user_id);
+$diasRestantes = $HistorialVacacionDAO->getDiasRestantes($id_usuario);
 
 // Logica para crear una vacacion utilizando el metodo de IngresarVacacion 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $diasTomado = $_POST['diasTomado'] ?? '';
     $razon = $_POST['razon'] ?? '';
     $observaciones = $_POST['observaciones'] ?? '';
-    $id_usuario = $user_id;
+    $id_usuario = $id_usuario;
     // Tengo que ingresar el historial de vacaciones del usuario actual
     $id_historial = $HistorialVacacionDAO->getHistorialVacaciones($id_usuario);
     $fechacreacion = date("Y-m-d H:i:s");
@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    /*
+    
     // Generar PDF
     // Generar reporte de vacaciones
     $sql = "SELECT 
@@ -118,31 +118,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     LEFT JOIN estado_vacacion ev ON v.id_estado_vacacion = ev.id_estado_vacacion
                     INNER JOIN historial_vacaciones h ON v.id_historial = h.id_historial
             WHERE 
+                    h.id_usuario = ? AND
                     (v.fecha_inicio BETWEEN ? AND ? 
                     OR v.fecha_fin BETWEEN ? AND ? 
                     OR (v.fecha_inicio <= ? AND v.fecha_fin >= ?))";
 
-    $params = [$fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin];
+    $params = [$id_usuario, $fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin];
 
-    $params = [];
-    if ($id_usuario) { 
-    $sql .= " AND h.id_usuario = ?";
-    $params[] = $id_usuario;
-    }
+    //$params = [];
+    //if ($id_usuario) { 
+        //$sql .= " AND h.id_usuario = ?";
+        //$params[] = $id_usuario;
+    //}
     if ($userDepartment) { 
-    $sql .= " AND u.id_departamento = ?";
-    $params[] = $userDepartment;
+        $sql .= " AND u.id_departamento = ?";
+        $params[] = $userDepartment;
     }
 
     $stmt = $conn->prepare($sql);
     if (!empty($params)) {
         $stmt->bind_param(str_repeat("s", count($params)), ...$params); // Ensure the correct type and count
     }
+
+    
     $stmt->execute();
     $result = $stmt->get_result();
     $historial = $result->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
-    */
+    
 }
 
 
@@ -214,7 +217,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // Consulta para obtener el departamento del usuario
                 
-                $result = $VacacionDAO->getVacacionesSolicitadas($user_id);
+                $result = $VacacionDAO->getVacacionesSolicitadas($id_usuario);
 
 
                 ?>
@@ -418,6 +421,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 Solicitar Medio Día
                             </button>
 
+                            <form action="generar_reporteVacaciones.php" method="GET">
+
+                                <label for="fecha_inicio">Fecha Inicio:</label>
+                                <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control"
+                                    placeholder="Ingrese la fecha de inicio" autofocus required>
+
+                                <label for="fecha_fin">Fecha Fin:</label>
+                                <input type="date" id="fecha_fin" name="fecha_fin" class="form-control"
+                                    placeholder="Ingrese la fecha de fin" autofocus required>
+
+                                <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($id_usuario) ?>">
+                                <input type="hidden" name="id_departamento" value="<?= htmlspecialchars($id_departamento) ?>">
+                                <button type="submit" class="btn btn-danger">Descargar PDF</button>
+                            </form> 
 
                             <div
                                 style="background-color: #d4edda; color: #155724; padding: 10px 20px; border-radius: 5px; text-align: center; font-size: 16px;">

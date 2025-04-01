@@ -1,5 +1,9 @@
 <?php 
 session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: login.php");
+    exit;
+}
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 require_once __DIR__ . '/Impl/Historial_Solicitud_Modificacion_VacacionesDAOSImpl.php';
 include "template.php";
@@ -226,7 +230,7 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                                     <th>Dias Tomados</th>
                                     <th>Dias Restantes</th>
                                     <th>Estado</th>
-                                    <th>Detalles</th>
+                                    <th>Accion</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -243,9 +247,11 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                                 <td>" . $row['dias_solicitados'] . "</td>
                                 <td>" . $row['DiasRestantes']. "</td>
                                 <td>" . $row['estado']. "</td>
-                                <td><a class='btn btn-success' style='font-size: 2.5rem;' href='detalleEditarVacacion.php?id=" . $row['id_historial_solicitud_modificacion'] . "' >
-                                    <i class='bi bi-file-earmark-person'></i> 
-                                </a></td>
+                                <td>
+                                    <a class='btn btn-success' style='font-size: 2.5rem;' href='detalleEditarVacacion.php?id=" . $row['id_historial_solicitud_modificacion'] . "' >
+                                        <i class='bi bi-file-earmark-person'></i> 
+                                    </a>
+                                </td>
                               </tr>";
                                     }
                                 } else {

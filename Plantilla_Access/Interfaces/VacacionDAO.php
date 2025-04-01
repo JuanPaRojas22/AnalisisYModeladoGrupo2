@@ -15,10 +15,10 @@ interface VacacionDAO
     public function getSolicitudesPendientes($id_departamento);
 
     // Funcion para aprobar una solicitud de vacaciones
-    public function aprobarSolicitud($id_vacacion);
+    public function aprobarSolicitud($id_vacacion, $diasTomado, $id_usuario);
 
     // Funcion para rechazar una solicitud de vacaciones
-    public function rechazarSolicitud($id_vacacion);
+    public function rechazarSolicitud($id_vacacion, $diasTomado, $id_usuario);
 
     // Funcion que calcula los dias de vacaciones disponibles de un empleado
     public function calcularDiasDisponibles($id_usuario, $diasTomado, $fecha_inicio, $DiasRestantes);

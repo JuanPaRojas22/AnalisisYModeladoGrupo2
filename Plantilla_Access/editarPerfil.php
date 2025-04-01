@@ -92,158 +92,105 @@ if (isset($_GET['id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil de Usuario</title>
-    <link rel="stylesheet" href="assets/css/bootstrap.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
     <style>
-        .profile-header {
-            display: flex;
-            align-items: center;
-            background: #f8f9fa;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
-        .profile-header img {
-            width: 120px;
-            height: 120px;
+        .card {
+            padding: 20px;
+        }
+        .img-fluid {
             border-radius: 50%;
-            margin-right: 20px;
+            width: 150px;
+            height: 150px;
         }
-        .profile-container {
-            max-width: 900px;
-            margin: auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        #perfil-usuario {
-            margin-top: 35px; 
-            margin-left: 210px;
-            width: 80%;
-        }
-        .header-section {
+        .btn-primary {
             background-color: #007bff;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            border-radius: 10px 10px 0 0;
-            font-size: 20px;
-            font-weight: bold;
-        }
-        .card.p-4.shadow-lg {
-            padding: 40px;
-            min-height: 600px;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
         }
     </style>
-
-
 </head>
-
-
 <body>
-    <div id="perfil-usuario" class="container mt-5">
-        <div class="card p-4 shadow-lg">
-            
+    <div class="container">
+        <div class="card">
             <div class="row">
-                <!-- Imagen de perfil -->
                 <div class="col-md-3 text-center">
-                    <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" width="200" class="img-fluid rounded-circle">
+                    <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" class="img-fluid">
                 </div>
-                
-                <!-- Información del usuario -->
                 <div class="col-md-9">
-                    <h3 class="mb-4">Información del Usuario</h3>
-                    <div class="row"> 
-
-                        <form action="profile.php" method="post" enctype="multipart/form-data">
-                            <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($user['id_usuario']); ?>">
-                            <div class="col-md-9">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="nombre">Nombre:</label>
-                                            <input type="text" class="form-control" id="nombre" name="nombre" value="<?php echo htmlspecialchars($user['nombre']); ?>" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="apellido">Apellido:</label>
-                                            <input type="text" class="form-control" id="apellido" name="apellido" value="<?php echo htmlspecialchars($user['apellido']); ?>" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
-                                            <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" value="<?php echo htmlspecialchars($user['fecha_nacimiento']); ?>" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="fecha_ingreso">Fecha de Ingreso:</label>
-                                            <input type="date" class="form-control" id="fecha_ingreso" name="fecha_ingreso" value="<?php echo htmlspecialchars($user['fecha_ingreso']); ?>" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="correo_electronico">Correo Electrónico:</label>
-                                            <input type="email" class="form-control" id="correo_electronico" name="correo_electronico" value="<?php echo htmlspecialchars($user['correo_electronico']); ?>" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="username">Nombre de Usuario:</label>
-                                            <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required>
-                                        </div>
-                                        <div class="form-group">
+                    <h3>Información del Usuario</h3>
+                    <form action="profile.php" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($user['id_usuario']); ?>">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Nombre:</label>
+                                <input type="text" class="form-control" name="nombre" value="<?php echo htmlspecialchars($user['nombre']); ?>" required>
+                                <label>Apellido:</label>
+                                <input type="text" class="form-control" name="apellido" value="<?php echo htmlspecialchars($user['apellido']); ?>" required>
+                                <label>Fecha de Nacimiento:</label>
+                                <input type="date" class="form-control" name="fecha_nacimiento" value="<?php echo htmlspecialchars($user['fecha_nacimiento']); ?>" required>
+                                <label>Fecha de Ingreso:</label>
+                                <input type="date" class="form-control" name="fecha_ingreso" value="<?php echo htmlspecialchars($user['fecha_ingreso']); ?>" required>
+                                <label>Correo Electrónico:</label>
+                                <input type="email" class="form-control" name="correo_electronico" value="<?php echo htmlspecialchars($user['correo_electronico']); ?>" required>
+                                <div class="form-group">
                                             <label for="direccion_imagen">Foto de perfil:</label>
                                             <input type="file" class="form-control" id="direccion_imagen" name="direccion_imagen" accept="image/*">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="numero_telefonico">Número Telefónico:</label>
-                                            <input type="text" class="form-control" id="numero_telefonico" name="numero_telefonico" value="<?php echo htmlspecialchars($user['numero_telefonico']); ?>" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="direccion_domicilio">Dirección de Domicilio:</label>
-                                            <input type="text" class="form-control" id="direccion_domicilio" name="direccion_domicilio" value="<?php echo htmlspecialchars($user['direccion_domicilio']); ?>" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="estado_civil">Estado Civil:</label>
-                                            <select id="estado_civil" name="estado_civil" class="form-control" required>
-                                                <option value="">Seleccione estado civil</option>
-                                                <option value="Soltero" <?php echo ($user['estado_civil'] == 'Soltero') ? 'selected' : ''; ?>>Soltero</option>
-                                                <option value="Casado" <?php echo ($user['estado_civil'] == 'Casado') ? 'selected' : ''; ?>>Casado</option>
-                                                <option value="Divorciado" <?php echo ($user['estado_civil'] == 'Divorciado') ? 'selected' : ''; ?>>Divorciado</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="sexo">Sexo:</label>
-                                            <select id="sexo" name="sexo" class="form-control" required>
-                                                <option value="M" <?php echo ($user['sexo'] == 'M') ? 'selected' : ''; ?>>M</option>
-                                                <option value="F" <?php echo ($user['sexo'] == 'F') ? 'selected' : ''; ?>>F</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="id_ocupacion">Ocupación:</label>
-                                            <select id="id_ocupacion" name="id_ocupacion" class="form-control">
-                                                <?php while ($row = $ocupaciones->fetch_assoc()) {
-                                                    $selected = ($row['id_ocupacion'] == $user['id_ocupacion']) ? 'selected' : '';
-                                                    echo '<option value="' . $row['id_ocupacion'] . '" ' . $selected . '>' . $row['nombre_ocupacion'] . '</option>';
-                                                } ?>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="id_nacionalidad">Nacionalidad:</label>
-                                            <select id="id_nacionalidad" name="id_nacionalidad" class="form-control">
-                                                <?php while ($row = $nacionalidades->fetch_assoc()) {
-                                                    $selected = ($row['id_nacionalidad'] == $user['id_nacionalidad']) ? 'selected' : '';
-                                                    echo '<option value="' . $row['id_nacionalidad'] . '" ' . $selected . '>' . $row['pais'] . '</option>';
-                                                } ?>
-                                            </select>
-                                        </div>
-                                        <br/>
-                                        <button type="submit" class="btn btn-primary mt-3">Actualizar</button>
-                                    </div>
                                 </div>
+                                
                             </div>
-                        </form>
-                    </div>
+                            <div class="col-md-6">
+                                <label>Usuario:</label>
+                                <input type="text" class="form-control" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required>
+                                <label>Teléfono:</label>
+                                <input type="text" class="form-control" name="numero_telefonico" value="<?php echo htmlspecialchars($user['numero_telefonico']); ?>" required>
+                                <label>Dirección:</label>
+                                <input type="text" class="form-control" name="direccion_domicilio" value="<?php echo htmlspecialchars($user['direccion_domicilio']); ?>" required>
+                                <label>Estado Civil:</label>
+                                <select name="estado_civil" class="form-control" required>
+                                    <option value="">Seleccione estado civil</option>
+                                    <option value="Soltero" <?php echo ($user['estado_civil'] == 'Soltero') ? 'selected' : ''; ?>>Soltero</option>
+                                    <option value="Casado" <?php echo ($user['estado_civil'] == 'Casado') ? 'selected' : ''; ?>>Casado</option>
+                                    <option value="Divorciado" <?php echo ($user['estado_civil'] == 'Divorciado') ? 'selected' : ''; ?>>Divorciado</option>
+                                </select>
+                                <label>Sexo:</label>
+                                <select name="sexo" class="form-control" required>
+                                    <option value="M" <?php echo ($user['sexo'] == 'M') ? 'selected' : ''; ?>>M</option>
+                                    <option value="F" <?php echo ($user['sexo'] == 'F') ? 'selected' : ''; ?>>F</option>
+                                </select>
+                                <label>Ocupación:</label>
+                                <select name="id_ocupacion" class="form-control">
+                                    <?php while ($row = $ocupaciones->fetch_assoc()) {
+                                        $selected = ($row['id_ocupacion'] == $user['id_ocupacion']) ? 'selected' : '';
+                                        echo '<option value="' . $row['id_ocupacion'] . '" ' . $selected . '>' . $row['nombre_ocupacion'] . '</option>';
+                                    } ?>
+                                </select>
+                                <label>Nacionalidad:</label>
+                                <select name="id_nacionalidad" class="form-control">
+                                    <?php while ($row = $nacionalidades->fetch_assoc()) {
+                                        $selected = ($row['id_nacionalidad'] == $user['id_nacionalidad']) ? 'selected' : '';
+                                        echo '<option value="' . $row['id_nacionalidad'] . '" ' . $selected . '>' . $row['pais'] . '</option>';
+                                    } ?>
+                                </select>
+                            </div>
+                                
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">Actualizar</button>
+                    </form>
                 </div>
             </div>
         </div>

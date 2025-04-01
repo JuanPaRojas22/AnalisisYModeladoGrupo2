@@ -27,22 +27,22 @@ if(isset($_GET['id']) && isset($_GET['accion'])){
         return $id_usuario;
     }
     // Función para obtener el correo del usuario basado en su ID
-function obtenerCorreoUsuario($id_usuario) {
-    $conexion = new mysqli("localhost", "root", "", "GestionEmpleados");
-    if ($conexion->connect_error) {
-        die("Conexión fallida: " . $conexion->connect_error);
-    }
-    $sql = "SELECT correo_electronico FROM usuario WHERE id_usuario = ?";
+    function obtenerCorreoUsuario($id_usuario) {
+        $conexion = new mysqli("localhost", "root", "", "GestionEmpleados");
+        if ($conexion->connect_error) {
+            die("Conexión fallida: " . $conexion->connect_error);
+        }
+        $sql = "SELECT correo_electronico FROM usuario WHERE id_usuario = ?";
 
-    $stmt = $conexion->prepare($sql);
-    $stmt->bind_param("i", $id_usuario);
-    $stmt->execute();
-    $stmt->bind_result($correo);
-    $stmt->fetch();
-    $stmt->close();
-    $conexion->close();
-    return $correo;
-}
+        $stmt = $conexion->prepare($sql);
+        $stmt->bind_param("i", $id_usuario);
+        $stmt->execute();
+        $stmt->bind_result($correo);
+        $stmt->fetch();
+        $stmt->close();
+        $conexion->close();
+        return $correo;
+    }
 
 
     // Funcion para obtener el id_vacacion basado en el id_historial_solicitud_modificacion

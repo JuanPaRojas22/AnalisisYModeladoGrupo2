@@ -88,8 +88,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <style>
-        body { font-family: Arial, Helvetica, sans-serif; }
-        * { box-sizing: border-box; }
+        body {
+            font-family: 'Ruda', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 2000px;
+            margin: 50px auto 200px 250px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 50px;
+            font-weight: bold;
+        }
 
         input[type=text], input[type=date], input[type=number] {
             width: 100%;
@@ -105,40 +126,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             outline: none;
         }
 
-        button {
-            background-color: #04AA6D;
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #c9aa5f; /* Color amarillo */
             color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            opacity: 0.9;
+            padding: 10px 20px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            border: none; /* Elimina cualquier borde */
+            outline: none; /* Evita resplandores al hacer clic */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6); /* Sombra negra, no verde */
         }
 
-        button:hover {
-            opacity: 1;
+        /* Cambio de color al pasar el mouse */
+        .btn:hover {
+            background-color: darkgray; /* Mismo efecto del botón "Solicitar" */
+        }
+        .btn1 {
+            display: inline-block;
+            background-color: green; /* Color verde para el botón */
+            color: white;
+            padding: 10px 20px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6); /* Sombra normal */
+            border: none; /* Elimina cualquier borde negro */
         }
 
-        .cancelbtn {
-            padding: 14px 20px;
-            background-color: #f44336;
+        /* Cambio de color al pasar el mouse */
+        .btn1:hover {
+            background-color: darkgreen; /* Se oscurece en hover */
         }
 
-        .container {
-            padding: 16px;
-            max-width: 1000px;
-            width: 80%;
-            margin: 70px auto;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-        }
-
-        @media screen and (max-width: 600px) {
-            .container {
-                width: 100%;
-            }
+        /* Contenedor para alinear el botón a la derecha */
+        .clearfix {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -164,8 +202,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="text" placeholder="Ingrese la razón" name="razon_modificacion" required>
 
         <div class="clearfix">
-            <button type="submit" class="signupbtn">Solicitar</button>
+            <button type="submit" class="btn1">Solicitar</button>
         </div>
+        
     </form>
 </div>
 

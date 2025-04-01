@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ . '/../Interfaces/VacacionDAO.php';
 require_once __DIR__ . '/../Models/Vacacion.php';
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: login.php");
+    exit;
+}
 
 class VacacionDAOSImpl implements VacacionDAO
 {
@@ -119,40 +123,68 @@ class VacacionDAOSImpl implements VacacionDAO
     }
 
     // Funcion para aprobar una solicitud de vacaciones
-    public function aprobarSolicitud($id_vacacion)
+    public function aprobarSolicitud($id_vacacion, $diasTomado, $id_usuario)
     {
         $function_conn = $this->conn;
+        // Se actualiza el estado de la solicitud de vacaciones a aprobado (estado 2)
         $stmt = $function_conn->prepare(
             "UPDATE vacacion
             SET id_estado_vacacion = 2 -- Estado 2 es Aprobado
             WHERE id_vacacion = ?"
         );
-        $stmt->bind_param(
-            "i",
-            $id_vacacion
-        );
+
+        // Se enlazan los parámetros
+        $stmt->bind_param("i", $id_vacacion);
+        // Ejecuta la actualización
         $stmt->execute();
-        echo "Solicitud aprobada" . "<br>";
         $stmt->close();
+
+
+        // Se tiene que restar los días de vacaciones tomados a los días restantes
+        $stmt1 = $function_conn->prepare(
+            "UPDATE historial_vacaciones
+            SET DiasRestantes = DiasRestantes - ?
+            WHERE id_usuario = ?"
+        );
+
+        // Se enlazan los parámetros
+        $stmt1->bind_param("ii", $diasTomado, $id_usuario);
+        // Ejecuta la actualización
+        $stmt1->execute();
+        $stmt1->close();
 
     }
 
     // Funcion para rechazar una solicitud de vacaciones
-    public function rechazarSolicitud($id_vacacion)
+    public function rechazarSolicitud($id_vacacion, $diasTomado, $id_usuario)
     {
         $function_conn = $this->conn;
+        // Se actualiza el estado de la solicitud de vacaciones a rechazado (estado 3)
         $stmt = $function_conn->prepare(
             "UPDATE vacacion
             SET id_estado_vacacion = 3 -- Estado 3 es Rechazado
             WHERE id_vacacion = ?"
         );
-        $stmt->bind_param(
-            "i",
-            $id_vacacion
-        );
+
+        // Se enlazan los parámetros
+        $stmt->bind_param("i", $id_vacacion);
+        // Ejecuta la actualización
         $stmt->execute();
-        echo "Solicitud rechazada" . "<br>";
         $stmt->close();
+
+        // Se tiene que restar los días de vacaciones tomados a los días restantes
+        $stmt1 = $function_conn->prepare(
+            "UPDATE historial_vacaciones
+            SET DiasRestantes = DiasRestantes - ?
+            WHERE id_usuario = ?"
+        );
+        
+        // Se enlazan los parámetros
+        $stmt1->bind_param("ii", $diasTomado, $id_usuario);
+        // Ejecuta la actualización
+        $stmt1->execute();
+        $stmt1->close();
+
 
     }
 
@@ -359,8 +391,9 @@ class VacacionDAOSImpl implements VacacionDAO
         if(!empty($errores)){
             return $errores;
         }
+    
+        // Se enlazan los parametros
         $fecha_fin_formateada = $fecha_fin->format('Y-m-d');
-
         // Si es un medio día, el cálculo de días es 0.5
 
         
@@ -371,7 +404,7 @@ class VacacionDAOSImpl implements VacacionDAO
         } else {
             // Si no es medio día, calcula la cantidad de días solicitados
             $fecha_inicio = new DateTime($FechaInicio);
-            $fecha_fin_obj = new DateTime(datetime: $fecha_fin_formateada); // Definir la fecha de fin solo si no es medio día
+            $fecha_fin_obj = new DateTime($fecha_fin_formateada); // Definir la fecha de fin solo si no es medio día
     
             // Se suma 1 porque si se toma vacaciones del 1 al 1, se cuenta como 1 día
             $dias_solicitados = $fecha_fin_obj->diff($fecha_inicio)->days + 1;
@@ -394,7 +427,7 @@ class VacacionDAOSImpl implements VacacionDAO
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         );
     
-        // Se enlazan los parametros
+        
         $stmt->bind_param(
             "ssssiissssiss",
             $razon,
@@ -413,20 +446,6 @@ class VacacionDAOSImpl implements VacacionDAO
         );
     
         // Ejecuta la inserción
-        $stmt->execute();
-        $stmt->close();
-    
-        // Se tiene que restar los días de vacaciones tomados a los días restantes
-        $stmt = $function_conn->prepare(
-            "UPDATE historial_vacaciones
-            SET DiasRestantes = DiasRestantes - ?
-            WHERE id_usuario = ?"
-        );
-    
-        // Se enlazan los parámetros
-        $stmt->bind_param("ii", $diasTomado, $id_usuario);
-    
-        // Ejecuta la actualización
         $stmt->execute();
         $stmt->close();
     
