@@ -1,4 +1,3 @@
-
 <?php
 header('Content-Type: text/html; charset=utf-8');
 
@@ -320,10 +319,11 @@ if (isset($_GET['id'])) {
 
                 <h1 text-center>Información del Empleado</h1>
                 <table class="user-details">
-                <form method="get" action="generar_reporte_usuario.php" accept-charset="UTF-8">
-                    <input type="hidden" name="id_usuario" value="<?php echo $user['id_usuario']; ?>">
-                    <button type="submit" class="btn btn-success">Generar Reporte PDF</button>
-                </form>
+                    <form method="get" action="generar_reporte_usuario.php" accept-charset="UTF-8">
+                        <input type="hidden" name="id_usuario" value="<?php echo $user['id_usuario']; ?>">
+                        <button type="submit" class="button ">Generar Reporte PDF</button>
+
+                    </form>
                     <tr>
                         <td>
                             <?php
@@ -358,8 +358,8 @@ if (isset($_GET['id'])) {
                         <td><?php echo htmlspecialchars($user['estado_civil']); ?></td>
                     </tr>
                     <tr>
-                        <th>Cargo</th>
-                        <td><?php echo htmlspecialchars($user['cargo']); ?></td>
+                        <th>Ocupación</th>
+                        <td><?php echo htmlspecialchars($user['id_ocupacion']); ?></td>
                     </tr>
                     <tr>
                         <th>Correo Electrónico</th>
@@ -388,81 +388,160 @@ if (isset($_GET['id'])) {
                 </table>
 
                 <!-- Enlace para volver a la lista de usuarios -->
-                <a href="MostrarUsuarios.php" class="btn btn-success">Volver a la lista de usuarios</a>
+
             </section>
         </section>
-
+        <a href="MostrarUsuarios.php" class="btn">Volver a la lista de usuarios</a>
         <!-- Estilos CSS -->
         <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f7f7f7;
+                margin: 0;
+                padding: 0;
+            }
+
+            button:hover,
+            .btn:hover {
+                
+                /* Cambia a negro al pasar el cursor */
+                color: black;
+                /* Asegura que el texto siga siendo visible */
+                font-weight: bold;
+
+            }
+
+            .form-group {
+                text-align: center;
+
+                /* Centra el contenido del div */
+            }
+
+            .form-control {
+                display: block;
+                margin: 0 auto;
+                text-align: center;
+                width: 100%;
+                /* Asegura que el input ocupe todo el ancho disponible */
+                max-width: 200px;
+                /* Opcional: limita el ancho para evitar que se vea muy grande */
+            }
+
+            .container {
+                width: 80%;
+                margin: 50px auto;
+                padding: 20px;
+                background-color: #ffffff;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.69);
+            }
+
             h1 {
                 text-align: center;
-                font-size: 24;
-                color: black;
-            }
-
-            /* Estilo para la tabla de detalles del usuario */
-            .user-details {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
-                font-size: 15px;
-
-
-            }
-
-            .user-details th,
-            .user-details td {
-                padding: 20px;
-                text-align: left;
-                border: 8px solid #ddd;
-                border-color: rgb(119, 152, 189);
-                color: rgb(20, 20, 20);
-
-            }
-
-            .user-details th {
-                background-color: #f4f4f4;
-                font-weight: bold;
-            }
-
-            .user-details td {
-                background-color: rgb(255, 255, 255);
-            }
-
-            .user-details tr:nth-child(even) td {
-                background-color: #f1f1f1;
+                color: #333;
+                margin-bottom: 30px;
             }
 
             .btn {
-
-                padding: 10px 20px;
-                /* Ajusta el tamaño del botón */
-                margin-top: 10px;
-                /* Agregar margen superior */
-                cursor: pointer;
-                border-radius: 5px;
-                text-decoration: none;
-                border: 1px solid transparent;
+                width: 42%;
                 display: inline-block;
+                background-color: #c9aa5f;
+                color: white;
+                padding: 10px 20px;
+                font-size: 16px;
+
                 text-align: center;
-                /* Centra el texto dentro del botón */
-                width: auto;
+                text-decoration: none;
+                border-radius: 5px;
+                margin-bottom: 20px;
+                transition: background-color 0.3s;
+                margin-left: 35%;
+                margin-top: -40%;
+                font-weight: bold;
+
+
+
+            }
+
+            form {
+                width: 100%;
+            }
+
+            label {
+                font-size: 16px;
+                color: #333;
+                margin-bottom: 8px;
+                display: block;
+                text-align: center;
+
+            }
+
+            input,
+            textarea,
+            button {
+                width: 50%;
+                padding: 10px;
+                font-size: 16px;
+                margin-bottom: 20px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                margin-left: 25%;
+                transition: background-color 0.3s;
+                font-weight: bold;
+
+            }
+
+            button {
+                background-color: #c9aa5f;
+                color: white;
+                border: none;
+                cursor: pointer;
+
+            }
+
+
+            select {
+                width: 100%;
+                padding: 10px;
+                font-size: 16px;
+                border: 2px solidrgb(15, 15, 15);
+                border-radius: 5px;
+                background: #f9f9f9;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-align: center;
+            }
+
+            select:hover {
+                border-color: #a88c4a;
+            }
+
+            select:focus {
+                outline: none;
+                border-color: #805d24;
+                box-shadow: 0 0 5px rgba(200, 150, 60, 0.6);
+            }
+
+            .tr {
+                text-align: center;
+            }
+
+            table {
+                width: 50%;
+                border-collapse: collapse;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+                margin: 0 auto;
+                /* Centra la tabla en la página */
+                border-collapse: collapse;
+                color: black;
+                /* Opcional: mejora la visualización */
+
             }
         </style>
 
 
-
-
-        <!--main content end-->
-        <!--footer start-->
-        <footer class="site-footer">
-            <div class="text-center">
-                2014 - Alvarez.is
-                <a href="blank.html#" class="go-top">
-                    <i class="fa fa-angle-up"></i>
-                </a>
-            </div>
-        </footer>
         <!--footer end-->
     </section>
 

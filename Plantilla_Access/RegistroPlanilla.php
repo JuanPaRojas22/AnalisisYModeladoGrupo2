@@ -1,7 +1,9 @@
 <?php
-require 'conexion.php';
+
 session_start();
-//include "template.php";
+require 'conexion.php';
+require "template.php";
+
 // Verificar si el usuario está logueado
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: login.php");
@@ -42,478 +44,257 @@ if (!isset($_SESSION['id_usuario'])) {
 </head>
 
 <body>
-
-    <section id="container">
-        <!-- **********************************************************************************************************************************************************
-      TOP BAR CONTENT & NOTIFICATIONS
-      *********************************************************************************************************************************************************** -->
-        <!--header start-->
-        <header class="header black-bg">
-            <div class="sidebar-toggle-box">
-                <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
-            </div>
-            <!--logo start-->
-            <a href="index.php" class="logo"><b>DASHGUM FREE</b></a>
-            <!--logo end-->
-            <div class="nav notify-row" id="top_menu">
-                <!--  notification start -->
-                <ul class="nav top-menu">
-                    <!-- settings start -->
-                    <li class="dropdown">
-                        <a data-toggle="dropdown" class="dropdown-toggle" href="index.php#">
-                            <i class="fa fa-tasks"></i>
-                            <span class="badge bg-theme">4</span>
-                        </a>
-                        <ul class="dropdown-menu extended tasks-bar">
-                            <div class="notify-arrow notify-arrow-green"></div>
-                            <li>
-                                <p class="green">You have 4 pending tasks</p>
-                            </li>
-                            <li>
-                                <a href="index.php#">
-                                    <div class="task-info">
-                                        <div class="desc">DashGum Admin Panel</div>
-                                        <div class="percent">40%</div>
-                                    </div>
-                                    <div class="progress progress-striped">
-                                        <div class="progress-bar progress-bar-success" role="progressbar"
-                                            aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
-                                            <span class="sr-only">40% Complete (success)</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="index.php#">
-                                    <div class="task-info">
-                                        <div class="desc">Database Update</div>
-                                        <div class="percent">60%</div>
-                                    </div>
-                                    <div class="progress progress-striped">
-                                        <div class="progress-bar progress-bar-warning" role="progressbar"
-                                            aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                                            <span class="sr-only">60% Complete (warning)</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="index.php#">
-                                    <div class="task-info">
-                                        <div class="desc">Product Development</div>
-                                        <div class="percent">80%</div>
-                                    </div>
-                                    <div class="progress progress-striped">
-                                        <div class="progress-bar progress-bar-info" role="progressbar"
-                                            aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
-                                            <span class="sr-only">80% Complete</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="index.php#">
-                                    <div class="task-info">
-                                        <div class="desc">Payments Sent</div>
-                                        <div class="percent">70%</div>
-                                    </div>
-                                    <div class="progress progress-striped">
-                                        <div class="progress-bar progress-bar-danger" role="progressbar"
-                                            aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width: 70%">
-                                            <span class="sr-only">70% Complete (Important)</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="external">
-                                <a href="#">See All Tasks</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <!-- settings end -->
-                    <!-- inbox dropdown start-->
-                    <li id="header_inbox_bar" class="dropdown">
-                        <a data-toggle="dropdown" class="dropdown-toggle" href="index.php#">
-                            <i class="fa fa-envelope-o"></i>
-                            <span class="badge bg-theme">5</span>
-                        </a>
-                        <ul class="dropdown-menu extended inbox">
-                            <div class="notify-arrow notify-arrow-green"></div>
-                            <li>
-                                <p class="green">You have 5 new messages</p>
-                            </li>
-                            <li>
-                                <a href="index.php#">
-                                    <span class="photo"><img alt="avatar" src="assets/img/ui-zac.jpg"></span>
-                                    <span class="subject">
-                                        <span class="from">Zac Snider</span>
-                                        <span class="time">Just now</span>
-                                    </span>
-                                    <span class="message">
-                                        Hi mate, how is everything?
-                                    </span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="index.php#">
-                                    <span class="photo"><img alt="avatar" src="assets/img/ui-divya.jpg"></span>
-                                    <span class="subject">
-                                        <span class="from">Divya Manian</span>
-                                        <span class="time">40 mins.</span>
-                                    </span>
-                                    <span class="message">
-                                        Hi, I need your help with this.
-                                    </span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="index.php#">
-                                    <span class="photo"><img alt="avatar" src="assets/img/ui-danro.jpg"></span>
-                                    <span class="subject">
-                                        <span class="from">Dan Rogers</span>
-                                        <span class="time">2 hrs.</span>
-                                    </span>
-                                    <span class="message">
-                                        Love your new Dashboard.
-                                    </span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="index.php#">
-                                    <span class="photo"><img alt="avatar" src="assets/img/ui-sherman.jpg"></span>
-                                    <span class="subject">
-                                        <span class="from">Dj Sherman</span>
-                                        <span class="time">4 hrs.</span>
-                                    </span>
-                                    <span class="message">
-                                        Please, answer asap.
-                                    </span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="index.php#">See all messages</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <!-- inbox dropdown end -->
-                </ul>
-                <!--  notification end -->
-            </div>
-            <div class="top-menu">
-                <ul class="nav pull-right top-menu">
-                    <li><a class="logout" href="login.php">Logout</a></li>
-                </ul>
-            </div>
-        </header>
-        <!--header end-->
-
-        <!-- **********************************************************************************************************************************************************
-      MAIN SIDEBAR MENU
-      *********************************************************************************************************************************************************** -->
-        <!--sidebar start-->
-        <aside>
-            <div id="sidebar" class="nav-collapse ">
-                <!-- sidebar menu start-->
-                <ul class="sidebar-menu" id="nav-accordion">
-
-                    <p class="centered"><a href="profile.html"><img src="assets/img/ui-sam.jpg" class="img-circle"
-                                width="60"></a></p>
-                    <h5 class="centered">Marcel Newman</h5>
-
-                    <li class="mt">
-                        <a href="index.php">
-                            <i class="fa fa-dashboard"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-
-                    <li class="sub-menu">
-                        <a href="javascript:;">
-                            <i class="fa fa-desktop"></i>
-                            <span>UI Elements</span>
-                        </a>
-                        <ul class="sub">
-                            <li><a href="general.html">General</a></li>
-                            <li><a href="buttons.html">Buttons</a></li>
-                            <li><a href="panels.html">Panels</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="sub-menu">
-                        <a href="javascript:;">
-                            <i class="fa fa-cogs"></i>
-                            <span>Components</span>
-                        </a>
-                        <ul class="sub">
-                            <li><a href="calendar.html">Calendar</a></li>
-                            <li><a href="gallery.html">Gallery</a></li>
-                            <li><a href="todo_list.html">Todo List</a></li>
-                        </ul>
-                    </li>
-                    <li class="sub-menu">
-                        <a class="active" href="javascript:;">
-                            <i class="fa fa-book"></i>
-                            <span>Extra Pages</span>
-                        </a>
-                        <ul class="sub">
-                            <li class="active"><a href="blank.html">Blank Page</a></li>
-                            <li><a href="login.php">Login</a></li>
-                            <li><a href="lock_screen.html">Lock Screen</a></li>
-                        </ul>
-                    </li>
-                    <li class="sub-menu">
-                        <a href="javascript:;">
-                            <i class="fa fa-tasks"></i>
-                            <span>Forms</span>
-                        </a>
-                        <ul class="sub">
-                            <li><a href="form_component.html">Form Components</a></li>
-                        </ul>
-                    </li>
-                    <li class="sub-menu">
-                        <a href="javascript:;">
-                            <i class="fa fa-th"></i>
-                            <span>Data Tables</span>
-                        </a>
-                        <ul class="sub">
-                            <li><a href="basic_table.html">Basic Table</a></li>
-                            <li><a href="responsive_table.html">Responsive Table</a></li>
-                        </ul>
-                    </li>
-                    <li class="sub-menu">
-                        <a href="javascript:;">
-                            <i class=" fa fa-bar-chart-o"></i>
-                            <span>Charts</span>
-                        </a>
-                        <ul class="sub">
-                            <li><a href="morris.html">Morris</a></li>
-                            <li><a href="chartjs.html">Chartjs</a></li>
-                        </ul>
-                    </li>
-
-                </ul>
-                <!-- sidebar menu end-->
-            </div>
-        </aside>
-        <!--sidebar end-->
-
-        <!-- **********************************************************************************************************************************************************
+    <!-- **********************************************************************************************************************************************************
       MAIN CONTENT
       *********************************************************************************************************************************************************** -->
-        <!--main content start-->
-        <section id="main-content">
-            <section class="wrapper site-min-height">
-                <h1></h1>
-                <!-- /MAIN CONTENT -->
-                <?php
-                // Conexión a la base de datos
+    <!--main content start-->
+    <section id="main-content">
+        <section class="wrapper site-min-height">
+            <h1></h1>
+            <!-- /MAIN CONTENT -->
+            <?php
+            // Conexión a la base de datos
+            
+            $query = "SELECT id_beneficio, razon FROM beneficios";
+            $result = $conn->query($query);
+            $query = "SELECT id_usuario, nombre FROM usuario"; // Reemplaza con el nombre correcto de la tabla
+            $result = $conn->query($query);
 
-                $query = "SELECT id_beneficio, razon FROM beneficios";
-                $result = $conn->query($query);
-                $query = "SELECT id_usuario, nombre FROM usuario"; // Reemplaza con el nombre correcto de la tabla
-                $result = $conn->query($query);
+            // Verificar si la conexión fue exitosa
+            if ($conn->connect_error) {
+                die("Error de conexión: " . $conn->connect_error);
+            }
 
-                // Verificar si la conexión fue exitosa
-                if ($conn->connect_error) {
-                    die("Error de conexión: " . $conn->connect_error);
-                }
+            // Variables para almacenar los mensajes de error y éxito
+            $mensaje = "";
 
-                // Variables para almacenar los mensajes de error y éxito
-                $mensaje = "";
-
-                // Procesar el formulario cuando se envía
-                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    // Obtener los datos del formulario
-                    $id_usuario = $_POST['id_usuario'];
-                    $salario_base = $_POST['salario_base'];
-                    $hora_entrada= $_POST['hora_entrada'];
-                    $hora_salida= $_POST['hora_salida'];
-
-
+            // Procesar el formulario cuando se envía
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Obtener los datos del formulario
+                $id_usuario = $_POST['id_usuario'];
+                $salario_base = $_POST['salario_base'];
+                $hora_entrada = $_POST['hora_entrada'];
+                $hora_salida = $_POST['hora_salida'];
 
 
-                    // Verificar si el usuario ya está registrado en la planilla
-                    $checkQuery = "SELECT id_usuario FROM planilla WHERE id_usuario = ?";
-                    $stmtCheck = $conn->prepare($checkQuery);
-                    $stmtCheck->bind_param("i", $id_usuario);
-                    $stmtCheck->execute();
-                    $stmtCheck->store_result();
 
-                    if ($stmtCheck->num_rows > 0) {
-                        $mensaje = "Error: Este usuario ya está registrado en la planilla.";
-                    } else {
-                        // Insertar en la tabla de planilla si no existe
-                
-                        // Insertar los datos en la base de datos
-                        $query = "INSERT INTO planilla (id_usuario,salario_base,hora_entrada,hora_salida) 
+
+                // Verificar si el usuario ya está registrado en la planilla
+                $checkQuery = "SELECT id_usuario FROM planilla WHERE id_usuario = ?";
+                $stmtCheck = $conn->prepare($checkQuery);
+                $stmtCheck->bind_param("i", $id_usuario);
+                $stmtCheck->execute();
+                $stmtCheck->store_result();
+
+                if ($stmtCheck->num_rows > 0) {
+                    $mensaje = "Error: Este usuario ya está registrado en la planilla.";
+                } else {
+                    // Insertar en la tabla de planilla si no existe
+            
+                    // Insertar los datos en la base de datos
+                    $query = "INSERT INTO planilla (id_usuario,salario_base,hora_entrada,hora_salida) 
                         VALUES ('$id_usuario',  '$salario_base','$hora_entrada','$hora_salida')";
 
 
-                        if ($conn->query($query) === TRUE) {  
-                            $mensaje = "Empleado registrado con exito.";
+                    if ($conn->query($query) === TRUE) {
+                        $mensaje = "Empleado registrado con exito.";
 
-                        } else {
-                            $mensaje = "Error al registrar al empleado: " . $conn->error;  
-                        }
-
+                    } else {
+                        $mensaje = "Error al registrar al empleado: " . $conn->error;
                     }
+
                 }
-                ?>
+            }
+            ?>
 
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                
-                </head>
+            <body>
+                <div class="container">
 
-                <body>
-                    <div class="container">
+                    <h1>Registrar Empleado en Planilla</h1>
+                    <a href="VerPlanilla.php" class="button"><i class="bi bi-arrow-return-left"></i>
+                    </a> <!-- Botón para ir al historial -->
+                    <!-- Mostrar mensaje de éxito o error -->
+                    <?php if ($mensaje): ?>
+                        <p><?php echo $mensaje; ?></p>
+                    <?php endif; ?>
 
-                        <h1>Registrar Empleado en Planilla</h1>
-                        <a href="VerPlanilla.php" class="button"><i class="bi bi-arrow-return-left"></i>
-                        </a> <!-- Botón para ir al historial -->
-                        <!-- Mostrar mensaje de éxito o error -->
-                        <?php if ($mensaje): ?>
-                            <p><?php echo $mensaje; ?></p>
-                        <?php endif; ?>
+                    <!-- Formulario para registrar el empleado en planilla -->
+                    <form action="RegistroPlanilla.php" method="POST" class="filter-form">
 
-                        <!-- Formulario para registrar el empleado en planilla -->
-                        <form action="RegistroPlanilla.php" method="POST">
+                        <label for="id_usuario">Usuario:</label>
+                        <select name="id_usuario" required>
+                            <option value="">Seleccione un usuario</option>
+                            <?php
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                echo "<option value='{$row['id_usuario']}'>{$row['nombre']}</option>";
+                            }
+                            ?>
+                        </select>
 
-                            <label for="id_usuario">Usuario:</label>
-                            <select name="id_usuario" required>
-                                <option value="">Seleccione un usuario</option>
-                                <?php
-                                while ($row = mysqli_fetch_assoc($result)) {
-                                    echo "<option value='{$row['id_usuario']}'>{$row['nombre']}</option>";
-                                }
-                                ?>
-                            </select>
+                        <div class="form-group"  style="text-align: center;">
+                            <label for="hora_entrada" class="control-label">Hora de Entrada:</label>
+                            <input type="time" id="hora_entrada" name="hora_entrada" class="form-control" required>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="hora_entrada" class="control-label">Hora de Entrada:</label>
-                                <input type="time" id="hora_entrada" name="hora_entrada" class="form-control" required>
-                            </div>
+                        <div class="form-group">
+                            <label for="hora_salida" class="control-label">Hora de Salida:</label>
+                            <input type="time" id="hora_salida" name="hora_salida" class="form-control" required>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="hora_salida" class="control-label">Hora de Salida:</label>
-                                <input type="time" id="hora_salida" name="hora_salida" class="form-control" required>
-                            </div>
+                        <label for="salario_base">Salario Base:</label>
+                        <input type="number" name="salario_base" required style="text-align: center">
 
-                            <label for="salario_base">Salario Base:</label>
-                            <input type="number" name="salario_base" required>
+                        <button type="submit">Registrar Empleado</button>
 
-                            <button type="submit">Registrar Empleado</button>
+                    </form>
 
-                        </form>
+                </div>
+            </body>
 
-                    </div>
-                </body>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f7f7f7;
+                    margin: 0;
+                    padding: 0;
+                }
 
-                <style>
-                        body {
-                            font-family: Arial, sans-serif;
-                            background-color: #f7f7f7;
-                            margin: 0;
-                            padding: 0;
-                        }
+                .form-group {
+                    text-align: center;
+                    /* Centra el contenido del div */
+                }
 
-                        .container {
-                            width: 80%;
-                            margin: 50px auto;
-                            padding: 20px;
-                            background-color: #ffffff;
-                            border-radius: 8px;
-                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.69);
-                        }
+                .form-control {
+                    display: block;
+                    margin: 0 auto;
+                    text-align: center;
+                    width: 100%;
+                    /* Asegura que el input ocupe todo el ancho disponible */
+                    max-width: 200px;
+                    /* Opcional: limita el ancho para evitar que se vea muy grande */
+                }
 
-                        h1 {
-                            text-align: center;
-                            color: #333;
-                            margin-bottom: 30px;
-                        }
+                .container {
+                    width: 80%;
+                    margin: 50px auto;
+                    padding: 20px;
+                    background-color: #ffffff;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.69);
+                }
 
-                        .button {
-                            display: inline-block;
-                            background-color: #c9aa5f;
-                            color: white;
-                            padding: 10px 20px;
-                            font-size: 16px;
-                            font-weight: bold;
-                            text-align: center;
-                            text-decoration: none;
-                            border-radius: 5px;
-                            margin-bottom: 20px;
-                            transition: background-color 0.3s;
-                        }
+                h1 {
+                    text-align: center;
+                    color: #333;
+                    margin-bottom: 30px;
+                }
 
-                        .button:hover {
-                            background-color: rgb(159, 176, 59);
-                        }
+                .button {
+                    display: inline-block;
+                    background-color: #c9aa5f;
+                    color: white;
+                    padding: 10px 20px;
+                    font-size: 16px;
+                    font-weight: bold;
+                    text-align: center;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    margin-bottom: 20px;
+                    transition: background-color 0.3s;
+                }
 
-                        form {
-                            width: 100%;
-                        }
+                .button:hover {
+                    background-color: rgb(159, 176, 59);
+                }
 
-                        label {
-                            font-size: 16px;
-                            color: #333;
-                            margin-bottom: 8px;
-                            display: block;
-                        }
+                form {
+                    width: 100%;
+                }
 
-                        input,
-                        textarea,
-                        button {
-                            width: 100%;
-                            padding: 10px;
-                            font-size: 16px;
-                            margin-bottom: 20px;
-                            border: 1px solid #ccc;
-                            border-radius: 5px;
-                        }
+                label {
+                    font-size: 16px;
+                    color: #333;
+                    margin-bottom: 8px;
+                    display: block;
+                    text-align: center;
 
-                        button {
-                            background-color: #c9aa5f;
-                            color: white;
-                            border: none;
-                            cursor: pointer;
-                        }
+                }
 
-                        button:hover {
-                            background-color: rgb(114, 132, 52);
-                        }
-                    </style>
+                input,
+                textarea,
+                button {
+                    width: 100%;
+                    padding: 10px;
+                    font-size: 16px;
+                    margin-bottom: 20px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                }
 
-                </html>
+                button {
+                    background-color: #c9aa5f;
+                    color: white;
+                    border: none;
+                    cursor: pointer;
+                }
+
+                button:hover {
+                    background-color: rgb(114, 132, 52);
+                }
+
+                select {
+                    width: 100%;
+                    padding: 10px;
+                    font-size: 16px;
+                    border: 2px solidrgb(15, 15, 15);
+                    border-radius: 5px;
+                    background: #f9f9f9;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    text-align: center;
+                }
+
+                select:hover {
+                    border-color: #a88c4a;
+                }
+
+                select:focus {
+                    outline: none;
+                    border-color: #805d24;
+                    box-shadow: 0 0 5px rgba(200, 150, 60, 0.6);
+                 
+                }
+            </style>
+
+</html>
 
 
-                <?php
-                // Cerrar la conexión
-                $conn->close();
-                ?>
+<?php
+// Cerrar la conexión
+$conn->close();
+?>
 
-            </section>
-        </section>
-        <!--main content end-->
+</section>
+</section>
+<!--main content end-->
 
-        <!--footer start-->
-        <footer class="site-footer">
-            <div class="text-center">
-                2014 - Alvarez.is
-                <a href="blank.html#" class="go-top">
-                    <i class="fa fa-angle-up"></i>
-                </a>
-            </div>
-        </footer>
-        <!--footer end-->
-    </section>
+<!--footer start-->
+<footer class="site-footer">
+    <div class="text-center">
+        2014 - Alvarez.is
+        <a href="blank.html#" class="go-top">
+            <i class="fa fa-angle-up"></i>
+        </a>
+    </div>
+</footer>
+<!--footer end-->
+</section>
 
-    <!-- js placed at the end of the document so the pages load faster -->
-    <script src="assets/js/jquery.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/jquery-ui-1.9.2.custom.min.js"></script>
-    <script src="assets/js/jquery.ui.touch-punch.min.js"></script>
-    <script class="include" type="text/javascript" src="assets/js/jquery.dcjqaccordion.2.7.js"></script>
-    <script src="assets/js/jquery.scrollTo.min.js"></script>
-    <script src="assets/js/jquery.nicescroll.js" type="text/javascript"></script>
+<!-- js placed at the end of the document so the pages load faster -->
+<script src="assets/js/jquery.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/jquery-ui-1.9.2.custom.min.js"></script>
+<script src="assets/js/jquery.ui.touch-punch.min.js"></script>
+<script class="include" type="text/javascript" src="assets/js/jquery.dcjqaccordion.2.7.js"></script>
+<script src="assets/js/jquery.scrollTo.min.js"></script>
+<script src="assets/js/jquery.nicescroll.js" type="text/javascript"></script>

@@ -69,7 +69,7 @@ if (isset($_POST['ejecutar_pago'])) {
             }
 
             // Calcular el salario neto
-            $salario_neto = $salario_base - $total_deducciones + $total_bonos + $pago_horas_extras;
+            $salario_neto = $salario_base/2 - $total_deducciones + $total_bonos + $pago_horas_extras;
 
             // Obtener el día del mes de la fecha de pago
             $dia_del_mes = date("d", strtotime($fecha_pago));
@@ -91,7 +91,7 @@ if (isset($_POST['ejecutar_pago'])) {
             if ($stmt_insert->execute()) {
                 $mensaje = "Los pagos fueron ejecutados correctamente.";
             } else {
-                $mensaje = "Hubo un error al procesar los pagos.";
+                $mensaje = "Ya se realizaron los pagos para esta Quincena.";
             }
 
             $stmt_insert->close(); // Cerrar la declaración de insert
