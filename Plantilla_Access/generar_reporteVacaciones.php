@@ -71,18 +71,20 @@ class GenerarReporteHistorial
                 INNER JOIN historial_vacaciones h ON v.id_historial = h.id_historial
                 -- Para indicar de que fecha a que fecha lo quiere filtrar el usuario
                 WHERE 
+                    h.id_usuario = ? AND
                     (v.fecha_inicio BETWEEN ? AND ? 
                     OR v.fecha_fin BETWEEN ? AND ? 
                     OR (v.fecha_inicio <= ? AND v.fecha_fin >= ?))";
 
-        $param_types = "ssssss";
-        $params = [$fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin];
-
+        $param_types = "issssss";
+        $params = [$id_usuario, $fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin];
+        /*
         if (!empty($id_usuario)) {
             $sql .= " AND h.id_usuario = ?";
             $param_types .= "i";
             $params[] = $id_usuario;
         }
+        */
         if (!empty($id_departamento)) {
             $sql .= " AND u.id_departamento = ?";
             $param_types .= "i";
@@ -105,9 +107,7 @@ class GenerarReporteHistorial
             $historial[] = $fila;
         }
 
-        // Depurar
-        //var_dump($fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin);
-        //var_dump($id_usuario, $id_departamento);
+        
 
         //exit;
         $stmt->close();
@@ -117,7 +117,8 @@ class GenerarReporteHistorial
     public function generarPDF($fecha_inicio, $fecha_fin, $id_usuario, $id_departamento)
     {
         $historial = $this->getHistorialVacaciones($fecha_inicio, $fecha_fin, $id_usuario, $id_departamento);
-
+        //var_dump($historial);
+        //var_dump($id_usuario, $id_departamento);
         if (empty($historial)) {
             echo "<script>
                 alert('No hay datos para generar el PDF.');
@@ -149,6 +150,10 @@ class GenerarReporteHistorial
 
         // Descargar el PDF
         $pdf->Output('D', 'reporte_vacaciones.pdf');
+
+        // Depurar
+        var_dump($fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin);
+        var_dump($id_usuario, $id_departamento);
     }
 }
 

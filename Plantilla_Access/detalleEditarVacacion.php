@@ -1,5 +1,9 @@
 <?php
 session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: login.php");
+    exit;
+}
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 require_once __DIR__ . '/Impl/Historial_Solicitud_Modificacion_VacacionesDAOSImpl.php';
 include "template.php";
@@ -64,95 +68,136 @@ if (isset($_GET['id'])) {
             margin-left: 250px;
             padding: 60px;
         }
+        body {
+            font-family: 'Ruda', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 2000px;
+            margin: 50px auto 200px 250px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 50px;
+            margin-right: 10%;
+            font-weight: bold;
+        }
+
+        .user-img {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .user-img img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #c9aa5f;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            font-size: 16px;
+            color: #555;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #c9aa5f;
+            color: #fff;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #c9aa5f;
+            color: white;
+            padding: 10px 20px;
+            font-size: 25px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+        }
+
+        .btn:hover {
+            background-color: darkgray;
+        }
     </style>
 </head>
 
 <body>
 
     <!--main content start-->
-    <section id="main-content">
-            <section class="wrapper site-min-height">
-                <!-- Botón para generar el PDF -->
+    <div class="container">
+        <h1>Solicitud de Modificación de Vacaciones</h1>
+        <div class="user-img">
+            <?php if (!empty($user['direccion_imagen'])): ?>
+                <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" alt="Imagen del usuario">
+            <?php else: ?>
+                <p>No hay imagen disponible</p>
+            <?php endif; ?>
+        </div>
 
-                <h1 text-center>Solicitud de modificación de vacación</h1>
-                <table class="user-details">
-                <!-- Enlace para volver a la lista de usuarios -->
-                <a href="EditarVacaciones.php" class="btn btn-success">Volver</a>
-                    <tr>
-                        <td>
-                            <?php
-                            if (!empty($user['direccion_imagen'])): ?>
-                                <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>"
-                                    alt="Imagen del usuario" width="100" height="100">
-                            <?php else: ?>
-                                <p>No hay imagen disponible</p>
+        <table class="details-table">
+            <tr><th>Nombre</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Nombre']); ?></td></tr>
+            <tr><th>Apellido</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Apellido']); ?></td></tr>
+            <tr><th>Departamento</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Departamento']); ?></td></tr>
+            <tr><th>Nueva Fecha de Inicio</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevaFechaInicio']); ?></td></tr>
+            <tr><th>Nueva Fecha de Fin</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevaFechaFin']); ?></td></tr>
+            <tr><th>Nuevos Días Solicitados</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevosDiasSolicitados']); ?></td></tr>
+            <tr><th>Fecha Inicio Original</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['OriginalFechaInicio']); ?></td></tr>
+            <tr><th>Fecha Fin Original</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['OriginalFechaFin']); ?></td></tr>
+            <tr><th>Días Solicitados Originalmente</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['OriginalDiasSolicitados']); ?></td></tr>
+            <tr><th>Días Restantes</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['DiasRestantes']); ?></td></tr>
+            <tr><th>Estado Solicitud</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['EstadoSolicitudVacacion']); ?></td></tr>
+        </table>
 
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <th>Nombre</th>
-                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Nombre']); ?></td>
-                    </tr>
-
-                    <tr>
-                        <th>Apellido</th>
-                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Apellido']); ?></td>
-                    </tr>
-
-                    <tr>
-                        <th>Departamento</th>
-                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Departamento']); ?></td>
-                    </tr>
-
-                    <tr>
-                        <th>Nueva fecha de inicio</th>
-                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevaFechaInicio']); ?></td>
-                    </tr>
-
-                    <tr>
-                        <th>Nueva fecha Fin</th>
-                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevaFechaFin']); ?></td>
-                    </tr>
-
-                    <tr>
-                        <th>Nuevos dias solicitdados</th>
-                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevosDiasSolicitados']); ?></td>
-                    </tr>
-
-                    <tr>
-                        <th>Fecha inicio original</th>
-                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['OriginalFechaInicio']); ?></td>
-                    </tr>
-
-                    <tr>
-                        <th>Fecha fin original</th>
-                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['OriginalFechaFin']); ?></td>
-                    </tr>
-                    
-                    <tr>
-                        <th>Dias solicitados originalmente</th>
-                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['OriginalDiasSolicitados']); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Dias restantes</th>
-                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['DiasRestantes']); ?></td>
-                    </tr>
-
-                    <tr>
-                        <th>Estado solicitud modificacion vacacaion</th>
-                        <td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['EstadoSolicitudVacacion']); ?></td>
-                    </tr>
-                    
-                </table>
-
-                <!-- Botones para poder aprobar o d enegar vacaciones con los metodos del usuarioDAOSImpl -->
-                
+        <div class="btn-container">
+            <a href="EditarVacaciones.php" class="btn btn-secondary">Volver</a>
+            <div>
                 <a href="procesarEditarVacacion.php?id=<?php echo $id_historial_solicitud_modificacion; ?>&accion=aprobar" class="btn btn-success">Aprobar</a>
                 <a href="procesarEditarVacacion.php?id=<?php echo $id_historial_solicitud_modificacion; ?>&accion=rechazar" class="btn btn-danger">Denegar</a>
-            </section>
-        </section>
+            </div>
+        </div>
+    </div>
 
         <!-- Estilos CSS -->
         <style>

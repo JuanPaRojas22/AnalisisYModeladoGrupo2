@@ -71,100 +71,104 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
-        .profile-header {
-            display: flex;
-            align-items: center;
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .profile-header img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            margin-right: 20px;
+        body {
+            font-family: 'Ruda', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
         }
         .profile-container {
-            max-width: 900px;
-            margin: auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        #perfil-usuario {
-            margin-top: 35px; 
-            margin-left: 210px;
             width: 80%;
+            max-width: 2000px;
+            margin: 50px auto 00px 250px;
+            padding: 40px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
         }
         .header-section {
-            background-color: #007bff;
+            background-color: #c9aa5f;
             color: white;
             padding: 15px;
             text-align: center;
             border-radius: 10px 10px 0 0;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
         }
-        .card.p-4.shadow-lg {
-            padding: 40px;
-            min-height: 500px;
+        .user-img {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .user-img img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #c9aa5f;
+        }
+        .info-section {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        .info-column {
+            width: 48%;
+        }
+        .info-column p {
+            font-size: 18px;
+            color: #555;
+            margin: 5px 0;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .btn {
+            background-color: #c9aa5f;
+            color: white;
+            padding: 12px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+            text-decoration: none;
+        }
+        .btn:hover {
+            background-color: darkgray;
         }
     </style>
-
-
 </head>
-
-
 <body>
-    <div id="perfil-usuario" class="container mt-5">
-        <div class="card p-4 shadow-lg">
-            
-            <div class="row">
-                <!-- Imagen de perfil -->
-                <div class="col-md-3 text-center">
-                    <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" width="200" class="img-fluid rounded-circle">
-                </div>
-                
-                <!-- Información del usuario -->
-                <div class="col-md-9">
-                    <h3 class="mb-4">Información del Usuario</h3>
-                    <div class="row">
-                        <!-- Botones -->
-                        <br/>
-                        <div class="mt-4">
-                            <button class="btn btn-primary">Información del Usuario</button>
-                        </div>
-                        <br/>
-
-                        <div class="col-md-9">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p><strong>Nombre y Apellido:</strong> <?php echo htmlspecialchars($user['nombre'] . ' ' . $user['apellido']); ?></p>
-                                    <p><strong>Departamento:</strong> <?php echo htmlspecialchars($user['departamento_nombre']); ?></p>
-                                    <p><strong>Fecha de nacimiento:</strong> <?php echo htmlspecialchars($user['fecha_nacimiento']); ?></p>
-                                    <p><strong>Fecha de ingreso:</strong> <?php echo htmlspecialchars($user['fecha_ingreso']); ?></p>
-                                    <p><strong>Correo:</strong> <?php echo htmlspecialchars($user['correo_electronico']); ?></p>
-                                    <p><strong>Username:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>Numero:</strong> <?php echo htmlspecialchars($user['numero_telefonico']); ?></p>
-                                    <p><strong>Direccion:</strong> <?php echo htmlspecialchars($user['direccion_domicilio']); ?></p>
-                                    <p><strong>Estado Civil:</strong> <?php echo htmlspecialchars($user['estado_civil']); ?></p>
-                                    <p><strong>Sexo:</strong> <?php echo htmlspecialchars($user['sexo']); ?></p>
-                                    <p><strong>Ocupación:</strong> <?php echo htmlspecialchars($user['Nombre_Ocupacion']); ?></p>
-                                    <p><strong>Nacionalidad:</strong> <?php echo htmlspecialchars($user['Nombre_Pais']); ?></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <a class="btn btn-secondary" href="editarPerfil.php?id=<?php echo $user['id_usuario']; ?>">Editar Información</a>
-                </div>
+    <div class="profile-container">
+        <div class="header-section">Perfil de Usuario</div>
+        <div class="user-img">
+            <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" alt="Foto de perfil">
+        </div>
+        <div class="info-section">
+            <div class="info-column">
+                <p><strong>Nombre y Apellido:</strong> <?php echo htmlspecialchars($user['nombre'] . ' ' . $user['apellido']); ?></p>
+                <p><strong>Departamento:</strong> <?php echo htmlspecialchars($user['departamento_nombre']); ?></p>
+                <p><strong>Fecha de nacimiento:</strong> <?php echo htmlspecialchars($user['fecha_nacimiento']); ?></p>
+                <p><strong>Fecha de ingreso:</strong> <?php echo htmlspecialchars($user['fecha_ingreso']); ?></p>
+                <p><strong>Correo:</strong> <?php echo htmlspecialchars($user['correo_electronico']); ?></p>
+                <p><strong>Username:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
             </div>
+            <div class="info-column">
+                <p><strong>Teléfono:</strong> <?php echo htmlspecialchars($user['numero_telefonico']); ?></p>
+                <p><strong>Dirección:</strong> <?php echo htmlspecialchars($user['direccion_domicilio']); ?></p>
+                <p><strong>Estado Civil:</strong> <?php echo htmlspecialchars($user['estado_civil']); ?></p>
+                <p><strong>Sexo:</strong> <?php echo htmlspecialchars($user['sexo']); ?></p>
+                <p><strong>Ocupación:</strong> <?php echo htmlspecialchars($user['Nombre_Ocupacion']); ?></p>
+                <p><strong>Nacionalidad:</strong> <?php echo htmlspecialchars($user['Nombre_Pais']); ?></p>
+            </div>
+        </div>
+        <div class="btn-container">
+            <a class="btn" href="editarPerfil.php?id=<?php echo $user['id_usuario']; ?>">Editar Información</a>
         </div>
     </div>
 </body>
