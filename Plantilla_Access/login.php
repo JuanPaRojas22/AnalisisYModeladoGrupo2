@@ -32,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($usuario['password']) && password_verify($password , $usuario['password'])) {
                 $_SESSION['id_usuario'] = $usuario['id_usuario'];
                 $_SESSION['username'] = $usuario['nombre'];
+                $_SESSION['id_rol'] = $usuario['id_rol']; 
                 $_SESSION['logged_in'] = true;
 
                 header("Location: index.php?login=success&username=" . urlencode($usuario['nombre']));
