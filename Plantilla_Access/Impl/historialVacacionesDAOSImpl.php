@@ -18,7 +18,8 @@ class HistorialVacacionesDAOSImpl implements historial_vacacionesDAO
         // Se ingresa la vacacion por el administrador
         $stmt = $function_conn->prepare(
             "INSERT INTO historial_vacaciones (id_usuario, FechaInicio, FechaFin, DiasTomados, Razon) 
-            VALUES ('$id_usuario', '$FechaInicio', '$FechaFin', '$DiasTomados', '$Razon')");
+            VALUES ('$id_usuario', '$FechaInicio', '$FechaFin', '$DiasTomados', '$Razon')"
+        );
         $stmt->bind_param(
             "issss",
             $id_usuario,
@@ -33,7 +34,7 @@ class HistorialVacacionesDAOSImpl implements historial_vacacionesDAO
     // Hacer funcion que valide si el usuario tiene dias disponibles de vacaciones antes de que el admin las ingrese.
     // Para hacer este calculo, cada mes desde que empezo a trabajar el empleado cuenta como un dia de vacacion y se acumula hasta el mes actual
     // Con estos dias sumados, se resta la cantidad de dias que ya ha tomado de vacaciones y se compara con los dias que se quieren tomar
-    
+
     public function ValidarVacaciones($id_usuario, $FechaInicio, $FechaFin, $fecha_ingreso, $DiasTomados)
     {
         $function_conn = $this->conn;
@@ -41,7 +42,8 @@ class HistorialVacacionesDAOSImpl implements historial_vacacionesDAO
         $stmt = $function_conn->prepare(
             "SELECT SUM(HV.DiasTomados) as DiasTomados
             FROM historial_vacaciones HV 
-            WHERE HV.id_usuario = ?");
+            WHERE HV.id_usuario = ?"
+        );
         $stmt->bind_param(
             "i",
             $id_usuario
@@ -66,6 +68,11 @@ class HistorialVacacionesDAOSImpl implements historial_vacacionesDAO
         // Se suma 1 porque si se toma vacaciones del 1 al 1, se cuenta como 1 dia 
         $dias_solicitados = $fecha_fin->diff($fecha_inicio)->days + 1;
 
+        // Verificación de medios días
+        if ($DiasTomados > 0 && $DiasTomados < 1) {
+            $dias_solicitados = floatval($DiasTomados);
+        }
+
         // Se verifica si el empleado tiene suficientes dias de vacaciones disponibles
         $dias_disponibles = $dias_acumulados - $DiasTomadosTomados;
         if ($dias_disponibles >= $dias_solicitados) {
@@ -76,7 +83,8 @@ class HistorialVacacionesDAOSImpl implements historial_vacacionesDAO
     }
 
     // Funcion que devuelve el historial de vacaciones de un empleado en especifico
-    public function getHistorialVacaciones($id_usuario){
+    public function getHistorialVacaciones($id_usuario)
+    {
         $sql = "SELECT id_historial FROM historial_vacaciones WHERE id_usuario = ?";
 
         // Prepara la consulta
@@ -96,14 +104,15 @@ class HistorialVacacionesDAOSImpl implements historial_vacacionesDAO
         if ($row = $result->fetch_assoc()) {
             $id_historial = $row['id_historial'];
         }
-            
+
         // Devuelve el id_historial
         return $id_historial;
 
     }
 
     // Funcion para mostrar la cantidad de dias restanes de vacaciones de un empleado
-    public function getDiasRestantes($id_usuario){
+    public function getDiasRestantes($id_usuario)
+    {
         $sql = "SELECT DiasRestantes FROM historial_vacaciones WHERE id_usuario = ?";
 
         // Prepara la consulta
@@ -123,7 +132,7 @@ class HistorialVacacionesDAOSImpl implements historial_vacacionesDAO
         if ($row = $result->fetch_assoc()) {
             $dias_tomados = $row['DiasRestantes'];
         }
-            
+
         // Devuelve los dias tomados
         return $dias_tomados;
     }

@@ -139,7 +139,7 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
                         <!-- sidebar menu start-->
                         <ul class="sidebar-menu" id="nav-accordion">
                             <li class="mt">
-           
+
                                 <h5 class="centered">Bienvenido, <?php echo $_SESSION['username']; ?>!</h5>
                             </li>
 
@@ -171,7 +171,7 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
                                 <ul class="sub">
                                     <li><a href="calendar.html">Calendar</a></li>
                                     <li><a href="gallery.html">Gallery</a></li>
-                                
+
                                     <li><a href="Dias_Feriados.php">Feriados</a></li>
                                 </ul>
                             </li>
@@ -181,10 +181,14 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
                                     <span>Reportes</span>
                                 </a>
                                 <ul class="sub">
-                                    <li><a href="reporte_ins.php">INS</a></li>
-                                    <li><a href="reporte_ccss.php">CCSS</a></li>
-                                    <li><a href="reporte_bac.php">BAC</a></li>
-                                    <li><a href="ver_reporte.php">Vacaciones</a></li>
+                                    <li><a href="reporte_ins.php"><i class="bi bi-person-badge-fill"></i>
+                                    INS</a></li>
+                                    <li><a href="reporte_ccss.php"><i class="bi bi-heart-fill"></i>CCSS</a></li>
+                                    <li><a href="reporte_bac.php"><i class="bi bi-credit-card"></i>
+                                    BAC</a></li>
+                                    <li><a href="ver_reporte.php"><i class="bi bi-brightness-low-fill"></i>
+                                    Vacaciones</a></li>
+                                    <li><a href="reporte_hacienda.php"><i class="bi bi-bank"></i>Hacienda</a></li>
 
 
                                 </ul>
@@ -197,7 +201,7 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
                                 <ul class="sub">
                                     <li><a href="VerPlanilla.php"><i
                                                 class="bi bi-journal-bookmark"></i><span>Planilla</span></a></li>
-                                    <li><a href="admin_beneficios.php">Beneficios de Empleados</a></li>
+                                    <li><a href="admin_beneficios.php"><i class="bi bi-gift"></i>Beneficios</a></li>
                                     <li><a href="MostrarUsuarios.php"><i
                                                 class="bi bi-person-lines-fill"></i><span>Usuarios</span></a></li>
                                     <li><a href="SolicitarVacacion.php"><i
@@ -206,17 +210,17 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
                                         <a href="vacaciones.php" class="nav-link">
                                             <i class="bi bi-gear"></i> Vacaciones
                                         </a>
-                                        <li><a href="SolicitarMedioDia.php"><i
-                                                class="bi bi-sun"></i><span>Medio dia de Vacaciones</span></a></li>
-                                    </li>
+                                    <li><a href="SolicitarMedioDia.php"><i class="bi bi-sun"></i><span>Medio
+                                                dia</span></a></li>
+                            </li>
 
-                                </ul>
-                            <li><a href="beneficios.php"><i class="bi bi-sun"></i><span>Beneficios</span></a></li>
                         </ul>
-                        </li>
-                        <li><a href="preguntasfreq.php">Preguntas Frecuentes</a></li>
- 
-                        </li>
+                        <li><a href="beneficios.php"><i class="bi bi-sun"></i><span>Beneficios</span></a></li>
+                </ul>
+                </li>
+                <li><a href="preguntasfreq.php">Preguntas Frecuentes</a></li>
+
+                </li>
 
 
                 </ul>
@@ -229,6 +233,9 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
             <div class="text-center">2024 - Your Company</div>
         </footer>
     </section>
+
+    </body>
+
     <script>
         function abrirModal() {
             document.getElementById("opcionesModal").style.display = "flex";
@@ -312,7 +319,6 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
             console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
         }
     </script>
-</body>
 
 <style>
     .profile-container {
@@ -322,3 +328,5 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
 </style>
 
 </html>
+
+

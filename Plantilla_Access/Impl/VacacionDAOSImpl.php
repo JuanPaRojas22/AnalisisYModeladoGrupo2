@@ -359,7 +359,8 @@ class VacacionDAOSImpl implements VacacionDAO
         if(!empty($errores)){
             return $errores;
         }
-    
+        $fecha_fin_formateada = $fecha_fin->format('Y-m-d');
+
         // Si es un medio día, el cálculo de días es 0.5
 
         
@@ -370,7 +371,7 @@ class VacacionDAOSImpl implements VacacionDAO
         } else {
             // Si no es medio día, calcula la cantidad de días solicitados
             $fecha_inicio = new DateTime($FechaInicio);
-            $fecha_fin_obj = new DateTime($fecha_fin); // Definir la fecha de fin solo si no es medio día
+            $fecha_fin_obj = new DateTime(datetime: $fecha_fin_formateada); // Definir la fecha de fin solo si no es medio día
     
             // Se suma 1 porque si se toma vacaciones del 1 al 1, se cuenta como 1 día
             $dias_solicitados = $fecha_fin_obj->diff($fecha_inicio)->days + 1;
@@ -394,7 +395,6 @@ class VacacionDAOSImpl implements VacacionDAO
         );
     
         // Se enlazan los parametros
-        $fecha_fin_formateada = $fecha_fin->format('Y-m-d');
         $stmt->bind_param(
             "ssssiissssiss",
             $razon,
