@@ -1,11 +1,14 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
-$username = $_SESSION['username'];
-$direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'] : 'assets/img/default-profile.png'; // Imagen por defecto si no existe
+// Verifica si el usuario está autenticado
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
+    $username = $_SESSION['username'];  // Obtener el nombre del usuario
+    $id_rol = $_SESSION['id_rol'];     // Obtener el ID del rol
+    $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'] : 'assets/img/default-profile.png'; // Imagen de perfil
+
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -182,37 +185,43 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
                                 </a>
                                 <ul class="sub">
                                     <li><a href="reporte_ins.php"><i class="bi bi-person-badge-fill"></i>
-                                    INS</a></li>
+                                            INS</a></li>
                                     <li><a href="reporte_ccss.php"><i class="bi bi-heart-fill"></i>CCSS</a></li>
                                     <li><a href="reporte_bac.php"><i class="bi bi-credit-card"></i>
-                                    BAC</a></li>
+                                            BAC</a></li>
                                     <li><a href="ver_reporte.php"><i class="bi bi-brightness-low-fill"></i>
-                                    Vacaciones</a></li>
+                                            Vacaciones</a></li>
                                     <li><a href="reporte_hacienda.php"><i class="bi bi-bank"></i>Hacienda</a></li>
 
 
                                 </ul>
                             </li>
-                            <li class="sub-menu">
-                                <a href="javascript:;">
-                                    <i class="bi bi-person-fill-gear"></i>
-                                    <span>Administracion</span>
-                                </a>
-                                <ul class="sub">
-                                    <li><a href="VerPlanilla.php"><i
-                                                class="bi bi-journal-bookmark"></i><span>Planilla</span></a></li>
-                                    <li><a href="admin_beneficios.php"><i class="bi bi-gift"></i>Beneficios</a></li>
-                                    <li><a href="MostrarUsuarios.php"><i
-                                                class="bi bi-person-lines-fill"></i><span>Usuarios</span></a></li>
-                                    <li><a href="SolicitarVacacion.php"><i
-                                                class="bi bi-sun"></i><span>Vacaciones</span></a></li>
-                                    <li class="nav-item">
-                                        <a href="vacaciones.php" class="nav-link">
-                                            <i class="bi bi-gear"></i> Vacaciones
-                                        </a>
-                                    <li><a href="SolicitarMedioDia.php"><i class="bi bi-sun"></i><span>Medio
-                                                dia</span></a></li>
-                            </li>
+                            <?php if (in_array($id_rol, [1, 2])): ?>
+
+                                <li class="sub-menu">
+                                    <a href="javascript:;">
+                                        <i class="bi bi-person-fill-gear"></i>
+                                        <span>Administracion</span>
+                                    </a>
+
+                                    <ul class="sub">
+                                        <li><a href="VerPlanilla.php"><i
+                                                    class="bi bi-journal-bookmark"></i><span>Planilla</span></a></li>
+                                        <li><a href="admin_beneficios.php"><i class="bi bi-gift"></i>Beneficios</a></li>
+                                        <?php if ($_SESSION['id_rol']==2): ?>
+                                            <li><a href="MostrarUsuarios.php"><i
+                                                        class="bi bi-person-lines-fill"></i><span>Usuarios</span></a></li>
+                                        <?php endif; ?>
+                                        <li><a href="SolicitarVacacion.php"><i
+                                                    class="bi bi-sun"></i><span>Vacaciones</span></a></li>
+                                        <li class="nav-item">
+                                            <a href="vacaciones.php" class="nav-link">
+                                                <i class="bi bi-gear"></i> Vacaciones
+                                            </a>
+                                        <li><a href="SolicitarMedioDia.php"><i class="bi bi-sun"></i><span>Medio
+                                                    dia</span></a></li>
+                                </li>
+                            <?php endif; ?>
 
                         </ul>
                         <li><a href="beneficios.php"><i class="bi bi-sun"></i><span>Beneficios</span></a></li>
@@ -234,91 +243,91 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
         </footer>
     </section>
 
-    </body>
+</body>
 
-    <script>
-        function abrirModal() {
-            document.getElementById("opcionesModal").style.display = "flex";
-        }
+<script>
+    function abrirModal() {
+        document.getElementById("opcionesModal").style.display = "flex";
+    }
 
-        function cerrarModal() {
-            document.getElementById("opcionesModal").style.display = "none";
-        }
-    </script>
-    <script src="assets/js/jquery.js"></script>
-    <script src="assets/js/jquery-1.8.3.min.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script class="include" type="text/javascript" src="assets/js/jquery.dcjqaccordion.2.7.js"></script>
-    <script src="assets/js/jquery.scrollTo.min.js"></script>
-    <script src="assets/js/jquery.nicescroll.js" type="text/javascript"></script>
-    <script src="assets/js/jquery.sparkline.js"></script>
+    function cerrarModal() {
+        document.getElementById("opcionesModal").style.display = "none";
+    }
+</script>
+<script src="assets/js/jquery.js"></script>
+<script src="assets/js/jquery-1.8.3.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script class="include" type="text/javascript" src="assets/js/jquery.dcjqaccordion.2.7.js"></script>
+<script src="assets/js/jquery.scrollTo.min.js"></script>
+<script src="assets/js/jquery.nicescroll.js" type="text/javascript"></script>
+<script src="assets/js/jquery.sparkline.js"></script>
 
 
-    <!--common script for all pages-->
-    <script src="assets/js/common-scripts.js"></script>
+<!--common script for all pages-->
+<script src="assets/js/common-scripts.js"></script>
 
-    <script type="text/javascript" src="assets/js/gritter/js/jquery.gritter.js"></script>
-    <script type="text/javascript" src="assets/js/gritter-conf.js"></script>
+<script type="text/javascript" src="assets/js/gritter/js/jquery.gritter.js"></script>
+<script type="text/javascript" src="assets/js/gritter-conf.js"></script>
 
-    <!--script for this page-->
-    <script src="assets/js/sparkline-chart.js"></script>
-    <script src="assets/js/zabuto_calendar.js"></script>
+<!--script for this page-->
+<script src="assets/js/sparkline-chart.js"></script>
+<script src="assets/js/zabuto_calendar.js"></script>
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            var unique_id = $.gritter.add({
-                // (string | mandatory) the heading of the notification
-                title: 'Welcome to Dashgum!',
-                // (string | mandatory) the text inside the notification
-                text: 'Hover me to enable the Close Button. You can hide the left sidebar clicking on the button next to the logo. Free version for <a href="http://blacktie.co" target="_blank" style="color:#ffd777">BlackTie.co</a>.',
-                // (string | optional) the image to display on the left
-                image: 'assets/img/ui-sam.jpg',
-                // (bool | optional) if you want it to fade out on its own or just sit there
-                sticky: true,
-                // (int | optional) the time you want it to be alive for before fading out
-                time: '',
-                // (string | optional) the class name you want to apply to that specific message
-                class_name: 'my-sticky-class'
-            });
-
-            return false;
-        });
-    </script>
-
-    <script type="application/javascript">
-        $(document).ready(function () {
-            $("#date-popover").popover({ html: true, trigger: "manual" });
-            $("#date-popover").hide();
-            $("#date-popover").click(function (e) {
-                $(this).hide();
-            });
-
-            $("#my-calendar").zabuto_calendar({
-                action: function () {
-                    return myDateFunction(this.id, false);
-                },
-                action_nav: function () {
-                    return myNavFunction(this.id);
-                },
-                ajax: {
-                    url: "show_data.php?action=1",
-                    modal: true
-                },
-                legend: [
-                    { type: "text", label: "Special event", badge: "00" },
-                    { type: "block", label: "Regular event", }
-                ]
-            });
+<script type="text/javascript">
+    $(document).ready(function () {
+        var unique_id = $.gritter.add({
+            // (string | mandatory) the heading of the notification
+            title: 'Welcome to Dashgum!',
+            // (string | mandatory) the text inside the notification
+            text: 'Hover me to enable the Close Button. You can hide the left sidebar clicking on the button next to the logo. Free version for <a href="http://blacktie.co" target="_blank" style="color:#ffd777">BlackTie.co</a>.',
+            // (string | optional) the image to display on the left
+            image: 'assets/img/ui-sam.jpg',
+            // (bool | optional) if you want it to fade out on its own or just sit there
+            sticky: true,
+            // (int | optional) the time you want it to be alive for before fading out
+            time: '',
+            // (string | optional) the class name you want to apply to that specific message
+            class_name: 'my-sticky-class'
         });
 
+        return false;
+    });
+</script>
 
-        function myNavFunction(id) {
-            $("#date-popover").hide();
-            var nav = $("#" + id).data("navigation");
-            var to = $("#" + id).data("to");
-            console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
-        }
-    </script>
+<script type="application/javascript">
+    $(document).ready(function () {
+        $("#date-popover").popover({ html: true, trigger: "manual" });
+        $("#date-popover").hide();
+        $("#date-popover").click(function (e) {
+            $(this).hide();
+        });
+
+        $("#my-calendar").zabuto_calendar({
+            action: function () {
+                return myDateFunction(this.id, false);
+            },
+            action_nav: function () {
+                return myNavFunction(this.id);
+            },
+            ajax: {
+                url: "show_data.php?action=1",
+                modal: true
+            },
+            legend: [
+                { type: "text", label: "Special event", badge: "00" },
+                { type: "block", label: "Regular event", }
+            ]
+        });
+    });
+
+
+    function myNavFunction(id) {
+        $("#date-popover").hide();
+        var nav = $("#" + id).data("navigation");
+        var to = $("#" + id).data("to");
+        console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
+    }
+</script>
 
 <style>
     .profile-container {
@@ -328,5 +337,3 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
 </style>
 
 </html>
-
-
