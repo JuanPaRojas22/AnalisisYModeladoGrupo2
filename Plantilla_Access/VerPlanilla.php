@@ -44,24 +44,40 @@ if (!isset($_SESSION['id_usuario'])) {
 
             // Consulta para obtener el historial de cambios
             $sql = "SELECT 
-                u.nombre,
-                u.apellido,
-                u.correo_electronico,
-                u.id_ocupacion,
-                p.total_deducciones,
-                p.salario_base, 
-                p.salario_neto, 
-                o.nombre_ocupacion,
-                COALESCE(GROUP_CONCAT(DISTINCT '- ', d.razon SEPARATOR '\n'), 'Sin deducciones') AS nombre_deduccion,
-                COALESCE(GROUP_CONCAT(DISTINCT '- ', b.razon SEPARATOR '\n'), 'Sin bonos') AS nombre_bono
-            FROM planilla p
-            JOIN Usuario u ON p.id_usuario = u.id_usuario
-            LEFT JOIN deducciones d ON p.id_usuario = d.id_usuario  
-            LEFT JOIN bonos b ON p.id_usuario = b.id_usuario
-            LEFT JOIN ocupaciones o ON o.id_ocupacion = u.id_ocupacion
-            GROUP BY u.nombre, u.apellido, u.correo_electronico, u.id_ocupacion, p.total_deducciones, p.salario_base, p.salario_neto, p.id_beneficio
-            ORDER BY u.nombre DESC";
+                        u.nombre,
+                        u.apellido,
+                        u.correo_electronico,
+                        u.id_ocupacion,
+                        p.total_deducciones,
+                        p.salario_base, 
+                        p.salario_neto, 
+                        o.nombre_ocupacion,
+                        COALESCE(GROUP_CONCAT(DISTINCT '- ', d.razon SEPARATOR '\n'), 'Sin deducciones') AS nombre_deduccion,
+                        COALESCE(GROUP_CONCAT(DISTINCT '- ', b.razon SEPARATOR '\n'), 'Sin bonos') AS nombre_bono,
+                        COALESCE(GROUP_CONCAT(DISTINCT te.descripcion SEPARATOR ', '), 'Sin clasificación') AS clasificaciones
+                    FROM planilla p
+                    JOIN Usuario u ON p.id_usuario = u.id_usuario
+                    LEFT JOIN deducciones d ON p.id_usuario = d.id_usuario  
+                    LEFT JOIN bonos b ON p.id_usuario = b.id_usuario
+                    LEFT JOIN ocupaciones o ON o.id_ocupacion = u.id_ocupacion
+                    LEFT JOIN empleado_tipo_empleado ete ON p.id_usuario = ete.id_empleado
+                    LEFT JOIN tipo_empleado te ON ete.id_tipo_empleado = te.id_tipo_empleado
+                    GROUP BY u.nombre, u.apellido, u.correo_electronico, u.id_ocupacion, p.total_deducciones, p.salario_base, p.salario_neto, p.id_beneficio
+                    ORDER BY u.nombre DESC;
+                    ";
+            /*
 
+            - Se agregó la relación con empleado_tipo_empleado (LEFT JOIN empleado_tipo_empleado ete ON p.id_usuario = ete.id_empleado), para obtener las clasificaciones de los empleados.
+
+            - Se agregó la relación con tipo_empleado (LEFT JOIN tipo_empleado te ON ete.id_tipo_empleado = te.id_tipo_empleado), para obtener la descripción de cada clasificación.
+
+            - Uso de GROUP_CONCAT(DISTINCT te.descripcion SEPARATOR ', '):
+
+            - Une todas las clasificaciones en una sola columna, separadas por comas.
+
+            - Si un empleado no tiene clasificación, muestra 'Sin clasificación'.
+            
+            */ 
 
             $result = $conn->query($sql);
 
@@ -297,6 +313,7 @@ if (!isset($_SESSION['id_usuario'])) {
                             <a href="ver_historial_cambios.php">Ver Historial de Puestos</a>
                             <a href="verBono.php">Ver Bonos</a>
                             <a href="Filtro_horas_extras.php">Horas Extras</a>
+                            <a href="Filtro_clasificacion_empleado.php">Ver Clasificaciones</a>
                         </div>
                     </div>
 
@@ -319,6 +336,7 @@ if (!isset($_SESSION['id_usuario'])) {
                                 <th>Deduccion</th>
                                 <th style="text-align: center;">Total Deduccion<br>Quincenal</br>
                                 <th>Salario neto Quincenal</th>
+                                <th>Clasificacion</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -335,8 +353,8 @@ if (!isset($_SESSION['id_usuario'])) {
                                 <td>" . nl2br($row['nombre_bono']) . "</td>
                                 <td>" . nl2br($row['nombre_deduccion']) . "</td>
                                 <td style='text-align: center;'>" . $row['total_deducciones'] . "</td>
-
                                 <td>" . $row['salario_neto'] . "</td>
+                                <td>" . nl2br($row['clasificaciones']) . "</td>
                               </tr>";
                                 }
                             } else {
