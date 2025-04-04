@@ -1021,6 +1021,27 @@ insertar en la tabla Estado_permiso
 2 para Pendiente
 3 para Rechazado
 
+CREATE TABLE `tipo_empleado` (
+  `id_tipo_empleado` INT AUTO_INCREMENT PRIMARY KEY,
+  `descripcion` VARCHAR(50) NOT NULL
+);
+
+INSERT INTO `tipo_empleado` (descripcion) VALUES 
+('Embargo'), 
+('Renuncia'), 
+('Embarazada'), 
+('Horario Especial'), 
+('Incapacidad Corta'), 
+('Incapacidad Larga');
+
+CREATE TABLE `empleado_tipo_empleado` (
+  `id_empleado` INT NOT NULL,
+  `id_tipo_empleado` INT NOT NULL,
+  FOREIGN KEY (`id_empleado`) REFERENCES `planilla`(`id_usuario`),
+  FOREIGN KEY (`id_tipo_empleado`) REFERENCES `tipo_empleado`(`id_tipo_empleado`)
+);
+
+
 
 
 

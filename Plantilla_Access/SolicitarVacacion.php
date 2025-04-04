@@ -15,6 +15,8 @@ include "template.php";
 // Obtener el ID del departamento del usuario desde la sesión
 $id_departamento = $_GET['id_departamento'] ?? null;
 
+
+
 // Se inicializan las clases UsuarioDAO, VacacionDAO y HistorialVacacionDAO 
 $UsuarioDAO = new UsuarioDAOSImpl();
 $VacacionDAO = new VacacionDAOSImpl();
@@ -27,6 +29,21 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
 
 // Obtiene los dias restantes de vacaciones del usuario para mostrarselos en la vista
 $diasRestantes = $HistorialVacacionDAO->getDiasRestantes($id_usuario);
+
+// Obtener los dias reservados por el empleado para que no pueda solicitar vacaciones en esas fechas
+$fechasReservadas = $VacacionDAO->getFechasReservadasEmpleado($id_usuario);
+
+$rangosFechas = array_map(function($row) {
+    return ["from" => $row['fecha_inicio'], "to" => $row['fecha_fin']];
+}, $fechasReservadas);
+
+// Mostrar las fechas reservadas en formato JSON para el calendario
+//echo json_encode($rangosFechas);
+ 
+
+
+
+
 
 // Logica para crear una vacacion utilizando el metodo de IngresarVacacion 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -148,6 +165,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $historial = $result->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
     
+
+
 }
 
 
@@ -230,6 +249,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <title>Listado Vacaciones</title>
+                    <!-- Flatpickr CSS -->
+                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
                     <style>
                         body {
                             font-family: 'Ruda', sans-serif;
@@ -400,6 +421,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             right: 0;
                             top: 0
                         }
+                        .flatpickr-day.reservado {
+                            background-color: red !important;
+                            color: white !important;
+                            border-radius: 50%;
+                        }
                     </style>
                 </head>
 
@@ -470,41 +496,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         <span onclick="document.getElementById('id01').style.display='none'" class="close"
                             title="Close Modal">&times;</span>
-                        <form class="modal-content" action="SolicitarVacacion.php" method="POST"
-                            enctype="multipart/form-data">
-                            <div class="container">
-                                <header style="background-color:#000;color:#fff;">
-                                    <span onclick="document.getElementById('id01').style.display='none'"
-                                        class="close-button topright">&times;</span>
-                                </header>
-                                <h1>Registrar Vacacion</h1>
-                                <p>Ingrese los datos correspondientes</p>
-                                <br>
-                                <label for="razon">Razon:</label>
-                                <input type="text" id="razon" name="razon" class="form-control"
-                                    placeholder="Ingrese su razon" autofocus>
+                            <form class="modal-content" action="SolicitarVacacion.php" method="POST" enctype="multipart/form-data">
+                                <div class="container">
+                                    <header style="background-color:#000;color:#fff;">
+                                        <span onclick="document.getElementById('id01').style.display='none'" class="close-button topright">&times;</span>
+                                    </header>
+                                    <h1>Registrar Vacación</h1>
+                                    <p>Ingrese los datos correspondientes</p>
+                                    <br>
+                                    <label for="razon">Razón:</label>
+                                    <input type="text" id="razon" name="razon" class="form-control" placeholder="Ingrese su razón" autofocus>
 
-                                <label for="diasTomado">Dias Tomados:</label>
-                                <input type="int" id="diasTomado" name="diasTomado" class="form-control"
-                                    placeholder="Ingrese los dias tomados" autofocus>
+                                    <label for="diasTomado">Días Tomados:</label>
+                                    <input type="number" id="diasTomado" name="diasTomado" class="form-control" placeholder="Ingrese los días tomados" autofocus>
 
-                                <label for="fecha_inicio">Fecha Inicio:</label>
-                                <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control"
-                                    placeholder="Ingrese la fecha de inicio" autofocus>
+                                    <label for="fecha_inicio_solicitud">Fecha Inicio:</label>
+                                    <input type="text" id="fecha_inicio_solicitud" name="fecha_inicio" class="form-control" placeholder="Ingrese la fecha de inicio" autofocus>
 
-                                <label for="fecha_fin">Fecha Fin:</label>
-                                <input type="date" id="fecha_fin" name="fecha_fin" class="form-control"
-                                    placeholder="Ingrese la fecha de fin" autofocus>
+                                    <label for="fecha_fin_solicitud">Fecha Fin:</label>
+                                    <input type="text" id="fecha_fin_solicitud" name="fecha_fin" class="form-control" placeholder="Ingrese la fecha de fin" autofocus>
 
-                                <label for="observaciones">Observaciones:</label>
-                                <input type="text" id="observaciones" name="observaciones" class="form-control"
-                                    placeholder="Ingrese sus observaciones" autofocus>
+                                    <label for="observaciones">Observaciones:</label>
+                                    <input type="text" id="observaciones" name="observaciones" class="form-control" placeholder="Ingrese sus observaciones" autofocus>
 
-                                <div class="clearfix">
-                                    <button type="submit" class="signupbtn">Ingresar</button>
+                                    <div class="clearfix">
+                                        <button type="submit" class="signupbtn">Ingresar</button>
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                            <!-- Flatpickr JS -->
+                            <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+                            <script>
+                                // Fechas reservadas (ejemplo)
+                                const fechasReservadas = <?php echo json_encode($rangosFechas); ?>;
+
+                                function configurarCalendario(idCampo) {
+                                    flatpickr(idCampo, {
+                                        dateFormat: "Y-m-d",
+                                        disable: fechasReservadas.map(date => ({ from: date, to: date })), // Se deshabilitan fechas reservadas
+                                        onDayCreate: function(dObj, dStr, fp, dayElem) {
+                                            const date = dayElem.dateObj.toISOString().split('T')[0];
+                                            // Verificar si la fecha está reservada
+                                            fechasReservadas.forEach(range => {
+                                                if (date >= range.from && date <= range.to) {
+                                                    dayElem.classList.add("reservado");
+                                                    dayElem.style.pointerEvents = "none";  // Bloquea la selección
+                                                    dayElem.style.opacity = "0.5";  // Hace que parezcan deshabilitadas
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+
+                                configurarCalendario("#fecha_inicio_solicitud");
+                                configurarCalendario("#fecha_fin_solicitud");
+                            </script>
                     </div>
                     <!-- <a href="EditarVacaciones.php">Editar Vacaciones</a> -->
 

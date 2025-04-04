@@ -453,6 +453,31 @@ class VacacionDAOSImpl implements VacacionDAO
         return [];
     }
 
+
+    // Funcion para obtener todos los dias reservados por el empleado para que no pueda solicitar vacaciones en esas fechas
+    public function getFechasReservadasEmpleado($id_usuario){
+        $function_conn = $this->conn;
+        // Se obtienen las fechas reservadas por el empleado
+        $stmt = $function_conn->prepare(
+            "SELECT fecha_inicio, fecha_fin
+            FROM vacacion
+            WHERE id_usuario = ? AND (id_estado_vacacion = 1 OR id_estado_vacacion = 2)"
+        );
+        $stmt->bind_param("i", $id_usuario);
+        // Se ejecuta el comando
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $fechas_reservadas = [];
+        while ($row = $result->fetch_assoc()) {
+            $fechas_reservadas[] = $row;
+        }
+        $stmt->close();
+
+        return $fechas_reservadas;
+    }
 }
+
+    
+    
 
 ?>

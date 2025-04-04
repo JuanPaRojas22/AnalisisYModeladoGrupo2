@@ -36,6 +36,9 @@ interface VacacionDAO
     public function IngresarVacacion($razon, $diasTomado, $FechaInicio, $observaciones, $id_usuario, $id_historial, $fechacreacion, 
                                      $usuariocreacion, $fechamodificacion, $usuariomodificacion, $id_estado_vacacion, $SolicitudEditar, $fecha_fin);
 
+    // Funcion para obtener todos los dias reservados por el empleado para que no se muestren en el calendario
+    public function getFechasReservadasEmpleado($id_usuario);
+
     
 
 }

@@ -5,30 +5,36 @@ require 'template.php';
 
 // Verificar si se han enviado los filtros
 if (isset($_POST['filtrar'])) {
-    $usuario = $_POST['usuario'];
-    $departamento = $_POST['departamento'];
+    $usuario = isset($_POST['usuario']) && !empty($_POST['usuario']) ? $_POST['usuario'] : null;
+    $clasificacion = isset($_POST['clasificacion']) && !empty($_POST['clasificacion']) ? $_POST['clasificacion'] : null;
 
+    $query = "SELECT 
+                u.nombre,
+                d.nombre AS departamento,
+                p.salario_base,     
+                p.salario_neto,
+                COALESCE(GROUP_CONCAT(DISTINCT te.descripcion SEPARATOR ', '), 'Sin clasificación') AS clasificaciones
+            FROM planilla p
+            JOIN Usuario u ON p.id_usuario = u.id_usuario
+            JOIN departamento d ON u.id_departamento = d.id_departamento
+            LEFT JOIN empleado_tipo_empleado ete ON p.id_usuario = ete.id_empleado
+            LEFT JOIN tipo_empleado te ON ete.id_tipo_empleado = te.id_tipo_empleado
+            WHERE 1=1"; // Para permitir agregar filtros dinámicos
 
-    // Mostrar valores de los filtros (para depuración)
-    //var_dump($usuario);
-    //var_dump($departamento);
-
-    // Construir la consulta SQL con los filtros seleccionados
-    $query = "SELECT u.nombre, d.Nombre, SUM(he.horas) AS total_horas_extras, SUM(he.monto_pago) AS monto_pago
-    FROM horas_extra he
-    JOIN usuario u ON he.id_usuario = u.id_usuario
-    JOIN departamento d ON u.id_departamento = d.id_departamento
-    WHERE 1";  // Esto asegura que siempre haya una condición base
-
-    // Agregar las condiciones de los filtros si están presentes
-    if (!empty($usuario)) {  // Verificar si el filtro de usuario no está vacío
-        $query .= " AND u.id_usuario = '$usuario'";  // Filtro de usuario
+    // Filtro por usuario
+    if ($usuario) {
+        $query .= " AND u.id_usuario = '$usuario'";
     }
-    if (!empty($departamento)) {  // Verificar si el filtro de departamento no está vacío
-        $query .= " AND d.id_departamento = '$departamento'";  // Filtro de departamento
+
+    // Filtro por clasificación (corregido)
+    if ($clasificacion) {
+        $query .= " AND te.id_tipo_empleado = '$clasificacion'";
     }
-    // Muestra la consulta SQL generada para depuración
-//echo "<pre>" . $query . "</pre>";
+
+    $query .= " GROUP BY u.nombre, d.nombre, p.salario_base, p.salario_neto ORDER BY u.nombre DESC";
+
+    // Debug: Mostrar la consulta generada
+    //echo "<pre>" . $query . "</pre>";
 
     // Ejecutar la consulta
     $result = mysqli_query($conn, $query);
@@ -42,31 +48,28 @@ if (isset($_POST['filtrar'])) {
     } else {
         $data = null;
     }
-
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Filtrar Horas Extras</title>
+    <title>Filtrar Clasificación Empleados</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
     <div class="container">
-        <h1>Filtrar Horas Extras</h1>
-     
+        <h1>Filtrar Clasificación Empleados</h1>
+
         <!-- Formulario de filtros -->
-        <form action="Filtro_horas_extras.php" method="post" class="filter-form">
+        <form action="Filtro_clasificacion_empleado.php" method="post" class="filter-form">
             <label for="usuario">Usuario:</label>
             <select name="usuario" id="usuario">
                 <option value="">Selecciona un Usuario</option>
                 <?php
-                // Aquí se llenan los usuarios desde la base de datos
+                // Cargar usuarios desde la base de datos
                 $query = "SELECT id_usuario, nombre FROM usuario";
                 $result = mysqli_query($conn, $query);
                 while ($row = mysqli_fetch_assoc($result)) {
@@ -75,37 +78,35 @@ if (isset($_POST['filtrar'])) {
                 ?>
             </select>
 
-            <label for="departamento">Departamento:</label>
-            <select name="departamento" id="departamento">
-                <option value="">Selecciona un Departamento</option>
+            <label for="clasificacion">Clasificación:</label>
+            <select name="clasificacion" id="clasificacion">
+                <option value="">Selecciona una Clasificación</option>
                 <?php
-                // Aquí se llenan los departamentos desde la base de datos
-                $query = "SELECT id_departamento, Nombre FROM departamento";
+                // Cargar clasificaciones desde la base de datos
+                $query = "SELECT id_tipo_empleado, descripcion FROM tipo_empleado";
                 $result = mysqli_query($conn, $query);
                 while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<option value='" . $row['id_departamento'] . "'>" . $row['Nombre'] . "</option>";
+                    echo "<option value='" . $row['id_tipo_empleado'] . "'>" . $row['descripcion'] . "</option>";
                 }
                 ?>
             </select>
-                
-            <div class="button-group">
-    <form action="#" method="post">
+
+            <form action="#" method="post">
         <button class="btn" type="submit" name="filtrar">
             <i class="bi bi-funnel"></i> Filtrar
         </button>
     </form>
 
     <?php if (!empty($data)): ?>
-        <form action="reporte_horas_extra.php" method="post">
+        <form action="reporte_clasificacion_empleado.php" method="post">
             <input type="hidden" name="usuario" value="<?php echo $usuario; ?>">
-            <input type="hidden" name="departamento" value="<?php echo $departamento; ?>">
+            <input type="hidden" name="clasificacion" value="<?php echo $clasificacion; ?>">
             <button class="btn" type="submit" name="exportar_pdf">
                 <i class="bi bi-file-earmark-arrow-down-fill"></i> Exportar PDF
             </button>
         </form>
     <?php endif; ?>
-</div>
-     
+        </form>
 
         <!-- Mostrar los resultados -->
         <table>
@@ -113,33 +114,33 @@ if (isset($_POST['filtrar'])) {
                 <tr>
                     <th>Empleado</th>
                     <th>Departamento</th>
-                    <th>Total Horas Extras</th>
-                    <th>Monto</th>
+                    <th>Salario Base</th>
+                    <th>Salario Neto</th>
+                    <th>Clasificación</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
-                // Mostrar los resultados de las horas extras
                 if (isset($data) && $data !== null) {
                     foreach ($data as $row) {
                         echo "<tr>
                             <td>" . $row['nombre'] . "</td>
-                            <td>" . $row['Nombre'] . "</td>
-                            <td>" . number_format($row['total_horas_extras'], 2) . "</td>
-                            <td>" . number_format($row['monto_pago'], 2) . "</td>
+                            <td>" . $row['departamento'] . "</td>
+                            <td>" . number_format($row['salario_base'], 2) . "</td>
+                            <td>" . number_format($row['salario_neto'], 2) . "</td>
+                            <td>" . $row['clasificaciones'] . "</td>
                         </tr>";
                     }
                 } else {
-                    echo "<tr><td colspan='4' class='no-records'>No se encontraron registros de horas extras.</td></tr>";
+                    echo "<tr><td colspan='5' class='no-records'>No se encontraron registros.</td></tr>";
                 }
                 ?>
             </tbody>
         </table>
-
     </div>
 </body>
-
 </html>
+
 
 
 <style>
