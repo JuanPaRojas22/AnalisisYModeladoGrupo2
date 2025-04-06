@@ -5,7 +5,6 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit;
 }
 
-
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
 require_once __DIR__ . '/Impl/historialVacacionesDAOSImpl.php';
@@ -14,8 +13,6 @@ include "template.php";
 
 // Obtener el ID del departamento del usuario desde la sesión
 $id_departamento = $_GET['id_departamento'] ?? null;
-
-
 
 // Se inicializan las clases UsuarioDAO, VacacionDAO y HistorialVacacionDAO 
 $UsuarioDAO = new UsuarioDAOSImpl();
@@ -40,11 +37,6 @@ $rangosFechas = array_map(function($row) {
 // Mostrar las fechas reservadas en formato JSON para el calendario
 //echo json_encode($rangosFechas);
  
-
-
-
-
-
 // Logica para crear una vacacion utilizando el metodo de IngresarVacacion 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Capturar datos del formulario
@@ -117,7 +109,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mensaje_exito = "Solicitud de vacaciones ingresada correctamente.";
         }
     }
-
     
     // Generar PDF
     // Generar reporte de vacaciones
@@ -143,7 +134,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     OR (v.fecha_inicio <= ? AND v.fecha_fin >= ?))";
 
     $params = [$id_usuario, $fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin];
-
     //$params = [];
     //if ($id_usuario) { 
         //$sql .= " AND h.id_usuario = ?";
@@ -158,18 +148,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($params)) {
         $stmt->bind_param(str_repeat("s", count($params)), ...$params); // Ensure the correct type and count
     }
-
     
     $stmt->execute();
     $result = $stmt->get_result();
     $historial = $result->fetch_all(MYSQLI_ASSOC);
-    $stmt->close();
-    
-
+    $stmt->close(); 
 
 }
-
-
 
 
 ?>
@@ -426,6 +411,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             color: white !important;
                             border-radius: 50%;
                         }
+                        
                     </style>
                 </head>
 
@@ -605,9 +591,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             ?>
                         </tbody>
                     </table>
+
+                            
+
                     </div>
             </section>
-
             <script>
                 // Función para abrir el modal
                 function abrirModal(modalId) {
@@ -628,9 +616,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         modal.style.display = "none";
                     }
                 }
-
             </script>
-
 </body>
-
 </html>

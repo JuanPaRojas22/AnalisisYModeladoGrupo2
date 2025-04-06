@@ -80,7 +80,7 @@ class VacacionDAOSImpl implements VacacionDAO
         $function_conn = $this->conn;
         // Se obtienen las solicitudes de vacaciones pendientes y que comparten el departamento del administrador
         $stmt = $function_conn->prepare(
-            "SELECT V.id_vacacion, V.id_usuario, U.Nombre, U.Apellido, Dep.Nombre AS Departamento, V.fecha_inicio, V.fecha_fin, V.diasTomado, HV.DiasRestantes, EH.descripcion
+            "SELECT V.id_vacacion, V.id_usuario, U.Nombre, U.Apellido, U.direccion_imagen, Dep.Nombre AS Departamento, V.fecha_inicio, V.fecha_fin, V.diasTomado, HV.DiasRestantes, EH.descripcion
             FROM vacacion V
             INNER JOIN usuario U ON V.id_usuario = U.id_usuario
             INNER JOIN departamento Dep ON U.id_departamento = Dep.id_departamento
@@ -417,8 +417,6 @@ class VacacionDAOSImpl implements VacacionDAO
             $fecha_fin_str = null; // No se necesita la fecha de fin para medio día
         }
 
-        
-    
         // Se ingresa la vacacion por el administrador
         $stmt = $function_conn->prepare(
             "INSERT INTO vacacion (razon, diasTomado, fecha_inicio, observaciones,

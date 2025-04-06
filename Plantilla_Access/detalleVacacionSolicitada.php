@@ -162,12 +162,15 @@ if (isset($_GET['id'])) {
         .btn:hover {
             background-color: darkgray;
         }
+        
     </style>
 </head>
 
+<!-- (Tu código PHP hasta el <body> se mantiene igual) -->
 <body>
     <div class="container">
-        <h1>Solicitud de Vacacion</h1>
+        <h1>Solicitud de Vacación</h1>
+
         <div class="user-img">
             <?php if (!empty($user['direccion_imagen'])): ?>
                 <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" alt="Imagen del usuario">
@@ -176,87 +179,132 @@ if (isset($_GET['id'])) {
             <?php endif; ?>
         </div>
 
-        <table class="details-table">
-            <tr><th>Nombre</th><td><?php echo htmlspecialchars($user['nombre']); ?></td></tr>
-            <tr><th>Apellido</th><td><?php echo htmlspecialchars($user['apellido']); ?></td></tr>
-            <?php foreach ($vacaciones as $vacacion): ?>
-                <tr><th>Fecha de inicio</th><td><?php echo htmlspecialchars($vacacion['fecha_inicio']); ?></td></tr>
-                <tr><th>Fecha Fin</th><td><?php echo htmlspecialchars($vacacion['fecha_fin']); ?></td></tr>
-                <tr><th>Dias tomados</th><td><?php echo htmlspecialchars($vacacion['diasTomado']); ?></td></tr>
-                <tr><th>Razon</th><td><?php echo htmlspecialchars($vacacion['razon']); ?></td></tr>
-                <tr><th>Estado</th><td><?php echo htmlspecialchars($UsuarioDAO->getEstadoVacacionById($vacacion['id_estado_vacacion'])['descripcion']); ?></td></tr>
-            <?php endforeach; ?>
-            <?php foreach ($historial_vacaciones as $historial_vacacion): ?>
-                <tr><th>Dias restantes</th><td><?php echo htmlspecialchars($historial_vacacion['DiasRestantes']); ?></td></tr>
-            <?php endforeach; ?>
-        </table>
+        <div class="card-grid">
+            <div class="info-card"><h4>Nombre</h4><p><?php echo htmlspecialchars($user['nombre']); ?></p></div>
+            <div class="info-card"><h4>Apellido</h4><p><?php echo htmlspecialchars($user['apellido']); ?></p></div>
 
-        <div class="btn-container">
-            <a href="SolicitarVacacion.php" class="btn btn-secondary">Volver</a>
+            <?php foreach ($vacaciones as $vacacion): ?>
+                <div class="info-card"><h4>Fecha de inicio</h4><p><?php echo htmlspecialchars($vacacion['fecha_inicio']); ?></p></div>
+                <div class="info-card"><h4>Fecha Fin</h4><p><?php echo htmlspecialchars($vacacion['fecha_fin']); ?></p></div>
+                <div class="info-card"><h4>Días tomados</h4><p><?php echo htmlspecialchars($vacacion['diasTomado']); ?></p></div>
+                <div class="info-card"><h4>Razón</h4><p><?php echo htmlspecialchars($vacacion['razon']); ?></p></div>
+                <div class="info-card"><h4>Estado</h4><p><?php echo htmlspecialchars($UsuarioDAO->getEstadoVacacionById($vacacion['id_estado_vacacion'])['descripcion']); ?></p></div>
+            <?php endforeach; ?>
+
+            <?php foreach ($historial_vacaciones as $historial_vacacion): ?>
+                <div class="info-card"><h4>Días restantes</h4><p><?php echo htmlspecialchars($historial_vacacion['DiasRestantes']); ?></p></div>
+            <?php endforeach; ?>
         </div>
 
+        <div class="btn-container">
+            <a href="SolicitarVacacion.php" class="btn">Volver</a>
+        </div>
     </div>
-            
-    
 
-        <!-- Estilos CSS -->
-        <style>
-            h1 {
-                text-align: center;
-                font-size: 24;
-                color: black;
-            }
+    <style>
+        body {
+            font-family: 'Ruda', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
 
-            /* Estilo para la tabla de detalles del usuario */
-            .user-details {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
-                font-size: 15px;
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 50px auto 50px 245px; /* Adjusted left margin to move the container to the right */
+            padding: 40px;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
 
+        h1 {
+            text-align: center;
+            color: #333;
+            font-weight: bold;
+            margin: 0 auto 40px;
+            margin-bottom: 40px;
+            display: block;
+            width: fit-content;
+        }
 
-            }
+        .user-img {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
 
-            .user-details th,
-            .user-details td {
+        .user-img img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #c9aa5f;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .info-card {
+            background-color: #fdfdfd;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 4px solid #c9aa5f;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .info-card h4 {
+            margin: 0 0 10px;
+            font-size: 18px;
+            color: #444;
+        }
+
+        .info-card p {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .btn-container {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn {
+            background-color: #c9aa5f;
+            color: white;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+        }
+
+        .btn:hover {
+            background-color: #b1954d;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
                 padding: 20px;
-                text-align: left;
-                border: 8px solid #ddd;
-                border-color: rgb(119, 152, 189);
-                color: rgb(20, 20, 20);
-
             }
-
-            .user-details th {
-                background-color: #f4f4f4;
-                font-weight: bold;
-            }
-
-            .user-details td {
-                background-color: rgb(255, 255, 255);
-            }
-
-            .user-details tr:nth-child(even) td {
-                background-color: #f1f1f1;
-            }
-
-            .btn {
-
-                padding: 10px 20px;
-                /* Ajusta el tamaño del botón */
-                margin-top: 10px;
-                /* Agregar margen superior */
-                cursor: pointer;
-                border-radius: 5px;
-                text-decoration: none;
-                border: 1px solid transparent;
-                display: inline-block;
-                text-align: center;
-                /* Centra el texto dentro del botón */
-                width: auto;
-            }
-        </style>
-
+        }
+    </style>
 </body>
 
 </html>
