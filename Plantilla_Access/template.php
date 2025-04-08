@@ -42,6 +42,9 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <style>
+        
+    </style>
 </head>
 
 <body>
@@ -212,8 +215,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
                                             <li><a href="MostrarUsuarios.php"><i
                                                         class="bi bi-person-lines-fill"></i><span>Usuarios</span></a></li>
                                         <?php endif; ?>
-                                        <li><a href="SolicitarVacacion.php"><i
-                                                    class="bi bi-sun"></i><span>Vacaciones</span></a></li>
+                                        
                                         <li class="nav-item">
                                             <a href="vacaciones.php" class="nav-link">
                                                 <i class="bi bi-gear"></i> Vacaciones
@@ -225,8 +227,15 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
 
                         </ul>
                         <li><a href="beneficios.php"><i class="bi bi-sun"></i><span>Beneficios</span></a></li>
+                        <li>
+                            <a href="SolicitarVacacion.php">
+                                <i class="bi bi-sun"></i>
+                                    <span>Vacaciones</span>
+                            </a>
+                       </li>
                 </ul>
                 </li>
+                
                 <li><a href="preguntasfreq.php">Preguntas Frecuentes</a></li>
 
                 </li>
