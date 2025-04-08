@@ -355,7 +355,14 @@ class UsuarioDAOSImpl implements UsuarioDAO
         $stmt->execute();
         echo "Nuevo usuario creado." . "<br>";
     }
+
+    
 }
+
+
+
+
+
 
 $UsuarioDAO = new UsuarioDAOSImpl();
 
