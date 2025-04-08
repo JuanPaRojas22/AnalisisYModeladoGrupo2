@@ -1082,3 +1082,18 @@ Cambios Tabla Palnilla
 ALTER TABLE planilla
 ADD COLUMN codigo_CCSS VARCHAR(50),
 ADD COLUMN codigo_bac VARCHAR(50);
+
+-- Cambios juanpa
+
+--Tabla ausencias
+
+CREATE TABLE Ausencias (
+    id_ausencia INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    fecha DATE NOT NULL,
+    motivo VARCHAR(255),
+    registrado_por INT NOT NULL,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
+    FOREIGN KEY (registrado_por) REFERENCES Usuario(id_usuario)
+);

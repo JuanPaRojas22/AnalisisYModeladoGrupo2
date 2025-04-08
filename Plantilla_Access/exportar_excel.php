@@ -10,7 +10,7 @@ $conexion->set_charset("utf8");
 
 // Consulta para obtener los datos de las tablas usuario, planilla, nacionalidades, ocupaciones y departamento
 $sql = "SELECT u.id_usuario, u.nombre, u.apellido, u.correo_electronico, u.numero_telefonico, u.fecha_nacimiento, u.sexo, u.estado_civil, 
-               n.pais AS nacionalidad, o.nombre_ocupacion, p.jornada, p.hrs, p.salario_base, p.salario_neto, 
+               n.pais AS nacionalidad, o.nombre_ocupacion, p.jornada, p.hrs, p.salario_base, p.salario_neto, p.codigo_INS,
                u.direccion_domicilio, p.tipo_quincena, d.nombre AS departamento 
         FROM usuario u
         JOIN planilla p ON u.id_usuario = p.id_usuario
@@ -27,6 +27,7 @@ header("Content-Disposition: attachment; filename=reporte_ins.xls");
 // Crear la tabla en formato Excel
 echo "<table border='1'>";
 echo "<tr>
+ <th>Codigo</th>
         <th>ID</th>
         <th>Nombre</th>
         <th>Apellido</th>
@@ -50,6 +51,7 @@ echo "<tr>
 // Recorrer los resultados y generar las filas de la tabla en Excel
 while ($fila = $resultado->fetch_assoc()) {
     echo "<tr>
+    <td>{$fila['codigo_INS']}</td>
             <td>{$fila['id_usuario']}</td>
             <td>{$fila['nombre']}</td>
             <td>{$fila['apellido']}</td>

@@ -5,7 +5,6 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit;
 }
 
-
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
 require_once __DIR__ . '/Impl/historialVacacionesDAOSImpl.php';
@@ -14,8 +13,6 @@ include "template.php";
 
 // Obtener el ID del departamento del usuario desde la sesión
 $id_departamento = $_GET['id_departamento'] ?? null;
-
-
 
 // Se inicializan las clases UsuarioDAO, VacacionDAO y HistorialVacacionDAO 
 $UsuarioDAO = new UsuarioDAOSImpl();
@@ -40,11 +37,6 @@ $rangosFechas = array_map(function($row) {
 // Mostrar las fechas reservadas en formato JSON para el calendario
 //echo json_encode($rangosFechas);
  
-
-
-
-
-
 // Logica para crear una vacacion utilizando el metodo de IngresarVacacion 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Capturar datos del formulario
@@ -117,7 +109,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mensaje_exito = "Solicitud de vacaciones ingresada correctamente.";
         }
     }
-
     
     // Generar PDF
     // Generar reporte de vacaciones
@@ -143,7 +134,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     OR (v.fecha_inicio <= ? AND v.fecha_fin >= ?))";
 
     $params = [$id_usuario, $fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin];
-
     //$params = [];
     //if ($id_usuario) { 
         //$sql .= " AND h.id_usuario = ?";
@@ -158,18 +148,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($params)) {
         $stmt->bind_param(str_repeat("s", count($params)), ...$params); // Ensure the correct type and count
     }
-
     
     $stmt->execute();
     $result = $stmt->get_result();
     $historial = $result->fetch_all(MYSQLI_ASSOC);
-    $stmt->close();
-    
-
+    $stmt->close(); 
 
 }
-
-
 
 
 ?>
@@ -285,23 +270,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
 
                         .btn {
-                            display: inline-block;
-                            background-color: #c9aa5f;
-                            color: white;
-                            padding: 10px 20px;
-                            font-size: 25px;
-                            font-weight: bold;
-                            text-align: center;
-                            text-decoration: none;
-                            border-radius: 5px;
-                            margin-bottom: 20px;
-                            transition: background-color 0.3s;
-                        }
+                        display: inline-block;
+                        background-color: #c9aa5f;
+                        color: white;
+                        padding: 12px 20px;
+                        font-size: 16px;
+                        font-weight: bold;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        margin-bottom: 20px;
+                        transition: background-color 0.3s;
+                        cursor: pointer;
+                        border: none;
+                    }
 
-
-
-                        .btn:hover {
-                            background-color: #c9aa5f;
+                    .btn:hover {
+                        background-color: #b5935b;
                         }
 
                         .btn:active {
@@ -426,6 +410,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             color: white !important;
                             border-radius: 50%;
                         }
+                        
                     </style>
                 </head>
 
@@ -448,21 +433,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 style="width:auto; background-color: #c9aa5f; color: white; padding: 10px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">
                                 Solicitar Medio Día
                             </button>
-
-                            <form action="generar_reporteVacaciones.php" method="GET">
-
-                                <label for="fecha_inicio">Fecha Inicio:</label>
-                                <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control"
-                                    placeholder="Ingrese la fecha de inicio" autofocus required>
-
-                                <label for="fecha_fin">Fecha Fin:</label>
-                                <input type="date" id="fecha_fin" name="fecha_fin" class="form-control"
-                                    placeholder="Ingrese la fecha de fin" autofocus required>
-
-                                <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($id_usuario) ?>">
-                                <input type="hidden" name="id_departamento" value="<?= htmlspecialchars($id_departamento) ?>">
-                                <button type="submit" class="btn btn-danger">Descargar PDF</button>
-                            </form> 
 
                             <div
                                 style="background-color: #d4edda; color: #155724; padding: 10px 20px; border-radius: 5px; text-align: center; font-size: 16px;">
@@ -555,10 +525,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <!-- <a href="EditarVacaciones.php">Editar Vacaciones</a> -->
 
                     <!-- Mostrar tabla con los cambios de puesto -->
+                    <div class="col-md-12">
+                            <form action="generar_reporteVacaciones.php" method="GET" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+                                <label for="fecha_inicio" style="margin-right: 10px;">Fecha Inicio:</label>
+                                <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" placeholder="Ingrese la fecha de inicio" required style="flex: 1;">
+
+                                <label for="fecha_fin" style="margin-right: 10px;">Fecha Fin:</label>
+                                <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" placeholder="Ingrese la fecha de fin" required style="flex: 1;">
+
+                                <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($id_usuario) ?>">
+                                <input type="hidden" name="id_departamento" value="<?= htmlspecialchars($id_departamento) ?>">
+                                <button type="submit" style="background-color: #c9aa5f; color: white; padding: 10px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">
+                                    Descargar PDF
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
                     <table>
                         <thead>
                             <tr>
-
                                 <th>Nombre</th>
                                 <th>Apellido</th>
                                 <th>Departamento</th>
@@ -594,9 +580,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         </a>
                                     </div>
                                 </td>
-                                
-
-                                
                               </tr>";
                                 }
                             } else {
@@ -605,9 +588,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             ?>
                         </tbody>
                     </table>
+
+                            
+
                     </div>
             </section>
-
             <script>
                 // Función para abrir el modal
                 function abrirModal(modalId) {
@@ -628,9 +613,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         modal.style.display = "none";
                     }
                 }
-
             </script>
-
 </body>
-
 </html>

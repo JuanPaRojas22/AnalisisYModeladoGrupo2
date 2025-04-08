@@ -81,11 +81,25 @@ $stmt->close();
             padding: 10px;
         }
 
-        .btn-primary {
+        .btn{
+            display: inline-block;
+            color: #fff;
+    background-color: #428bca;
+    border-color: #357ebd;
+            padding: 12px 20px;
             font-size: 16px;
-            padding: 10px 20px;
-        }
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+            cursor: pointer;
+            border: none;
+                    }
 
+                    .btn:hover {
+                        background-color: #428bca;
+                    }
         /* 📌 ESTILO EXACTO DE LA TABLA */
         .table-container {
             display: flex;
@@ -136,10 +150,24 @@ $stmt->close();
             margin-top: 15px;
         }
 
-        .btn-danger {
-            font-size: 16px;
-            padding: 10px 20px;
-        }
+        .btn-export {
+                        display: inline-block;
+                        background-color: #c9aa5f;
+                        color: white;
+                        padding: 12px 20px;
+                        font-size: 16px;
+                        font-weight: bold;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        margin-bottom: 20px;
+                        transition: background-color 0.3s;
+                        cursor: pointer;
+                        border: none;
+                    }
+
+                    .btn-export:hover {
+                        background-color: #b5935b;
+                    }
     </style>
 </head>
 <body>
@@ -183,7 +211,7 @@ $stmt->close();
             </div>
 
             <div class="col-md-12 text-center">
-                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <button type="submit" class="btn">Filtrar</button>
             </div>
         </form>
     </div>
@@ -228,7 +256,9 @@ $stmt->close();
     <form action="generar_pdf.php" method="GET">
         <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($id_usuario) ?>">
         <input type="hidden" name="id_departamento" value="<?= htmlspecialchars($id_departamento) ?>">
-        <button type="submit" class="btn btn-danger">Descargar PDF</button>
+        <button type="submit"class="btn-export">
+        📥 Descargar Reporte</button>
+        
     </form>
 </div>
 </div>

@@ -165,33 +165,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	  	<div class="container">
 	  	
 		      <form class="form-login" action="login.php" method="post">
-		        <h2 class="form-login-heading">SIGN IN</h2>
+		        <h2 class="form-login-heading">BIENVENIDO</h2>
 		        <div class="login-wrap">
                     
 		            <input type="text" name="username" class="form-control" placeholder="User" autofocus>
 		            <br>
 		            <input type="password" name="password" class="form-control" placeholder="Password">
-		            <label class="checkbox">
-		                <span class="pull-right">
-		                    <a data-toggle="modal" href="login.php#myModal"> Forgot Password?</a>
-		
-		                </span>
-		            </label>
-		            <button class="btn btn-theme btn-block" type="submit"><i class="fa fa-lock"></i> SIGN IN</button>
+                    <!-- <label class="checkbox">
+                        <span class="pull-right">
+                            <a data-toggle="modal" href="login.php#myModal"> Forgot Password?</a>
+                        </span>
+                    </label> -->
+                    <br>
+		            <button class="btn btn-theme btn-block" type="submit"><i class="fa fa-lock"></i> ENTRAR</button>
                     <?php if ($error_message): ?>
                         <p style="color: red;"><?php echo htmlspecialchars($error_message); ?></p>
                     <?php endif; ?>
 		            <hr>
                 
-		            <div class="login-social-link centered">
-		            <p style="font-weight: bold;">or you can sign in via your social network</p>
-		                <button class="btn btn-facebook" type="submit"><i class="fa fa-facebook"></i> Facebook</button>
-		                <button class="btn btn-twitter" type="submit"><i class="fa fa-twitter"></i> Twitter</button>
-		            </div>
+		            
 		            <div class="registration" style="font-weight: bold;">
-		                Don't have an account yet?<br/>
+		                ¿No tienes cuenta?<br/>
 		                <a class="" href="createUser.php" style="font-weight: bold;">
-		                    Create an account
+		                    Registrate aquí
 		                </a>
 		            </div>
              </form>

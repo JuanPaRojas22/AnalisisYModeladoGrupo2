@@ -42,6 +42,9 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <style>
+
+    </style>
 </head>
 
 <body>
@@ -208,12 +211,11 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
                                         <li><a href="VerPlanilla.php"><i
                                                     class="bi bi-journal-bookmark"></i><span>Planilla</span></a></li>
                                         <li><a href="admin_beneficios.php"><i class="bi bi-gift"></i>Beneficios</a></li>
-                                        <?php if ($_SESSION['id_rol']==2): ?>
+                                        <?php if ($_SESSION['id_rol'] == 2): ?>
                                             <li><a href="MostrarUsuarios.php"><i
                                                         class="bi bi-person-lines-fill"></i><span>Usuarios</span></a></li>
                                         <?php endif; ?>
-                                        <li><a href="SolicitarVacacion.php"><i
-                                                    class="bi bi-sun"></i><span>Vacaciones</span></a></li>
+
                                         <li class="nav-item">
                                             <a href="vacaciones.php" class="nav-link">
                                                 <i class="bi bi-gear"></i> Vacaciones
@@ -221,12 +223,23 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
                                         <li><a href="SolicitarMedioDia.php"><i class="bi bi-sun"></i><span>Medio
                                                     dia</span></a></li>
                                 </li>
+                                <li><a href="registrarAusencia.php"><i class="bi bi-person-dash"></i>Registrar Ausencia</a>
+                                </li>
+                                <li><a href="reporteAusencias.php"><i class="bi bi-bar-chart"></i>Reporte de Ausencias</a>
+                                </li>
                             <?php endif; ?>
 
                         </ul>
                         <li><a href="beneficios.php"><i class="bi bi-sun"></i><span>Beneficios</span></a></li>
+                        <li>
+                            <a href="SolicitarVacacion.php">
+                                <i class="bi bi-sun"></i>
+                                <span>Vacaciones</span>
+                            </a>
+                        </li>
                 </ul>
                 </li>
+
                 <li><a href="preguntasfreq.php">Preguntas Frecuentes</a></li>
 
                 </li>

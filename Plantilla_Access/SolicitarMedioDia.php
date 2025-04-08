@@ -186,172 +186,105 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </script>
 
 <style>
-    body {
-        font-family: 'Ruda', sans-serif;
-        background-color: #f7f7f7;
-        margin: 0;
-        padding: 0;
-    }
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;  /* Centra horizontalmente */
+    align-items: flex-start; /* Alinea al inicio para dejar espacio arriba */
+    min-height: 100vh; /* Asegura que ocupe el 100% de la altura del viewport */
+}
 
-    .container {
-        width: 80%;
-        margin: 200px auto;
-        padding: 20px;
-        background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.48);
+.container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 50%;
+    position: absolute;
+    top: 180px;  /* Ajusta la distancia desde la parte superior de la pantalla */
+    left: 50%;
+    transform: translateX(-50%); /* Mueve el contenedor horizontalmente */
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+button {
+    background-color: #c9aa5f; /* Gold color */
+    color: white;
+    padding: 10px 20px;
+    font-size: 20px;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+    border: none;
+}
+
+button:hover {
+    background-color: #ab8e5b; /* Darken button color on hover */
+}
+
+button:active {
+    background-color: #c9aa5f;
+}
+
+.alert {
+    margin-bottom: 20px;
+}
+
+.modal-content {
+    border-radius: 8px;
+    padding: 30px;
+    background-color: #ffffff;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 100%;
+}
+
+.form-control:focus {
+    border-color: #ab8e5b;
+    box-shadow: 0 0 5px rgba(171, 142, 91, 0.5);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 25px;
+    cursor: pointer;
+}
 
 
-    }
 
-    h1 {
-        text-align: center;
-        color: #333;
-        margin-bottom: 50px;
-        margin-right: 10%;
-        font-weight: bold;
-    }
-
-    h3 {
-        text-align: center;
-        color: black;
-        margin-bottom: 50px;
-        margin-right: 10%;
-        font-weight: bold;
-    }
-
-    .button {
-        display: inline-block;
-        background-color: #c9aa5f;
-        color: white;
-        padding: 10px 20px;
-        font-size: 16px;
-        font-weight: bold;
-        text-align: center;
-        text-decoration: none;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        transition: background-color 0.3s;
-    }
-
-    .btn {
-        display: inline-block;
-        background-color: #c9aa5f;
-        color: white;
-        padding: 10px 20px;
-        font-size: 25px;
-        font-weight: bold;
-        text-align: center;
-        text-decoration: none;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        transition: background-color 0.3s;
-    }
-
-
-
-    .btn:hover {
-        background-color: #c9aa5f;
-    }
-
-    .btn:active {
-        background-color: #c9aa5f;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    th,
-    td {
-        padding: 12px;
-        text-align: center;
-        font-size: 16px;
-        color: #555;
-        border-bottom: 1px solid #ddd;
-    }
-
-    th {
-        background-color: #c9aa5f;
-        color: #fff;
-        text-align: center;
-    }
-
-    tr:hover {
-        background-color: #f1f1f1;
-    }
-
-    td {
-        background-color: #f9f9f9;
-    }
-
-    .no-records {
-        text-align: center;
-        font-style: italic;
-        color: #888;
-    }
-
-    /* Estilos del fondo del modal */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-    }
-
-    /* Contenido del modal */
-    .modal-content {
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        width: 300px;
-        text-align: center;
-        margin-bottom: 5%;
-
-    }
-
-    /* Botón de cerrar */
-    .close {
-        position: absolute;
-        top: 10px;
-        right: 20px;
-        font-size: 25px;
-        cursor: pointer;
-    }
-
-    /* Botones dentro del modal */
-    .modal-content a {
-        display: block;
-        margin: 10px 0;
-        padding: 10px;
-        text-decoration: none;
-        color: white;
-        background-color: gray;
-        border-radius: 5px;
-        background-color: #c9aa5f;
-    }
-
-    .modal-content a:hover {
-        background-color: darkgray;
-    }
-
-    /* Estilos para los botones alineados */
-    .button-container {
-        display: flex;
-        justify-content: space-between;
-        /* Distribuye el espacio entre los botones */
-        width: 100%;
-    }
 </style>
 
 </body>
