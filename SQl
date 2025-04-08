@@ -1045,8 +1045,8 @@ CREATE TABLE `empleado_tipo_empleado` (
 Cambios Esteven
 
 Cambios horas extra
-DROP TABLE horas_extra;
 
+DROP TABLE horas_extra;
 CREATE TABLE `horas_extra` (
   `id_horas_extra` int(11) NOT NULL,
   `id_usuario` int(11) DEFAULT NULL,
