@@ -65,33 +65,103 @@ if (isset($_GET['id'])) {
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    
+        
+</head>
+
+<!-- (Tu código PHP hasta el <body> se mantiene igual) -->
+
+
+    <section id="main-content">
+        <section class="wrapper site-min-height">
+            <!-- Botón para generar el PDF -->
+
+
+            <div class="container">
+                <h1>Solicitud de Vacación</h1>
+                <div class="btn-container-wrapper">
+                    <form method="get" action="SolicitarVacacion.php" accept-charset="UTF-8">
+                        <input type="hidden" name="id_usuario" value="<?php echo $user['id_usuario']; ?>">
+                        <button type="submit" class="btn-container"><i class="bi bi-arrow-return-left"></i></button>
+                    </form>
+
+                </div>
+                <div class="user-img">
+                    <?php if (!empty($user['direccion_imagen'])): ?>
+                        <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" alt="Imagen del usuario">
+                    <?php else: ?>
+                        <p>No hay imagen disponible</p>
+                    <?php endif; ?>
+                </div>
+
+                <table class="user-details">
+                    <tr>
+                        <th>Nombre</th>
+                        <td><?php echo htmlspecialchars($user['nombre']); ?></td>
+                    </tr>
+                    <tr>
+                        <th>Apellido</th>
+                        <td><?php echo htmlspecialchars($user['apellido']); ?></td>
+                    </tr>
+                    <?php foreach ($vacaciones as $vacacion): ?>
+                        <tr>
+                            <th>Fecha de inicio</th>
+                            <td><?php echo htmlspecialchars($vacacion['fecha_inicio']); ?></td>
+                        </tr>
+                        <tr>
+                            <th>Fecha Fin</th>
+                            <td><?php echo htmlspecialchars($vacacion['fecha_fin']); ?></td>
+                        </tr>
+                        <tr>
+                            <th>Días tomados</th>
+                            <td><?php echo htmlspecialchars($vacacion['diasTomado']); ?></td>
+                        </tr>
+                        <tr>
+                            <th>Razón</th>
+                            <td><?php echo htmlspecialchars($vacacion['razon']); ?></td>
+                        </tr>
+                        <tr>
+                            <th>Estado</th>
+                            <td><?php echo htmlspecialchars($UsuarioDAO->getEstadoVacacionById($vacacion['id_estado_vacacion'])['descripcion']); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <?php foreach ($historial_vacaciones as $historial_vacacion): ?>
+                        <tr>
+                            <th>Días restantes</th>
+                            <td><?php echo htmlspecialchars($historial_vacacion['DiasRestantes']); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
+            </div>
+
+        </section>
+    </section>
+
+
     <style>
-        .profile-container {
-            margin-left: 250px;
-            padding: 60px;
-        }
         body {
             font-family: 'Ruda', sans-serif;
-            background-color: #f7f7f7;
+            background-color: #f7f7f7;  /* Blanco cremoso */
+            /* Gris suave */
             margin: 0;
             padding: 0;
         }
 
         .container {
-            width: 80%;
-            max-width: 2000px;
-            margin: 50px auto 200px 250px;
+            width: 50%;
+            max-width: 40%;
+            /* Limitar el ancho máximo */
+            margin: 5px auto;
             padding: 20px;
-            background-color: #ffffff;
-            border-radius: 12px;
+            background-color: #f7f7f7;  /* Blanco cremoso */
+            border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
         }
 
         h1 {
             text-align: center;
             color: #333;
-            margin-bottom: 50px;
-            margin-right: 10%;
+            margin-bottom: 30px;
             font-weight: bold;
         }
 
@@ -102,32 +172,43 @@ if (isset($_GET['id'])) {
         }
 
         .user-img img {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid #c9aa5f;
         }
 
         table {
-            width: 100%;
-            border-collapse: collapse;
+            width: 50%;
+            border-collapse: separate;
+            /* Cambiar a 'separate' para que los bordes se muestren correctamente */
+            border-spacing: 0;
+            /* Eliminar el espacio entre celdas */
             margin-top: 20px;
-            border-radius: 8px;
+            margin-left: 25%;
+            border-radius: 10px;
+            /* Borde redondeado en la tabla */
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+            /* Para que los bordes redondeados se vean en las celdas */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+            /* Agregar sombra ligera */
         }
 
-        th, td {
-            padding: 12px;
+        th,
+        td {
+            padding: 8px 8px;
+            /* Reducir el espacio dentro de las celdas */
             text-align: center;
-            font-size: 16px;
-            color: #555;
+            font-size: 12px;
+            /* Reducir el tamaño de la fuente */
+            color: #fff;
             border-bottom: 1px solid #ddd;
+
         }
 
         th {
-            background-color: #c9aa5f;
+            background-color: #bea66a;
             color: #fff;
         }
 
@@ -136,174 +217,29 @@ if (isset($_GET['id'])) {
         }
 
         td {
-            background-color: #f9f9f9;
+            background-color: #bea66a;
         }
 
-        .btn-container {
+        .btn-container-wrapper {
             display: flex;
             justify-content: space-between;
             margin-top: 20px;
         }
 
-        .btn {
-            display: inline-block;
+        .btn-container {
             background-color: #c9aa5f;
             color: white;
-            padding: 10px 20px;
-            font-size: 25px;
+            padding: 8px 12px;
+            font-size: 16px;
             font-weight: bold;
             text-align: center;
             text-decoration: none;
             border-radius: 5px;
             transition: background-color 0.3s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
-        .btn:hover {
-            background-color: darkgray;
-        }
-        
-    </style>
-</head>
-
-<!-- (Tu código PHP hasta el <body> se mantiene igual) -->
-<body>
-    <div class="container">
-        <h1>Solicitud de Vacación</h1>
-
-        <div class="user-img">
-            <?php if (!empty($user['direccion_imagen'])): ?>
-                <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" alt="Imagen del usuario">
-            <?php else: ?>
-                <p>No hay imagen disponible</p>
-            <?php endif; ?>
-        </div>
-
-        <div class="card-grid">
-            <div class="info-card"><h4>Nombre</h4><p><?php echo htmlspecialchars($user['nombre']); ?></p></div>
-            <div class="info-card"><h4>Apellido</h4><p><?php echo htmlspecialchars($user['apellido']); ?></p></div>
-
-            <?php foreach ($vacaciones as $vacacion): ?>
-                <div class="info-card"><h4>Fecha de inicio</h4><p><?php echo htmlspecialchars($vacacion['fecha_inicio']); ?></p></div>
-                <div class="info-card"><h4>Fecha Fin</h4><p><?php echo htmlspecialchars($vacacion['fecha_fin']); ?></p></div>
-                <div class="info-card"><h4>Días tomados</h4><p><?php echo htmlspecialchars($vacacion['diasTomado']); ?></p></div>
-                <div class="info-card"><h4>Razón</h4><p><?php echo htmlspecialchars($vacacion['razon']); ?></p></div>
-                <div class="info-card"><h4>Estado</h4><p><?php echo htmlspecialchars($UsuarioDAO->getEstadoVacacionById($vacacion['id_estado_vacacion'])['descripcion']); ?></p></div>
-            <?php endforeach; ?>
-
-            <?php foreach ($historial_vacaciones as $historial_vacacion): ?>
-                <div class="info-card"><h4>Días restantes</h4><p><?php echo htmlspecialchars($historial_vacacion['DiasRestantes']); ?></p></div>
-            <?php endforeach; ?>
-        </div>
-
-        <div class="btn-container">
-            <a href="SolicitarVacacion.php" class="btn">Volver</a>
-        </div>
-    </div>
-
-    <style>
-        body {
-            font-family: 'Ruda', sans-serif;
-            background-color: #f7f7f7;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            width: 80%;
-            max-width: 1200px;
-            margin: 50px auto 50px 245px; /* Adjusted left margin to move the container to the right */
-            padding: 40px;
-            background-color: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-            font-weight: bold;
-            margin: 0 auto 40px;
-            margin-bottom: 40px;
-            display: block;
-            width: fit-content;
-        }
-
-        .user-img {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
-
-        .user-img img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid #c9aa5f;
-        }
-
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 20px;
-        }
-
-        .info-card {
-            background-color: #fdfdfd;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-top: 4px solid #c9aa5f;
-        }
-
-        .info-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-        }
-
-        .info-card h4 {
-            margin: 0 0 10px;
-            font-size: 18px;
-            color: #444;
-        }
-
-        .info-card p {
-            margin: 0;
-            font-size: 16px;
-            color: #333;
-        }
-
-        .btn-container {
-            margin-top: 40px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .btn {
-            background-color: #c9aa5f;
-            color: white;
-            padding: 12px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-        }
-
-        .btn:hover {
-            background-color: #b1954d;
-            transform: scale(1.05);
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                margin: 20px;
-                padding: 20px;
-            }
-        }
+        .btn-container:hover {}
     </style>
 </body>
 

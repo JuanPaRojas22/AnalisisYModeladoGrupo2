@@ -156,7 +156,7 @@ class VacacionDAOSImpl implements VacacionDAO
     }
 
     // Funcion para rechazar una solicitud de vacaciones
-    public function rechazarSolicitud($id_vacacion, $diasTomado, $id_usuario)
+    public function rechazarSolicitud($id_vacacion)
     {
         $function_conn = $this->conn;
         // Se actualiza el estado de la solicitud de vacaciones a rechazado (estado 3)
@@ -172,18 +172,7 @@ class VacacionDAOSImpl implements VacacionDAO
         $stmt->execute();
         $stmt->close();
 
-        // Se tiene que restar los días de vacaciones tomados a los días restantes
-        $stmt1 = $function_conn->prepare(
-            "UPDATE historial_vacaciones
-            SET DiasRestantes = DiasRestantes - ?
-            WHERE id_usuario = ?"
-        );
         
-        // Se enlazan los parámetros
-        $stmt1->bind_param("ii", $diasTomado, $id_usuario);
-        // Ejecuta la actualización
-        $stmt1->execute();
-        $stmt1->close();
 
 
     }

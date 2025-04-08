@@ -34,28 +34,9 @@ if(isset($_GET['id']) && isset($_GET['accion'])){
 
         $VacacionDAO->aprobarSolicitud($id_vacacion, $diasTomado, $id_usuario);
     }else if($accion == 'rechazar'){
-        // Conectar a la base de datos
-        $conn = new mysqli("localhost", "root", "", "GestionEmpleados");
+        
 
-        // Verificar conexión
-        if ($conn->connect_error) {
-            die("Error de conexión: " . $conn->connect_error);
-        }
-
-        $query = "SELECT diasTomado, id_usuario FROM vacacion WHERE id_vacacion = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("i", $id_vacacion);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-
-        $diasTomado = $row['diasTomado'];
-        $id_usuario = $row['id_usuario'];
-
-        $stmt->close();
-        $conn->close();
-
-        $VacacionDAO->rechazarSolicitud($id_vacacion, $diasTomado, $id_usuario);
+        $VacacionDAO->rechazarSolicitud($id_vacacion);
     }
     
     // Se redirije de nuevo a la pagina de detalle de vacaciones

@@ -435,21 +435,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 Solicitar Medio Día
                             </button>
 
-                            <form action="generar_reporteVacaciones.php" method="GET">
-
-                                <label for="fecha_inicio">Fecha Inicio:</label>
-                                <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control"
-                                    placeholder="Ingrese la fecha de inicio" autofocus required>
-
-                                <label for="fecha_fin">Fecha Fin:</label>
-                                <input type="date" id="fecha_fin" name="fecha_fin" class="form-control"
-                                    placeholder="Ingrese la fecha de fin" autofocus required>
-
-                                <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($id_usuario) ?>">
-                                <input type="hidden" name="id_departamento" value="<?= htmlspecialchars($id_departamento) ?>">
-                                <button type="submit" class="btn btn-danger">Descargar PDF</button>
-                            </form> 
-
                             <div
                                 style="background-color: #d4edda; color: #155724; padding: 10px 20px; border-radius: 5px; text-align: center; font-size: 16px;">
                                 <strong>Días Restantes:</strong> <?php echo $diasRestantes; ?>
@@ -541,10 +526,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <!-- <a href="EditarVacaciones.php">Editar Vacaciones</a> -->
 
                     <!-- Mostrar tabla con los cambios de puesto -->
+                    <div class="col-md-12">
+                            <form action="generar_reporteVacaciones.php" method="GET" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+                                <label for="fecha_inicio" style="margin-right: 10px;">Fecha Inicio:</label>
+                                <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" placeholder="Ingrese la fecha de inicio" required style="flex: 1;">
+
+                                <label for="fecha_fin" style="margin-right: 10px;">Fecha Fin:</label>
+                                <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" placeholder="Ingrese la fecha de fin" required style="flex: 1;">
+
+                                <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($id_usuario) ?>">
+                                <input type="hidden" name="id_departamento" value="<?= htmlspecialchars($id_departamento) ?>">
+                                <button type="submit" style="background-color: #c9aa5f; color: white; padding: 10px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">
+                                    Descargar PDF
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
                     <table>
                         <thead>
                             <tr>
-
                                 <th>Nombre</th>
                                 <th>Apellido</th>
                                 <th>Departamento</th>
@@ -580,9 +581,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         </a>
                                     </div>
                                 </td>
-                                
-
-                                
                               </tr>";
                                 }
                             } else {
