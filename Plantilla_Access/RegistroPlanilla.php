@@ -57,7 +57,7 @@ if (!isset($_SESSION['id_usuario'])) {
             
             $query = "SELECT id_beneficio, razon FROM beneficios";
             $result = $conn->query($query);
-            $query = "SELECT id_usuario, nombre FROM usuario"; // Reemplaza con el nombre correcto de la tabla
+            $query = "SELECT id_usuario, nombre FROM usuario";
             $result = $conn->query($query);
 
             // Verificar si la conexión fue exitosa
@@ -69,15 +69,15 @@ if (!isset($_SESSION['id_usuario'])) {
             $mensaje = "";
 
             // Procesar el formulario cuando se envía
+            // Procesar el formulario cuando se envía
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Obtener los datos del formulario
                 $id_usuario = $_POST['id_usuario'];
                 $salario_base = $_POST['salario_base'];
                 $hora_entrada = $_POST['hora_entrada'];
                 $hora_salida = $_POST['hora_salida'];
-
-
-
+                $codigo_bac = $_POST['codigo_bac'];
+                $codigo_caja = $_POST['codigo_caja'];
 
                 // Verificar si el usuario ya está registrado en la planilla
                 $checkQuery = "SELECT id_usuario FROM planilla WHERE id_usuario = ?";
@@ -90,19 +90,14 @@ if (!isset($_SESSION['id_usuario'])) {
                     $mensaje = "Error: Este usuario ya está registrado en la planilla.";
                 } else {
                     // Insertar en la tabla de planilla si no existe
-            
-                    // Insertar los datos en la base de datos
-                    $query = "INSERT INTO planilla (id_usuario,salario_base,hora_entrada,hora_salida) 
-                        VALUES ('$id_usuario',  '$salario_base','$hora_entrada','$hora_salida')";
-
+                    $query = "INSERT INTO planilla (id_usuario, salario_base, hora_entrada, hora_salida, Cuenta_Bac, Codigo_CCSS) 
+                  VALUES ('$id_usuario', '$salario_base', '$hora_entrada', '$hora_salida', '$codigo_bac', '$codigo_caja')";
 
                     if ($conn->query($query) === TRUE) {
-                        $mensaje = "Empleado registrado con exito.";
-
+                        $mensaje = "Empleado registrado con éxito.";
                     } else {
                         $mensaje = "Error al registrar al empleado: " . $conn->error;
                     }
-
                 }
             }
             ?>
@@ -131,7 +126,7 @@ if (!isset($_SESSION['id_usuario'])) {
                             ?>
                         </select>
 
-                        <div class="form-group"  style="text-align: center;">
+                        <div class="form-group" style="text-align: center;">
                             <label for="hora_entrada" class="control-label">Hora de Entrada:</label>
                             <input type="time" id="hora_entrada" name="hora_entrada" class="form-control" required>
                         </div>
@@ -140,6 +135,12 @@ if (!isset($_SESSION['id_usuario'])) {
                             <label for="hora_salida" class="control-label">Hora de Salida:</label>
                             <input type="time" id="hora_salida" name="hora_salida" class="form-control" required>
                         </div>
+
+                        <label for="codigo_bac">Código BAC:</label>
+                        <input type="text" name="codigo_bac" required style="text-align: center">
+
+                        <label for="codigo_caja">Código Caja:</label>
+                        <input type="text" name="codigo_caja" required style="text-align: center">
 
                         <label for="salario_base">Salario Base:</label>
                         <input type="number" name="salario_base" required style="text-align: center">
@@ -262,7 +263,7 @@ if (!isset($_SESSION['id_usuario'])) {
                     outline: none;
                     border-color: #805d24;
                     box-shadow: 0 0 5px rgba(200, 150, 60, 0.6);
-                 
+
                 }
             </style>
 
@@ -278,16 +279,6 @@ $conn->close();
 </section>
 <!--main content end-->
 
-<!--footer start-->
-<footer class="site-footer">
-    <div class="text-center">
-        2014 - Alvarez.is
-        <a href="blank.html#" class="go-top">
-            <i class="fa fa-angle-up"></i>
-        </a>
-    </div>
-</footer>
-<!--footer end-->
 </section>
 
 <!-- js placed at the end of the document so the pages load faster -->

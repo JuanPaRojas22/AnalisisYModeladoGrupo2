@@ -35,14 +35,19 @@ if (isset($_GET['id'])) {
 
 <body>
 
-   
-        <!-- **********************************************************************************************************************************************************
+
+    <!-- **********************************************************************************************************************************************************
       MAIN CONTENT
       *********************************************************************************************************************************************************** -->
-        <!--main content start-->
-        <section id="main-content">
-            <section class="wrapper site-min-height">
-                <!-- Botón para generar el PDF -->
+    <!--main content start-->
+    <!--main content start-->
+    <section id="main-content">
+        <section class="wrapper site-min-height">
+            <!-- Botón para generar el PDF -->
+
+
+            <div class="container">
+                <h1>Información del Empleado</h1>
                 <div class="btn-container-wrapper">
                     <form method="get" action="MostrarUsuarios.php" accept-charset="UTF-8">
                         <input type="hidden" name="id_usuario" value="<?php echo $user['id_usuario']; ?>">
@@ -54,193 +59,175 @@ if (isset($_GET['id'])) {
                         <button type="submit" class="btn-container"><i class="bi bi-box-arrow-down"></i></button>
                     </form>
                 </div>
+                <div class="user-img">
+                    <?php if (!empty($user['direccion_imagen'])): ?>
+                        <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" alt="Imagen del usuario">
+                    <?php else: ?>
+                        <p>No hay imagen disponible</p>
+                    <?php endif; ?>
+                </div>
+
                 <table class="user-details">
-
-                    <h1 text-center>Información del Empleado</h1>
-
-                    <div class="user-img">
-                        <?php if (!empty($user['direccion_imagen'])): ?>
-                            <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" alt="Imagen del usuario">
-                        <?php else: ?>
-                            <p>No hay imagen disponible</p>
-                        <?php endif; ?>
-
-
-                        <tr>
-                            <th>Nombre</th>
-                            <td><?php echo htmlspecialchars($user['nombre']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Apellido</th>
-                            <td><?php echo htmlspecialchars($user['apellido']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Sexo</th>
-                            <td><?php echo htmlspecialchars($user['sexo']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Fecha de Nacimiento</th>
-                            <td><?php echo htmlspecialchars($user['fecha_nacimiento']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Estado Civil</th>
-                            <td><?php echo htmlspecialchars($user['estado_civil']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Ocupación</th>
-                            <td><?php echo htmlspecialchars($user['id_ocupacion']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Correo Electrónico</th>
-                            <td><?php echo htmlspecialchars($user['correo_electronico']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Teléfono</th>
-                            <td><?php echo htmlspecialchars($user['numero_telefonico']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Estado</th>
-                            <td><?php echo htmlspecialchars($user['estado']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Departamento</th>
-                            <td><?php echo htmlspecialchars($user['departamento_nombre']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Rol</th>
-                            <td><?php echo htmlspecialchars($user['rol_nombre']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Fecha de Ingreso</th>
-                            <td><?php echo htmlspecialchars($user['fecha_ingreso']); ?></td>
-                        </tr>
+                    <tr>
+                        <th>Nombre</th>
+                        <td><?php echo htmlspecialchars($user['nombre']); ?></td>
+                    </tr>
+                    <tr>
+                        <th>Apellido</th>
+                        <td><?php echo htmlspecialchars($user['apellido']); ?></td>
+                    </tr>
+                    <tr>
+                        <th>Sexo</th>
+                        <td><?php echo htmlspecialchars($user['sexo']); ?></td>
+                    </tr>
+                    <tr>
+                        <th>Fecha de Nacimiento</th>
+                        <td><?php echo htmlspecialchars($user['fecha_nacimiento']); ?></td>
+                    </tr>
+                    <tr>
+                        <th>Estado Civil</th>
+                        <td><?php echo htmlspecialchars($user['estado_civil']); ?></td>
+                    </tr>
+                    <tr>
+                        <th>Ocupación</th>
+                        <td><?php echo htmlspecialchars($user['id_ocupacion']); ?></td>
+                    </tr>
+                    <tr>
+                        <th>Correo Electrónico</th>
+                        <td><?php echo htmlspecialchars($user['correo_electronico']); ?></td>
+                    </tr>
+                    <tr>
+                        <th>Teléfono</th>
+                        <td><?php echo htmlspecialchars($user['numero_telefonico']); ?></td>
+                    </tr>
+                    <tr>
+                        <th>Estado</th>
+                        <td><?php echo htmlspecialchars($user['estado']); ?></td>
+                    </tr>
+                    <tr>
+                        <th>Departamento</th>
+                        <td><?php echo htmlspecialchars($user['departamento_nombre']); ?></td>
+                    </tr>
+                    <tr>
+                        <th>Rol</th>
+                        <td><?php echo htmlspecialchars($user['rol_nombre']); ?></td>
+                    </tr>
+                    <tr>
+                        <th>Fecha de Ingreso</th>
+                        <td><?php echo htmlspecialchars($user['fecha_ingreso']); ?></td>
+                    </tr>
                 </table>
+            </div>
 
-                <!-- Enlace para volver a la lista de usuarios -->
-
-            </section>
         </section>
+    </section>
 
-        <!-- Estilos CSS -->
-        <style>
-            .profile-container {
-                margin-left: 250px;
-                padding: 60px;
-            }
+    <style>
+        body {
+            font-family: 'Ruda', sans-serif;
+            background-color: #f7f7f7;  /* Blanco cremoso */
+            /* Gris suave */
+            margin: 0;
+            padding: 0;
+        }
 
-            body {
-                font-family: 'Ruda', sans-serif;
-                background-color: #f7f7f7;
-                margin: 0;
-                padding: 0;
-            }
+        .container {
+            width: 50%;
+            max-width: 40%;
+            /* Limitar el ancho máximo */
+            margin: 5px auto;
+            padding: 20px;
+            background-color: #f7f7f7;  /* Blanco cremoso */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+        }
 
-            .container {
-                width: 80%;
-                max-width: 2000px;
-                margin: 50px auto 200px 250px;
-                padding: 20px;
-                background-color: #ffffff;
-                border-radius: 12px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-            }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
 
-            h1 {
-                text-align: center;
-                color: #333;
-                margin-bottom: 50px;
-                margin-right: 10%;
-                font-weight: bold;
-            }
+        .user-img {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
 
-            .user-img {
-                display: flex;
-                justify-content: center;
-                margin-bottom: 20px;
-            }
+        .user-img img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #c9aa5f;
+        }
 
-            .user-img img {
-                width: 120px;
-                height: 120px;
-                border-radius: 50%;
-                object-fit: cover;
-                border: 2px solid #c9aa5f;
-            }
+        table {
+            width: 50%;
+            border-collapse: separate;
+            /* Cambiar a 'separate' para que los bordes se muestren correctamente */
+            border-spacing: 0;
+            /* Eliminar el espacio entre celdas */
+            margin-top: 20px;
+            margin-left: 25%;
+            border-radius: 10px;
+            /* Borde redondeado en la tabla */
+            overflow: hidden;
+            /* Para que los bordes redondeados se vean en las celdas */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+            /* Agregar sombra ligera */
+        }
 
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
-                border-radius: 8px;
-                overflow: hidden;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-            }
+        th,
+        td {
+            padding: 8px 8px;
+            /* Reducir el espacio dentro de las celdas */
+            text-align: center;
+            font-size: 12px;
+            /* Reducir el tamaño de la fuente */
+            color: #fff;
+            border-bottom: 1px solid #ddd;
 
-            th,
-            td {
-                padding: 12px;
-                text-align: center;
-                font-size: 16px;
-                color: #555;
-                border-bottom: 1px solid #ddd;
-            }
+        }
 
-            th {
-                background-color: #c9aa5f;
-                color: #fff;
-            }
+        th {
+            background-color: #bea66a;
+            color: #fff;
+        }
 
-            tr:hover {
-                background-color: #f1f1f1;
-            }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
 
-            td {
-                background-color: #f9f9f9;
-            }
+        td {
+            background-color: #bea66a;
+        }
 
-            .btn-container-wrapper {
-                display: flex;
-                /* Flexbox para alinear los formularios horizontalmente */
-                gap: 90%;
-                /* Espaciado entre los botones */
-                margin-top: 20px;
+        .btn-container-wrapper {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
 
-            }
+        .btn-container {
+            background-color: #c9aa5f;
+            color: white;
+            padding: 8px 12px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
 
-            .btn-container {
-                background-color: #c9aa5f;
-                color: white;
-                padding: 10px;
-                font-size: 25px;
-                font-weight: bold;
-                text-align: center;
-                text-decoration: none;
-                border-radius: 5px;
-                transition: background-color 0.3s;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+        .btn-container:hover {}
+    </style>
 
-            }
 
-            .btn {
-                display: inline-block;
-                background-color: #c9aa5f;
-                color: white;
-                padding: 10px;
-                font-size: 25px;
-                font-weight: bold;
-                text-align: center;
-                text-decoration: none;
-                border-radius: 5px;
-                transition: background-color 0.3s;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-                margin-top: 20px;
-            }
-
-            .btn:hover {
-                background-color: darkgray;
-            }
-        </style>
-        <!--footer end-->
+    <!--footer end-->
     </section>
 </body>
 

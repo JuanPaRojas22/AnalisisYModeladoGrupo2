@@ -92,7 +92,7 @@ if (!isset($_SESSION['id_usuario'])) {
                 <style>
                     body {
                         font-family: 'Ruda', sans-serif;
-                        background-color: #f7f7f7;
+                        background-color: #f7f7f7;  /* Blanco cremoso */
                         margin: 0;
                         padding: 0;
 
@@ -102,7 +102,7 @@ if (!isset($_SESSION['id_usuario'])) {
                         width: 80%;
                         margin: 100px auto;
                         padding: 20px;
-                        background-color: #ffffff;
+                        background-color: #f7f7f7;  /* Blanco cremoso */
                         border-radius: 12px;
                         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
                     }
@@ -127,7 +127,7 @@ if (!isset($_SESSION['id_usuario'])) {
                     .btn {
                         display: inline-block;
                         background-color: #c9aa5f;
-                        color: white;
+                        color: #f7f7f7;
                         padding: 10px 20px;
                         font-size: 25px;
                         font-weight: bold;
@@ -180,11 +180,11 @@ if (!isset($_SESSION['id_usuario'])) {
                     }
 
                     tr:hover {
-                        background-color: #f1f1f1;
+                        background-color: #f7f7f7;  /* Blanco cremoso */
                     }
 
                     td {
-                        background-color: #f9f9f9;
+                        background-color: #f7f7f7;  /* Blanco cremoso */
                     }
 
                     .no-records {

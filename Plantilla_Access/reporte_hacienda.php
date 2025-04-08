@@ -1,13 +1,11 @@
 <?php
 ob_start(); // Inicia el búfer de salida para evitar que se envíen cabeceras prematuramente
-
-require 'conexion.php';
+session_start();
 require 'template.php';
+require 'conexion.php';
 
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
 
 // Verifica si el usuario está logueado
 if (!isset($_SESSION['id_usuario'])) {
