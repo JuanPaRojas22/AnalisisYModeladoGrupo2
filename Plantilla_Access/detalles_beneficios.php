@@ -37,7 +37,7 @@ include 'template.php';
     <div class="text-start mb-4">
     <div class="boton-volver-container">
     <a href="admin_beneficios.php" class="btn-volver">
-        ← Volver a Administración
+        Volver a Administración
     </a>
 </div>
 </div>
@@ -184,9 +184,20 @@ function eliminarBeneficio(id_beneficio) {
 }
 
 .btn-volver:hover {
-    background-color: #b38e36; /* Dorado más oscuro */
+    display: inline-block;
+                        background-color: #c9aa5f;
+                        color: white;
+                        padding: 12px 20px;
+                        font-size: 16px;
+                        font-weight: bold;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        margin-bottom: 20px;
+                        transition: background-color 0.3s;
+                        cursor: pointer;
+                        border: none;
     transform: translateY(-2px);
-    box-shadow: 4px 6px 14px rgba(0, 0, 0, 0.3);
+    
 }
 
 

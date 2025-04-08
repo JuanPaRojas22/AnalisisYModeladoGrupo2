@@ -77,11 +77,13 @@ if (isset($_POST['generar_pdf'])) {
         text-align: center;
         /* Asegura que el texto se centre */
         font-size: 18px;
-        color: #333;
+        
         margin-top: 20px;
-        background-color: rgb(160, 255, 180);
-        /* Fondo verde */
-        padding: 15px;
+        color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+
+     padding: 15px;
         /* Espaciado interno */
         border-radius: 8px;
         /* Bordes redondeados */
@@ -134,27 +136,25 @@ if (isset($_POST['generar_pdf'])) {
 
     .btn {
         display: inline-block;
-        background-color: #c9aa5f;
-        color: white;
-        padding: 10px 20px;
-        margin-right: 10px;  /*espacio entre los botones */
-        font-size: 25px;
-        font-weight: bold;
-        text-align: center;
-        text-decoration: none;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        transition: background-color 0.3s;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-    }
+                        background-color: #c9aa5f;
+                        color: white;
+                        padding: 12px 20px;
+                        margin-right: 10px;  /*espacio entre los botones */
+                        font-size: 16px;
+                        font-weight: bold;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        margin-bottom: 20px;
+                        transition: background-color 0.3s;
+                        cursor: pointer;
+                        border: none;
+                    }
 
+                    .btn-export:hover {
+                        background-color: #b5935b;
+                    }
 
-    .btn:hover {
-        background-color: #c9aa5f;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-
-    }
-
+  
     .btn:active {
         background-color: #c9aa5f;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);

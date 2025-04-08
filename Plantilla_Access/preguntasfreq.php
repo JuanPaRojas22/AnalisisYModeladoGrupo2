@@ -49,8 +49,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_usuario'])) {
 
     <style>
         body {
+            
+                        font-family: 'Ruda', sans-serif;
+                        background-color: #f7f7f7;
+                        margin: 0;
+                        padding: 0;
+
+                    
             background-color: #f4f6f9;
-            font-family: Arial, sans-serif;
+            
         }
 
         .container {
@@ -165,31 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_usuario'])) {
         <?php endif; ?>
     </div>
 
-    <h4 class="mt-5">Haz una nueva Pregunta</h4>
-    <form method="POST" action="">
-        <div class="mb-3">
-            <label for="pregunta_usuario" class="form-label">Tu Pregunta:</label>
-            <textarea id="pregunta_usuario" name="pregunta_usuario" class="form-control" rows="4" required></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Enviar Pregunta</button>
-    </form>
-
-    <h4 class="preguntas-titulo mt-5">Preguntas de los Usuarios</h4>
-    <div>
-        <?php if ($result_preguntas_usuario->num_rows > 0): ?>
-            <ul class="list-group">
-                <?php while ($row = $result_preguntas_usuario->fetch_assoc()): ?>
-                    <li class="list-group-item">
-                        <strong><?php echo $row['pregunta']; ?></strong>
-                        <p><em>Creada por: <?php echo $row['usuario_creacion']; ?> el <?php echo $row['fecha_creacion']; ?></em></p>
-                    </li>
-                <?php endwhile; ?>
-            </ul>
-        <?php else: ?>
-            <p>No hay preguntas de los usuarios.</p>
-        <?php endif; ?>
-    </div>
-</div>
+    
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

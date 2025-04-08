@@ -127,26 +127,22 @@ if (!isset($_SESSION['id_usuario'])) {
                     .btn {
                         display: inline-block;
                         background-color: #c9aa5f;
-                        color: #f7f7f7;
-                        padding: 10px 20px;
-                        font-size: 25px;
+                        color: white;
+                        padding: 12px 20px;
+                        font-size: 16px;
                         font-weight: bold;
-                        text-align: center;
                         text-decoration: none;
                         border-radius: 5px;
                         margin-bottom: 20px;
                         transition: background-color 0.3s;
-                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-
+                        cursor: pointer;
+                        border: none;
                     }
-
-
 
                     .btn:hover {
-                        background-color: #c9aa5f;
-                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-
+                        background-color: #b5935b;
                     }
+                    
 
                     .btn:active {
                         background-color: #c9aa5f;

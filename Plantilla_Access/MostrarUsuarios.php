@@ -263,19 +263,18 @@ if ($id_departamento == 'all') {
     }
 
     .btn {
-        background-color: #c9aa5f;
-        color: white;
-        padding: 10px 0;
-        font-size: 15px;
-        font-weight: bold;
-        text-align: center;
-        text-decoration: none;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        transition: background-color 0.3s;
-        width: 60px;
-        /* Puedes aumentar el tamaño del botón si es necesario */
-        height: 45px;
+        display: inline-block;
+                        background-color: #c9aa5f;
+                        color: white;
+                        padding: 12px 20px;
+                        font-size: 16px;
+                        font-weight: bold;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        margin-bottom: 20px;
+                        transition: background-color 0.3s;
+                        cursor: pointer;
+                        border: none;
     }
 
 

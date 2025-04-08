@@ -169,11 +169,17 @@ h2 {
 }
 
 .btn-primary {
-    background-color: #3498db;
+    color: #fff;
+    background-color: #428bca;
+    border-color: #357ebd;
+
 }
 
 .btn-success {
-    background-color: #2ecc71;
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+
 }
 
 .btn-primary:hover, .btn-success:hover {
