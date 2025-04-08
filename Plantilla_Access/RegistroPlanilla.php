@@ -78,6 +78,7 @@ if (!isset($_SESSION['id_usuario'])) {
                 $hora_salida = $_POST['hora_salida'];
                 $codigo_bac = $_POST['codigo_bac'];
                 $codigo_caja = $_POST['codigo_caja'];
+                $codigo_INS = $_POST['codigo_INS'];
 
                 // Verificar si el usuario ya está registrado en la planilla
                 $checkQuery = "SELECT id_usuario FROM planilla WHERE id_usuario = ?";
@@ -90,8 +91,8 @@ if (!isset($_SESSION['id_usuario'])) {
                     $mensaje = "Error: Este usuario ya está registrado en la planilla.";
                 } else {
                     // Insertar en la tabla de planilla si no existe
-                    $query = "INSERT INTO planilla (id_usuario, salario_base, hora_entrada, hora_salida, Cuenta_Bac, Codigo_CCSS) 
-                  VALUES ('$id_usuario', '$salario_base', '$hora_entrada', '$hora_salida', '$codigo_bac', '$codigo_caja')";
+                    $query = "INSERT INTO planilla (id_usuario, salario_base, hora_entrada, hora_salida, Cuenta_Bac, Codigo_CCSS, codigo_INS) 
+                  VALUES ('$id_usuario', '$salario_base', '$hora_entrada', '$hora_salida', '$codigo_bac', '$codigo_caja','$codigo_INS' )";
 
                     if ($conn->query($query) === TRUE) {
                         $mensaje = "Empleado registrado con éxito.";
@@ -141,6 +142,9 @@ if (!isset($_SESSION['id_usuario'])) {
 
                         <label for="codigo_caja">Código Caja:</label>
                         <input type="text" name="codigo_caja" required style="text-align: center">
+
+                        <label for="codigo_INS">Código INS:</label>
+                        <input type="text" name="codigo_INS" required style="text-align: center">
 
                         <label for="salario_base">Salario Base:</label>
                         <input type="number" name="salario_base" required style="text-align: center">

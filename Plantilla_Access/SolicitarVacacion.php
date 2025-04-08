@@ -285,23 +285,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
 
                         .btn {
-                            display: inline-block;
-                            background-color: #c9aa5f;
-                            color: white;
-                            padding: 10px 20px;
-                            font-size: 25px;
-                            font-weight: bold;
-                            text-align: center;
-                            text-decoration: none;
-                            border-radius: 5px;
-                            margin-bottom: 20px;
-                            transition: background-color 0.3s;
-                        }
+                        display: inline-block;
+                        background-color: #c9aa5f;
+                        color: white;
+                        padding: 12px 20px;
+                        font-size: 16px;
+                        font-weight: bold;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        margin-bottom: 20px;
+                        transition: background-color 0.3s;
+                        cursor: pointer;
+                        border: none;
+                    }
 
-
-
-                        .btn:hover {
-                            background-color: #c9aa5f;
+                    .btn:hover {
+                        background-color: #b5935b;
                         }
 
                         .btn:active {
