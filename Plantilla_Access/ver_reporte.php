@@ -84,10 +84,6 @@ $stmt->close();
         .btn-primary {
             font-size: 16px;
             padding: 10px 20px;
-            color: #fff;
-    background-color: #428bca;
-    border-color: #357ebd;
-
         }
 
         /* 📌 ESTILO EXACTO DE LA TABLA */
@@ -143,9 +139,6 @@ $stmt->close();
         .btn-danger {
             font-size: 16px;
             padding: 10px 20px;
-            color: #fff;
-    background-color: #d9534f;
-    border-color: #d43f3a;
         }
     </style>
 </head>
