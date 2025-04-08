@@ -41,25 +41,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_usuario'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Preguntas Frecuentes</title>
 
-    <!-- Agregar Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
     <link href="assets/css/style-responsive.css" rel="stylesheet">
+
     <style>
-        /* Aplicar la fuente Roboto a todo el cuerpo */
         body {
-                        font-family: 'Ruda', sans-serif;
-                        background-color: #f7f7f7;
-                        margin: 0;
-                        padding: 0;
+            background-color: #f4f6f9;
+            font-family: Arial, sans-serif;
+        }
 
-                    }
-
-        /* Restante estilo CSS */
         .container {
             max-width: 900px;
             margin: 0 auto;
@@ -67,14 +60,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_usuario'])) {
         }
 
         .accordion-button {
-            background-color: #c9aa5f;
+            background-color: #c9aa5f; /* Colr amarillo suave como la plantilla */
             color: white;
             border: none;
             border-radius: 8px;
         }
 
         .accordion-button:not(.collapsed) {
-            background-color: #c9aa5f;
+            background-color: #c9aa5f; /* Color más oscuro del amarillo cuando está activo */
         }
 
         .accordion-item {
@@ -91,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_usuario'])) {
         }
 
         .btn-primary {
-            background-color: #c9aa5f;
+            background-color: #c9aa5f; /* Color amarillo suave */
             border-color: #c9aa5f;
             font-size: 16px;
             padding: 10px 20px;
@@ -99,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_usuario'])) {
         }
 
         .btn-primary:hover {
-            background-color: #e1b83b;
+            background-color: #e1b83b; /* Hover en color amarillo oscuro */
         }
 
         .form-container {
@@ -133,17 +126,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_usuario'])) {
         }
 
         h3 {
-            font-size: 32px;
+            font-size: 32px; /* Aumenté el tamaño del título de "Preguntas Frecuentes" */
             font-weight: bold;
         }
 
         .preguntas-titulo {
-            font-size: 28px;
+            font-size: 28px; /* Aumenté el tamaño del título de "Preguntas de los Usuarios" */
             font-weight: bold;
-            color: #333;
+            color: #333; /* Color más oscuro para el título */
         }
     </style>
-</head> 
+</head>
 <body>
 
 <div class="container">
@@ -172,7 +165,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_usuario'])) {
         <?php endif; ?>
     </div>
 
-    
+    <h4 class="mt-5">Haz una nueva Pregunta</h4>
+    <form method="POST" action="">
+        <div class="mb-3">
+            <label for="pregunta_usuario" class="form-label">Tu Pregunta:</label>
+            <textarea id="pregunta_usuario" name="pregunta_usuario" class="form-control" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar Pregunta</button>
+    </form>
+
+    <h4 class="preguntas-titulo mt-5">Preguntas de los Usuarios</h4>
+    <div>
+        <?php if ($result_preguntas_usuario->num_rows > 0): ?>
+            <ul class="list-group">
+                <?php while ($row = $result_preguntas_usuario->fetch_assoc()): ?>
+                    <li class="list-group-item">
+                        <strong><?php echo $row['pregunta']; ?></strong>
+                        <p><em>Creada por: <?php echo $row['usuario_creacion']; ?> el <?php echo $row['fecha_creacion']; ?></em></p>
+                    </li>
+                <?php endwhile; ?>
+            </ul>
+        <?php else: ?>
+            <p>No hay preguntas de los usuarios.</p>
+        <?php endif; ?>
+    </div>
+</div>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

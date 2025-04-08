@@ -19,21 +19,7 @@ include 'template.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Días Feriados</title>
-    <style>
-
-.btn-danger {
-    color: #fff;
-    background-color: #d9534f;
-    border-color: #d43f3a;
-}
-
-.btn-primary {
-    color: #fff;
-    background-color: #428bca;
-    border-color: #357ebd;
-}
-
-    </style>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         let editando = false;
@@ -100,17 +86,14 @@ include 'template.php';
                             acciones.classList.add("mt-3", "flex", "justify-between");
 
                             let btnEditar = document.createElement("button");
-btnEditar.innerText = "Editar";
-// Agregar las clases btn-primary para el botón de editar
-btnEditar.classList.add("btn-primary", "px-3", "py-1", "rounded");
-btnEditar.onclick = function() { abrirModalEditar(feriado); };
+                            btnEditar.innerText = "Editar";
+                            btnEditar.classList.add("bg-blue-500", "text-white", "px-3", "py-1", "rounded");
+                            btnEditar.onclick = function() { abrirModalEditar(feriado); };
 
-let btnEliminar = document.createElement("button");
-btnEliminar.innerText = "Eliminar";
-// Agregar las clases btn-danger para el botón de eliminar
-btnEliminar.classList.add("btn-danger", "px-3", "py-1", "rounded");
-btnEliminar.onclick = function() { eliminarFeriado(feriado.id); };
-
+                            let btnEliminar = document.createElement("button");
+                            btnEliminar.innerText = "Eliminar";
+                            btnEliminar.classList.add("bg-red-500", "text-white", "px-3", "py-1", "rounded");
+                            btnEliminar.onclick = function() { eliminarFeriado(feriado.id); };
 
                             acciones.appendChild(btnEditar);
                             acciones.appendChild(btnEliminar);
@@ -202,29 +185,10 @@ btnEliminar.onclick = function() { eliminarFeriado(feriado.id); };
 <body class="p-8 bg-gray-200">
     <div class="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg">
         <h1 class="text-3xl font-bold mb-6 text-center"> Gestión de Días Feriados</h1>
-        <button class="btn-success px-4 py-2 rounded mb-6 w-full" onclick="abrirModal()">Agregar Feriado</button>
-
+        <button class="bg-green-500 text-white px-4 py-2 rounded mb-6 w-full" onclick="abrirModal()">Agregar Feriado</button>
 
         <div id="listaFeriados"></div>
     </div>
-    <style>
-.btn-success {
-    color: #fff;
-    background-color: #5cb85c;
-    border-color: #4cae4c;
-
-    .btn-primary {
-    color: #fff;
-    background-color: #428bca;
-    border-color: #357ebd;
-}
-
-.btn-secondary {
-    color: #fff;
-    background-color: #6c757d;
-    border-color: #5a6268;
-}
-}</style>
 
     <!-- MODAL -->
     <div id="modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
@@ -237,13 +201,11 @@ btnEliminar.onclick = function() { eliminarFeriado(feriado.id); };
                 <input type="checkbox" id="doblePago" class="mr-2"> Doble Pago
             </label>
             <div class="flex justify-end mt-4">
-            <button onclick="cerrarModal()" class="btn-secondary px-4 py-2 rounded mr-2">Cancelar</button>
-<button onclick="guardarFeriado()" class="btn-primary px-4 py-2 rounded">Guardar</button>
-
+                <button onclick="cerrarModal()" class="px-4 py-2 bg-gray-400 rounded mr-2">Cancelar</button>
+                <button onclick="guardarFeriado()" class="px-4 py-2 bg-blue-500 text-white rounded">Guardar</button>
             </div>
         </div>
     </div>
 </body>
-
 </html>
 

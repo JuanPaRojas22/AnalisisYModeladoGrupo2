@@ -13,7 +13,7 @@ $sql = "SELECT u.id_usuario, u.nombre, u.apellido, u.correo_electronico, u.numer
         JOIN planilla p ON u.id_usuario = p.id_usuario
         JOIN nacionalidades n ON u.id_nacionalidad = n.id_nacionalidad
         LEFT JOIN ocupaciones o ON u.id_ocupacion = o.id_ocupacion
-        LEFT JOIN departamento d ON u.id_departamento = d.id_departamento"; 
+        LEFT JOIN departamento d ON u.id_departamento = d.id_departamento"; // Agregado JOIN a departamento
 
 $resultado = $conexion->query($sql);
 
@@ -65,14 +65,13 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
             margin-bottom: 20px;
             transition: background-color 0.3s;
             cursor: pointer;
+            border: none;
         }
 
         .btn-export:hover {
             background-color: #b5935b;
         }
 
-
-        
         .table-container {
             overflow-x: auto;
         }
@@ -116,41 +115,37 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
 
         /* Estilos del detalle oculto */
         .details {
-  display: none; /* Oculto por defecto */
-  padding: 10px;
-  border-radius: 8px;
-  margin-top: 5px;
-  background: #fff7e6;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  animation: fadeIn 0.3s ease-in-out;
-}
+            display: none;
+            background: #fff7e6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
 
-.details.show {
-  display: table-row; /* o block, según tu preferencia */
-}
+        .details p {
+            margin: 5px 0;
+            font-size: 15px;
+            text-align: left;
+        }
 
-.details-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 columnas; puedes ajustarlo */
-  column-gap: 20px; /* espacio horizontal entre columnas */
-  row-gap: 5px;     /* espacio vertical entre filas */
-}
+        /* Animación para mostrar detalles */
+        .details.show {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
 
-.details-grid div {
-  font-size: 14px;
-  margin: 4px 0;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
     </style>
 </head>
@@ -159,6 +154,7 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
 <div class="container">
     <h1>📋 Reporte INS</h1>
 
+    <!-- Botón para exportar el reporte -->
     <a href="exportar_excel.php" class="btn-export">
         📥 Descargar Reporte
     </a>
@@ -177,6 +173,7 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
                     <th>Ocupación</th>
                     <th>Departamento</th>
                     <th>Tipo de Quincena</th>
+                   
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -193,6 +190,9 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
                     <td><?php echo $fila['nombre_ocupacion']; ?></td>
                     <td><?php echo $fila['departamento']; ?></td>
                     <td><?php echo $fila['tipo_quincena']; ?></td>
+                    
+
+                    
                     <td>
                         <button class="btn-more" onclick="toggleDetails('details-<?php echo $fila['id_usuario']; ?>')">
                             Ver más
@@ -200,26 +200,14 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
                     </td>
                 </tr>
                 <tr class="details" id="details-<?php echo $fila['id_usuario']; ?>">
-  <td colspan="10">
-    <div class="details-grid">
-      <div>
-        <strong>Fecha Nacimiento:</strong> <?php echo $fila['fecha_nacimiento']; ?>
-      </div>
-      <div>
-        <strong>Sexo:</strong> <?php echo $fila['sexo']; ?>
-      </div>
-      <div>
-        <strong>Estado Civil:</strong> <?php echo $fila['estado_civil']; ?>
-      </div>
-      <div>
-        <strong>Jornada:</strong> <?php echo $fila['jornada']; ?>
-      </div>
-      <div>
-        <strong>Horas Trabajadas:</strong> <?php echo $fila['hrs']; ?>
-      </div>
-    </div>
-  </td>
-</tr>
+                    <td colspan="10">
+                        <p><strong>Fecha Nacimiento:</strong> <?php echo $fila['fecha_nacimiento']; ?></p>
+                        <p><strong>Sexo:</strong> <?php echo $fila['sexo']; ?></p>
+                        <p><strong>Estado Civil:</strong> <?php echo $fila['estado_civil']; ?></p>
+                        <p><strong>Jornada:</strong> <?php echo $fila['jornada']; ?></p>
+                        <p><strong>Horas Trabajadas:</strong> <?php echo $fila['hrs']; ?></p>
+                    </td>
+                </tr>
                 <?php } ?>
             </tbody>
         </table>
