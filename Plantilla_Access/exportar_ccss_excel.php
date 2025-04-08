@@ -1,52 +1,81 @@
 <?php
+// filepath: c:\xampp\htdocs\AnalisisYModeladoGrupo2\Plantilla_Access\exportar_ccss_excel.php
+
 // Conexión a la base de datos
 $conexion = new mysqli("localhost", "root", "", "gestionempleados");
 if ($conexion->connect_error) {
     die("Error de conexión: " . $conexion->connect_error);
 }
 
-// Consulta para obtener los datos
-$sql = "SELECT id_reporte_caja, id_usuario, cedula_caja, salario_colones, fecha_generacion, link_archivo FROM Reporte_Caja";
+// Consulta para obtener los datos de las tablas usuario, planilla, nacionalidades, ocupaciones y departamento
+$sql = "
+    SELECT 
+        u.id_usuario,
+        u.nombre,
+        u.apellido,
+        u.correo_electronico,
+        u.numero_telefonico,
+        u.fecha_nacimiento,
+        u.sexo,
+        u.estado_civil,
+        n.pais AS nacionalidad,
+        o.nombre_ocupacion,
+        p.jornada,
+        p.hrs,
+        p.salario_base,
+        p.salario_neto,
+        p.codigo_CCSS,
+        u.direccion_domicilio,
+        p.tipo_quincena,
+        d.nombre AS departamento
+    FROM usuario u
+    JOIN planilla p ON u.id_usuario = p.id_usuario
+    JOIN nacionalidades n ON u.id_nacionalidad = n.id_nacionalidad
+    LEFT JOIN ocupaciones o ON u.id_ocupacion = o.id_ocupacion
+    LEFT JOIN departamento d ON u.id_departamento = d.id_departamento
+";
+
 $resultado = $conexion->query($sql);
 
-// Configurar la cabecera para descargar el archivo Excel
+// Configurar la cabecera para la descarga del archivo Excel
 header("Content-Type: application/vnd.ms-excel");
-header("Content-Disposition: attachment; filename=reporte_caja.xls");
-header("Pragma: no-cache");
-header("Expires: 0");
+header("Content-Disposition: attachment; filename=reporte_ccss.xls");
 
-// Iniciar la tabla y los encabezados
+// Crear la tabla en formato Excel
 echo "<table border='1'>";
 echo "<tr>
-        <th>ID Reporte Caja</th>
-        <th>ID Usuario</th>
-        <th>Cédula Caja</th>
-        <th>Salario (Colones)</th>
-        <th>Fecha de Generación</th>
-        <th>Link Archivo</th>
-      </tr>";
+        <th>Codigo CCSS</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Correo</th>
+        <th>Teléfono</th>
+        <th>Salario Base</th>
+        <th>Salario Neto</th>
+        <th>Nacionalidad</th>
+        <th>Ocupación</th>
+        <th>Departamento</th>
+        <th>Tipo de Quincena</th>
+    </tr>";
 
-// Si hay datos, los imprimimos
-if ($resultado->num_rows > 0) {
-    while ($fila = $resultado->fetch_assoc()) {
-        echo "<tr>
-                <td>{$fila['id_reporte_caja']}</td>
-                <td>{$fila['id_usuario']}</td>
-                <td>{$fila['cedula_caja']}</td>
-                <td>" . number_format($fila['salario_colones'], 2) . "</td>
-                <td>{$fila['fecha_generacion']}</td>
-                <td><a href='{$fila['link_archivo']}' target='_blank'>Ver Archivo</a></td>
-              </tr>";
-    }
-} else {
-    // Si no hay datos, generamos una fila vacía con los mismos encabezados
+// Recorrer los resultados y generar las filas de la tabla en Excel
+while ($fila = $resultado->fetch_assoc()) {
     echo "<tr>
-            <td colspan='6' style='text-align: center;'>No hay datos disponibles</td>
-          </tr>";
+            <td>{$fila['codigo_CCSS']}</td>
+            <td>{$fila['nombre']}</td>
+            <td>{$fila['apellido']}</td>
+            <td>{$fila['correo_electronico']}</td>
+            <td>{$fila['numero_telefonico']}</td>
+            <td>{$fila['salario_base']}</td>
+            <td>{$fila['salario_neto']}</td>
+            <td>{$fila['nacionalidad']}</td>
+            <td>{$fila['nombre_ocupacion']}</td>
+            <td>{$fila['departamento']}</td>
+            <td>{$fila['tipo_quincena']}</td>
+        </tr>";
 }
 
 echo "</table>";
 
-// Cerrar conexión
+// Cerrar la conexión
 $conexion->close();
 ?>
