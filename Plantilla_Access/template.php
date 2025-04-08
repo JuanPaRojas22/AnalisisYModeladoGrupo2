@@ -227,6 +227,10 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
                                 </li>
                                 <li><a href="reporteAusencias.php"><i class="bi bi-bar-chart"></i>Reporte de Ausencias</a>
                                 </li>
+                                <li><a href="reporteAntiguedad.php"><i class="bi bi-clock-history"></i>Reporte de
+                                        Antigüedad</a></li>
+                                <li><a href="registrarBeneficiosAntiguedad.php"><i class="bi bi-gift"></i>Registrar
+                                        Beneficios por Antigüedad</a></li>
                             <?php endif; ?>
 
                         </ul>
