@@ -1041,8 +1041,42 @@ CREATE TABLE `empleado_tipo_empleado` (
   FOREIGN KEY (`id_tipo_empleado`) REFERENCES `tipo_empleado`(`id_tipo_empleado`)
 );
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Cambios Esteven
+
+Cambios horas extra
+CREATE TABLE `horas_extra` (
+  `id_horas_extra` int(11) NOT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
+  `fecha` date DEFAULT NULL,
+  `horas` decimal(5,2) DEFAULT NULL,
+  `monto_pago` decimal(10,2) DEFAULT NULL,
+  `fechacreacion` date DEFAULT NULL,
+  `usuariocreacion` varchar(255) DEFAULT NULL,
+  `fechamodificacion` date DEFAULT NULL,
+  `usuariomodificacion` varchar(255) DEFAULT NULL,
+  `tipo` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
+ALTER TABLE `horas_extra`
+  ADD PRIMARY KEY (`id_horas_extra`),
+  ADD KEY `fk_horas_extra_usuario` (`id_usuario`);
+
+--
+-- AUTO_INCREMENT de la tabla `horas_extra`
+--
+ALTER TABLE `horas_extra`
+  MODIFY `id_horas_extra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=302;
 
 
+ALTER TABLE `horas_extra`
+  ADD CONSTRAINT `fk_horas_extra_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
+COMMIT;
 
+
+Cambios Tabla Palnilla
+
+ALTER TABLE planilla
+ADD COLUMN codigo_CCSS VARCHAR(50),
+ADD COLUMN codigo_bac VARCHAR(50);

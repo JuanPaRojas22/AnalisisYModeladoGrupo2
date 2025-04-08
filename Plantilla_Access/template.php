@@ -220,14 +220,17 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
                                             </a>
                                         <li><a href="SolicitarMedioDia.php"><i class="bi bi-sun"></i><span>Medio
                                                     dia</span></a></li>
+                                     </ul>   
                                 </li>
                             <?php endif; ?>
 
                         </ul>
                         <li><a href="beneficios.php"><i class="bi bi-sun"></i><span>Beneficios</span></a></li>
+                        <li><a href="preguntasfreq.php"><i class="bi bi-sun"></i><span>Preguntas Frecuentes</span></a></li>
+                      
                 </ul>
                 </li>
-                <li><a href="preguntasfreq.php">Preguntas Frecuentes</a></li>
+                
 
                 </li>
 
@@ -238,9 +241,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
         </aside>
 
         <!-- Footer -->
-        <footer class="site-footer">
-            <div class="text-center">2024 - Your Company</div>
-        </footer>
+       
     </section>
 
 </body>
