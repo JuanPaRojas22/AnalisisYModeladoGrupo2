@@ -80,7 +80,7 @@ class VacacionDAOSImpl implements VacacionDAO
         $function_conn = $this->conn;
         // Se obtienen las solicitudes de vacaciones pendientes y que comparten el departamento del administrador
         $stmt = $function_conn->prepare(
-            "SELECT V.id_vacacion, V.id_usuario, U.Nombre, U.Apellido, Dep.Nombre AS Departamento, V.fecha_inicio, V.fecha_fin, V.diasTomado, HV.DiasRestantes, EH.descripcion
+            "SELECT V.id_vacacion, V.id_usuario, U.Nombre, U.Apellido, U.direccion_imagen, Dep.Nombre AS Departamento, V.fecha_inicio, V.fecha_fin, V.diasTomado, HV.DiasRestantes, EH.descripcion
             FROM vacacion V
             INNER JOIN usuario U ON V.id_usuario = U.id_usuario
             INNER JOIN departamento Dep ON U.id_departamento = Dep.id_departamento
@@ -156,7 +156,7 @@ class VacacionDAOSImpl implements VacacionDAO
     }
 
     // Funcion para rechazar una solicitud de vacaciones
-    public function rechazarSolicitud($id_vacacion, $diasTomado, $id_usuario)
+    public function rechazarSolicitud($id_vacacion)
     {
         $function_conn = $this->conn;
         // Se actualiza el estado de la solicitud de vacaciones a rechazado (estado 3)
@@ -172,18 +172,7 @@ class VacacionDAOSImpl implements VacacionDAO
         $stmt->execute();
         $stmt->close();
 
-        // Se tiene que restar los días de vacaciones tomados a los días restantes
-        $stmt1 = $function_conn->prepare(
-            "UPDATE historial_vacaciones
-            SET DiasRestantes = DiasRestantes - ?
-            WHERE id_usuario = ?"
-        );
         
-        // Se enlazan los parámetros
-        $stmt1->bind_param("ii", $diasTomado, $id_usuario);
-        // Ejecuta la actualización
-        $stmt1->execute();
-        $stmt1->close();
 
 
     }
@@ -417,8 +406,6 @@ class VacacionDAOSImpl implements VacacionDAO
             $fecha_fin_str = null; // No se necesita la fecha de fin para medio día
         }
 
-        
-    
         // Se ingresa la vacacion por el administrador
         $stmt = $function_conn->prepare(
             "INSERT INTO vacacion (razon, diasTomado, fecha_inicio, observaciones,

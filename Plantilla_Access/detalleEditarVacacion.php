@@ -63,33 +63,87 @@ if (isset($_GET['id'])) {
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+</head>
+
+<body>
+
+
+        
+
+<section id="main-content">
+        <section class="wrapper site-min-height">
+            <!-- Botón para generar el PDF -->
+
+
+            <div class="container">
+                <h1>Solicitud de Modificación de Vacaciones</h1>
+                <div class="btn-container-wrapper">
+                    <form method="get" action="EditarVacaciones.php" accept-charset="UTF-8">
+                        <input type="hidden" name="id_usuario" value="<?php echo $user['id_usuario']; ?>">
+                        <button type="submit" class="btn-container"><i class="bi bi-arrow-return-left"></i></button>
+                    </form>
+                <div>
+                            
+                <a href="procesarEditarVacacion.php?id=<?php echo $id_historial_solicitud_modificacion; ?>&accion=aprobar" class="btn-aprove"><i class="bi bi-check-circle-fill"></i></a>
+                <a href="procesarEditarVacacion.php?id=<?php echo $id_historial_solicitud_modificacion; ?>&accion=rechazar" class="btn-decline"><i class="bi bi-x-square-fill"></i></a>
+                    
+                </div>
+
+
+                </div>
+                <div class="user-img">
+                    <?php if (!empty($user['direccion_imagen'])): ?>
+                        <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" alt="Imagen del usuario">
+                    <?php else: ?>
+                        <p>No hay imagen disponible</p>
+                    <?php endif; ?>
+                </div>
+
+                <table class="user-details">
+                <tr><th>Nombre</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Nombre']); ?></td></tr>
+                <tr><th>Apellido</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Apellido']); ?></td></tr>
+                <tr><th>Departamento</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Departamento']); ?></td></tr>
+                <tr><th>Nueva Fecha de Inicio</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevaFechaInicio']); ?></td></tr>
+                <tr><th>Nueva Fecha de Fin</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevaFechaFin']); ?></td></tr>
+                <tr><th>Nuevos Días Solicitados</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevosDiasSolicitados']); ?></td></tr>
+                <tr><th>Fecha Inicio Original</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['OriginalFechaInicio']); ?></td></tr>
+                <tr><th>Fecha Fin Original</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['OriginalFechaFin']); ?></td></tr>
+                <tr><th>Días Solicitados Originalmente</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['OriginalDiasSolicitados']); ?></td></tr>
+                <tr><th>Días Restantes</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['DiasRestantes']); ?></td></tr>
+                <tr><th>Estado Solicitud</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['EstadoSolicitudVacacion']); ?></td></tr>
+            
+                </table>
+            </div>
+
+        </section>
+    </section>
+
+
     <style>
-        .profile-container {
-            margin-left: 250px;
-            padding: 60px;
-        }
         body {
             font-family: 'Ruda', sans-serif;
-            background-color: #f7f7f7;
+            background-color: #f7f7f7;  /* Blanco cremoso */
+            /* Gris suave */
             margin: 0;
             padding: 0;
         }
 
         .container {
-            width: 80%;
-            max-width: 2000px;
-            margin: 50px auto 200px 250px;
+            width: 50%;
+            max-width: 40%;
+            /* Limitar el ancho máximo */
+            margin: 5px auto;
             padding: 20px;
-            background-color: #ffffff;
-            border-radius: 12px;
+            background-color: #f7f7f7;  /* Blanco cremoso */
+            border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
         }
 
         h1 {
             text-align: center;
             color: #333;
-            margin-bottom: 50px;
-            margin-right: 10%;
+            margin-bottom: 30px;
             font-weight: bold;
         }
 
@@ -100,32 +154,43 @@ if (isset($_GET['id'])) {
         }
 
         .user-img img {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid #c9aa5f;
         }
 
         table {
-            width: 100%;
-            border-collapse: collapse;
+            width: 50%;
+            border-collapse: separate;
+            /* Cambiar a 'separate' para que los bordes se muestren correctamente */
+            border-spacing: 0;
+            /* Eliminar el espacio entre celdas */
             margin-top: 20px;
-            border-radius: 8px;
+            margin-left: 25%;
+            border-radius: 10px;
+            /* Borde redondeado en la tabla */
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+            /* Para que los bordes redondeados se vean en las celdas */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+            /* Agregar sombra ligera */
         }
 
-        th, td {
-            padding: 12px;
+        th,
+        td {
+            padding: 8px 8px;
+            /* Reducir el espacio dentro de las celdas */
             text-align: center;
-            font-size: 16px;
-            color: #555;
+            font-size: 12px;
+            /* Reducir el tamaño de la fuente */
+            color: #fff;
             border-bottom: 1px solid #ddd;
+
         }
 
         th {
-            background-color: #c9aa5f;
+            background-color: #bea66a;
             color: #fff;
         }
 
@@ -134,128 +199,65 @@ if (isset($_GET['id'])) {
         }
 
         td {
-            background-color: #f9f9f9;
+            background-color: #bea66a;
         }
 
-        .btn-container {
+        .btn-container-wrapper {
             display: flex;
             justify-content: space-between;
             margin-top: 20px;
         }
 
-        .btn {
-            display: inline-block;
+        .btn-container {
             background-color: #c9aa5f;
             color: white;
-            padding: 10px 20px;
-            font-size: 25px;
+            padding: 8px 12px;
+            font-size: 16px;
             font-weight: bold;
             text-align: center;
             text-decoration: none;
             border-radius: 5px;
             transition: background-color 0.3s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
-        .btn:hover {
-            background-color: darkgray;
+        .btn-container:hover {}
+        .btn-aprove {
+            display: inline-block;
+            background-color: #c9aa5f;
+            color: white;
+            padding: 10px 20px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-aprove:hover {
+            background-color: rgb(0, 255, 34);
+        }
+
+        .btn-decline {
+            display: inline-block;
+            background-color: #c9aa5f;
+            color: white;
+            padding: 10px 20px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-decline:hover {
+            background-color: rgb(255, 0, 0);
         }
     </style>
-</head>
-
-<body>
-
-    <!--main content start-->
-    <div class="container">
-        <h1>Solicitud de Modificación de Vacaciones</h1>
-        <div class="user-img">
-            <?php if (!empty($user['direccion_imagen'])): ?>
-                <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" alt="Imagen del usuario">
-            <?php else: ?>
-                <p>No hay imagen disponible</p>
-            <?php endif; ?>
-        </div>
-
-        <table class="details-table">
-            <tr><th>Nombre</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Nombre']); ?></td></tr>
-            <tr><th>Apellido</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Apellido']); ?></td></tr>
-            <tr><th>Departamento</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Departamento']); ?></td></tr>
-            <tr><th>Nueva Fecha de Inicio</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevaFechaInicio']); ?></td></tr>
-            <tr><th>Nueva Fecha de Fin</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevaFechaFin']); ?></td></tr>
-            <tr><th>Nuevos Días Solicitados</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevosDiasSolicitados']); ?></td></tr>
-            <tr><th>Fecha Inicio Original</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['OriginalFechaInicio']); ?></td></tr>
-            <tr><th>Fecha Fin Original</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['OriginalFechaFin']); ?></td></tr>
-            <tr><th>Días Solicitados Originalmente</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['OriginalDiasSolicitados']); ?></td></tr>
-            <tr><th>Días Restantes</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['DiasRestantes']); ?></td></tr>
-            <tr><th>Estado Solicitud</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['EstadoSolicitudVacacion']); ?></td></tr>
-        </table>
-
-        <div class="btn-container">
-            <a href="EditarVacaciones.php" class="btn btn-secondary">Volver</a>
-            <div>
-                <a href="procesarEditarVacacion.php?id=<?php echo $id_historial_solicitud_modificacion; ?>&accion=aprobar" class="btn btn-success">Aprobar</a>
-                <a href="procesarEditarVacacion.php?id=<?php echo $id_historial_solicitud_modificacion; ?>&accion=rechazar" class="btn btn-danger">Denegar</a>
-            </div>
-        </div>
-    </div>
-
-        <!-- Estilos CSS -->
-        <style>
-            h1 {
-                text-align: center;
-                font-size: 24;
-                color: black;
-            }
-
-            /* Estilo para la tabla de detalles del usuario */
-            .user-details {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
-                font-size: 15px;
-
-
-            }
-
-            .user-details th,
-            .user-details td {
-                padding: 20px;
-                text-align: left;
-                border: 8px solid #ddd;
-                border-color: rgb(119, 152, 189);
-                color: rgb(20, 20, 20);
-
-            }
-
-            .user-details th {
-                background-color: #f4f4f4;
-                font-weight: bold;
-            }
-
-            .user-details td {
-                background-color: rgb(255, 255, 255);
-            }
-
-            .user-details tr:nth-child(even) td {
-                background-color: #f1f1f1;
-            }
-
-            .btn {
-
-                padding: 10px 20px;
-                /* Ajusta el tamaño del botón */
-                margin-top: 10px;
-                /* Agregar margen superior */
-                cursor: pointer;
-                border-radius: 5px;
-                text-decoration: none;
-                border: 1px solid transparent;
-                display: inline-block;
-                text-align: center;
-                /* Centra el texto dentro del botón */
-                width: auto;
-            }
-        </style>
 
 </body>
 
