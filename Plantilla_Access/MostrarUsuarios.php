@@ -122,7 +122,7 @@ if ($id_departamento == 'all') {
                             </p>
                             <!-- Botones dentro del card-body -->
                             <div class="d-flex justify-content-center gap-4">
-                                <a href="editar.php?id=<?= $user['id_usuario'] ?>"
+                                <a href="profile.php?id=<?= $user['id_usuario'] ?>"
                                     class="btn btn-outline-primary btn-sm rounded-pill">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
