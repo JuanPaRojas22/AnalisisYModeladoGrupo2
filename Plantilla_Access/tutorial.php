@@ -50,7 +50,7 @@ if (!isset($_SESSION['id_usuario'])) {
 
         /* Estilo para el contenido del tutorial */
         .tutorial-content {
-            background-color: white;
+            background-color: aliceblue;
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -59,7 +59,7 @@ if (!isset($_SESSION['id_usuario'])) {
         }
 
         .welcome-text {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Ruda', sans-serif;
             font-size: 1.5rem;
             font-weight: 600;
             color: #333;
@@ -69,23 +69,23 @@ if (!isset($_SESSION['id_usuario'])) {
 
         .start-button {
     padding: 12px 25px;  /* Mantener el tamaño del botón original */
-    background-color: #007BFF;  /* Color de fondo */
+    background-color:  #1abc9c;  /* Color de fondo */
     color: white;  /* Color del texto */
-    border: 2px solid #007BFF;  /* Borde visible */
+    border: 2px solidrgb(19, 110, 92);  /* Borde visible */
     border-radius: 8px;  /* Bordes redondeados */
     font-size: 1.2rem;  /* Tamaño de fuente */
     cursor: pointer;  /* Cambiar el cursor para que se vea interactivo */
     transition: background-color 0.3s, transform 0.2s;  /* Animación para el hover */
     width: 200px;  /* Ancho fijo */
     text-align: center;  /* Centrar el texto dentro del botón */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Sombra sutil */
+    box-shadow: 0 4px 6px rgba(7, 70, 78, 0.1);  /* Sombra sutil */
     margin: 10px 0;  /* Agregar margen para separarlos (arriba y abajo) */
 }
 
 .start-button:hover {
-    background-color: #0056b3;  /* Cambiar el color de fondo cuando se pasa el cursor */
+    background-color:rgb(16, 104, 87);  /* Cambiar el color de fondo cuando se pasa el cursor */
     transform: translateY(-2px);  /* Efecto de elevación al pasar el cursor */
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);  /* Aumentar la sombra en hover */
+    box-shadow: 0 8px 12px rgba(19, 93, 109, 0.2);  /* Aumentar la sombra en hover */
 }
 
 .start-button:focus {

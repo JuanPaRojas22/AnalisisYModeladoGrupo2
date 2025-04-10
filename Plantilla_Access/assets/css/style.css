@@ -234,7 +234,7 @@ ul.top-menu > li > .logout {
     height: 100%;
     position: fixed;
     background: #424a5d;
-  
+    
 
 }
 
@@ -244,6 +244,8 @@ ul.top-menu > li > .logout {
 }
 
 #sidebar ul li {
+    z-index:10;
+
     position: relative;
 }
 
@@ -253,6 +255,7 @@ ul.top-menu > li > .logout {
 
 #sidebar .sub-menu > .sub li:last-child {
     padding-bottom: 10px;
+
 }
 
 /*LEFT NAVIGATION ICON*/
@@ -279,6 +282,7 @@ ul.top-menu > li > .logout {
 .nav-collapse.collapse {
     display: inline;
     z-index:10;
+    
 }
 
 ul.sidebar-menu , ul.sidebar-menu li ul.sub{
@@ -292,6 +296,7 @@ ul.sidebar-menu {
 
 #sidebar > ul > li > ul.sub {
     display: none;
+    
 }
 
 #sidebar > ul > li.active > ul.sub, #sidebar > ul > li > ul.sub > li > a {
