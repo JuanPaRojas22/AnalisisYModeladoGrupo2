@@ -27,7 +27,7 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
             padding: 0;
             font-family: Arial, sans-serif;
             background-color: #f7f8fa;
-            background-image: url('assets/progra/img6.jpg');
+            background-image: url('assets/progra/img9.webp');
             background-size: cover;
             background-position: center;
             
@@ -60,60 +60,83 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
 
             /* Sombra para hacer el texto más legible */
         }
-
         .hero-content {
-            z-index: 2;
-            Position: relative;
-            pointer-events: none; /* <- permite hacer clics a través de esta capa */
+    position: relative;
+    z-index: 2;
+    color: white;
+    padding: 20px;
+    width: 80%; /* Asegura que el contenido no ocupe todo el ancho */
+}
 
-        }
+.mission-vision {
+    display: flex;
+    justify-content: center; /* Centra las columnas */
+    gap: 40px; /* Espacio entre columnas */
+    width: 100%;
+    max-width: 1200px;
+    text-align: left;
+}
 
-        .hero-title {
-            font-size: 4rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            letter-spacing: 2px;
-        }
+.column {
+    width: 45%; /* Establece el tamaño de cada columna */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 500px;
+}
 
-        .hero-description {
-            font-size: 1.3rem;
-            margin-bottom: 30px;
-        }
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
 
-        .hero-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            
-        }
+.hero-description {
+    font-size: 1.3rem;
+    margin-bottom: 30px;
+}
 
-        .btn-hero {
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            border-radius: 50px;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
 
-        .btn-hero:hover {
-            background-color: #1abc9c;
-            transform: translateY(-5px);
-        }
 
-        .btn-hero:focus {
-            outline: none;
-        }
+        .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    position: absolute; /* Posiciona los botones fuera del hero-content */
+    top: 60%; /* Ajusta la posición vertical de los botones */
+    left: 50%; /* Centra los botones horizontalmente */
+    transform: translateX(-50%); /* Asegura que los botones estén perfectamente centrados */
+    width: 100%; /* Asegura que ocupe todo el ancho */
+    margin-top: 20px; /* Espacio adicional si es necesario */
+}
 
-        .btn-hero.learn-more {
-            background-color: #333;
-            color: white;
-        }
+.btn-hero {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    text-decoration: none; /* Elimina el subrayado del enlace */
+}
 
-        .btn-hero.purchase {
-            background-color: #1abc9c;
-            color: white;
-            
-        }
+.btn-hero:hover {
+    background-color: #1abc9c;
+    transform: translateY(-5px);
+}
+
+.btn-hero:focus {
+    outline: none;
+}
+
+.btn-hero.learn-more {
+    background-color: #333;
+    color: white;
+}
+
+.btn-hero.purchase {
+    background-color: #1abc9c;
+    color: white;
+}
     </style>
 </head>
 
@@ -122,22 +145,30 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
 
     <!-- Hero Section -->
     <section class="hero-section">
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <h1 class="hero-title">CREATIVE DESIGN</h1>
-            <p class="hero-description">Enigma es un diseño creativo y minimalista. Es completamente adaptable y listo
-                para retina. Adquiere esta increíble plantilla ahora.</p>
-            <div class="hero-buttons">
-                <a href="tutorial.php" class="btn-hero learn-more">Tutorial</a>
-                <a href="#purchase" class="btn-hero purchase">PURCHASE IT</a>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <div class="mission-vision">
+            <div class="column">
+                <h1 class="hero-title">Misión</h1>
+                <p class="hero-description">Brindar un entorno laboral organizado y justo para los médicos, ofreciendo herramientas modernas y fáciles de usar para la administración de sus horarios y beneficios.</p>
+            </div>
+
+            <div class="column">
+                <h1 class="hero-title">Visión</h1>
+                <p class="hero-description">Ser el aliado tecnológico líder en el sector salud, ofreciendo soluciones que mejoren la experiencia de trabajo para los médicos y optimicen la gestión administrativa para las instituciones de salud.</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
+    <div class="buttons">
+                
+                <a href="tutorial.php" class="btn-hero purchase">Tutorial de la Pagina</a>
+            </div>
 
     <!-- Bootstrap JS -->
 
-
+   
 </body>
 
 </html>
