@@ -229,10 +229,13 @@ ul.top-menu > li > .logout {
 /*sidebar navigation*/
 
 #sidebar {
+    z-index:10;
     width: 210px;
     height: 100%;
     position: fixed;
     background: #424a5d;
+  
+
 }
 
 #sidebar h5 {
@@ -275,6 +278,7 @@ ul.top-menu > li > .logout {
 
 .nav-collapse.collapse {
     display: inline;
+    z-index:10;
 }
 
 ul.sidebar-menu , ul.sidebar-menu li ul.sub{
@@ -413,8 +417,8 @@ ul.sidebar-menu li a.active i {
 }
 
 .black-bg {
-    background: #c9aa5f;
-    border-bottom: 1px solid #c9aa5f;
+    background: #949494;
+    border-bottom: 1px solid #949494;
 }
 
 .wrapper {
