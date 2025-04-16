@@ -119,7 +119,7 @@ require 'template.php';
 
     .button {
         display: inline-block;
-        background-color: #c9aa5f;
+        background-color: #147964;
         color: white;
         padding: 10px 20px;
         font-size: 16px;
@@ -133,7 +133,7 @@ require 'template.php';
 
     .btn {
         display: inline-block;
-        background-color: #c9aa5f;
+        background-color: #147964;
         color: white;
         padding: 10px 20px;
         font-size: 25px;
@@ -165,7 +165,7 @@ require 'template.php';
     input[type="submit"] {
         padding: 10px 20px;
         border: none;
-        background-color: #4CAF50;
+        background-color: #147964;
         color: white;
         font-size: 16px;
         cursor: pointer;
@@ -175,11 +175,11 @@ require 'template.php';
 
 
     .btn:hover {
-        background-color: #c9aa5f;
+        background-color: #137266;
     }
 
     .btn:active {
-        background-color: #c9aa5f;
+        background-color: #137266;
     }
 
     table {
@@ -200,7 +200,7 @@ require 'template.php';
     }
 
     th {
-        background-color: #c9aa5f;
+        background-color: #116B67;
         color: #fff;
         text-align: center;
     }
@@ -262,7 +262,7 @@ require 'template.php';
         color: white;
         background-color: gray;
         border-radius: 5px;
-        background-color: #c9aa5f;
+        background-color: #116B67;
     }
 
     .modal-content a:hover {

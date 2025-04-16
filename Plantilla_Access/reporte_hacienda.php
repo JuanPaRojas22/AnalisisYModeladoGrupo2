@@ -136,7 +136,7 @@ if (isset($_POST['generar_pdf'])) {
 
     .btn {
         display: inline-block;
-                        background-color: #c9aa5f;
+                        background-color: #147665;
                         color: white;
                         padding: 12px 20px;
                         margin-right: 10px;  /*espacio entre los botones */
@@ -151,7 +151,7 @@ if (isset($_POST['generar_pdf'])) {
                     }
 
                     .btn-export:hover {
-                        background-color: #b5935b;
+                        background-color: #147665;
                     }
 
   
@@ -181,7 +181,7 @@ if (isset($_POST['generar_pdf'])) {
     }
 
     th {
-        background-color: #c9aa5f;
+        background-color: #147665;
         color: #fff;
         text-align: center;
     }

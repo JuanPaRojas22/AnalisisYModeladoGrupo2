@@ -56,9 +56,14 @@ include 'template.php';
                         <p><strong>Beneficiarios:</strong> <?= $beneficio['beneficiarios'] ?></p>
 
                         <div class="beneficio-actions">
-                            <button class="btn btn-warning" onclick="abrirModal(<?= $beneficio['id_beneficio'] ?>, '<?= htmlspecialchars($beneficio['razon']) ?>', <?= $beneficio['monto'] ?>, '<?= htmlspecialchars($beneficio['identificacion_medismart']) ?>', <?= $beneficio['valor_plan_total'] ?>, <?= $beneficio['aporte_patrono'] ?>, <?= $beneficio['beneficiarios'] ?>)">
-                                Editar
-                            </button>
+
+                        <button class="btn btn-warning" 
+        onclick="abrirModal(<?= $beneficio['id_beneficio'] ?>, '<?= htmlspecialchars($beneficio['razon']) ?>', <?= $beneficio['monto'] ?>, '<?= htmlspecialchars($beneficio['identificacion_medismart']) ?>', <?= $beneficio['valor_plan_total'] ?>, <?= $beneficio['aporte_patrono'] ?>, <?= $beneficio['beneficiarios'] ?>)"
+        style="background-color: #0B4F6C; border-color: #0B4F6C;">
+    Editar
+</button>
+
+
                             <button class="btn btn-danger ms-2" onclick="eliminarBeneficio(<?= $beneficio['id_beneficio'] ?>)">Eliminar</button>
                         </div>
                     </div>
@@ -95,7 +100,9 @@ include 'template.php';
             <label>Beneficiarios:</label>
             <input type="number" id="beneficiarios" name="beneficiarios">
 
-            <button type="submit" class="btn btn-success">Guardar</button>
+            <button type="submit" class="btn btn-success" style="background-color: #147964; border-color: #147964;">
+    Guardar
+</button>
         </form>
     </div>
 </div>
@@ -171,7 +178,7 @@ function eliminarBeneficio(id_beneficio) {
 }
 
 .btn-volver {
-    background-color: #c9a449; /* Dorado elegante */
+    background-color: #0E5D6A; /* Dorado elegante */
     color: #fff !important; /* No cambia el color en hover */
     font-size: 1.1em;
     font-weight: bold;
@@ -185,7 +192,7 @@ function eliminarBeneficio(id_beneficio) {
 
 .btn-volver:hover {
     display: inline-block;
-                        background-color: #c9aa5f;
+                        background-color: #0B4F6C;
                         color: white;
                         padding: 12px 20px;
                         font-size: 16px;

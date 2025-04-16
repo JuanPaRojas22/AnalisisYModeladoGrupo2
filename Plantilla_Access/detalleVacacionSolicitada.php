@@ -78,169 +78,167 @@ if (isset($_GET['id'])) {
 
 
             <div class="container">
-                <h1>Solicitud de Vacación</h1>
-                <div class="btn-container-wrapper">
-                    <form method="get" action="SolicitarVacacion.php" accept-charset="UTF-8">
-                        <input type="hidden" name="id_usuario" value="<?php echo $user['id_usuario']; ?>">
-                        <button type="submit" class="btn-container"><i class="bi bi-arrow-return-left"></i></button>
-                    </form>
+    <h1>Solicitud de Vacación</h1>
+    <a href="SolicitarVacacion.php" class="back-button"><i class="bi bi-arrow-return-left"></i> Volver</a>
+    
+    <div class="user-img">
+        <?php if (!empty($user['direccion_imagen'])): ?>
+            <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" alt="Imagen del usuario">
+        <?php else: ?>
+            <p>No hay imagen disponible</p>
+        <?php endif; ?>
+    </div>
+    
+    <div class="table-header">
+        Detalles de la Solicitud
+    </div>
 
-                </div>
-                <div class="user-img">
-                    <?php if (!empty($user['direccion_imagen'])): ?>
-                        <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" alt="Imagen del usuario">
-                    <?php else: ?>
-                        <p>No hay imagen disponible</p>
-                    <?php endif; ?>
-                </div>
+    <table class="user-details">
+        <tr>
+            <th>Nombre</th>
+            <td><?php echo htmlspecialchars($user['nombre']); ?></td>
+        </tr>
+        <tr>
+            <th>Apellido</th>
+            <td><?php echo htmlspecialchars($user['apellido']); ?></td>
+        </tr>
+        <?php foreach ($vacaciones as $vacacion): ?>
+            <tr>
+                <th>Fecha de inicio</th>
+                <td><?php echo htmlspecialchars($vacacion['fecha_inicio']); ?></td>
+            </tr>
+            <tr>
+                <th>Fecha Fin</th>
+                <td><?php echo htmlspecialchars($vacacion['fecha_fin']); ?></td>
+            </tr>
+            <tr>
+                <th>Días tomados</th>
+                <td><?php echo htmlspecialchars($vacacion['diasTomado']); ?></td>
+            </tr>
+            <tr>
+                <th>Razón</th>
+                <td><?php echo htmlspecialchars($vacacion['razon']); ?></td>
+            </tr>
+            <tr>
+                <th>Estado</th>
+                <td><?php echo htmlspecialchars($UsuarioDAO->getEstadoVacacionById($vacacion['id_estado_vacacion'])['descripcion']); ?></td>
+            </tr>
+        <?php endforeach; ?>
+        <?php foreach ($historial_vacaciones as $historial_vacacion): ?>
+            <tr>
+                <th>Días restantes</th>
+                <td><?php echo htmlspecialchars($historial_vacacion['DiasRestantes']); ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+</div>
 
-                <table class="user-details">
-                    <tr>
-                        <th>Nombre</th>
-                        <td><?php echo htmlspecialchars($user['nombre']); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Apellido</th>
-                        <td><?php echo htmlspecialchars($user['apellido']); ?></td>
-                    </tr>
-                    <?php foreach ($vacaciones as $vacacion): ?>
-                        <tr>
-                            <th>Fecha de inicio</th>
-                            <td><?php echo htmlspecialchars($vacacion['fecha_inicio']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Fecha Fin</th>
-                            <td><?php echo htmlspecialchars($vacacion['fecha_fin']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Días tomados</th>
-                            <td><?php echo htmlspecialchars($vacacion['diasTomado']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Razón</th>
-                            <td><?php echo htmlspecialchars($vacacion['razon']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Estado</th>
-                            <td><?php echo htmlspecialchars($UsuarioDAO->getEstadoVacacionById($vacacion['id_estado_vacacion'])['descripcion']); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                    <?php foreach ($historial_vacaciones as $historial_vacacion): ?>
-                        <tr>
-                            <th>Días restantes</th>
-                            <td><?php echo htmlspecialchars($historial_vacacion['DiasRestantes']); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </table>
-            </div>
 
         </section>
     </section>
 
 
     <style>
-        body {
-            font-family: 'Ruda', sans-serif;
-            background-color: #f7f7f7;  /* Blanco cremoso */
-            /* Gris suave */
-            margin: 0;
-            padding: 0;
-        }
+    body {
+        font-family: 'Ruda', sans-serif;
+        background-color: #f7f7f7;
+        margin: 0;
+        padding: 0;
+    }
 
-        .container {
-            width: 50%;
-            max-width: 40%;
-            /* Limitar el ancho máximo */
-            margin: 5px auto;
-            padding: 20px;
-            background-color: #f7f7f7;  /* Blanco cremoso */
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-        }
+    .container {
+        width: 50%;
+        max-width: 60%;
+        margin: 50px auto;
+        padding: 30px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
 
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-            font-weight: bold;
-        }
+    h1 {
+        text-align: center;
+        color: #116B67;  /* Caribbean Current */
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
 
-        .user-img {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
+    .back-button {
+        background-color: #116B67;  /* Caribbean Current */
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        margin-bottom: 20px;
+    }
 
-        .user-img img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #c9aa5f;
-        }
+    .back-button:hover {
+        background-color: #0E5D6A; /* Midnight Green */
+    }
 
-        table {
-            width: 50%;
-            border-collapse: separate;
-            /* Cambiar a 'separate' para que los bordes se muestren correctamente */
-            border-spacing: 0;
-            /* Eliminar el espacio entre celdas */
-            margin-top: 20px;
-            margin-left: 25%;
-            border-radius: 10px;
-            /* Borde redondeado en la tabla */
-            overflow: hidden;
-            /* Para que los bordes redondeados se vean en las celdas */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-            /* Agregar sombra ligera */
-        }
+    .user-img {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
 
-        th,
-        td {
-            padding: 8px 8px;
-            /* Reducir el espacio dentro de las celdas */
-            text-align: center;
-            font-size: 12px;
-            /* Reducir el tamaño de la fuente */
-            color: #fff;
-            border-bottom: 1px solid #ddd;
+    .user-img img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #147964; /* Pine Green */
+    }
 
-        }
+    .user-details {
+        margin-top: 20px;
+        font-size: 16px;
+        width: 100%;
+        border-radius: 10px;
+        padding: 10px;
+    }
 
-        th {
-            background-color: #bea66a;
-            color: #fff;
-        }
+    .user-details th,
+    .user-details td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        color: #333;
+    }
 
-        tr:hover {
-            background-color: #f1f1f1;
-        }
+    .user-details th {
+        background-color: #0E5D6A;  /* Midnight Green */
+        color: #fff;
+    }
 
-        td {
-            background-color: #bea66a;
-        }
+    .user-details td {
+        background-color: #f9f9f9;
+    }
 
-        .btn-container-wrapper {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
+    .user-details tr:hover {
+        background-color: #f1f1f1;
+    }
 
-        .btn-container {
-            background-color: #c9aa5f;
-            color: white;
-            padding: 8px 12px;
-            font-size: 16px;
-            font-weight: bold;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
+    .user-details td,
+    .user-details th {
+        font-size: 14px;
+    }
 
-        .btn-container:hover {}
-    </style>
+    .table-header {
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+        color: #116B67; /* Caribbean Current */
+        margin-bottom: 10px;
+    }
+</style>
+
+
+
 </body>
 
 </html>

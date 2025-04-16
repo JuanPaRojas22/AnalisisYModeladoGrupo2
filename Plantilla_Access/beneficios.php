@@ -45,7 +45,7 @@ include 'template.php';
 h2 {
     font-size: 2.2em;
     font-weight: bold;
-    color: #2c3e50;
+    color: #0B4F6C;
     text-align: center;
     margin-top: 40px;  /* Antes estaba muy pegado, ahora tiene más espacio */
     margin-bottom: 30px;
@@ -76,9 +76,9 @@ h4 {
 .card-title {
     font-size: 1.2em;
     font-weight: bold;
-    color: #C9A449;
+    color: #0D566B;
     text-transform: capitalize;
-    border-bottom: 2px solid #f1c40f;
+    border-bottom: 2px solid #0D566B;
     padding-bottom: 5px;
     margin-bottom: 10px;
 }

@@ -253,6 +253,56 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
       MAIN CONTENT
       *********************************************************************************************************************************************************** -->
         <!--main content start-->
+        <style>
+        .form-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra para el efecto de profundidad */
+    width: 60%; /* Ajusta el ancho del contenedor */
+    margin: 20px auto; /* Centra el contenedor */
+}
+
+.container {
+    width: 80%; /* Ajusta el ancho del contenedor */
+    margin: 0 auto; /* Centra el contenedor */
+}
+
+h2 {
+    font-size: 28px;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+.form-control {
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+}
+
+.btn {
+    width: 150px;
+    padding: 10px;
+}
+
+.btn-success {
+    background-color: #147964;
+    border-color: #147964;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn:hover {
+    opacity: 0.9;
+} 
+</style>
         <section id="main-content">
             <section class="wrapper site-min-height">
 
@@ -340,43 +390,47 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 </head>
 
                 <body>
-                    <div class="container">
-                        <h2 class="text-center mt-4">Aplicar Bono Salarial</h2>
-                        <form action="" method="POST" class="mt-4">
-                            <div class="form-group">
-                                <label for="id_usuario">Seleccione un Usuario:</label>
-                                <select name="id_usuario" id="id_usuario" class="form-control" required
-                                    onchange="actualizarSalario()">
-                                    <option value="">Seleccione un usuario</option>
-                                    <?php while ($row = $result_usuarios->fetch_assoc()): ?>
-                                        <option value="<?= $row['id_usuario']; ?>"
-                                            data-salario="<?= $row['salario_base']; ?>">
-                                            <?= $row['nombre']; ?>
-                                        </option>
-                                    <?php endwhile; ?>
-                                </select>
-                            </div>
+                <div class="container mt-5 form-container">
+    <h2 class="text-center mb-4">Aplicar Bono Salarial</h2>
+    <form action="" method="POST">
+        <div class="form-group">
+            <label for="id_usuario">Seleccione un Usuario:</label>
+            <select name="id_usuario" id="id_usuario" class="form-control" required onchange="actualizarSalario()">
+                <option value="">Seleccione un usuario</option>
+                <?php while ($row = $result_usuarios->fetch_assoc()): ?>
+                    <option value="<?= $row['id_usuario']; ?>" data-salario="<?= $row['salario_base']; ?>">
+                        <?= $row['nombre']; ?>
+                    </option>
+                <?php endwhile; ?>
+            </select>
+        </div>
 
-                            <div class="form-group">
-                                <label for="salario_actual">Salario Actual:</label>
-                                <input type="text" id="salario_actual" class="form-control" disabled>
-                            </div>
+        <div class="form-group">
+            <label for="salario_actual">Salario Actual:</label>
+            <input type="text" id="salario_actual" class="form-control" disabled>
+        </div>
 
-                            <div class="form-group">
-                                <label for="razon">Razón del Bono:</label>
-                                <input type="text" name="razon" class="form-control" required>
-                            </div>
+        <div class="form-group">
+            <label for="razon">Razón del Bono:</label>
+            <input type="text" name="razon" class="form-control" required>
+        </div>
 
-                            <div class="form-group">
-                                <label for="monto_total">Monto del Bono:</label>
-                                <input type="number" step="0.01" name="monto_total" class="form-control" required>
-                            </div>
+        <div class="form-group">
+            <label for="monto_total">Monto del Bono:</label>
+            <input type="number" step="0.01" name="monto_total" class="form-control" required>
+        </div>
 
-                            <div class="text-center mt-4">
-                                <button type="submit" class="btn btn-success">Aplicar Bono</button>
-                                <a href="VerPlanilla.php" class="btn btn-secondary">Volver</a>
-                            </div>
-                        </form>
+        <div class="text-center mt-4">
+        <button type="submit" class="btn" style="background-color: #147964; border-color: #147964; color: white;">Aplicar Bono</button>
+        <a href="VerPlanilla.php" class="btn" style="background-color: #0B4F6C; border-color: #0B4F6C; color: white;">Volver</a>
+        </div>
+    </form>
+
+    <?php if (!empty($mensaje)): ?>
+        <div class="alert alert-info mt-3"><?= $mensaje; ?></div>
+    <?php endif; ?>
+</div>
+                        
 
                         <?php if (!empty($mensaje)): ?>
                             <div class="alert alert-info mt-3"><?= $mensaje; ?></div>

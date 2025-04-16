@@ -11,7 +11,7 @@ Premium: http://www.gridgum.com
 
 /* BASIC THEME CONFIGURATION */
 body {
-    color: #797979;
+    color: #f2f2f2;
 	background: #f2f2f2;
     font-family: 'Ruda', sans-serif;
     padding: 0px !important;
@@ -29,11 +29,11 @@ a, a:hover, a:focus {
 }
 ::selection {
 
-    background: #68dff0;
+    background: #205d85d8;
     color: #fff;
 }
 ::-moz-selection {
-    background: #68dff0;
+    background: #205d85d8;
     color: #fff;
 }
 
@@ -44,7 +44,7 @@ a, a:hover, a:focus {
 
 /* Bootstrap Modifications */
 .modal-header {
-	background: #68dff0;
+	background: #205d85d8;;
 }
 
 .modal-title {
@@ -74,7 +74,7 @@ a, a:hover, a:focus {
 /*Theme Backgrounds*/
 
 .bg-theme {
-	background-color: #68dff0;
+	background-color: #0E5D6A;
 }
 
 .bg-theme02 {
@@ -334,7 +334,7 @@ ul.sidebar-menu li ul.sub li a:hover {
 }
 
 ul.sidebar-menu li ul.sub li.active a {
-    color: #68dff0;
+    color: #2f5a61c4;
     -webkit-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
@@ -421,10 +421,13 @@ ul.sidebar-menu li a.active i {
     z-index: 1002;
 }
 
-.black-bg {
-    background: #949494;
-    border-bottom: 1px solid #949494;
+header.black-bg {
+    background: #052e45f5 !important;
+    /* border-bottom: 1px solid #0B4F6C !important; */
 }
+
+
+
 
 .wrapper {
     display: inline-block;
@@ -438,7 +441,7 @@ ul.sidebar-menu li a.active i {
 
 a.logo {
     font-size: 20px;
-    color: #ffffff;
+    color: #ddd;
     float: left;
     margin-top: 15px;
     text-transform: uppercase;
@@ -454,7 +457,7 @@ a.logo:hover, a.logo:focus {
 }
 
 a.logo span {
-    color: #68dff0;
+    color: #0f2124;
 }
 
 
@@ -477,23 +480,23 @@ a.logo span {
 }
 
 ul.top-menu > li > a {
-    color: #666666;
+    color: #f6f2f2;
     font-size: 16px;
     border-radius: 4px;
     -webkit-border-radius: 4px;
-    border:1px solid #666666 !important;
+    border: 1px solid #f6f2f2;
     padding: 2px 6px;
     margin-right: 15px;
 }
 
 ul.top-menu > li > a:hover, ul.top-menu > li > a:focus {
-    border:1px solid #b6b6b6 !important;
-    background-color: transparent !important;
-    border-color: #b6b6b6 !important;
+    border:1px solid #b6b6b6 ;
+    background-color: transparent ;
+    border-color: #b6b6b6 ;
     text-decoration: none;
     border-radius: 4px;
     -webkit-border-radius: 4px;
-    color: #b6b6b6 !important;
+    color: #b6b6b6 ;
 }
 
 .notify-row .badge {
@@ -532,7 +535,7 @@ ul.top-menu > li > a:hover, ul.top-menu > li > a:focus {
 }
 
 .dropdown-menu.extended li p.green {
-    background-color: #68dff0;
+    background-color: #030303;
     color: #fff;
 }
 
@@ -737,7 +740,7 @@ ul.top-menu > li > a:hover, ul.top-menu > li > a:focus {
 }
 .notify-arrow-green {
     border-color: transparent transparent #68dff0;
-    border-bottom-color: #68dff0 !important;
+    border-bottom-color: #68dff0 ;
     border-top-color: #68dff0 !important;
 }
 
@@ -847,7 +850,7 @@ ul.top-menu > li > a:hover, ul.top-menu > li > a:focus {
 .box1 {
 	padding: 15px;
 	text-align: center;
-	color: #989898;
+	color: #0e0808;
 	border-bottom: 1px solid #989898;
 }
 

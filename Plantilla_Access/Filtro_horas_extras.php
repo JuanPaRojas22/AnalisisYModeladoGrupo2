@@ -89,7 +89,10 @@ if (isset($_POST['filtrar'])) {
             </select>
                 
             <div class="button-group">
-    <form action="#" method="post">
+        <!-- Botón Filtrar -->
+        <a href="VerPlanilla.php" class="btn btn-secondary">
+            <i ></i> Devolver
+        </a>
         <button class="btn" type="submit" name="filtrar">
             <i class="bi bi-funnel"></i> Filtrar
         </button>
@@ -175,21 +178,16 @@ if (isset($_POST['filtrar'])) {
 
 
     .container {
-        width: 60%;
-        /* Puedes ajustar el ancho para que no ocupe todo el espacio */
-        max-width: 1200px;
-        /* Asegura que no se expanda demasiado en pantallas grandes */
-        margin-top: 100px;
-        padding: 20px 40px;
-        /* Espacio de 20px arriba y abajo, y 40px a los lados */
-        background-color: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-        margin-left: auto;
-        /* Centra el contenedor */
-        margin-right: auto;
-        /* Centra el contenedor */
-    }
+    width: 40%; /* Ajusta el ancho para hacer la card más pequeña */
+    max-width: 800px; /* Limita el ancho máximo */
+    margin-top: 100px;
+    padding: 20px 40px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    margin-left: auto;
+    margin-right: auto;
+}
 
 
 
@@ -199,6 +197,7 @@ if (isset($_POST['filtrar'])) {
         margin-bottom: 50px;
         margin-right: 10%;
         font-weight: bold;
+        font-size: 24px;
 
     }
 
@@ -211,31 +210,33 @@ if (isset($_POST['filtrar'])) {
     }
 
     .btn {
-        display: inline-block;
-        background-color: #c9aa5f;
-        color: white;
-        padding: 10px 20px;
-        margin-right: 10px;
-        /*espacio entre los botones */
-        font-size: 20px;
-        font-weight: bold;
-        text-align: center;
-        text-decoration: none;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        transition: background-color 0.3s;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-    }
+    background-color: #0B4F6C;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    margin-right: 10px; /* Espacio entre los botones */
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
 
+.btn-secondary {
+    background-color: #555; /* Gris para el botón "Devolver" */
+    color: white;
+}
 
-    .btn:hover {
-        background-color: #c9aa5f;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+.btn:hover {
+    background-color: #0E5D6A;
+}
 
-    }
+.btn-secondary:hover {
+    background-color: #444; /* Gris más oscuro para el hover */
+}
+
 
     .btn:active {
-        background-color: #c9aa5f;
+        background-color: #0E5D6A;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
 
     }
@@ -260,7 +261,7 @@ if (isset($_POST['filtrar'])) {
     }
 
     th {
-        background-color: #c9aa5f;
+        background-color: #116B67;
         color: #fff;
         text-align: center;
     }
@@ -324,7 +325,7 @@ if (isset($_POST['filtrar'])) {
         color: white;
         background-color: gray;
         border-radius: 5px;
-        background-color: #c9aa5f;
+        background-color: #0E5D6A;
     }
 
     .modal-content a:hover {
@@ -400,7 +401,7 @@ select:focus {
 
 /* Botón estilizado */
 .btn {
-    background-color: #c9aa5f;
+    background-color: #0E5D6A;
     color: white;
     padding: 10px 15px;
     font-size: 16px;
@@ -411,7 +412,7 @@ select:focus {
 }
 
 .btn:hover {
-    background-color: #a88c4a;
+    background-color: #0E5D6A;
 }
 
 
@@ -423,6 +424,20 @@ select:focus {
         /* Centra el contenido verticalmente */
      width: 100%;
     /* Asegura que el contenedor ocupe todo el ancho disponible */
+}
+.filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px; /* Espacio entre los elementos */
+    align-items: center;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    max-width: 600px; /* Tamaño máximo para la card */
+    margin: auto;
+    justify-content: center;
+    width: 80%; /* Reducción de ancho para que la card sea más pequeña */
 }
 </style>
 

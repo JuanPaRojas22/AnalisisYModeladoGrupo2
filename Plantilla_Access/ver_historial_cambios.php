@@ -353,7 +353,7 @@ $result = $conn->query($sql);
         }
         .btn {
             display: inline-block;
-            background-color:#c9aa5f;
+            background-color: #116B67;
             color: white;
             padding: 10px 20px;
             font-size: 16px;
@@ -366,11 +366,11 @@ $result = $conn->query($sql);
         }
 
         .btn:hover {
-            background-color:#c9aa5f;
+            background-color: #147665;
         }
 
         .btn:active {
-            background-color:#c9aa5f;
+            background-color: #147665;
         }
         
         table {
@@ -390,7 +390,7 @@ $result = $conn->query($sql);
         }
 
         th {
-            background-color:#c9aa5f;
+            background-color: #116B67;
             color: #fff;
         }
 

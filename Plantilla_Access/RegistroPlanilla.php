@@ -196,7 +196,7 @@ if (!isset($_SESSION['id_usuario'])) {
 
                 .button {
                     display: inline-block;
-                    background-color: #c9aa5f;
+                    background-color: #147964;
                     color: white;
                     padding: 10px 20px;
                     font-size: 16px;
@@ -209,7 +209,7 @@ if (!isset($_SESSION['id_usuario'])) {
                 }
 
                 .button:hover {
-                    background-color: rgb(159, 176, 59);
+                    background-color: #147964;
                 }
 
                 form {
@@ -237,14 +237,14 @@ if (!isset($_SESSION['id_usuario'])) {
                 }
 
                 button {
-                    background-color: #c9aa5f;
+                    background-color: #147964;
                     color: white;
                     border: none;
                     cursor: pointer;
                 }
 
                 button:hover {
-                    background-color: rgb(114, 132, 52);
+                    background-color: #147964;
                 }
 
                 select {
@@ -260,13 +260,13 @@ if (!isset($_SESSION['id_usuario'])) {
                 }
 
                 select:hover {
-                    border-color: #a88c4a;
+                    border-color: #147964;
                 }
 
                 select:focus {
                     outline: none;
-                    border-color: #805d24;
-                    box-shadow: 0 0 5px rgba(200, 150, 60, 0.6);
+                    border-color: #147964;
+                    box-shadow: #147964;
 
                 }
             </style>

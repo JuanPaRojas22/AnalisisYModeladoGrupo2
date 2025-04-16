@@ -59,7 +59,9 @@ if ($conn->query($query) === TRUE) {
 
         <!-- Contenido adicional si es necesario -->
         <div class="text-center mt-3">
-            <a href="registrarBeneficiosAntiguedad.php" class="btn btn-primary">Registrar Nuevos Beneficios</a>
+        <a href="registrarBeneficiosAntiguedad.php" class="btn btn-primary" style="background-color: #147964; color: white; padding: 12px 20px; font-size: 16px; font-weight: bold; text-decoration: none; border-radius: 5px; transition: background-color 0.3s;">
+    Registrar Nuevos Beneficios
+</a>
         </div>
     </div>
 </body>
@@ -107,8 +109,8 @@ if ($conn->query($query) === TRUE) {
 
     select:focus {
         outline: none;
-        border-color: #805d24;
-        box-shadow: 0 0 5px rgba(200, 150, 60, 0.6);
+        border-color: #106469;
+        box-shadow: #106469;
     }
 
     .container {
@@ -123,6 +125,7 @@ if ($conn->query($query) === TRUE) {
         padding: 10px;
         max-width: 50%;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
+        border-radius: 10px;
     }
 
 
@@ -155,7 +158,7 @@ if ($conn->query($query) === TRUE) {
 
     .btn {
         display: inline-block;
-                        background-color: #c9aa5f;
+                        background-color: #106469;
                         color: white;
                         padding: 12px 20px;
                         font-size: 16px;
@@ -171,11 +174,11 @@ if ($conn->query($query) === TRUE) {
 
 
     .btn:hover {
-        background-color: #c9aa5f;
+        background-color: #106469;
     }
 
     .btn:active {
-        background-color: #c9aa5f;
+        background-color: #106469;
     }
 
 
@@ -258,7 +261,7 @@ if ($conn->query($query) === TRUE) {
         color: white;
         background-color: gray;
         border-radius: 5px;
-        background-color: #c9aa5f;
+        background-color: #106469;
     }
 
     .modal-content a:hover {

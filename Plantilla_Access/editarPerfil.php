@@ -131,7 +131,7 @@ if (isset($_GET['id'])) {
 
         .btn {
             display: inline-block;
-            background-color: #c9aa5f;
+            background-color: #0B4F6C;
             color: white;
             padding: 12px 20px;
             font-size: 18px;

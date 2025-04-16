@@ -99,13 +99,13 @@ if (!isset($_SESSION['id_usuario'])) {
                     }
 
                     .container {
-                        width: 80%;
-                        margin: 100px auto;
-                        padding: 20px;
-                        background-color: #f7f7f7;  /* Blanco cremoso */
-                        border-radius: 12px;
-                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-                    }
+    width: 90%; /* Aumentar el tamaño del contenedor */
+    margin: 50px auto; /* Centrar el contenedor */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra alrededor del contenedor */
+}
 
                     h1 {
                         text-align: center;
@@ -126,7 +126,7 @@ if (!isset($_SESSION['id_usuario'])) {
 
                     .btn {
                         display: inline-block;
-                        background-color: #c9aa5f;
+                        background-color: #0C536C;
                         color: white;
                         padding: 12px 20px;
                         font-size: 16px;
@@ -140,47 +140,49 @@ if (!isset($_SESSION['id_usuario'])) {
                     }
 
                     .btn:hover {
-                        background-color: #b5935b;
+                        background-color: #0C536C;
                     }
                     
 
                     .btn:active {
-                        background-color: #c9aa5f;
-                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+                        background-color: #0C536C;
+                        box-shadow: 0 4px 10px rgb(254, 254, 254);
 
                     }
 
                     table {
-                        width: 100%;
-                        border-collapse: collapse;
-                        margin-top: 20px;
-                        border-radius: 8px;
-                        overflow: hidden;
-                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 12px; /* Reducir el tamaño de la fuente */
+}
 
-                    }
+th, td {
+    padding: 8px; /* Reducir el espaciado de las celdas */
+    text-align: center;
+    font-size: 12px; /* Reducir el tamaño de la fuente */
+    color: #555;
+    border-bottom: 1px solid #ddd;
+}
 
-                    th,
-                    td {
-                        padding: 12px;
-                        text-align: center;
-                        font-size: 16px;
-                        color: #555;
-                        border-bottom: 1px solid #ddd;
-                    }
+th {
+    background-color: #116B67;
+    color: white;
+}
+th:first-child {
+    border-radius: 8px 0 0 0; /* Redondear la esquina superior izquierda */
+}
+th:last-child {
+    border-radius: 0 8px 0 0; /* Redondear la esquina superior derecha */
+}
 
-                    th {
-                        background-color: #c9aa5f;
-                        color: #fff;
-                        text-align: center;
-                    }
 
-                    tr:hover {
-                        background-color: #f7f7f7;  /* Blanco cremoso */
-                    }
+tr:hover {
+    background-color: #f7f7f7;
+}
 
-                    td {
-                        background-color: #f7f7f7;  /* Blanco cremoso */
+                   td {
+                        background-color: #f7f7f7;
                     }
 
                     .no-records {
@@ -234,7 +236,7 @@ if (!isset($_SESSION['id_usuario'])) {
                         color: white;
                         background-color: gray;
                         border-radius: 5px;
-                        background-color: #c9aa5f;
+                        background-color: #147964;
                     }
 
                     .modal-content a:hover {

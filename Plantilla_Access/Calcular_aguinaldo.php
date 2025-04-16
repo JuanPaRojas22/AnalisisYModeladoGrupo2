@@ -104,8 +104,8 @@ ob_end_flush();  // Envía todo el contenido del búfer al navegador
             <!-- Mostrar tabla con los datos de historial de aguinaldo -->
 
             <form action="calcular_aguinaldo.php" method="post">
-                <label class="h1" style="color: black;" for="metodo_pago">Método de Pago:</label>
-                <select name="metodo_pago" required>
+            <label class="h1" style="color: black; font-size: 20px;" for="metodo_pago">Método de Pago:</label>
+            <select name="metodo_pago" required>
                     <option value="Transferencia">Transferencia</option>
                     <option value="Efectivo">Efectivo</option>
                     <option value="Cheque">Cheque</option>
@@ -179,200 +179,111 @@ ob_end_flush();  // Envía todo el contenido del búfer al navegador
 
 
 
-        <style>
-            body {
-                font-family: 'Ruda', sans-serif;
-                background-color: #f7f7f7;
-                /* Blanco cremoso */
-                margin: 0;
-                padding: 0;
+ <style>
+      body {
+    font-family: 'Ruda', sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+}
 
-            }
-
-            select {
-                width: 25%;
-                padding: 10px;
-                font-size: 16px;
-                border: 2px solid rgb(15, 15, 15);
-                border-radius: 5px;
-                background: #f9f9f9;
-                color: black;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                text-align: center;
-            }
-
-            .container {
-                display: flex;
-                flex-direction: column;
-                background-color: #f7f7f7;
-                /* Blanco cremoso */
-
-                justify-content: flex-start;
-                /* Alinea hacia la parte superior */
-                align-items: center;
-                /* Centra los elementos horizontalmente */
-                padding: 10px;
-                max-width: 100%;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-            }
-
-
-            .row {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-
-            }
-
-            h1 {
-                text-align: center;
-                color: black;
-                margin-bottom: 50px;
-                margin-right: 2%;
-                font-weight: bold;
-            }
-
-            h3 {
-                text-align: center;
-                color: black;
-                margin-bottom: 50px;
-                margin-right: 10%;
-                font-weight: bold;
-            }
-
-            .btn {
-                display: inline-block;
-                background-color: #c9aa5f;
-                color: #f7f7f7;
-                padding: 10px 20px;
-                font-size: 25px;
-                font-weight: bold;
-                text-align: center;
-                text-decoration: none;
-                border-radius: 5px;
-                margin-bottom: 20px;
-                margin-top: 20px;
-
-                transition: background-color 0.3s;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-
-            }
+.container {
+    width: 80%;
+    flex-direction: column;
+    background-color: #f7f7f7;
+    justify-content: flex-start;
+    align-items: center; /* Ensures the content is centered */
+    padding: 10px;
+    max-width: 90%; /* Reduced max-width for smaller appearance */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    margin-top: 20px;
+    border-radius: 12px;
+}
 
 
 
-            .btn:hover {
-                background-color: #c9aa5f;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
 
-            }
+h1 {
+    text-align: center;
+    color: black;
+    margin-bottom: 20px; /* Reduced margin */
+    font-size: 20px; /* Smaller font size */
+    font-weight: bold;
+}
 
-            .btn:active {
-                background-color: #c9aa5f;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+select {
+    width: 30%; /* Smaller width for the select dropdown */
+    padding: 8px; /* Reduced padding */
+    font-size: 14px; /* Smaller font size */
+    border: 2px solid rgb(15, 15, 15);
+    border-radius: 5px;
+    background: #f9f9f9;
+    color: black;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
 
-            }
+.btn {
+    display: inline-block;
+    background-color: #147665;
+    color: #f7f7f7;
+    padding: 8px 16px; /* Reduced padding */
+    font-size: 14px; /* Smaller font size */
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    transition: background-color 0.3s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
 
-            table {
-                width: 70%;
-                border-collapse: collapse;
-                margin-top: 20px;
-                border-radius: 8px;
-                overflow: hidden;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-                margin-left: 15%;
 
-            }
 
-            th,
-            td {
-                padding: 12px;
-                text-align: center;
-                font-size: 16px;
-                color: #555;
-                border-bottom: 1px solid #ddd;
-            }
 
-            th {
-                background-color: #c9aa5f;
-                color: #fff;
-                text-align: center;
-            }
+.table-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
 
-            tr:hover {
-                background-color: #f7f7f7;
-                /* Blanco cremoso */
-            }
+table {
+    width: 80%;  /* You can adjust this width to fit your design */
+    margin-left: 130px;  /* This will move the table to the right */
+    border-collapse: collapse;
+    margin-top: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+}
 
-            td {
-                background-color: #f7f7f7;
-                /* Blanco cremoso */
-            }
 
-            .no-records {
-                text-align: center;
-                font-style: italic;
-                color: #888;
-            }
+th, td {
+    padding: 8px; /* Reduced padding */
+    text-align: center;
+    font-size: 14px; /* Smaller font size */
+    color: #555;
+    border-bottom: 1px solid #ddd;
+}
 
-            /* Estilos del fondo del modal */
-            .modal {
-                display: none;
-                position: fixed;
-                z-index: 1;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.5);
-                justify-content: center;
-                align-items: center;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+th {
+    background-color: #116B67;
+    color: #fff;
+}
 
-            }
+tr:hover {
+    background-color: #f7f7f7;
+}
 
-            /* Contenido del modal */
-            .modal-content {
-                background-color: white;
-                padding: 20px;
-                border-radius: 10px;
-                width: 300px;
-                text-align: center;
-                margin-bottom: 5%;
+td {
+    background-color: #f7f7f7;
+}
 
-            }
-
-            /* Botón de cerrar */
-            .close {
-                position: absolute;
-                top: 10px;
-                right: 20px;
-                font-size: 25px;
-                cursor: pointer;
-            }
-
-            /* Botones dentro del modal */
-            .modal-content a {
-                display: block;
-                margin: 10px 0;
-                padding: 10px;
-                text-decoration: none;
-                color: white;
-                background-color: gray;
-                border-radius: 5px;
-                background-color: #c9aa5f;
-            }
-
-            .modal-content a:hover {
-                background-color: darkgray;
-            }
-
-            /* Estilos para los botones alineados */
-            .button-container {
-                display: flex;
-                justify-content: space-between;
-                /* Distribuye el espacio entre los botones */
-                width: 100%;
-
-            }
-        </style>
+.no-records {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+}
+  </style>

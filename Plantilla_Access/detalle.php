@@ -160,7 +160,7 @@ if (isset($_GET['id'])) {
             height: 100px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #c9aa5f;
+            border: 2px solid #116B67;
         }
 
         table {
@@ -192,7 +192,7 @@ if (isset($_GET['id'])) {
         }
 
         th {
-            background-color: #bea66a;
+            background-color: #116B67;
             color: #fff;
         }
 
@@ -201,7 +201,7 @@ if (isset($_GET['id'])) {
         }
 
         td {
-            background-color: #bea66a;
+            background-color: #116B67;
         }
 
         .btn-container-wrapper {
@@ -211,7 +211,7 @@ if (isset($_GET['id'])) {
         }
 
         .btn-container {
-            background-color: #c9aa5f;
+            background-color: #137266;
             color: white;
             padding: 8px 12px;
             font-size: 16px;

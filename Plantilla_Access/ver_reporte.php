@@ -84,8 +84,8 @@ $stmt->close();
         .btn{
             display: inline-block;
             color: #fff;
-    background-color: #428bca;
-    border-color: #357ebd;
+    background-color: #0B4F6C;
+    border-color: #0B4F6C;
             padding: 12px 20px;
             font-size: 16px;
             font-weight: bold;
@@ -98,7 +98,7 @@ $stmt->close();
                     }
 
                     .btn:hover {
-                        background-color: #428bca;
+                        background-color: #0B4F6C;
                     }
         /* 📌 ESTILO EXACTO DE LA TABLA */
         .table-container {
@@ -117,21 +117,21 @@ $stmt->close();
 
         /* 📌 ENCABEZADOS DORADOS */
         thead {
-            background-color: #c9aa5f !important;
+            background-color: #116B67 !important;
         }
 
         th {
-            background-color: #c9aa5f !important; /* Color dorado forzado */
+            background-color: #116B67 !important; /* Color dorado forzado */
             color: white !important;
             text-align: center;
             padding: 14px;
-            border: 1px solid #c9aa5f !important; /* Bordes dorados */
+            border: 1px solid #116B67 !important; /* Bordes dorados */
         }
 
         td {
             text-align: center;
             padding: 12px;
-            border: 1px solid #c9aa5f; /* Bordes dorados */
+            border: 1px solid #116B67; /* Bordes dorados */
             background-color: #f9f9f9; /* Fondo blanco */
         }
 
@@ -139,9 +139,7 @@ $stmt->close();
             background-color: #f1f1f1; /* Filas alternas gris claro */
         }
 
-        tr:hover td {
-            background-color: #e0d5b9; /* Efecto hover */
-        }
+        
 
         /* Botón de Descargar PDF */
         .pdf-container {
@@ -152,7 +150,7 @@ $stmt->close();
 
         .btn-export {
                         display: inline-block;
-                        background-color: #c9aa5f;
+                        background-color: #168761;
                         color: white;
                         padding: 12px 20px;
                         font-size: 16px;
@@ -166,7 +164,7 @@ $stmt->close();
                     }
 
                     .btn-export:hover {
-                        background-color: #b5935b;
+                        background-color: #168761;
                     }
     </style>
 </head>
