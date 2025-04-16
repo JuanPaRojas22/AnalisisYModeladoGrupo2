@@ -376,78 +376,114 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE(), 'admin', CURDATE(), 'admin')
           <link href="assets/css/style.css" rel="stylesheet">
         </head>
 
-        <body>
-          <div class="container">
-            <h2 class="text-center mt-4">Calcular Retenciones Quincenales</h2>
-            <form action="" method="POST" class="form-horizontal">
-              <!-- Select para elegir la planilla (empleado) -->
-              <div class="form-group">
-                <label for="planilla_select" class="control-label">Seleccione Empleado:</label>
-                <select id="planilla_select" name="planilla_select" class="form-control" required>
-                  <option value="">Seleccione un empleado</option>
-                  <?php if ($result_planilla->num_rows > 0): ?>
-                    <?php while ($row = $result_planilla->fetch_assoc()): ?>
-                      <option value="<?php echo $row['id_planilla']; ?>" data-id_usuario="<?php echo $row['id_usuario']; ?>"
-                        data-salario="<?php echo $row['salario_base']; ?>">
-                        <?php echo $row['nombre'] . ' ' . $row['apellido'] . ' - Salario Base Mensual: ₡' . number_format($row['salario_base'], 2); ?>
-                      </option>
-                    <?php endwhile; ?>
-                  <?php else: ?>
-                    <option value="">No hay empleados con planilla</option>
-                  <?php endif; ?>
-                </select>
-              </div>
-              <!-- Campos ocultos para enviar id_planilla, id_usuario y mostrar el salario base mensual -->
-              <input type="hidden" id="id_planilla" name="id_planilla">
-              <input type="hidden" id="id_usuario" name="id_usuario">
-              <div class="form-group">
-                <label for="salario_base" class="control-label">Salario Base Mensual:</label>
-                <input type="number" id="salario_base" name="salario_base" class="form-control" readonly>
-              </div>
-              <div class="form-group text-center">
-                <button type="submit" class="btn btn-primary">Calcular Retenciones Quincenales</button>
-              </div>
-            </form>
+        <style>
+/* Container Styles */
+.container-fluid {
+  min-height: 600px; 
+  max-width: 1000px; /* Limit the container width */
+  margin: 50px auto; /* Center the container */
+  padding: 30px; /* Padding inside the container */
+  background-color: white; /* White background */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Add shadow */
+  border-radius: 15px; /* Round the corners */
+  height: 100%;
+}
 
-            <?php if (isset($retenciones_mensuales) && isset($retenciones_quincenales) && isset($salario_neto_quincenal)): ?>
-              <div class="alert alert-info mt-3">
-                <h4>Detalles de Retenciones Quincenales</h4>
-                <p><strong>Salario Base Quincenal:</strong>
-                  ₡<?php echo number_format($retenciones_quincenales['salario_base'], 2); ?></p>
-                <p><strong>Seguro Social Quincenal:</strong>
-                  ₡<?php echo number_format($retenciones_quincenales['seguro_social'], 2); ?></p>
-                <p><strong>Impuesto sobre la Renta Quincenal:</strong>
-                  ₡<?php echo number_format($retenciones_quincenales['impuesto_renta'], 2); ?></p>
-                <p><strong>Total Retenciones Quincenales:</strong>
-                  ₡<?php echo number_format($retenciones_quincenales['total_retenciones'], 2); ?></p>
-                <p><strong>Salario Neto Quincenal:</strong> ₡<?php echo number_format($salario_neto_quincenal, 2); ?></p>
-              </div>
-            <?php endif; ?>
+/* Card Body Styles */
+.card-body {
+  padding: 20px;
+}
 
-            <?php if (isset($mensaje) && !empty($mensaje)): ?>
-              <div class="alert alert-success mt-3"><?php echo $mensaje; ?></div>
-            <?php endif; ?>
+/* Heading Style */
+h2 {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
 
-            <div class="form-group text-center mt-3">
-              <a href="VerPlanilla.php" class="btn btn-secondary">Volver</a>
+/* Form Group Styles */
+.form-group {
+  margin-bottom: 20px; /* Add space between form elements */
+}
+
+/* Button Styles */
+button[type="submit"],
+a.btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  text-decoration: none;
+  display: inline-block;
+  width: auto;
+}
+
+button[type="submit"] {
+  background-color: #147964; /* Green */
+  color: white;
+  border: none;
+}
+
+button[type="submit"]:hover {
+  background-color: #147964;
+}
+
+a.btn {
+  background-color: #0B4F6C; /* Blue */
+  color: white;
+}
+
+a.btn:hover {
+  background-color: #0B4F6C;
+}
+
+
+        </style>
+       <body>
+  <section id="container">
+    <div class="container-fluid">
+      <div class="card" style="border-radius: 15px; padding: 30px; box-shadow: 0 4px 10px rgb(255, 255, 255);">
+        <div class="card-body">
+          <h2 class="text-center mb-4">Aplicar Bono Salarial</h2>
+          <form action="" method="POST" class="form-horizontal">
+            <!-- Select Employee -->
+            <div class="form-group">
+              <label for="id_usuario">Seleccione un Usuario:</label>
+              <select id="id_usuario" name="id_usuario" class="form-control" required>
+                <option value="">Seleccione un usuario</option>
+                <!-- Add employee options dynamically here -->
+              </select>
             </div>
-          </div>
 
-          <script src="assets/js/jquery.js"></script>
-          <script src="assets/js/bootstrap.min.js"></script>
-          <script>
-            // Al seleccionar un empleado, se rellenan los campos ocultos y se muestra el salario base mensual
-            document.getElementById('planilla_select').addEventListener('change', function () {
-              var selectedOption = this.options[this.selectedIndex];
-              var idPlanilla = this.value;
-              var idUsuario = selectedOption.getAttribute('data-id_usuario');
-              var salario = selectedOption.getAttribute('data-salario');
-              document.getElementById('id_planilla').value = idPlanilla;
-              document.getElementById('id_usuario').value = idUsuario;
-              document.getElementById('salario_base').value = salario;
-            });
-          </script>
-        </body>
+            <!-- Salary Field -->
+            <div class="form-group">
+              <label for="salario_actual">Salario Actual:</label>
+              <input type="text" id="salario_actual" name="salario_actual" class="form-control" readonly>
+            </div>
+
+            <!-- Reason Field -->
+            <div class="form-group">
+              <label for="razon_bono">Razón del Bono:</label>
+              <input type="text" id="razon_bono" name="razon_bono" class="form-control" required>
+            </div>
+
+            <!-- Amount Field -->
+            <div class="form-group">
+              <label for="monto_bono">Monto del Bono:</label>
+              <input type="number" id="monto_bono" name="monto_bono" class="form-control" required>
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-group text-center">
+              <button type="submit" class="btn btn-success">Aplicar Bono</button>
+              <a href="VerPlanilla.php" class="btn btn-info">Volver</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+
 
         </html>
 

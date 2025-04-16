@@ -70,11 +70,12 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
 
 .mission-vision {
     display: flex;
-    justify-content: center; /* Centra las columnas */
+    justify-content: center; /* Centra las columnas horizontalmente */
     gap: 40px; /* Espacio entre columnas */
     width: 100%;
     max-width: 1200px;
-    text-align: left;
+    text-align: center; /* Asegura que los títulos y descripciones se centren dentro de las columnas */
+    margin-top: 20px; /* Ajuste para separar del borde superior */
 }
 
 .column {
@@ -83,6 +84,7 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
     flex-direction: column;
     align-items: center;
     max-width: 500px;
+    text-align: center; /* Centra el contenido del texto dentro de la columna */
 }
 
 .hero-title {

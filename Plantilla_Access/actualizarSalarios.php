@@ -405,38 +405,78 @@ $mensaje = "";
                     <link href="assets/css/bootstrap.css" rel="stylesheet">
                     <link href="assets/css/style.css" rel="stylesheet">
                 </head>
+                <style>
+   .container-fluid {
+    max-width: 800px; /* Increase the width of the container */
+    margin: 50px auto; /* Center the container */
+    padding: 40px; /* Add more space inside the container */
+    background-color: white; /* Background color */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Box shadow */
+    border-radius: 10px; /* Rounded corners */
+}
 
-                <body>
-                    <div class="container">
-                        <h2 class="text-center mt-4">Actualizar Salarios</h2>
-                        <form action="" method="POST" class="mt-4">
-                            <div class="form-group">
-                                <label for="id_usuario">Empleado:</label>
-                                <select id="id_usuario" name="id_usuario" class="form-control" required>
-                                    <option value="">Seleccione un empleado</option>
-                                    <?php while ($row = $result_empleados->fetch_assoc()): ?>
-                                        <option value="<?php echo $row['id_usuario']; ?>">
-                                            <?php echo $row['nombre']; ?> - Salario:
-                                            ₡<?php echo number_format($row['salario_base'], 2); ?>
-                                        </option>
-                                    <?php endwhile; ?>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="nuevo_salario_base">Nuevo Salario Base:</label>
-                                <input type="number" step="0.01" id="nuevo_salario_base" name="nuevo_salario_base"
-                                    class="form-control" required>
-                            </div>
-                            <div class="form-group text-center mt-3">
-                                <button type="submit" class="btn btn-primary">Actualizar Salario</button>
-                                <a href="VerPlanilla.php" class="btn btn-secondary">Volver</a>
-                            </div>
-                        </form>
-                        <?php if (!empty($mensaje)): ?>
-                            <div class="alert alert-info mt-3"><?php echo $mensaje; ?></div>
-                        <?php endif; ?>
-                    </div>
-                </body>
+
+
+h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px; /* Spacing between fields */
+}
+
+.form-group.text-center {
+    margin-top: 20px; /* More space between fields and buttons */
+}
+
+.form-group button, .form-group a {
+    margin: 10px; /* Space between buttons */
+    padding: 10px 10px; /* Same button size */
+    font-size: 15px; /* Button text size */
+    display: inline-block; /* Buttons side by side */
+}
+</style>
+<body>
+    <section id="container">
+        <!-- Añadimos un contenedor blanco aquí -->
+        <div class="container-fluid">
+            <div class="card" style="border-radius: 10px;">
+                <div class="card-body">
+                    <h2 class="text-center mt-4">Actualizar Salarios</h2>
+                    <form action="" method="POST" class="mt-4">
+                        <div class="form-group">
+                            <label for="id_usuario">Empleado:</label>
+                            <select id="id_usuario" name="id_usuario" class="form-control" required>
+                                <option value="">Seleccione un empleado</option>
+                                <?php while ($row = $result_empleados->fetch_assoc()): ?>
+                                    <option value="<?php echo $row['id_usuario']; ?>">
+                                        <?php echo $row['nombre']; ?> - Salario:
+                                        ₡<?php echo number_format($row['salario_base'], 2); ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="nuevo_salario_base">Nuevo Salario Base:</label>
+                            <input type="number" step="0.01" id="nuevo_salario_base" name="nuevo_salario_base"
+                                class="form-control" required>
+                        </div>
+                        <div class="form-group text-center mt-3">
+                        <button type="submit" class="btn btn-primary" style="background-color: #147964; border-color: #147964; color: white;">Actualizar Salario</button>
+
+    <a href="VerPlanilla.php" class="btn" style="background-color: #0B4F6C; border-color: #0B4F6C; color: white;">Volver</a>
+</div>
+                    </form>
+                    <?php if (!empty($mensaje)): ?>
+                        <div class="alert alert-info mt-3"><?php echo $mensaje; ?></div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
 
                 </html>
 

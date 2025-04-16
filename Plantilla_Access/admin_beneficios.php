@@ -38,12 +38,14 @@ include 'template.php';
                 <p class="usuario-texto"><strong>Total de Beneficios:</strong> <?= $usuario['total_beneficios'] ?></p>
 
                 <div class="usuario-botones">
-                    <a href="detalles_beneficios.php?id_usuario=<?= $usuario['id_usuario'] ?>" class="btn btn-primary">
-                        Ver Beneficios
-                    </a>
-                    <button class="btn btn-success ms-2" onclick="abrirModalAgregar(<?= $usuario['id_usuario'] ?>)">
-                        Agregar Beneficio
-                    </button>
+                <a href="detalles_beneficios.php?id_usuario=<?= $usuario['id_usuario'] ?>" class="btn btn-primary" style="background-color: #0C536C; border-color: #0C536C;">
+    Ver Beneficios
+</a>
+
+<button class="btn btn-success ms-2" onclick="abrirModalAgregar(<?= $usuario['id_usuario'] ?>)" style="background-color: #147665; border-color: #147665;">
+    Agregar Beneficio
+</button>
+
                 </div>
             </div>
         </div>
@@ -94,7 +96,10 @@ include 'template.php';
     </div>
 
     <div class="modal-footer">
-        <button type="submit" class="btn btn-success">Guardar</button>
+    <button type="submit" class="btn btn-success" style="background-color: #147964; border-color: #147964;">
+    Guardar
+</button>
+
         <button type="button" class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
     </div>
 </form>
@@ -187,6 +192,7 @@ h2 {
 }
 
 /* Modal */
+/* Modal */
 .modal {
     display: none;
     position: fixed;
@@ -203,29 +209,25 @@ h2 {
 
 .modal-content {
     background-color: white;
-    padding: 20px;
+    padding: 15px;  /* Reducir padding */
     border-radius: 10px;
-    width: 40%;
+    width: 30%;  /* Reducir el ancho del modal */
+    max-width: 500px;  /* Establecer un tamaño máximo */
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .modal-title {
-    font-size: 1.5em;
+    font-size: 1.2em;  /* Reducir el tamaño del título */
     font-weight: bold;
     color: #2c3e50;
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px;  /* Reducir el margen inferior */
 }
 
 .modal-body {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
+    gap: 8px;  /* Reducir el espacio entre los campos */
 }
 
 .form-group label {
@@ -234,7 +236,8 @@ h2 {
 }
 
 .form-control {
-    padding: 8px;
+    padding: 6px;  /* Reducir el padding de los inputs */
+    font-size: 0.9em;  /* Reducir el tamaño de la fuente */
     border: 1px solid #ccc;
     border-radius: 5px;
     width: 100%;
@@ -246,11 +249,17 @@ h2 {
     margin-top: 15px;
 }
 
+.btn {
+    font-size: 0.9em;  /* Reducir el tamaño de los botones */
+    padding: 8px 15px;  /* Reducir el padding de los botones */
+    border-radius: 5px;
+}
+
+/* Botón "Cancelar" */
 .btn-secondary {
     background-color: #95a5a6;
 }
 </style>
-
 <script>
     
 // Asegurar que el modal esté oculto al cargar la página

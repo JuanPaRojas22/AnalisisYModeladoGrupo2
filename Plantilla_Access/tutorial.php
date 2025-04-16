@@ -69,7 +69,7 @@ if (!isset($_SESSION['id_usuario'])) {
 
         .start-button {
     padding: 12px 25px;  /* Mantener el tamaño del botón original */
-    background-color:  #1abc9c;  /* Color de fondo */
+    background-color:  #147964;  /* Color de fondo */
     color: white;  /* Color del texto */
     border: 2px solidrgb(19, 110, 92);  /* Borde visible */
     border-radius: 8px;  /* Bordes redondeados */
@@ -90,7 +90,7 @@ if (!isset($_SESSION['id_usuario'])) {
 
 .start-button:focus {
     outline: none;  /* Quitar el borde de enfoque predeterminado */
-    box-shadow: 0 0 5px 2px rgba(0, 123, 255, 0.5);  /* Agregar un borde de enfoque azul */
+    box-shadow: #0B4F6C;  /* Agregar un borde de enfoque azul */
 }
 
 

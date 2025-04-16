@@ -245,14 +245,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
 
                         .container {
-                            width: 80%;
-                            margin: 50px auto;
-                            padding: 20px;
-                            background-color: #ffffff;
-                            border-radius: 8px;
-                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                        }
-
+    max-width: 80%;  /* Reducir el ancho del contenedor */
+    margin: 50px auto;  /* Centrar y dar un margen desde arriba */
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
                         h1 {
                             text-align: center;
                             color: #333;
@@ -271,7 +270,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         .btn {
                         display: inline-block;
-                        background-color: #c9aa5f;
+                        background-color: #147964;
                         color: white;
                         padding: 12px 20px;
                         font-size: 16px;
@@ -285,32 +284,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
 
                     .btn:hover {
-                        background-color: #b5935b;
+                        background-color: #147964;
                         }
 
                         .btn:active {
-                            background-color: #c9aa5f;
+                            background-color: #147964;
                         }
 
                         table {
-                            width: 100%;
-                            border-collapse: collapse;
-                            margin-top: 20px;
-                            border-radius: 8px;
-                            overflow: hidden;
-                        }
+    width: 80%;  /* Reducir el ancho de la tabla */
+    margin: 20px auto;  /* Centrar la tabla */
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+}
+table .btn {
+    font-size: 12px;  /* Reducir el tamaño del texto */
+    padding: 6px 10px;  /* Reducir el padding para hacer el botón más pequeño */
+    border-radius: 4px;  /* Opcional: ajustar los bordes si lo deseas */
+    margin: 2px;  /* Añadir un pequeño margen entre botones */
+    display: inline-block;
+}
 
-                        th,
-                        td {
-                            padding: 12px;
-                            text-align: left;
-                            font-size: 16px;
-                            color: #555;
-                            border-bottom: 1px solid #ddd;
-                        }
+/* Para asegurarte de que los botones se ven bien */
+table .btn i {
+    font-size: 14px;  /* Reducir el tamaño del icono dentro de los botones */
+}
+
+/* Alineación y tamaño de las celdas */
+th, td {
+    padding: 10px;  /* Reducir el padding */
+    text-align: left;
+    font-size: 14px;  /* Reducir el tamaño de la fuente */
+    color: #555;
+    border-bottom: 1px solid #ddd;
+}
 
                         th {
-                            background-color: #c9aa5f;
+                            background-color: #116B67;
                             color: #fff;
                         }
 
@@ -371,7 +382,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             color: white;
                             background-color: gray;
                             border-radius: 5px;
-                            background-color: #c9aa5f;
+                            background-color: #147964;
                         }
 
                         .modal-content a:hover {
@@ -410,36 +421,82 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             color: white !important;
                             border-radius: 50%;
                         }
+                        .row-fechas-pdf {
+    display: flex;
+    justify-content: space-between;  /* Coloca los elementos con espacio entre ellos */
+    gap: 20px;  /* Espacio entre los campos */
+    align-items: center;  /* Centra los elementos verticalmente */
+    margin-bottom: 20px;
+}
+
+/* Ajuste de los campos de fecha para estar alineados */
+input[type="date"] {
+    width: 48%;  /* Hacer que los campos de fecha sean más pequeños */
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+/* Estilo de los botones con el estilo que mencionaste */
+button[type="submit"], button {
+    background-color: #0B4F6C;
+    color: white;
+    padding: 10px 20px;  /* Tamaño adecuado para los botones */
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: auto;  /* Ajustar al tamaño necesario */
+    display: inline-block;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover, button:hover {
+    background-color: #0A3D55;  /* Color más oscuro al pasar el ratón */
+}
+
+/* Reducción del tamaño del contenedor */
+
                         
-                    </style>
-                </head>
+</style>
+ </head>
 
                 <body>
-                    <div class="container">
-                        <h1>Mis Vacaciones</h1>
+                <div class="container">
+    <h1>Mis Vacaciones</h1>
 
+    <!-- Botones para Solicitar Vacación y Medio Día -->
+    <div class="row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <button onclick="document.getElementById('id01').style.display='block'">
+            Solicitar Vacacion
+        </button>
 
-                        <!-- Botón para abrir el segundo modal (resto de los botones) -->
+        <button onclick="window.location.href='SolicitarMedioDia.php'">
+            Solicitar Medio Día
+        </button>
 
+        <div style="background-color: #d4edda; color: #155724; padding: 10px 20px; border-radius: 5px; text-align: center; font-size: 16px;">
+            <strong>Días Restantes:</strong> <?php echo $diasRestantes; ?>
+        </div>
+    </div>
 
-                        <div class="row"
-                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <button onclick="document.getElementById('id01').style.display='block'"
-                                style="width:auto; background-color: #c9aa5f; color: white; padding: 10px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">
-                                Solicitar Vacacion
-                            </button>
+    <!-- Fechas inicio y fin con botón PDF -->
+    <div class="row-fechas-pdf">
+        <label for="fecha_inicio">Fecha Inicio:</label>
+        <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" required style="flex: 1; width: 200px;">
 
-                            <button onclick="window.location.href='SolicitarMedioDia.php'"
-                                style="width:auto; background-color: #c9aa5f; color: white; padding: 10px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">
-                                Solicitar Medio Día
-                            </button>
+        <label for="fecha_fin">Fecha Fin:</label>
+        <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" required style="flex: 1; width: 200px;">
 
-                            <div
-                                style="background-color: #d4edda; color: #155724; padding: 10px 20px; border-radius: 5px; text-align: center; font-size: 16px;">
-                                <strong>Días Restantes:</strong> <?php echo $diasRestantes; ?>
-                            </div>
-                        </div>
-
+        <form action="generar_reporteVacaciones.php" method="GET" style="display: inline-block; width: auto;">
+            <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($id_usuario) ?>">
+            <input type="hidden" name="id_departamento" value="<?= htmlspecialchars($id_departamento) ?>">
+            <button type="submit">Descargar PDF</button>
+        </form>
+    </div>
+</div>
 
                     </div>
                     <div id="id01" class="modal">
@@ -524,23 +581,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <!-- <a href="EditarVacaciones.php">Editar Vacaciones</a> -->
 
-                    <!-- Mostrar tabla con los cambios de puesto -->
-                    <div class="col-md-12">
-                            <form action="generar_reporteVacaciones.php" method="GET" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
-                                <label for="fecha_inicio" style="margin-right: 10px;">Fecha Inicio:</label>
-                                <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" placeholder="Ingrese la fecha de inicio" required style="flex: 1;">
-
-                                <label for="fecha_fin" style="margin-right: 10px;">Fecha Fin:</label>
-                                <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" placeholder="Ingrese la fecha de fin" required style="flex: 1;">
-
-                                <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($id_usuario) ?>">
-                                <input type="hidden" name="id_departamento" value="<?= htmlspecialchars($id_departamento) ?>">
-                                <button type="submit" style="background-color: #c9aa5f; color: white; padding: 10px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">
-                                    Descargar PDF
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+                 
 
                     <table>
                         <thead>

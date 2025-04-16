@@ -48,101 +48,102 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_usuario'])) {
     <link href="assets/css/style-responsive.css" rel="stylesheet">
 
     <style>
-        body {
-            
-                        font-family: 'Ruda', sans-serif;
-                        background-color: #f7f7f7;
-                        margin: 0;
-                        padding: 0;
+       body {
+    font-family: 'Ruda', sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+}
 
-                    
-            background-color: #f4f6f9;
-            
-        }
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding-top: 30px;
+}
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding-top: 30px;
-        }
+.accordion-button {
+    background-color: #147964; /* Pine green */
+    color: white;
+    border: none;
+    border-radius: 8px;
+}
 
-        .accordion-button {
-            background-color: #c9aa5f; /* Colr amarillo suave como la plantilla */
-            color: white;
-            border: none;
-            border-radius: 8px;
-        }
+.accordion-button:not(.collapsed) {
+    background-color: #147964; /* Pine Green */
+    color: white;  /* Text color for the opened state */
+}
 
-        .accordion-button:not(.collapsed) {
-            background-color: #c9aa5f; /* Color más oscuro del amarillo cuando está activo */
-        }
+.accordion-button:not(.collapsed) .accordion-icon {
+    color: #000000;  /* Black color for the arrow when opened */
+}
 
-        .accordion-item {
-            margin-bottom: 15px;
-            border-radius: 10px;
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-        }
+.accordion-item {
+    margin-bottom: 15px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+}
 
-        .accordion-body {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-        }
+.accordion-body {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+}
 
-        .btn-primary {
-            background-color: #c9aa5f; /* Color amarillo suave */
-            border-color: #c9aa5f;
-            font-size: 16px;
-            padding: 10px 20px;
-            border-radius: 5px;
-        }
+.btn-primary {
+    background-color: #147964; /* Pine green */
+    border-color: #147964;
+    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
 
-        .btn-primary:hover {
-            background-color: #e1b83b; /* Hover en color amarillo oscuro */
-        }
+.btn-primary:hover {
+    background-color: #116B57; /* Slightly darker for hover */
+}
 
-        .form-container {
-            margin-top: 30px;
-        }
+.form-container {
+    margin-top: 30px;
+}
 
-        .form-control {
-            border-radius: 5px;
-            border-color: #ddd;
-        }
+.form-control {
+    border-radius: 5px;
+    border-color: #ddd;
+}
 
-        .list-group-item {
-            background-color: #f8f9fa;
-            border: none;
-            border-radius: 10px;
-            margin-top: 10px;
-            font-size: 16px;
-        }
+.list-group-item {
+    background-color: #f8f9fa;
+    border: none;
+    border-radius: 10px;
+    margin-top: 10px;
+    font-size: 16px;
+}
 
-        .list-group-item:hover {
-            background-color: #e9ecef;
-        }
+.list-group-item:hover {
+    background-color: #e9ecef;
+}
 
-        .mt-5 {
-            margin-top: 40px;
-        }
+.mt-5 {
+    margin-top: 40px;
+}
 
-        .modal-body textarea {
-            resize: vertical;
-            border-radius: 5px;
-        }
+.modal-body textarea {
+    resize: vertical;
+    border-radius: 5px;
+}
 
-        h3 {
-            font-size: 32px; /* Aumenté el tamaño del título de "Preguntas Frecuentes" */
-            font-weight: bold;
-        }
+h3 {
+    font-size: 32px;
+    font-weight: bold;
+    color: #116B57; /* Midnight Green for titles */
+}
 
-        .preguntas-titulo {
-            font-size: 28px; /* Aumenté el tamaño del título de "Preguntas de los Usuarios" */
-            font-weight: bold;
-            color: #333; /* Color más oscuro para el título */
-        }
-    </style>
+.preguntas-titulo {
+    font-size: 28px;
+    font-weight: bold;
+    color: #137266; /* Pine Green */
+}
+</style>
 </head>
 <body>
 

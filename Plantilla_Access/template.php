@@ -156,17 +156,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
                                 </a>
                             </li>
 
-                            <li class="sub-menu">
-                                <a href="javascript:;">
-                                    <i class="fa fa-desktop"></i>
-                                    <span>UI Elements</span>
-                                </a>
-                                <ul class="sub">
-                                    <li><a href="general.html">General</a></li>
-                                    <li><a href="buttons.html">Buttons</a></li>
-                                    <li><a href="panels.html">Panels</a></li>
-                                </ul>
-                            </li>
+                           
 
 
                             <li class="sub-menu">

@@ -394,7 +394,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .button {
         display: inline-block;
-        background-color: #c9aa5f;
+        background-color: #147964;
         color: #000;
         padding: 10px 20px;
         font-size: 16px;
@@ -441,7 +441,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         button {
-            background-color:rgb(224, 221, 61);
+            background-color: #147964;
             color: #000;
             border: none;
             cursor: pointer;
@@ -452,7 +452,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <div class="container">
-    <a href="ver_historial_cambios.php" class="button" style="background-color: rgb(224, 221, 61); color: black; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Historial de Cambios</a>
+    <a href="ver_historial_cambios.php" class="button" style="background-color: #147964; color: black; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Historial de Cambios</a>
 
         <h1>Registrar Cambio de Puesto</h1>
 
@@ -516,14 +516,7 @@ $conn->close();
 <!--main content end-->
 
         <!--footer start-->
-        <footer class="site-footer">
-            <div class="text-center">
-                2014 - Alvarez.is
-                <a href="blank.html#" class="go-top">
-                    <i class="fa fa-angle-up"></i>
-                </a>
-            </div>
-        </footer>
+        
         <!--footer end-->
     </section>
 

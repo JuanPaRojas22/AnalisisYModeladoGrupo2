@@ -129,7 +129,7 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
 
                         .btn {
                             display: inline-block;
-                            background-color: #c9aa5f;
+                            background-color: #106469;
                             color: white;
                             padding: 10px 20px;
                             font-size: 25px;
@@ -144,11 +144,11 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
 
 
                         .btn:hover {
-                            background-color: #c9aa5f;
+                            background-color: #106469;
                         }
 
                         .btn:active {
-                            background-color: #c9aa5f;
+                            background-color: #106469;
                         }
 
                         table {
@@ -169,7 +169,7 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                         }
 
                         th {
-                            background-color: #c9aa5f;
+                            background-color: #116B67;
                             color: #fff;
                         }
 
@@ -230,7 +230,7 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             color: white;
                             background-color: gray;
                             border-radius: 5px;
-                            background-color: #c9aa5f;
+                            background-color: #0B4F6C;
                         }
 
                         .modal-content a:hover {

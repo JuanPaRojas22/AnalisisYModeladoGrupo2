@@ -110,7 +110,7 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                         }
                         .btn {
                             display: inline-block;
-                            background-color: #c9aa5f;
+                            background-color: #0D566B;
                             color: white;
                             padding: 10px 20px;
                             font-size: 25px;
@@ -122,10 +122,10 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             transition: background-color 0.3s;
                         }
                         .btn:hover {
-                            background-color: #c9aa5f;
+                            background-color: #0D566B
                         }
                         .btn:active {
-                            background-color: #c9aa5f;
+                            background-color: #0D566B;
                         }
                         table {
                             width: 100%;
@@ -143,7 +143,7 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             border-bottom: 1px solid #ddd;
                         }
                         th {
-                            background-color: #c9aa5f;
+                            background-color: #116B67;
                             color: #fff;
                         }
                         tr:hover {
@@ -197,7 +197,7 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             color: white;
                             background-color: gray;
                             border-radius: 5px;
-                            background-color: #c9aa5f;
+                            background-color: #0D566B;
                         }
                         .modal-content a:hover {
                             background-color: darkgray;
@@ -209,11 +209,33 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             /* Distribuye el espacio entre los botones */
                             width: 100%;
                         }
+
+                        .btn-back {
+    background-color: #0B4F6C; /* Color deseado */
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    position: relative;  /* Cambiar de absolute a relative */
+    margin-top: 20px;  /* Asegura que se muestre debajo del título */
+    margin-left: 0px;  /* Ajuste para alineación */
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-back:hover {
+    background-color: #0A3D55; /* Color al pasar el mouse */
+}
                     </style>
                 </head>
                 <body>               
                     <div class="container">
                         <h1>Editar Vacaciones</h1>
+                        <button class="btn btn-back" onclick="window.history.back()">Volver</button>
                         <?php
                             $solicitudesCount = $result->num_rows;
                         ?>

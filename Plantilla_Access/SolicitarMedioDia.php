@@ -168,8 +168,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <input type="text" id="observaciones" name="observaciones" class="form-control" placeholder="Observaciones adicionales" required>
         </div>
         <div class="form-group text-center mt-3">
-          <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
-          <button type="button" class="btn btn-secondary" onclick="document.getElementById('modalMedioDia').style.display='none'">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('modalMedioDia').style.display='none'">Cancelar</button>
         </div>
       </form>
     </div>
@@ -215,9 +215,22 @@ h2 {
     color: #333;
     margin-bottom: 30px;
 }
+.btn-primary {
+    background-color: #0B4F6C;
+    color: white;  /* Asegurarte de que el texto sea blanco */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0A3D55;  /* Color más oscuro al pasar el ratón */
+}
 
 button {
-    background-color: #c9aa5f; /* Gold color */
+    background-color: #147964; /* Gold color */
     color: white;
     padding: 10px 20px;
     font-size: 20px;
@@ -227,11 +240,11 @@ button {
 }
 
 button:hover {
-    background-color: #ab8e5b; /* Darken button color on hover */
+    background-color: #147964; /* Darken button color on hover */
 }
 
 button:active {
-    background-color: #c9aa5f;
+    background-color: #147964;
 }
 
 .alert {
@@ -258,7 +271,7 @@ button:active {
 }
 
 .form-control:focus {
-    border-color: #ab8e5b;
+    border-color: #147964;
     box-shadow: 0 0 5px rgba(171, 142, 91, 0.5);
 }
 

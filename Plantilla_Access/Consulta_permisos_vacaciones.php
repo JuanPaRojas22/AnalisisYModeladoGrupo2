@@ -75,8 +75,9 @@ $result = $stmt->get_result();
 
 <div class="container">
 
-    <h1>HISTORIAL LABORAL </h1>
 
+    <h1>HISTORIAL LABORAL </h1>
+    <button class="btn btn-back" onclick="window.history.back()">Volver</button>
     <!-- Mostrar tabla con los datos de historial de aguinaldo -->
     <table>
         <thead>
@@ -123,21 +124,21 @@ $result = $stmt->get_result();
     }
 
     .container {
-        width: 100%;
-        margin: 200px auto;
-        padding: 20px;
-        background-color: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-    }
+    width: 80%; /* Reducir el ancho de la tabla */
+    max-width: 1000px; /* Limitar el tamaño máximo */
+    margin: 50px auto; /* Centrar la tabla */
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+}
 
-    h1 {
-        text-align: center;
-        color: #333;
-        margin-bottom: 50px;
-        margin-right: 10%;
-        font-weight: bold;
-    }
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
 
     h3 {
         text-align: center;
@@ -172,41 +173,37 @@ $result = $stmt->get_result();
     }
 
     table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-        border-radius: 8px;
-        overflow: hidden;
-    }
+    width: 100%; /* Ajusta el ancho de la tabla */
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+}
 
-    th,
-    td {
-        padding: 12px;
-        text-align: center;
-        font-size: 16px;
-        color: #555;
-        border-bottom: 1px solid #ddd;
-    }
+/* Estilo de celdas */
+th,
+td {
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+    border-bottom: 1px solid #ddd;
+}
 
-    th {
-        background-color: #c9aa5f;
-        color: #fff;
-        text-align: center;
-    }
+/* Estilo de encabezados */
+th {
+    background-color: #116B67;
+    color: #fff;
+}
 
-    tr:hover {
-        background-color: #f1f1f1;
-    }
+/* Estilo de las filas al pasar el mouse */
+tr:hover {
+    background-color: #f1f1f1;
+}
 
-    td {
-        background-color: #f9f9f9;
-    }
-
-    .no-records {
-        text-align: center;
-        font-style: italic;
-        color: #888;
-    }
+td {
+    background-color: #f9f9f9;
+}
 
     /* Estilos del fondo del modal */
     .modal {
@@ -251,7 +248,7 @@ $result = $stmt->get_result();
         color: white;
         background-color: gray;
         border-radius: 5px;
-        background-color: #c9aa5f;
+        background-color: #116B67;
     }
 
     .modal-content a:hover {
@@ -265,4 +262,27 @@ $result = $stmt->get_result();
         /* Distribuye el espacio entre los botones */
         width: 100%;
     }
+
+    .btn-back {
+    background-color: #0B4F6C; /* Color deseado */
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    position: relative;  /* Cambiar de absolute a relative */
+    margin-top: 20px;  /* Asegura que se muestre debajo del título */
+    margin-left: 0px;  /* Ajuste para alineación */
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-back:hover {
+    background-color: #0A3D55; /* Color al pasar el mouse */
+}
+
+
 </style>

@@ -68,7 +68,7 @@ if ($id_departamento == 'all') {
                                 }
                                 ?>
                             </select>
-                            <button class="btn" style="font-size: 1.5rem; color: black;">
+                            <button class="btn" style="font-size: 1.5rem; color: #f1f1f1;">
                                 <i class="bi bi-funnel-fill"></i>
                             </button>
                         </div>
@@ -88,7 +88,7 @@ if ($id_departamento == 'all') {
                                 }
                                 ?>
                             </select>
-                            <button class="btn" style="font-size: 2rem; color: black;">
+                            <button class="btn" style="font-size: 2rem; color: #f1f1f1;">
                                 <i class="bi bi-filetype-pdf"></i>
                             </button>
                         </div>
@@ -212,13 +212,13 @@ if ($id_departamento == 'all') {
     }
 
     select:hover {
-        border-color: #a88c4a;
+        border-color: #106469;
     }
 
     select:focus {
         outline: none;
-        border-color: #805d24;
-        box-shadow: 0 0 5px rgba(200, 150, 60, 0.6);
+        border-color: #106469;
+        box-shadow: 106469;
     }
 
     .container {
@@ -264,7 +264,7 @@ if ($id_departamento == 'all') {
 
     .btn {
         display: inline-block;
-                        background-color: #c9aa5f;
+                        background-color: #0B4F6C;
                         color: white;
                         padding: 12px 20px;
                         font-size: 16px;
@@ -280,11 +280,11 @@ if ($id_departamento == 'all') {
 
 
     .btn:hover {
-        background-color: #c9aa5f;
+        background-color: #0B4F6C;
     }
 
     .btn:active {
-        background-color: #c9aa5f;
+        background-color: #0D566B;
     }
 
 
@@ -367,7 +367,7 @@ if ($id_departamento == 'all') {
         color: white;
         background-color: gray;
         border-radius: 5px;
-        background-color: #c9aa5f;
+        background-color: #106469;
     }
 
     .modal-content a:hover {
