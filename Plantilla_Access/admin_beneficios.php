@@ -202,7 +202,6 @@ h2 {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
     align-items: center;
     justify-content: center;
 }
@@ -214,6 +213,7 @@ h2 {
     width: 30%;  /* Reducir el ancho del modal */
     max-width: 500px;  /* Establecer un tamaño máximo */
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    color: black;
 }
 
 .modal-title {

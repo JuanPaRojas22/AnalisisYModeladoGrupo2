@@ -29,10 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($result->num_rows > 0) {
             $usuario = $result->fetch_assoc();
             // Se verifica si la contraseña coincide con la de la base de datos
-            if (isset($usuario['password']) && password_verify($password , $usuario['password'])) {
+            if (isset($usuario['password']) && password_verify($password, $usuario['password'])) {
                 $_SESSION['id_usuario'] = $usuario['id_usuario'];
-                $_SESSION['username'] = $usuario['nombre'];
-                $_SESSION['id_rol'] = $usuario['id_rol']; 
+                $_SESSION['username'] = $usuario['username']; // Aquí guardamos el username real
+                $_SESSION['nombre'] = $usuario['nombre'];
+                $_SESSION['id_rol'] = $usuario['id_rol'];
                 $_SESSION['logged_in'] = true;
 
                 header("Location: index.php?login=success&username=" . urlencode($usuario['nombre']));
@@ -55,7 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -68,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="assets/css/bootstrap.css" rel="stylesheet">
     <!--external css-->
     <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
-        
+
     <!-- Custom styles for this template -->
     <link href="assets/css/style-responsive.css" rel="stylesheet">
 
@@ -77,160 +79,177 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-  </head>
+</head>
 
-  <style>
-        body {
-       
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+<style>
+    body {
 
-        .container {
-            width: 100%;
-            max-width: 400px;
-        }
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-        .form-login {
-            background: rgba(236, 231, 231, 0.2);
-            backdrop-filter: blur(75px);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            margin-left: 15%;
-        }
+    .container {
+        width: 100%;
+        max-width: 400px;
+    }
 
-        .form-login h2 {
-            color: white;
-            margin-bottom: 20px;
-            font-weight: bold;
+    .form-login {
+        background: rgba(236, 231, 231, 0.2);
+        backdrop-filter: blur(75px);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        margin-left: 15%;
+    }
 
-        }
+    .form-login h2 {
+        color: white;
+        margin-bottom: 20px;
+        font-weight: bold;
 
-        .form-control {
-            background: rgba(255, 255, 255, 0.5);
-            border: none;
-            border-radius: 5px;
-            color: black;
-            font-weight: bold;
-        }
+    }
 
-        .form-control::placeholder {
-            color: black;
-            font-weight: bold;
-        }
+    .form-control {
+        background: rgba(255, 255, 255, 0.5);
+        border: none;
+        border-radius: 5px;
+        color: black;
+        font-weight: bold;
+    }
 
-        .login-wrap label {
-            color: white;
-            font-weight: bold;
-        }
+    .form-control::placeholder {
+        color: black;
+        font-weight: bold;
+    }
 
-        .btn-theme {
-            background: rgba(95, 94, 94, 0.3);
-            border: none;
-            color: white;
-            font-weight: bold;
-        }
+    .login-wrap label {
+        color: white;
+        font-weight: bold;
+    }
 
-        .btn-theme:hover {
-            background: rgba(255, 255, 255, 0.5);
-        }
+    .btn-theme {
+        background: rgba(95, 94, 94, 0.3);
+        border: none;
+        color: white;
+        font-weight: bold;
+    }
 
-        .login-social-link button {
-            background: rgba(0, 0, 0, 0.3);
-            border: none;
-            color: white;
-            font-weight: bold;
-            
-        }
+    .btn-theme:hover {
+        background: rgba(255, 255, 255, 0.5);
+    }
 
-        .login-social-link button:hover {
-            background: rgba(255, 255, 255, 0.5);
-        }
+    .login-social-link button {
+        background: rgba(0, 0, 0, 0.3);
+        border: none;
+        color: white;
+        font-weight: bold;
 
-        .registration a {
-            color:rgb(63, 62, 62);
-            font-weight: bold;
-        }
-    </style>
+    }
 
-      <!-- **********************************************************************************************************************************************************
+    .login-social-link button:hover {
+        background: rgba(255, 255, 255, 0.5);
+    }
+
+    .registration a {
+        color: rgb(63, 62, 62);
+        font-weight: bold;
+    }
+
+    .background-blur {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('assets/img/loginbg.jpg');
+        background-size: cover;
+        background-position: center;
+        filter: blur(4px);
+        /* Aplica el filtro de desenfoque */
+        z-index: -1;
+        /* Coloca el div debajo del contenido */
+    }
+</style>
+
+<!-- **********************************************************************************************************************************************************
       MAIN CONTENT
       *********************************************************************************************************************************************************** -->
+<div class="background-blur"></div>
+<div id="login-page">
+    <div class="container">
 
-	  <div id="login-page">
-	  	<div class="container">
-	  	
-		      <form class="form-login" action="login.php" method="post">
-		        <h2 class="form-login-heading">BIENVENIDO</h2>
-		        <div class="login-wrap">
-                    
-		            <input type="text" name="username" class="form-control" placeholder="User" autofocus>
-		            <br>
-		            <input type="password" name="password" class="form-control" placeholder="Password">
-                    <!-- <label class="checkbox">
+        <form class="form-login" action="login.php" method="post">
+            <h2 class="form-login-heading">BIENVENIDO</h2>
+            <div class="login-wrap">
+
+                <input type="text" name="username" class="form-control" placeholder="User" autofocus>
+                <br>
+                <input type="password" name="password" class="form-control" placeholder="Password">
+                <!-- <label class="checkbox">
                         <span class="pull-right">
                             <a data-toggle="modal" href="login.php#myModal"> Forgot Password?</a>
                         </span>
                     </label> -->
-                    <br>
-		            <button class="btn btn-theme btn-block" type="submit"><i class="fa fa-lock"></i> ENTRAR</button>
-                    <?php if ($error_message): ?>
-                        <p style="color: red;"><?php echo htmlspecialchars($error_message); ?></p>
-                    <?php endif; ?>
-		            <hr>
-                
-		            
-		            <div class="registration" style="font-weight: bold;">
-		                ¿No tienes cuenta?<br/>
-		                <a class="" href="createUser.php" style="font-weight: bold;">
-		                    Registrate aquí
-		                </a>
-		            </div>
-             </form>
-		</div>
-		
-		          <!-- Modal -->
-		          <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
-		              <div class="modal-dialog">
-		                  <div class="modal-content">
-		                      <div class="modal-header">
-		                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		                          <h4 class="modal-title">Forgot Password ?</h4>
-		                      </div>
-		                      <div class="modal-body">
-		                          <p>Enter your e-mail address below to reset your password.</p>
-		                          <input type="text" name="email" placeholder="Email" autocomplete="off" class="form-control placeholder-no-fix">
-		
-		                      </div>
-		                      <div class="modal-footer">
-		                          <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-		                          <button class="btn btn-theme" type="button">Submit</button>
-		                      </div>
-		                  </div>
-		              </div>
-		          </div>
-		          <!-- modal -->
-		
-		      </form>	  	
-	  	
-	  	</div>
-	  </div>
-
-    <!-- js placed at the end of the document so the pages load faster -->
-    <script src="assets/js/jquery.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
-
-    <!--BACKSTRETCH-->
-    <!-- You can use an image of whatever size. This script will stretch to fit in any screen size.-->
-    <script type="text/javascript" src="assets/js/jquery.backstretch.min.js"></script>
-    <script>
-        $.backstretch("assets/img/loginbg.jpg", {speed: 500});
-    </script>
+                <br>
+                <button class="btn btn-theme btn-block" type="submit"><i class="fa fa-lock"></i> ENTRAR</button>
+                <?php if ($error_message): ?>
+                    <p style="color: red;"><?php echo htmlspecialchars($error_message); ?></p>
+                <?php endif; ?>
+                <hr>
 
 
-  </body>
+                <div class="registration" style="font-weight: bold;">
+                    ¿No tienes cuenta?<br />
+                    <a class="" href="createUser.php" style="font-weight: bold;">
+                        Registrate aquí
+                    </a>
+                </div>
+        </form>
+    </div>
+
+<!-- Modal -->
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Forgot Password ?</h4>
+            </div>
+            <div class="modal-body">
+                <p>Enter your e-mail address below to reset your password.</p>
+                <input type="text" name="email" placeholder="Email" autocomplete="off"
+                    class="form-control placeholder-no-fix">
+
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                <button class="btn btn-theme" type="button">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- modal -->
+
+</form>
+
+</div>
+</div>
+
+<!-- js placed at the end of the document so the pages load faster -->
+<script src="assets/js/jquery.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+
+<!--BACKSTRETCH-->
+<!-- You can use an image of whatever size. This script will stretch to fit in any screen size.-->
+<script type="text/javascript" src="assets/js/jquery.backstretch.min.js"></script>
+<script>
+    $.backstretch("assets/img/loginbg.jpg", { speed: 500 });
+</script>
+
+
+</body>
+
 </html>

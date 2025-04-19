@@ -170,6 +170,7 @@ function eliminarBeneficio(id_beneficio) {
 .container {
     max-width: 1100px;
     margin: auto;
+    color: black;
 }
 .boton-volver-container {
     position: relative;
@@ -234,7 +235,7 @@ h2 {
 .beneficio-title {
     font-size: 1.4em;
     font-weight: bold;
-    color: #C9A449;
+    color: #2c3e50;
     margin-bottom: 10px;
 }
 
@@ -260,6 +261,7 @@ h2 {
     width: 40%;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    color: black;
 }
 
 .close {

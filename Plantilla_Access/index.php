@@ -5,8 +5,8 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header("Location: login.php");
     exit;
 }
-
 $username = $_SESSION['username'];
+$nombre = $_SESSION['nombre'];
 $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'] : 'assets/img/default-profile.png'; // Imagen por defecto si no existe
 ?>
 <!DOCTYPE html>
@@ -73,6 +73,7 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
     justify-content: center; /* Centra las columnas horizontalmente */
     gap: 40px; /* Espacio entre columnas */
     width: 100%;
+    margin-left: 15%;
     max-width: 1200px;
     text-align: center; /* Asegura que los títulos y descripciones se centren dentro de las columnas */
     margin-top: 20px; /* Ajuste para separar del borde superior */
@@ -138,6 +139,7 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
 .btn-hero.purchase {
     background-color: #1abc9c;
     color: white;
+    margin-left: 8%;
 }
     </style>
 </head>
