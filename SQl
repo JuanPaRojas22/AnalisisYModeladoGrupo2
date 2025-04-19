@@ -1097,3 +1097,29 @@ CREATE TABLE Ausencias (
     FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
     FOREIGN KEY (registrado_por) REFERENCES Usuario(id_usuario)
 );
+
+==============================================
+Nuvea tabla Aportes
+
+CREATE TABLE `aportes` (
+  `id_aporte` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `aporte` varchar(250) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Indices de la tabla `aportes`
+--
+ALTER TABLE `aportes`
+  ADD PRIMARY KEY (`id_aporte`),
+  ADD KEY `fk_usuario_aporte` (`id_usuario`);
+--
+-- AUTO_INCREMENT de la tabla `aportes`
+--
+ALTER TABLE `aportes`
+  MODIFY `id_aporte` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+ALTER TABLE `aportes`
+  ADD CONSTRAINT `fk_usuario_aporte` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
+COMMIT;
+
