@@ -2,11 +2,33 @@
 
 // Verifica si el usuario está autenticado
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
-    $username = $_SESSION['username'];  // Obtener el nombre del usuario
+    $nombre = $_SESSION['nombre'];  // Obtener el nombre del usuario
+    $username = $_SESSION['username'];
     $id_rol = $_SESSION['id_rol'];     // Obtener el ID del rol
     $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'] : 'assets/img/default-profile.png'; // Imagen de perfil
 
 }
+
+
+// Conexión a la base de datos (ajusta los valores de conexión según tu configuración)
+$conn = new mysqli("localhost", "root", "", "gestionempleados");
+
+// Verificar la conexión
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
+}
+
+// Consulta para obtener el número de nuevos aportes
+$query = "SELECT COUNT(*) AS aporte FROM aportes WHERE aporte = 0";  // Ajusta la tabla y condición según tu estructura
+$result = $conn->query($query);
+
+// Obtener el número de nuevos aportes
+$row = $result->fetch_assoc();
+$aporte = $row['aporte'];
+
+// Cerrar la conexión
+
+
 ?>
 
 <!DOCTYPE html>
@@ -58,7 +80,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
                 <!-- Notifications -->
                 <ul class="nav top-menu">
                     <!-- Tasks Dropdown -->
-                    <li class="dropdown">
+                    <!--<li class="dropdown">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <i class="fa fa-tasks"></i>
                             <span class="badge bg-theme">4</span>
@@ -68,7 +90,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
                             <li>
                                 <p class="green">You have 4 pending tasks</p>
                             </li>
-                            <!-- Example Task -->
+                          
                             <li>
                                 <a href="#">
                                     <div class="task-info">
@@ -80,34 +102,24 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
                                     </div>
                                 </a>
                             </li>
-                            <!-- More tasks -->
+                            
                         </ul>
-                    </li>
+                    </li>-->
                     <!-- Messages Dropdown -->
-                    <li id="header_inbox_bar" class="dropdown">
-                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                    <!-- Messages Dropdown -->
+                    <li id="header_inbox_bar">
+                        <!-- El enlace 'href' redirige a la página aportes.php -->
+                        <a href="aportes.php">
                             <i class="fa fa-envelope-o"></i>
-                            <span class="badge bg-theme">5</span>
+                            <!-- Aquí mostramos el número de nuevos aportes -->
+                            <span class="badge bg-theme" id="message-count">
+                                <?php echo $aporte > 0 ? $aporte : ''; ?>
+                            </span>
                         </a>
-                        <ul class="dropdown-menu extended inbox">
-                            <div class="notify-arrow notify-arrow-green"></div>
-                            <li>
-                                <p class="green">You have 5 new messages</p>
-                            </li>
-                            <!-- Example Message -->
-                            <li>
-                                <a href="#">
-                                    <span class="photo"><img alt="avatar" src="assets/img/ui-zac.jpg"></span>
-                                    <span class="subject">
-                                        <span class="from">Zac Snider</span>
-                                        <span class="time">Just now</span>
-                                    </span>
-                                    <span class="message">Hi mate, how is everything?</span>
-                                </a>
-                            </li>
-                            <!-- More messages -->
-                        </ul>
                     </li>
+
+
+
 
                     <li id="header_profile_bar" class="dropdown">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -146,20 +158,21 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
                         <ul class="sidebar-menu" id="nav-accordion">
                             <li class="mt">
 
-                                <h5 class="centered">Bienvenido, <?php echo $_SESSION['username']; ?>!</h5>
+                                <h5 class="centered">Bienvenido, <?php echo $_SESSION['nombre']; ?>!</h5>
                             </li>
 
-                            <li class="mt">
+                           <!-- <li class="mt">
                                 <a class="active" href="index.php">
                                     <i class="fa fa-dashboard"></i>
                                     <span>Dashboard</span>
                                 </a>
-                            </li>
-
-                           
+                            </li>-->
 
 
-                            <li class="sub-menu">
+                            <li><a href="Dias_Feriados.php"><i class="bi bi-calendar3"></i>
+                            Feriados</a></li>
+
+                            <!-- <li class="sub-menu">
                                 <a href="javascript:;">
                                     <i class="fa fa-cogs"></i>
                                     <span>Components</span>
@@ -170,7 +183,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
 
                                     <li><a href="Dias_Feriados.php">Feriados</a></li>
                                 </ul>
-                            </li>
+                            </li>-->
                             <li class="sub-menu">
                                 <a href="javascript:;">
                                     <i class="fa fa-desktop"></i>
@@ -201,6 +214,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
                                         <li><a href="VerPlanilla.php"><i
                                                     class="bi bi-journal-bookmark"></i><span>Planilla</span></a></li>
                                         <li><a href="admin_beneficios.php"><i class="bi bi-gift"></i>Beneficios</a></li>
+
                                         <?php if ($_SESSION['id_rol'] == 2): ?>
                                             <li><a href="MostrarUsuarios.php"><i
                                                         class="bi bi-person-lines-fill"></i><span>Usuarios</span></a></li>
@@ -234,7 +248,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
                 </ul>
                 </li>
 
-                <li><a href="preguntasfreq.php">Preguntas Frecuentes</a></li>
+                <li><a href="preguntasfreq.php"><i class="bi bi-question-octagon-fill"></i>Preguntas Frecuentes</a></li>
 
                 </li>
 
@@ -244,23 +258,108 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
             </div>
         </aside>
 
+        <!-- Botón flotante -->
+        <button class="boton-flotante" onclick="abrirModal()">✨ Hacer un aporte</button>
+
+        <!-- Modal -->
+        <!-- Modal -->
+        <div id="miModal" class="modal">
+            <div class="modal-contenido">
+                <span class="cerrar" onclick="cerrarModal()">&times;</span>
+                <h2>Haz tu aporte</h2>
+                <form id="enviarAporte">
+                    <input type="text" value="<?php echo $_SESSION['nombre']; ?>" readonly>
+                    <textarea id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
+                    <button type="submit" class="enviar">Enviar</button>
+                </form>
+            </div>
+        </div>
         <!-- Footer -->
         <footer class="site-footer">
             <div class="text-center">2024 - Your Company</div>
         </footer>
     </section>
 
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log("DOM cargado");
+
+            // Función para abrir el modal
+            function abrirModal() {
+                console.log("Modal abierto");
+                document.getElementById("miModal").style.display = "block";
+            }
+
+            // Función para cerrar el modal
+            function cerrarModal() {
+                console.log("Modal cerrado");
+                document.getElementById("miModal").style.display = "none";
+            }
+
+            // Función para enviar el aporte
+            function enviarAporte(event) {
+                event.preventDefault();
+                const mensaje = document.getElementById("aporte").value;
+                console.log("Enviando aporte:", mensaje);
+
+                const formData = new FormData();
+                formData.append("aporte", mensaje);
+
+                fetch("guardar_aporte.php", {
+                    method: "POST",
+                    body: formData
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data); // para ver qué responde PHP
+                        if (data.success) {
+                            alert("¡Aporte enviado con éxito!");
+                            document.getElementById("aporte").value = "";
+                            cerrarModal(); // Cierra el modal tras enviar
+                        } else {
+                            alert("Error: " + data.message);
+                        }
+                    })
+                    .catch(err => {
+                        alert("Error al enviar el aporte");
+                        console.error(err);
+                    });
+            }
+
+            // Verificar si los elementos existen antes de agregar los eventos
+            const botonFlotante = document.querySelector(".boton-flotante");
+            const cerrarBoton = document.querySelector(".cerrar");
+            const formulario = document.getElementById("enviarAporte");
+
+            if (botonFlotante) {
+                botonFlotante.addEventListener("click", abrirModal);
+            } else {
+                console.error("No se encontró el botón flotante.");
+            }
+
+            if (cerrarBoton) {
+                cerrarBoton.addEventListener("click", cerrarModal);
+            } else {
+                console.error("No se encontró el botón de cerrar.");
+            }
+
+            if (formulario) {
+                formulario.addEventListener("submit", enviarAporte);
+            } else {
+                console.error("No se encontró el formulario.");
+            }
+        });
+
+    </script>
+
 </body>
 
-<script>
-    function abrirModal() {
-        document.getElementById("opcionesModal").style.display = "flex";
-    }
 
-    function cerrarModal() {
-        document.getElementById("opcionesModal").style.display = "none";
-    }
-</script>
+
+
+
+
 <script src="assets/js/jquery.js"></script>
 <script src="assets/js/jquery-1.8.3.min.js"></script>
 <script src="assets/js/bootstrap.min.js"></script>
@@ -280,7 +379,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
 <script src="assets/js/sparkline-chart.js"></script>
 <script src="assets/js/zabuto_calendar.js"></script>
 
-<script type="text/javascript">
+<!--<script type="text/javascript">
     $(document).ready(function () {
         var unique_id = $.gritter.add({
             // (string | mandatory) the heading of the notification
@@ -299,7 +398,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
 
         return false;
     });
-</script>
+</script>-->
 
 <script type="application/javascript">
     $(document).ready(function () {

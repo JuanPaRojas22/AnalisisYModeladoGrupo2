@@ -188,7 +188,7 @@ btnEliminar.onclick = function() { eliminarFeriado(feriado.id); };
 </head>
 <body class="p-8 bg-gray-200">
     <div class="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-        <h1 class="text-3xl font-bold mb-6 text-center"> Gestión de Días Feriados</h1>
+        <h1 class="text-3xl font-bold mb-6 text-center" style="color:#0B4F6C"> Gestión de Días Feriados</h1>
         <button style="background-color: #147964;" class="text-white px-4 py-2 rounded mb-6 w-full" onclick="abrirModal()">Agregar Feriado</button>
 
         <div id="listaFeriados"></div>

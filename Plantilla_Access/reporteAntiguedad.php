@@ -53,6 +53,7 @@ $result = $conn->query($query);
         max-width: 100%;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
         border-radius: 10px;
+        color: black;
     }
 
 
