@@ -1,4 +1,7 @@
+
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 session_start();
 require 'conexion.php';
@@ -41,6 +44,12 @@ if (!isset($_SESSION['id_usuario'])) {
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <style>
+        body, h1, h2, h3, h4, h5, h6, p, a, span, td, th, li, div {
+    color: black !important;
+}
+
+    </style>
 </head>
 
 <body>
@@ -55,10 +64,10 @@ if (!isset($_SESSION['id_usuario'])) {
             <?php
             // Conexión a la base de datos
             
-            $query = "SELECT id_beneficio, razon FROM beneficios";
-            $result = $conn->query($query);
-            $query = "SELECT id_usuario, nombre FROM usuario";
-            $result = $conn->query($query);
+            $query_beneficios = "SELECT id_beneficio, razon FROM beneficios";
+            $result_beneficios = $conn->query($query_beneficios);
+            $query_usuarios = "SELECT id_usuario, nombre FROM usuario";
+            $result_usuarios = $conn->query($query_usuarios);
 
             // Verificar si la conexión fue exitosa
             if ($conn->connect_error) {
@@ -71,7 +80,8 @@ if (!isset($_SESSION['id_usuario'])) {
             // Procesar el formulario cuando se envía
             // Procesar el formulario cuando se envía
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // Obtener los datos del formulario
+                echo "<p>Formulario enviado correctamente.</p>";
+            
                 $id_usuario = $_POST['id_usuario'];
                 $salario_base = $_POST['salario_base'];
                 $hora_entrada = $_POST['hora_entrada'];
@@ -79,28 +89,41 @@ if (!isset($_SESSION['id_usuario'])) {
                 $codigo_bac = $_POST['codigo_bac'];
                 $codigo_caja = $_POST['codigo_caja'];
                 $codigo_INS = $_POST['codigo_INS'];
-
-                // Verificar si el usuario ya está registrado en la planilla
+            
                 $checkQuery = "SELECT id_usuario FROM planilla WHERE id_usuario = ?";
                 $stmtCheck = $conn->prepare($checkQuery);
-                $stmtCheck->bind_param("i", $id_usuario);
-                $stmtCheck->execute();
-                $stmtCheck->store_result();
-
-                if ($stmtCheck->num_rows > 0) {
-                    $mensaje = "Error: Este usuario ya está registrado en la planilla.";
+            
+                if (!$stmtCheck) {
+                    echo "<p style='color:red;'><strong>Error al preparar la consulta de verificación:</strong> " . $conn->error . "</p>";
                 } else {
-                    // Insertar en la tabla de planilla si no existe
-                    $query = "INSERT INTO planilla (id_usuario, salario_base, hora_entrada, hora_salida, Cuenta_Bac, Codigo_CCSS, codigo_INS) 
-                  VALUES ('$id_usuario', '$salario_base', '$hora_entrada', '$hora_salida', '$codigo_bac', '$codigo_caja','$codigo_INS' )";
-
-                    if ($conn->query($query) === TRUE) {
-                        $mensaje = "Empleado registrado con éxito.";
+                    $stmtCheck->bind_param("i", $id_usuario);
+                    $stmtCheck->execute();
+                    $stmtCheck->store_result();
+            
+                    if ($stmtCheck->num_rows > 0) {
+                        echo "<p style='color:red;'><strong>Error: Este usuario ya está registrado en la planilla</strong></p>";
+                        $mensaje = "Error: Este usuario ya está registrado en la planilla.";
                     } else {
-                        $mensaje = "Error al registrar al empleado: " . $conn->error;
+                        $query = "INSERT INTO planilla (id_usuario, salario_base, hora_entrada, hora_salida, codigo_bac, Codigo_CCSS, codigo_INS) 
+                                  VALUES (?, ?, ?, ?, ?, ?, ?)";
+                        $stmtInsert = $conn->prepare($query);
+            
+                        if (!$stmtInsert) {
+                            echo "<p style='color:red;'><strong>Error al preparar el INSERT:</strong> " . $conn->error . "</p>";
+                        } else {
+                            $stmtInsert->bind_param("issssss", $id_usuario, $salario_base, $hora_entrada, $hora_salida, $codigo_bac, $codigo_caja, $codigo_INS);
+            
+                            if ($stmtInsert->execute()) {
+                                $mensaje = "Empleado registrado con éxito.";
+                            } else {
+                                echo "<p style='color:red;'><strong>Error al ejecutar el INSERT:</strong> " . $stmtInsert->error . "</p>";
+                                $mensaje = "Error al registrar al empleado.";
+                            }
+                        }
                     }
                 }
             }
+            
             ?>
 
             <body>
@@ -121,7 +144,7 @@ if (!isset($_SESSION['id_usuario'])) {
                         <select name="id_usuario" required>
                             <option value="">Seleccione un usuario</option>
                             <?php
-                            while ($row = mysqli_fetch_assoc($result)) {
+                            while ($row = mysqli_fetch_assoc($result_usuarios)) {
                                 echo "<option value='{$row['id_usuario']}'>{$row['nombre']}</option>";
                             }
                             ?>

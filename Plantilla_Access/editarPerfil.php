@@ -144,6 +144,9 @@ if (isset($_GET['id'])) {
             cursor: pointer;
             border: none;
         }
+        td, div {
+            color: black !important;
+        }
     </style>
 </head>
 
@@ -153,6 +156,7 @@ if (isset($_GET['id'])) {
         <div class="row">
             <div class="col-md-3 text-center">
                 <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" class="img-fluid">
+                
             </div>
             <div class="col-md-9">
                 <h3>Información del Usuario</h3>

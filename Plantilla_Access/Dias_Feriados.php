@@ -1,5 +1,10 @@
 <?php
 session_start();
+// Verificar si el usuario está logueado
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: login.php");
+    exit();
+}
 include 'template.php';
 
 ?>
@@ -185,6 +190,11 @@ btnEliminar.onclick = function() { eliminarFeriado(feriado.id); };
             });
         }
     </script>
+    <style>
+        td, div {
+            color: black !important;
+        }
+    </style>
 </head>
 <body class="p-8 bg-gray-200">
     <div class="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg">

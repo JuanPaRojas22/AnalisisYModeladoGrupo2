@@ -69,8 +69,31 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                 if ($conn->connect_error) {
                     die("Error de conexión: " . $conn->connect_error);
                 }
+
+                $search = isset($_GET['search']) && is_numeric($_GET['search']) ? (int)$_GET['search'] : null;
+                $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+                $limit = 5;
+
+                if (!empty($search)) {
+                    // Mostrar la fila N del orden
+                    $offset = $search - 1;
+                    $limit = 1;
+                    $page = 1; // para evitar interferencia con paginación
+                } else {
+                    $offset = ($page - 1) * $limit;
+                }
+
+
+
+                /*
+                if (!empty($search)) {
+                    $offset = 0;
+                    $limit = 1;
+                }
+                */
+
                 // Consulta para obtener el departamento del usuario              
-                $result = $Historial_Solicitud_Modificacion_VacacionesDAO->getSolicitudesEditarPendientes_O_Aprobadas($userDepartment);
+                $result = $Historial_Solicitud_Modificacion_VacacionesDAO->getSolicitudesEditarPendientes_O_Aprobadas($userDepartment, $search, $limit, $offset);
 
                 ?>
                 <html lang="es">
@@ -230,6 +253,9 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
 .btn-back:hover {
     background-color: #0A3D55; /* Color al pasar el mouse */
 }
+td, div {
+            color: black !important;
+        }
                     </style>
                 </head>
                 <body>               
@@ -240,10 +266,27 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             $solicitudesCount = $result->num_rows;
                         ?>
                         <h4>Bienvenido, <?php echo $_SESSION['username']; ?> tienes <?php echo $solicitudesCount; ?> solicitudes de edición de vacaciones.</h4>
+                        <form method="GET" style="display: flex; align-items: center; margin-bottom: 10px;">
+                        <div class="input-group input-group-sm" style="min-width: 220px;">
+                            <input
+                                type="number"
+                                name="search"
+                                class="form-control"
+                                placeholder="Buscar fila..."
+                                min="1"
+                                value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
+                                style="min-width: 150px;">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+
                         <!-- Mostrar tabla con los cambios de puesto -->
                         <table>
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Nombre</th>
                                     <th>Apellido</th>
                                     <th>Departamento</th>
@@ -256,11 +299,17 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                                 </tr>
                             </thead>
                             <tbody>
+
                                 <?php
+                                 
+                                 // Se inicializa un contador
+                                 $contador = $offset + 1;
+
                                 // Mostrar los resultados de la consulta
                                 if ($result->num_rows > 0) {
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<tr>
+                                <td>" . $contador++ . "</td>        
                                 <td>" . $row['Nombre'] . "</td>
                                 <td>" . $row['Apellido'] . "</td>
                                 <td>" . $row['Departamento'] . "</td>
@@ -282,6 +331,42 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                                 ?>
                             </tbody>
                         </table>
+                        <?php
+if (empty($search)) {
+    $total_sql = "SELECT COUNT(*) as total
+        FROM Historial_Solicitud_Modificacion_Vacaciones HSMV
+        INNER JOIN usuario U ON HSMV.id_usuario = U.id_usuario
+        WHERE HSMV.estado = 'Pendiente' AND U.id_departamento = ?";
+    $stmt_total = $conn->prepare($total_sql);
+    $stmt_total->bind_param("i", $userDepartment);
+    $stmt_total->execute();
+    $total_result = $stmt_total->get_result();
+    $total_rows = $total_result->fetch_assoc()['total'];
+    $total_pages = ceil($total_rows / $limit);
+} else {
+    $total_pages = 0;
+}
+?>
+
+<?php if ($total_pages > 1): ?>
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-end" style="width: 80%; margin: auto; padding-right: 20px;">
+            <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                <a class="page-link" href="?page=<?= $page - 1 ?>">Anterior</a>
+            </li>
+            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                    <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                </li>
+            <?php endfor; ?>
+            <li class="page-item <?= $page >= $total_pages ? 'disabled' : '' ?>">
+                <a class="page-link" href="?page=<?= $page + 1 ?>">Siguiente</a>
+            </li>
+        </ul>
+    </nav>
+<?php endif; ?>
+
+
                     </div>
             </section>
             <script>

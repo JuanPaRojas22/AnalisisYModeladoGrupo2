@@ -44,12 +44,14 @@ $result = $conn->query($query);
         flex-direction: column;
         background-color: #f7f7f7;
         /* Blanco cremoso */
-        margin-top: 10%;
+        margin-top: 3%;
+        /*Correrlo para la derecha*/
+        margin-left: 15%;
         justify-content: flex-start;
         /* Alinea hacia la parte superior */
         align-items: center;
         /* Centra los elementos horizontalmente */
-        padding: 10px;
+        padding: 20px;
         max-width: 100%;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
         border-radius: 10px;
@@ -155,6 +157,9 @@ $result = $conn->query($query);
                     .btn-export:hover {
                         background-color: #168761;
                     }
+                    td, div {
+            color: black !important;
+        }
     </style>
 <body>
     <div class="container mt-5">

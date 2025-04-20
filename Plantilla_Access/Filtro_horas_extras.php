@@ -54,6 +54,11 @@ if (isset($_POST['filtrar'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Filtrar Horas Extras</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        td, div {
+            color: black !important;
+        }
+    </style>
 </head>
 
 <body>
