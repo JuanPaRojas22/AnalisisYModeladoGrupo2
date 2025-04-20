@@ -25,9 +25,10 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
 
     <style>
         body {
+            
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Ruda', sans-serif;
             background-color: #f7f8fa;
             background-image: url('assets/progra/img9.webp');
             background-size: cover;

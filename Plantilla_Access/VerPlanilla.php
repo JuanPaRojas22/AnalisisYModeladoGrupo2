@@ -77,7 +77,7 @@ if (!isset($_SESSION['id_usuario'])) {
 
             - Si un empleado no tiene clasificación, muestra 'Sin clasificación'.
             
-            */ 
+            */
 
             $result = $conn->query($sql);
 
@@ -92,20 +92,24 @@ if (!isset($_SESSION['id_usuario'])) {
                 <style>
                     body {
                         font-family: 'Ruda', sans-serif;
-                        background-color: #f7f7f7;  /* Blanco cremoso */
+                        background-color: #f7f7f7;
+                        /* Blanco cremoso */
                         margin: 0;
                         padding: 0;
 
                     }
 
                     .container {
-    width: 90%; /* Aumentar el tamaño del contenedor */
-    margin: 50px auto; /* Centrar el contenedor */
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra alrededor del contenedor */
-}
+                        width: 90%;
+                        /* Aumentar el tamaño del contenedor */
+                        margin: 50px auto;
+                        /* Centrar el contenedor */
+                        padding: 20px;
+                        background-color: #fff;
+                        border-radius: 12px;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        /* Sombra alrededor del contenedor */
+                    }
 
                     h1 {
                         text-align: center;
@@ -142,7 +146,7 @@ if (!isset($_SESSION['id_usuario'])) {
                     .btn:hover {
                         background-color: #0C536C;
                     }
-                    
+
 
                     .btn:active {
                         background-color: #0C536C;
@@ -151,37 +155,45 @@ if (!isset($_SESSION['id_usuario'])) {
                     }
 
                     table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    font-size: 12px; /* Reducir el tamaño de la fuente */
-}
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 20px;
+                        font-size: 12px;
+                        /* Reducir el tamaño de la fuente */
+                    }
 
-th, td {
-    padding: 8px; /* Reducir el espaciado de las celdas */
-    text-align: center;
-    font-size: 12px; /* Reducir el tamaño de la fuente */
-    color: #555;
-    border-bottom: 1px solid #ddd;
-}
+                    th,
+                    td {
+                        padding: 8px;
+                        /* Reducir el espaciado de las celdas */
+                        text-align: center;
+                        font-size: 12px;
+                        /* Reducir el tamaño de la fuente */
+                        color: #555;
+                        border-bottom: 1px solid #ddd;
+                    }
 
-th {
-    background-color: #116B67;
-    color: white;
-}
-th:first-child {
-    border-radius: 8px 0 0 0; /* Redondear la esquina superior izquierda */
-}
-th:last-child {
-    border-radius: 0 8px 0 0; /* Redondear la esquina superior derecha */
-}
+                    th {
+                        background-color: #116B67;
+                        color: white;
+                    }
+
+                    th:first-child {
+                        border-radius: 8px 0 0 0;
+                        /* Redondear la esquina superior izquierda */
+                    }
+
+                    th:last-child {
+                        border-radius: 0 8px 0 0;
+                        /* Redondear la esquina superior derecha */
+                    }
 
 
-tr:hover {
-    background-color: #f7f7f7;
-}
+                    tr:hover {
+                        background-color: #f7f7f7;
+                    }
 
-                   td {
+                    td {
                         background-color: #f7f7f7;
                     }
 
