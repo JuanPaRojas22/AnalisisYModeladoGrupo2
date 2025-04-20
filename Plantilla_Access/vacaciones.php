@@ -61,10 +61,7 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
         
     <!--[if lt IE 9]>
       QUIERO HACER QUE SOLO MUESTRE LAS PENDIENTES DE VACACIONES DE UN USUARIO ADMINISTRADOR
-    <![endif]-->
-    
-            
-        
+    <![endif]-->      
         <section id="main-content">
             <section class="wrapper site-min-height">
 
@@ -83,7 +80,20 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
 
                 // Consulta para obtener el departamento del usuario
                 
-                $result = $VacacionDAO->getSolicitudesPendientes($userDepartment);
+                $search = isset($_GET['search']) ? (int)$_GET['search'] : null;
+                $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+                $limit = 5;
+                $offset = ($page - 1) * $limit;
+
+                if (!empty($search)) {
+                    // Mostrar solo 1 fila desde la posición indicada por el número buscado
+                    $offset = $search - 1;
+                    $limit = 1;
+                }
+
+                //$result = $VacacionDAO->getVacacionesSolicitadas($id_usuario, null, $limit, $offset);
+
+                $result = $VacacionDAO->getSolicitudesPendientes($userDepartment, null, $limit, $offset);
 
 
                 ?>
@@ -244,6 +254,42 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             /* Distribuye el espacio entre los botones */
                             width: 100%;
                         }
+                        .expanding-form {
+    width: auto;
+    margin-right: 10%;
+    position: relative;
+}
+
+.expanding-search {
+    width: 50px;
+    transition: width 0.4s ease-in-out;
+    padding-left: 15px;
+}
+
+.expanding-search:focus {
+    width: 250px;
+}
+
+.pagination {
+    width: 80%;
+    margin: 20px auto 0 auto;
+    justify-content: flex-end;
+    padding-right: 20px;
+}
+
+.pagination .page-link {
+    color: #147964;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    font-weight: bold;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #116B67;
+    color: white;
+    border-color: #116B67;
+}
+
                     </style>
                 </head>
 
@@ -270,11 +316,30 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             </div>
                         </div>
 
+
+
+                        <div class="d-flex justify-content-end mb-4 me-5"> 
+    <form method="GET" class="expanding-form">
+        <input type="hidden" name="id_departamento" value="<?= htmlspecialchars($userDepartment) ?>">
+        <div class="input-group">
+            <input type="number"
+                name="search"
+                class="form-control expanding-search"
+                placeholder="Buscar fila..."
+                min="1"
+                value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+            <button class="btn btn-outline-success" type="submit">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+    </form>
+</div>
+
                         <!-- Mostrar tabla con los cambios de puesto -->
                         <table>
                             <thead>
                                 <tr>
-
+                                    <th>#</th>
                                     <th>Nombre</th>
                                     <th>Apellido</th>
                                     <th>Departamento</th>
@@ -287,10 +352,14 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             </thead>
                             <tbody>
                                 <?php
+                                // Se inicializa un contador
+                                $contador = $offset + 1;
+
                                 // Mostrar los resultados de la consulta
                                 if ($result->num_rows > 0) {
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<tr>
+                                <td>" . $contador++ . "</td>
                                 <td>" . $row['Nombre'] . "</td>
                                 <td>" . $row['Apellido'] . "</td>
                                 <td>" . $row['Departamento'] . "</td>
@@ -309,6 +378,50 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                                 ?>
                             </tbody>
                         </table>
+
+                        <?php
+                            $total_sql = "SELECT COUNT(*) as total
+                                        FROM vacacion V
+                                        INNER JOIN usuario U ON V.id_usuario = U.id_usuario
+                                        WHERE (V.id_estado_vacacion = 1 OR V.id_estado_vacacion = 4)
+                                        AND U.id_departamento = ?";
+                            $params = [$userDepartment];
+                            $types = "i";
+
+                            if (!empty($search)) {
+                                $total_pages = 0;
+                            } else {
+                                $stmt_total = $conn->prepare($total_sql);
+                                $stmt_total->bind_param($types, ...$params);
+                                $stmt_total->execute();
+                                $total_result = $stmt_total->get_result();
+                                $total_rows = $total_result->fetch_assoc()['total'];
+                                $total_pages = ceil($total_rows / $limit);
+                            }
+                        ?>
+
+                        <?php if ($total_pages > 1): ?>
+                        <nav aria-label="Page navigation" class="mt-4">
+                            <ul class="pagination justify-content-end" style="width: 80%; margin: auto; padding-right: 20px;">
+                                <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                                    <a class="page-link" href="?page=<?= $page - 1 ?>">Anterior</a>
+                                </li>
+                                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $i ?>">
+                                            <?= $i ?>
+                                        </a>
+                                    </li>
+                                <?php endfor; ?>
+                                <li class="page-item <?= $page >= $total_pages ? 'disabled' : '' ?>">
+                                    <a class="page-link" href="?page=<?= $page + 1 ?>">Siguiente</a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <?php endif; ?>
+
+                        
+
                     </div>
             </section>
 

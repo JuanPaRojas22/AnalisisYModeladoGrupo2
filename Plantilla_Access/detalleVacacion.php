@@ -81,7 +81,7 @@ if (isset($_GET['id'])) {
             <div class="container">
                 <h1>Solicitud de Vacación</h1>
                 <div class="btn-container-wrapper">
-                    <form method="get" action="SolicitarVacacion.php" accept-charset="UTF-8">
+                    <form method="get" action="vacaciones.php" accept-charset="UTF-8">
                         <input type="hidden" name="id_usuario" value="<?php echo $user['id_usuario']; ?>">
                         <button type="submit" class="btn-container"><i class="bi bi-arrow-return-left"></i></button>
                     </form>

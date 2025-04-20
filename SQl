@@ -1082,6 +1082,8 @@ Cambios Tabla Palnilla
 ALTER TABLE planilla
 ADD COLUMN codigo_CCSS VARCHAR(50),
 ADD COLUMN codigo_bac VARCHAR(50);
+ALTER TABLE planilla
+ADD COLUMN codigo_INS VARCHAR(50);
 
 -- Cambios juanpa
 

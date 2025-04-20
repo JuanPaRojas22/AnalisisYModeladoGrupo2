@@ -64,7 +64,14 @@ $aporte = $row['aporte'];
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <style>
+    
+    <!--<style>
+         td, div {
+        color: black !important;
+    }
+    -->
+</style>
+
 
     </style>
 </head>
@@ -172,18 +179,17 @@ $aporte = $row['aporte'];
                             <li><a href="Dias_Feriados.php"><i class="bi bi-calendar3"></i>
                             Feriados</a></li>
 
-                            <!-- <li class="sub-menu">
+
+                            <li class="sub-menu">
                                 <a href="javascript:;">
                                     <i class="fa fa-cogs"></i>
                                     <span>Components</span>
                                 </a>
                                 <ul class="sub">
                                     <li><a href="calendar.html">Calendar</a></li>
-                                    <li><a href="gallery.html">Gallery</a></li>
-
-                                    <li><a href="Dias_Feriados.php">Feriados</a></li>
+                                    <li><a href="gallery.html">Gallery</a></li>                           
                                 </ul>
-                            </li>-->
+                            </li>
                             <li class="sub-menu">
                                 <a href="javascript:;">
                                     <i class="fa fa-desktop"></i>
@@ -198,6 +204,7 @@ $aporte = $row['aporte'];
                                     <li><a href="ver_reporte.php"><i class="bi bi-brightness-low-fill"></i>
                                             Vacaciones</a></li>
                                     <li><a href="reporte_hacienda.php"><i class="bi bi-bank"></i>Hacienda</a></li>
+                                    <li><a href="Dias_Feriados.php">Feriados</a></li>
 
 
                                 </ul>
@@ -233,8 +240,7 @@ $aporte = $row['aporte'];
                                 </li>
                                 <li><a href="reporteAntiguedad.php"><i class="bi bi-clock-history"></i>Reporte de
                                         Antigüedad</a></li>
-                                <li><a href="registrarBeneficiosAntiguedad.php"><i class="bi bi-gift"></i>Registrar
-                                        Beneficios por Antigüedad</a></li>
+                                <li><a href="registrarBeneficiosAntiguedad.php"><i class="bi bi-gift"></i>Registrar Antigüedad</a></li>
                             <?php endif; ?>
 
                         </ul>

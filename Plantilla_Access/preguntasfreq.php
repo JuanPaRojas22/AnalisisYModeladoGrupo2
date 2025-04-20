@@ -163,57 +163,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
             /* Midnight Green for titles */
         }
 
-        .preguntas-titulo {
-            font-size: 28px;
-            font-weight: bold;
-            color: #137266;
-            /* Pine Green */
-        }
-
-        .modal {
-            display: none;
-            /* Oculto por defecto */
-            position: fixed;
-            z-index: 999;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.5);
-            /* fondo semitransparente */
-        }
-
-        /* Contenido del modal */
-        .modal-content {
-            background-color: #fff;
-            margin: 15% auto;
-            padding: 20px;
-            border-radius: 10px;
-            width: 50%;
-            max-width: 500px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            color: black;
-        }
-
-        /* Botón de cerrar */
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close:hover {
-            color: black;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-        }
-    </style>
+.preguntas-titulo {
+    font-size: 28px;
+    font-weight: bold;
+    color: #137266; /* Pine Green */
+}
+</style>
 </head>
 
 <body>

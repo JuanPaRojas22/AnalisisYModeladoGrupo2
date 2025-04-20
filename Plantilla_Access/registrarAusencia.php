@@ -174,7 +174,9 @@ select, input[type="text"] {
         font-size: 1em;
     }
 }
-
+td, div {
+            color: black !important;
+        }
 
 
    

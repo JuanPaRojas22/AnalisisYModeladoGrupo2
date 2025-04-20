@@ -206,6 +206,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .volunteer-btn:hover {
         background-color: #C64A4A;
     }
+    td, div {
+            color: black !important;
+        }
 </style>
 
 
