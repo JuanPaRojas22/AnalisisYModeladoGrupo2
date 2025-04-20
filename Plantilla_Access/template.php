@@ -267,7 +267,7 @@ $aporte = $row['aporte'];
         <!-- Botón flotante -->
         <button class="boton-flotante" onclick="abrirModal()">✨ Hacer un aporte</button>
 
-        <!-- Modal -->
+
         <!-- Modal -->
         <div id="miModal" class="modal">
             <div class="modal-contenido">

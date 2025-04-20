@@ -8,7 +8,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
 require_once __DIR__ . '/Impl/historialVacacionesDAOSImpl.php';
-include 'conexion.php'; 
+include 'conexion.php';
 include "template.php";
 
 // Obtener el ID del departamento del usuario desde la sesión
@@ -30,7 +30,7 @@ $diasRestantes = $HistorialVacacionDAO->getDiasRestantes($id_usuario);
 // Obtener los dias reservados por el empleado para que no pueda solicitar vacaciones en esas fechas
 $fechasReservadas = $VacacionDAO->getFechasReservadasEmpleado($id_usuario);
 
-$rangosFechas = array_map(function($row) {
+$rangosFechas = array_map(function ($row) {
     return ["from" => $row['fecha_inicio'], "to" => $row['fecha_fin']];
 }, $fechasReservadas);
 
@@ -39,7 +39,7 @@ $rangosFechas = array_map(function($row) {
 
 // Mostrar las fechas reservadas en formato JSON para el calendario
 //echo json_encode($rangosFechas);
- 
+
 // Logica para crear una vacacion utilizando el metodo de IngresarVacacion 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Capturar datos del formulario
@@ -105,14 +105,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fecha_fin
         );
 
-        if(!empty($resultado)){
+        if (!empty($resultado)) {
             // Si el metodo devuelve errores, se guardan en el array de errores
             $errores = array_merge($errores, $resultado);
-        } else{
+        } else {
             $mensaje_exito = "Solicitud de vacaciones ingresada correctamente.";
         }
     }
-    
+
     // Generar PDF
     // Generar reporte de vacaciones
     $sql = "SELECT 
@@ -139,10 +139,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $params = [$id_usuario, $fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin, $fecha_inicio, $fecha_fin];
     //$params = [];
     //if ($id_usuario) { 
-        //$sql .= " AND h.id_usuario = ?";
-        //$params[] = $id_usuario;
+    //$sql .= " AND h.id_usuario = ?";
+    //$params[] = $id_usuario;
     //}
-    if ($userDepartment) { 
+    if ($userDepartment) {
         $sql .= " AND u.id_departamento = ?";
         $params[] = $userDepartment;
     }
@@ -151,11 +151,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($params)) {
         $stmt->bind_param(str_repeat("s", count($params)), ...$params); // Ensure the correct type and count
     }
-    
+
     $stmt->execute();
     $result = $stmt->get_result();
     $historial = $result->fetch_all(MYSQLI_ASSOC);
-    $stmt->close(); 
+    $stmt->close();
 
 }
 
@@ -195,10 +195,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-left: 250px;
             padding: 60px;
         }
-        td, div {
+
+        td,
+        div {
             color: black !important;
         }
-    
     </style>
 </head>
 
@@ -230,8 +231,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // Consulta para obtener el departamento del usuario
                 
-                $search = isset($_GET['search']) ? (int)$_GET['search'] : null;
-                $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+                $search = isset($_GET['search']) ? (int) $_GET['search'] : null;
+                $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
                 $limit = 5;
                 $offset = ($page - 1) * $limit;
 
@@ -264,13 +265,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
 
                         .container {
-    max-width: 80%;  /* Reducir el ancho del contenedor */
-    margin: 50px auto;  /* Centrar y dar un margen desde arriba */
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
+                            max-width: 80%;
+                            /* Reducir el ancho del contenedor */
+                            margin: 50px auto;
+                            /* Centrar y dar un margen desde arriba */
+                            padding: 20px;
+                            background-color: #ffffff;
+                            border-radius: 10px;
+                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                        }
+
                         h1 {
                             text-align: center;
                             color: #333;
@@ -288,22 +292,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
 
                         .btn {
-                        display: inline-block;
-                        background-color: #147964;
-                        color: white;
-                        padding: 12px 20px;
-                        font-size: 16px;
-                        font-weight: bold;
-                        text-decoration: none;
-                        border-radius: 5px;
-                        margin-bottom: 20px;
-                        transition: background-color 0.3s;
-                        cursor: pointer;
-                        border: none;
-                    }
-
-                    .btn:hover {
-                        background-color: #147964;
+                            display: inline-block;
+                            background-color: #147964;
+                            color: white;
+                            padding: 12px 20px;
+                            font-size: 16px;
+                            font-weight: bold;
+                            text-decoration: none;
+                            border-radius: 5px;
+                            margin-bottom: 20px;
+                            transition: background-color 0.3s;
+                            cursor: pointer;
+                            border: none;
+                        }
+                        
+         
+                        .btn:hover {
+                            background-color: #147964;
                         }
 
                         .btn:active {
@@ -311,33 +316,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
 
                         table {
-    width: 80%;  /* Reducir el ancho de la tabla */
-    margin: 20px auto;  /* Centrar la tabla */
-    border-collapse: collapse;
-    border-radius: 8px;
-    overflow: hidden;
-}
-table .btn {
-    font-size: 12px;  /* Reducir el tamaño del texto */
-    padding: 6px 10px;  /* Reducir el padding para hacer el botón más pequeño */
-    border-radius: 4px;  /* Opcional: ajustar los bordes si lo deseas */
-    margin: 2px;  /* Añadir un pequeño margen entre botones */
-    display: inline-block;
-}
+                            width: 80%;
+                            /* Reducir el ancho de la tabla */
+                            margin: 20px auto;
+                            /* Centrar la tabla */
+                            border-collapse: collapse;
+                            border-radius: 8px;
+                            overflow: hidden;
+                        }
 
-/* Para asegurarte de que los botones se ven bien */
-table .btn i {
-    font-size: 14px;  /* Reducir el tamaño del icono dentro de los botones */
-}
+                        table .btn {
+                            font-size: 12px;
+                            /* Reducir el tamaño del texto */
+                            padding: 6px 10px;
+                            /* Reducir el padding para hacer el botón más pequeño */
+                            border-radius: 4px;
+                            /* Opcional: ajustar los bordes si lo deseas */
+                            margin: 2px;
+                            /* Añadir un pequeño margen entre botones */
+                            display: inline-block;
+                        }
 
-/* Alineación y tamaño de las celdas */
-th, td {
-    padding: 10px;  /* Reducir el padding */
-    text-align: left;
-    font-size: 14px;  /* Reducir el tamaño de la fuente */
-    color: #555;
-    border-bottom: 1px solid #ddd;
-}
+                        /* Para asegurarte de que los botones se ven bien */
+                        table .btn i {
+                            font-size: 14px;
+                            /* Reducir el tamaño del icono dentro de los botones */
+                        }
+
+                        /* Alineación y tamaño de las celdas */
+                        th,
+                        td {
+                            padding: 10px;
+                            /* Reducir el padding */
+                            text-align: left;
+                            font-size: 14px;
+                            /* Reducir el tamaño de la fuente */
+                            color: #555;
+                            border-bottom: 1px solid #ddd;
+                        }
 
                         th {
                             background-color: #116B67;
@@ -435,60 +451,72 @@ th, td {
                             right: 0;
                             top: 0
                         }
+
                         .flatpickr-day.reservado {
                             background-color: red !important;
                             color: white !important;
                             border-radius: 50%;
                         }
+
                         .row-fechas-pdf {
                             display: flex;
-                            justify-content: space-between;  /* Coloca los elementos con espacio entre ellos */
-                            gap: 20px;  /* Espacio entre los campos */
-                            align-items: center;  /* Centra los elementos verticalmente */
+                            justify-content: space-between;
+                            /* Coloca los elementos con espacio entre ellos */
+                            gap: 20px;
+                            /* Espacio entre los campos */
+                            align-items: center;
+                            /* Centra los elementos verticalmente */
                             margin-bottom: 20px;
                         }
 
                         /* Ajuste de los campos de fecha para estar alineados */
                         input[type="date"] {
-                            width: 48%;  /* Hacer que los campos de fecha sean más pequeños */
+                            width: 48%;
+                            /* Hacer que los campos de fecha sean más pequeños */
                             padding: 8px;
                             font-size: 14px;
                             border-radius: 5px;
                             border: 1px solid #ddd;
                         }
 
-                        /* Estilo de los botones con el estilo que mencionaste */
-                        button[type="submit"], button {
+
+                        button[type="submit"],
+                        button {
                             background-color: #0B4F6C;
                             color: white;
-                            padding: 10px 20px;  /* Tamaño adecuado para los botones */
+                            padding: 10px 20px;
+                            /* Tamaño adecuado para los botones */
                             font-size: 16px;
                             border: none;
                             border-radius: 5px;
                             cursor: pointer;
-                            width: auto;  /* Ajustar al tamaño necesario */
+                            width: auto;
+                            /* Ajustar al tamaño necesario */
                             display: inline-block;
                             /*margin-top: 10px;*/
                             transition: background-color 0.3s;
                         }
 
-                        button[type="submit"]:hover, button:hover {
-                            background-color: #0A3D55;  /* Color más oscuro al pasar el ratón */
+                        button[type="submit"]:hover,
+                        button:hover {
+                            background-color: #0A3D55;
+                            /* Color más oscuro al pasar el ratón */
                         }
 
                         .input-group .btn {
-    margin-top: 10 !important;
-}
+                            margin-top: 10 !important;
+                        }
 
                         .search-bar {
-                                transition: width 0.3s ease-in-out;
-                                width: 40px;
-                            }
+                            transition: width 0.3s ease-in-out;
+                            width: 40px;
+                        }
 
-                            .search-bar:focus {
-                                width: 250px;
-                            }
-                            .expanding-search {
+                        .search-bar:focus {
+                            width: 250px;
+                        }
+
+                        .expanding-search {
                             transition: all 0.4s ease-in-out;
                             width: 50px;
                             background-color: #f1f1f1;
@@ -497,7 +525,7 @@ th, td {
 
                         /* 🔍 Expanding search solo con CSS */
                         .expanding-search {
-                            width: 50px;
+                            width: 5px;
                             transition: width 0.4s ease-in-out;
                             padding-left: 15px;
                         }
@@ -508,7 +536,8 @@ th, td {
 
                         .pagination {
                             width: 80%;
-                            margin: 20px auto 0 auto; /* alineado con la tabla (80%) */
+                            margin: 20px auto 0 auto;
+                            /* alineado con la tabla (80%) */
                             justify-content: flex-end;
                             padding-right: 20px;
                         }
@@ -525,63 +554,69 @@ th, td {
                             color: white;
                             border-color: #116B67;
                         }
-</style>
- </head>
+                    </style>
+                </head>
+
                 <body>
-                <div class="container">
-                    <h1>Mis Vacaciones</h1>
+                    <div class="container">
+                        <h1>Mis Vacaciones</h1>
 
-                    <!-- Botones para Solicitar Vacación y Medio Día -->
-                    <div class="row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <button onclick="document.getElementById('id01').style.display='block'">
-                            Solicitar Vacacion
-                        </button>
+                        <!-- Botones para Solicitar Vacación y Medio Día -->
+                        <div class="row"
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <button onclick="document.getElementById('id01').style.display='block'">
+                                Solicitar Vacacion
+                            </button>
 
-                        <button onclick="window.location.href='SolicitarMedioDia.php'">
-                            Solicitar Medio Día
-                        </button>
+                            <button onclick="window.location.href='SolicitarMedioDia.php'">
+                                Solicitar Medio Día
+                            </button>
 
-                        <div style="background-color: #d4edda; color: #155724; padding: 10px 20px; border-radius: 5px; text-align: center; font-size: 16px;">
-                            <strong>Días Restantes:</strong> <?php echo $diasRestantes; ?>
+                            <div
+                                style="background-color: #d4edda; color: #155724; padding: 10px 20px; border-radius: 5px; text-align: center; font-size: 16px;">
+                                <strong>Días Restantes:</strong> <?php echo $diasRestantes; ?>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Fechas inicio y fin con botón PDF -->
-                    <!-- Fechas inicio y fin con botón PDF y buscador -->
-                    <div class="row-fechas-pdf d-flex align-items-center gap-2 flex-wrap">
-                        <label for="fecha_inicio">Fecha Inicio:</label>
-                        <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" required style="flex: 1; width: 200px;">
 
-                        <label for="fecha_fin">Fecha Fin:</label>
-                        <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" required style="flex: 1; width: 200px;">
+                        <!-- Fechas inicio y fin con botón PDF y buscador -->
+                        <div class="row-fechas-pdf d-flex align-items-center gap-2 flex-wrap">
+                            <label for="fecha_inicio">Fecha Inicio:</label>
+                            <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" required
+                                style="flex: 1; width: 200px;">
 
-                        <form action="generar_reporteVacaciones.php" method="GET" style="display: inline-block; width: auto;">
-                            <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($id_usuario) ?>">
-                            <input type="hidden" name="id_departamento" value="<?= htmlspecialchars($id_departamento) ?>">
-                            <button type="submit" class="btn btn-success">Descargar PDF</button>
-                        </form>
+                            <label for="fecha_fin">Fecha Fin:</label>
+                            <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" required
+                                style="flex: 1; width: 200px;">
+
+                            <form action="generar_reporteVacaciones.php" method="GET"
+                                style="display: inline-block; width: auto;">
+                                <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($id_usuario) ?>">
+                                <input type="hidden" name="id_departamento"
+                                    value="<?= htmlspecialchars($id_departamento) ?>">
+                                <button type="submit" class="btn btn-success">Descargar PDF</button>
+
+                            </form>
+
+                        </div>
+
 
                         <!-- Buscador colocado a la derecha -->
-                        <form method="GET" style="display: flex; align-items: center;">
-                            <input type="hidden" name="id_departamento" value="<?= htmlspecialchars($id_departamento) ?>">
-                            
-                            <div class="input-group input-group-sm" style="min-width: 220px;">
-                                <input
-                                    type="number"
-                                    name="search"
-                                    class="form-control"
-                                    placeholder="Buscar fila..."
-                                    min="1"
+                        <form method="GET" style="margin-left: 30%;">
+                            <input type="hidden" name="id_departamento"
+                                value="<?= htmlspecialchars($id_departamento) ?>">
+
+                            <div class="input-group input-group-sm " style="min-width: auto;">
+                                <input type="number" name="search" class="form-control" placeholder="Buscar" min="1"
                                     value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
-                                    style="min-width: 150px;">
-                                <button class="btn btn-primary" type="submit">
+                                    style="width: 400px; font-size: 12px; padding: 2px 6px;">
+                                <button class="btn btn-success" type="submit"
+                                    style="margin-top: -2px; margin-left: 15px; font-size: 18px;">
                                     <i class="bi bi-search"></i>
                                 </button>
+
                             </div>
                         </form>
-
-
-                    </div>
 
                     </div>
                     <div id="id01" class="modal">
@@ -608,117 +643,104 @@ th, td {
 
                         <span onclick="document.getElementById('id01').style.display='none'" class="close"
                             title="Close Modal">&times;</span>
-                            <form class="modal-content" action="SolicitarVacacion.php" method="POST" enctype="multipart/form-data">
-                                <div class="container">
-                                    <header style="background-color:#000;color:#fff;">
-                                        <span onclick="document.getElementById('id01').style.display='none'" class="close-button topright">&times;</span>
-                                    </header>
-                                    <h1>Registrar Vacación</h1>
-                                    <p>Ingrese los datos correspondientes</p>
-                                    <br>
-                                    <label for="razon">Razón:</label>
-                                    <input type="text" id="razon" name="razon" class="form-control" placeholder="Ingrese su razón" autofocus>
+                        <form class="modal-content" action="SolicitarVacacion.php" method="POST"
+                            enctype="multipart/form-data">
+                            <div class="container">
+                                <header style="background-color:#000;color:#fff;">
+                                    <span onclick="document.getElementById('id01').style.display='none'"
+                                        class="close-button topright">&times;</span>
+                                </header>
+                                <h1>Registrar Vacación</h1>
+                                <p>Ingrese los datos correspondientes</p>
+                                <br>
+                                <label for="razon">Razón:</label>
+                                <input type="text" id="razon" name="razon" class="form-control"
+                                    placeholder="Ingrese su razón" autofocus>
 
-                                    <label for="diasTomado">Días Tomados:</label>
-                                    <input type="number" id="diasTomado" name="diasTomado" class="form-control" placeholder="Ingrese los días tomados" autofocus>
+                                <label for="diasTomado">Días Tomados:</label>
+                                <input type="number" id="diasTomado" name="diasTomado" class="form-control"
+                                    placeholder="Ingrese los días tomados" autofocus>
 
-                                    <label for="fecha_inicio_solicitud">Fecha Inicio:</label>
-                                    <input type="text" id="fecha_inicio_solicitud" name="fecha_inicio" class="form-control" placeholder="Ingrese la fecha de inicio" autofocus>
+                                <label for="fecha_inicio_solicitud">Fecha Inicio:</label>
+                                <input type="text" id="fecha_inicio_solicitud" name="fecha_inicio" class="form-control"
+                                    placeholder="Ingrese la fecha de inicio" autofocus>
 
-                                    <label for="fecha_fin_solicitud">Fecha Fin:</label>
-                                    <input type="text" id="fecha_fin_solicitud" name="fecha_fin" class="form-control" placeholder="Ingrese la fecha de fin" autofocus>
+                                <label for="fecha_fin_solicitud">Fecha Fin:</label>
+                                <input type="text" id="fecha_fin_solicitud" name="fecha_fin" class="form-control"
+                                    placeholder="Ingrese la fecha de fin" autofocus>
 
-                                    <label for="observaciones">Observaciones:</label>
-                                    <input type="text" id="observaciones" name="observaciones" class="form-control" placeholder="Ingrese sus observaciones" autofocus>
+                                <label for="observaciones">Observaciones:</label>
+                                <input type="text" id="observaciones" name="observaciones" class="form-control"
+                                    placeholder="Ingrese sus observaciones" autofocus>
 
-                                    <div class="clearfix">
-                                        <button type="submit" class="signupbtn">Ingresar</button>
-                                    </div>
-                                </div>
-                            </form>
-                            <!-- Flatpickr JS -->
-                            <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-                            <script>
-                                // Fechas reservadas (ejemplo)
-                                const fechasReservadas = <?php echo json_encode($rangosFechas); ?>;
-
-                                function configurarCalendario(idCampo) {
-                                    flatpickr(idCampo, {
-                                        dateFormat: "Y-m-d",
-                                        disable: fechasReservadas.map(date => ({ from: date, to: date })), // Se deshabilitan fechas reservadas
-                                        onDayCreate: function(dObj, dStr, fp, dayElem) {
-                                            const date = dayElem.dateObj.toISOString().split('T')[0];
-                                            // Verificar si la fecha está reservada
-                                            fechasReservadas.forEach(range => {
-                                                if (date >= range.from && date <= range.to) {
-                                                    dayElem.classList.add("reservado");
-                                                    dayElem.style.pointerEvents = "none";  // Bloquea la selección
-                                                    dayElem.style.opacity = "0.5";  // Hace que parezcan deshabilitadas
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-
-                                configurarCalendario("#fecha_inicio_solicitud");
-                                configurarCalendario("#fecha_fin_solicitud");
-                            </script>
-                    </div>
-                    <!-- <a href="EditarVacaciones.php">Editar Vacaciones</a> -->
-
-                 
-                    
-                    <<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
-                    
-                    <!-- Buscador -->
-                    <div class="container mb-4">
-                        <form method="GET">
-                            <input type="hidden" name="id_departamento" value="<?= htmlspecialchars($id_departamento) ?>">
-
-                            <div class="row justify-content-end">
-                                <div class="col-auto">
-                                    <div class="input-group">
-                                        <input type="number"
-                                            name="search"
-                                            class="form-control form-control-sm"
-                                            placeholder="Buscar fila..."
-                                            min="1"
-                                            value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
-                                        <button class="btn btn-sm btn-primary" type="submit">
-                                            <i class="bi bi-search"></i>
-                                        </button>
-                                    </div>
+                                <div class="clearfix">
+                                    <button type="submit" class="signupbtn">Ingresar</button>
                                 </div>
                             </div>
                         </form>
+                        <!-- Flatpickr JS -->
+                        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+                        <script>
+                            // Fechas reservadas (ejemplo)
+                            const fechasReservadas = <?php echo json_encode($rangosFechas); ?>;
+
+                            function configurarCalendario(idCampo) {
+                                flatpickr(idCampo, {
+                                    dateFormat: "Y-m-d",
+                                    disable: fechasReservadas.map(date => ({ from: date, to: date })), // Se deshabilitan fechas reservadas
+                                    onDayCreate: function (dObj, dStr, fp, dayElem) {
+                                        const date = dayElem.dateObj.toISOString().split('T')[0];
+                                        // Verificar si la fecha está reservada
+                                        fechasReservadas.forEach(range => {
+                                            if (date >= range.from && date <= range.to) {
+                                                dayElem.classList.add("reservado");
+                                                dayElem.style.pointerEvents = "none";  // Bloquea la selección
+                                                dayElem.style.opacity = "0.5";  // Hace que parezcan deshabilitadas
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+
+                            configurarCalendario("#fecha_inicio_solicitud");
+                            configurarCalendario("#fecha_fin_solicitud");
+                        </script>
                     </div>
+                    <!-- <a href="EditarVacaciones.php">Editar Vacaciones</a> -->
 
-                    <table > 
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>Departamento</th>
-                                <th>Fecha Inicio</th>
-                                <th>Fecha Fin</th>
-                                <th>Dias Tomados</th>
-                                <th>Dias Restantes</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
 
-                            // Se inicializa un contador
-                            $contador = $offset + 1;
 
-                            // Mostrar los resultados de la consulta
-                            if ($result->num_rows > 0) {
-                                while ($row = $result->fetch_assoc()) {
-                                    echo "<tr>
+                    <<link rel="stylesheet"
+                        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+
+
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Departamento</th>
+                                    <th>Fecha Inicio</th>
+                                    <th>Fecha Fin</th>
+                                    <th>Dias Tomados</th>
+                                    <th>Dias Restantes</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+
+                                // Se inicializa un contador
+                                $contador = $offset + 1;
+
+                                // Mostrar los resultados de la consulta
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        echo "<tr>
                                 <td>" . $contador++ . "</td>
                                 <td>" . $row['Nombre'] . "</td>
                                 <td>" . $row['Apellido'] . "</td>
@@ -739,15 +761,17 @@ th, td {
                                     </div>
                                 </td>
                               </tr>";
+                                    }
+                                } else {
+                                    echo "<tr><td colspan='9' class='no-records'>No se encontraron registros.</td></tr>";
                                 }
-                            } else {
-                                echo "<tr><td colspan='9' class='no-records'>No se encontraron registros.</td></tr>";
-                            }
-                            ?>
-                        </tbody>
-                    </table>  
-                          
-                    <?php
+                                ?>
+                            </tbody>
+                        </table>
+
+
+                        <?php
+
                         $total_sql = "SELECT COUNT(*) as total
                                     FROM vacacion V
                                     INNER JOIN usuario U ON V.id_usuario = U.id_usuario
@@ -768,11 +792,12 @@ th, td {
                             $total_rows = $total_result->fetch_assoc()['total'];
                             $total_pages = ceil($total_rows / $limit);
                         }
-                    ?>
+                        ?>
 
                         <?php if ($total_pages > 1): ?>
                             <nav aria-label="Page navigation" class="mt-4">
-                                <ul class="pagination justify-content-end" style="width: 80%; margin: auto; padding-right: 20px;">
+                                <ul class="pagination justify-content-end"
+                                    style="width: 80%; margin: auto; padding-right: 20px;">
                                     <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
                                         <a class="page-link" href="?page=<?= $page - 1 ?>">Anterior</a>
                                     </li>
@@ -787,12 +812,13 @@ th, td {
                                         <a class="page-link" href="?page=<?= $page + 1 ?>">Siguiente</a>
                                     </li>
                                 </ul>
-                            </nav>
+                            </nav>*
+
                         <?php endif; ?>
 
-                         
 
-                    
+
+
             </section>
             <script>
                 // Función para abrir el modal
@@ -816,4 +842,5 @@ th, td {
                 }
             </script>
 </body>
+
 </html>
