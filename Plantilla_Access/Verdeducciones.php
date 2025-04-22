@@ -274,7 +274,7 @@ require 'template.php';
             <table class="table">
                 <thead>
                     <tr>
-                        <th>ID Deducción</th>
+                        
                         <th>Nombre del Usuario</th>
                         <th>Razón</th>
                         <th>Deudor</th>
@@ -292,7 +292,7 @@ require 'template.php';
                     if ($result_deducciones->num_rows > 0) {
                         while ($row_deduccion = $result_deducciones->fetch_assoc()) {
                             echo "<tr>";
-                            echo "<td>" . $row_deduccion['id_deduccion'] . "</td>";
+                            
                             echo "<td>" . $row_deduccion['nombre'] . " " . $row_deduccion['apellido'] . "</td>";
                             echo "<td>" . $row_deduccion['razon'] . "</td>";
                             echo "<td>" . $row_deduccion['deudor'] . "</td>";

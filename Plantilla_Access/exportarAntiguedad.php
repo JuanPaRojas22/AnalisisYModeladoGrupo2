@@ -2,7 +2,6 @@
 session_start();
 require 'conexion.php';
 
-
 // Configurar encabezados para la descarga
 header("Content-Type: application/vnd.ms-excel");
 header("Content-Disposition: attachment; filename=reporte_antiguedad.xls");
@@ -12,7 +11,6 @@ header("Expires: 0");
 // Consulta para obtener los datos del reporte
 $query = "
     SELECT 
-        u.id_usuario,
         CONCAT(u.nombre, ' ', u.apellido) AS nombre_completo,
         u.fecha_ingreso,
         TIMESTAMPDIFF(YEAR, u.fecha_ingreso, CURDATE()) AS antiguedad_anios,
@@ -29,10 +27,10 @@ $query = "
 $result = $conn->query($query);
 
 // Imprimir encabezados de las columnas
-echo "ID Usuario\tNombre Completo\tFecha de Ingreso\tAntigüedad (Años)\tAntigüedad (Meses)\tBeneficio\tMonto del Beneficio\tFecha del Beneficio\n";
+echo "Nombre Completo\tFecha de Ingreso\tAntigüedad (Años)\tAntigüedad (Meses)\tBeneficio\tMonto del Beneficio\tFecha del Beneficio\n";
 
 // Imprimir los datos
 while ($row = $result->fetch_assoc()) {
-    echo "{$row['id_usuario']}\t{$row['nombre_completo']}\t{$row['fecha_ingreso']}\t{$row['antiguedad_anios']}\t{$row['antiguedad_meses']}\t{$row['beneficio']}\t{$row['monto_beneficio']}\t{$row['fecha_beneficio']}\n";
+    echo "{$row['nombre_completo']}\t{$row['fecha_ingreso']}\t{$row['antiguedad_anios']}\t{$row['antiguedad_meses']}\t{$row['beneficio']}\t{$row['monto_beneficio']}\t{$row['fecha_beneficio']}\n";
 }
 ?>
