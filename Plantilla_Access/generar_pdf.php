@@ -118,7 +118,7 @@ class GenerarReporteHistorial
         // Agregar datos al PDF
         foreach ($historial as $fila) {
             $pdf->SetFont('Arial', 'B', 14);
-            $pdf->Cell(0, 10, 'ID Historial: ' . $fila['id_historial'], 0, 1, 'C');
+            //$pdf->Cell(0, 10, 'ID Historial: ' . $fila['id_historial'], 0, 1, 'C');
             $pdf->Ln(5);
 
             $pdf->TableRow('Empleado', $fila['empleado']);

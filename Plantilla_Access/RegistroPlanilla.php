@@ -155,7 +155,7 @@ if (!isset($_SESSION['id_usuario'])) {
 
             <style>
                 body {
-                    font-family: Arial, sans-serif;
+                    font-family: 'Ruda', sans-serif;
                     background-color: #f7f7f7;
                     margin: 0;
                     padding: 0;

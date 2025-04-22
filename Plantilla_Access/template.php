@@ -176,10 +176,9 @@ $aporte = $row['aporte'];
                             </li>-->
 
 
-                            <li><a href="Dias_Feriados.php"><i class="bi bi-calendar3"></i>
-                            Feriados</a></li>
+                            
 
-
+                            <!--
                             <li class="sub-menu">
                                 <a href="javascript:;">
                                     <i class="fa fa-cogs"></i>
@@ -189,8 +188,10 @@ $aporte = $row['aporte'];
                                     <li><a href="calendar.html">Calendar</a></li>
                                     <li><a href="gallery.html">Gallery</a></li>                           
                                 </ul>
-                            </li>
+                            </li>-->
+                            
                             <li class="sub-menu">
+                            <?php if (in_array($id_rol, [1, 2])): ?>
                                 <a href="javascript:;">
                                     <i class="fa fa-desktop"></i>
                                     <span>Reportes</span>
@@ -204,10 +205,10 @@ $aporte = $row['aporte'];
                                     <li><a href="ver_reporte.php"><i class="bi bi-brightness-low-fill"></i>
                                             Vacaciones</a></li>
                                     <li><a href="reporte_hacienda.php"><i class="bi bi-bank"></i>Hacienda</a></li>
-                                    <li><a href="Dias_Feriados.php">Feriados</a></li>
-
-
+                                    <li><a href="Dias_Feriados.php"><i class="bi bi-calendar3"></i>
+                                    Feriados</a></li>
                                 </ul>
+                                <?php endif; ?>
                             </li>
                             <?php if (in_array($id_rol, [1, 2])): ?>
 
@@ -231,9 +232,8 @@ $aporte = $row['aporte'];
                                             <a href="vacaciones.php" class="nav-link">
                                                 <i class="bi bi-gear"></i> Vacaciones
                                             </a>
-                                        <li><a href="SolicitarMedioDia.php"><i class="bi bi-sun"></i><span>Medio
-                                                    dia</span></a></li>
-                                </li>
+                                    
+                                        </li>
                                 <li><a href="registrarAusencia.php"><i class="bi bi-person-dash"></i>Registrar Ausencia</a>
                                 </li>
                                 <li><a href="reporteAusencias.php"><i class="bi bi-bar-chart"></i>Reporte de Ausencias</a>
@@ -251,10 +251,12 @@ $aporte = $row['aporte'];
                                 <span>Vacaciones</span>
                             </a>
                         </li>
+                        <li><a href="preguntasfreq.php"><i class="bi bi-question-octagon-fill"></i>Preguntas Frecuentes</a></li>
+
                 </ul>
                 </li>
 
-                <li><a href="preguntasfreq.php"><i class="bi bi-question-octagon-fill"></i>Preguntas Frecuentes</a></li>
+                <!-- <li><a href="preguntasfreq.php"><i class="bi bi-question-octagon-fill"></i>Preguntas Frecuentes</a></li>-->
 
                 </li>
 

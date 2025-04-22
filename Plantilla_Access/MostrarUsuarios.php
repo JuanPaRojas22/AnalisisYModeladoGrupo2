@@ -1,13 +1,14 @@
 <?php
 
 session_start();
+// Verificar si el usuario está logueado
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: login.php");
+    exit;
+}
 require 'template.php';
 
-// Verificar si el usuario está logueado
-if (!isset($_SESSION['id_usuario'])) {
-    header("Location: login.php");
-    exit();
-}
+
 
 // Incluye el archivo donde tienes definida la clase UsuarioDAOSImpl
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';

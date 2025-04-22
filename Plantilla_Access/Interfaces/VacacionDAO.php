@@ -8,7 +8,7 @@ interface VacacionDAO
     // Funcion para obtener el detalle de la vacacion actual
     public function getDetalleVacacion($id_vacacion);
 
-    // // Funcion que obtiene las vacaciones solicitadas por el usuario actual. Se obtienen todas las vacaciones que esten en estado pendiente
+    // Funcion que obtiene las vacaciones solicitadas por el usuario actual. Se obtienen todas las vacaciones que esten en estado pendiente
     public function getVacacionesSolicitadas($id_usuario);
 
     // Funcion que obtiene las solicitudes pendientes de vacaciones de empleados del departamento del administrador actual.

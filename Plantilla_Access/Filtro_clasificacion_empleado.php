@@ -105,22 +105,22 @@ if (isset($_POST['filtrar'])) {
         <button class="btn" type="submit" name="filtrar">
             <i class="bi bi-funnel"></i> Filtrar
         </button>
+        </form>
+            <?php if (!empty($data)): ?>
+                <form action="reporte_clasificacion_empleado.php" method="post">
+                    <input type="hidden" name="usuario" value="<?php echo $usuario; ?>">
+                    <input type="hidden" name="clasificacion" value="<?php echo $clasificacion; ?>">
+                    <button class="btn" type="submit" name="exportar_pdf">
+                        <i class="bi bi-file-earmark-arrow-down-fill"></i> Exportar PDF
+                    </button>
+                </form>
+            <?php endif; ?>
+        </form>
 
         <!-- Botón Devolver -->
         
     </div>
-    </form>
-
-    <?php if (!empty($data)): ?>
-        <form action="reporte_clasificacion_empleado.php" method="post">
-            <input type="hidden" name="usuario" value="<?php echo $usuario; ?>">
-            <input type="hidden" name="clasificacion" value="<?php echo $clasificacion; ?>">
-            <button class="btn" type="submit" name="exportar_pdf">
-                <i class="bi bi-file-earmark-arrow-down-fill"></i> Exportar PDF
-            </button>
-        </form>
-    <?php endif; ?>
-        </form>
+    
 
         <!-- Mostrar los resultados -->
         <table>
@@ -189,7 +189,7 @@ if (isset($_POST['filtrar'])) {
 
 
     .container {
-    width: 40%; /* Ajusta el ancho para hacer la card más pequeña */
+    width: 50%; /* Ajusta el ancho para hacer la card más pequeña */
     max-width: 800px; /* Limita el ancho máximo */
     margin-top: 100px;
     padding: 20px 40px;
