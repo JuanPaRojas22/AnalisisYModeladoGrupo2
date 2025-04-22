@@ -64,31 +64,17 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                 if ($conn->connect_error) {
                     die("Error de conexión: " . $conn->connect_error);
                 }
-
-                $search = isset($_GET['search']) && is_numeric($_GET['search']) ? (int) $_GET['search'] : null;
+                //$search = isset($_GET['search']) ? (int) $_GET['search'] : null;
                 $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
                 $limit = 5;
+                $offset = ($page - 1) * $limit;
 
-                if (!empty($search)) {
-                    // Mostrar la fila N del orden
-                    $offset = $search - 1;
-                    $limit = 1;
-                    $page = 1; // para evitar interferencia con paginación
-                } else {
-                    $offset = ($page - 1) * $limit;
-                }
+               
 
-
-
-                /*
-                if (!empty($search)) {
-                    $offset = 0;
-                    $limit = 1;
-                }
-                */
+                
 
                 // Consulta para obtener el departamento del usuario              
-                $result = $Historial_Solicitud_Modificacion_VacacionesDAO->getSolicitudesEditarPendientes_O_Aprobadas($userDepartment, $search, $limit, $offset);
+                $result = $Historial_Solicitud_Modificacion_VacacionesDAO->getSolicitudesEditarPendientes_O_Aprobadas($userDepartment, $limit, $offset);
 
                 ?>
                 <html lang="es">
@@ -324,14 +310,9 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                         <div class="d-flex" style="gap: 20px; align-items: center;">
                             <button class="btn btn-back" onclick="window.history.back()">Volver</button>
 
-                            <form method="GET" style="display: flex; align-items: center; gap: 10px;">
-                                <input type="number" name="search" class="form-control" placeholder="Buscar fila..."
-                                    min="1" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
-                                    style="min-width: 300px; margin-bottom: 8%; margin-left: 50%;">
-                                <button class="btn btn-primary" type="submit">
-                                    <i class="bi bi-search"></i>
-                                </button>
-                            </form>
+                            <div class="mb-3" style="margin-left: 30%;">
+                                <input type="date" id="buscarFecha" class="form-control" style="width: 400px;" />
+                            </div>
                         </div>
 
 
@@ -339,7 +320,6 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                         <table>
                             <thead>
                                 <tr>
-                                    <th>#</th>
                                     <th>Nombre</th>
                                     <th>Apellido</th>
                                     <th>Departamento</th>
@@ -361,8 +341,7 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                                 // Mostrar los resultados de la consulta
                                 if ($result->num_rows > 0) {
                                     while ($row = $result->fetch_assoc()) {
-                                        echo "<tr>
-                                <td>" . $contador++ . "</td>        
+                                        echo "<tr>     
                                 <td>" . $row['Nombre'] . "</td>
                                 <td>" . $row['Apellido'] . "</td>
                                 <td>" . $row['Departamento'] . "</td>
@@ -423,6 +402,22 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
 
                     </div>
             </section>
+
+            <script>
+                document.getElementById('buscarFecha').addEventListener('input', function () {
+                        const fechaBuscada = this.value;
+                        const filas = document.querySelectorAll('table tbody tr');
+
+                        filas.forEach(fila => {
+                            const fechaInicio = fila.children[3].textContent.trim();
+                            if (fechaInicio.includes(fechaBuscada) || fechaBuscada === "") {
+                                fila.style.display = "";
+                            } else {
+                                fila.style.display = "none";
+                            }
+                        });
+                    });
+            </script>
 
 </body>
 

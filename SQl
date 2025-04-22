@@ -1125,3 +1125,29 @@ ALTER TABLE `aportes`
   ADD CONSTRAINT `fk_usuario_aporte` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 COMMIT;
 
+
+/***** NUEVO PROCEDIMIENTO PARA AGRREGAR DIAS DE VACACIONES CUANDO SE REGISTRA UN USUARIO *****/
+DELIMITER $$
+
+CREATE TRIGGER trg_insert_historial_vacaciones
+AFTER INSERT ON usuario
+FOR EACH ROW
+BEGIN
+  INSERT INTO historial_vacaciones (
+    id_usuario,
+    FechaInicio,
+    FechaFin,
+    DiasTomados,
+    Razon,
+    DiasRestantes
+  ) VALUES (
+    NEW.id_usuario,
+    NULL, -- FechaInicio
+    NULL, -- FechaFin
+    0,    -- DiasTomados
+    NULL, -- Razon
+    15    -- DiasRestantes 
+  );
+END$$
+
+DELIMITER ;

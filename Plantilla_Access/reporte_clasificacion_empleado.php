@@ -64,7 +64,7 @@ $pdf->Image('assets/img/logo_acces_perssonel.jpeg', 75, 10, 60);
 $pdf->Ln(45);
 
 // Título del reporte
-$pdf->Cell(0, 10, 'Reporte de Clasificación de Empleado', 0, 1, 'C');
+$pdf->Cell(0, 10, 'Reporte de Clasificacion de Empleado', 0, 1, 'C');
 $pdf->SetFont('Arial', 'B', 12);
 $pdf->Cell(0, 10, 'Acces Personnel', 0, 1, 'C');
 $pdf->Ln(5);
@@ -79,18 +79,18 @@ $pdf->SetFont('Arial', 'B', 12);
 $pdf->SetFillColor(200, 200, 200);
 $pdf->Cell(50, 10, 'Nombre', 1, 0, 'C', true);
 $pdf->Cell(40, 10, 'Departamento', 1, 0, 'C', true);
-$pdf->Cell(35, 10, 'Salario Base', 1, 0, 'C', true);
-$pdf->Cell(35, 10, 'Salario Neto', 1, 0, 'C', true);
-$pdf->Cell(50, 10, 'Clasificación', 1, 1, 'C', true);
+$pdf->Cell(30, 10, 'Salario Base', 1, 0, 'C', true);
+$pdf->Cell(30, 10, 'Salario Neto', 1, 0, 'C', true);
+$pdf->Cell(40, 10, 'Clasificacion', 1, 1, 'C', true);
 
 // Cuerpo de la tabla
 $pdf->SetFont('Arial', '', 10);
 foreach ($data as $row) {
     $pdf->Cell(50, 10, utf8_decode($row['nombre'] . ' ' . $row['apellido']), 1, 0, 'C');
     $pdf->Cell(40, 10, utf8_decode($row['departamento']), 1, 0, 'C');
-    $pdf->Cell(35, 10, number_format($row['salario_base'], 2), 1, 0, 'C');
-    $pdf->Cell(35, 10, number_format($row['salario_neto'], 2), 1, 0, 'C');
-    $pdf->MultiCell(50, 10, utf8_decode($row['clasificaciones']), 1, 'C');
+    $pdf->Cell(30, 10, number_format($row['salario_base'], 2), 1, 0, 'C');
+    $pdf->Cell(30, 10, number_format($row['salario_neto'], 2), 1, 0, 'C');
+    $pdf->MultiCell(40, 10, utf8_decode($row['clasificaciones']), 1, 'C');
 }
 
 // Pie de página

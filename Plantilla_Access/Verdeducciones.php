@@ -128,7 +128,7 @@ require 'template.php';
                     <style>
     /* Body and overall layout */
     body {
-        font-family: Arial, sans-serif;
+        font-family: 'Ruda', sans-serif;
         background-color: #f5f6fa;
         margin: 0;
         padding: 0;

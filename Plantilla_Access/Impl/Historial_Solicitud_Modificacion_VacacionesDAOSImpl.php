@@ -120,9 +120,9 @@ class Historial_Solicitud_Modificacion_VacacionesDAOSImpl implements Historial_S
     }
 
     // Funcion que obtiene las solicitudes de editar vacaciones aprobadas o pendientes de empleados del departamento del administrador actual. 
-    public function getSolicitudesEditarPendientes_O_Aprobadas($id_departamento, $search = null, $limit = 5, $offset = 0){
+    public function getSolicitudesEditarPendientes_O_Aprobadas($id_departamento, $limit = 5, $offset = 0){
         $conn = $this->conn;
-        $sql = "SELECT HSMV.id_historial_solicitud_modificacion, HSMV.id_usuario, U.Nombre, U.Apellido, Dep.Nombre AS Departamento, 
+        $sql = $conn->prepare("SELECT HSMV.id_historial_solicitud_modificacion, HSMV.id_usuario, U.Nombre, U.Apellido, Dep.Nombre AS Departamento, 
                 HSMV.fecha_inicio AS NuevaFechaInicio, HSMV.fecha_fin AS NuevaFechaFin, HSMV.dias_solicitados, HV.DiasRestantes, HSMV.estado
                 FROM Historial_Solicitud_Modificacion_Vacaciones HSMV
                 INNER JOIN usuario U ON HSMV.id_usuario = U.id_usuario
@@ -133,14 +133,19 @@ class Historial_Solicitud_Modificacion_VacacionesDAOSImpl implements Historial_S
                 WHERE HSMV.estado = 'Pendiente'
                 AND U.id_departamento = ?
                 ORDER BY U.Nombre ASC
-                LIMIT ? OFFSET ?";
+                LIMIT ? OFFSET ?");
     
+        /*
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("iii", $id_departamento, $limit, $offset);
-        $stmt->execute();
-    
+        $stmt->execute();   
         return $stmt->get_result();
+        */
+        $sql->bind_param("iii", $id_departamento, $limit, $offset);
+        $sql->execute();
+        return $sql->get_result();
     }
+    
     
     
 

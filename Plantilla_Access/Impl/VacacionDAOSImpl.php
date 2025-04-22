@@ -74,47 +74,42 @@ class VacacionDAOSImpl implements VacacionDAO
 
     }
 
-    public function getVacacionesSolicitadas($id_usuario, $search = null, $limit = 5, $offset = 0)
+    // Funcion que obtiene las vacaciones solicitadas por el usuario actual (Rol de Usuario). Se obtienen todas las vacaciones que esten en estado pendiente
+    public function getVacacionesSolicitadas($id_usuario, $limit = 5, $offset = 0)
     {
         $conn = $this->conn;
-        $sql = "SELECT V.id_vacacion, V.id_usuario, U.Nombre, U.Apellido, U.direccion_imagen,
-                    Dep.Nombre AS Departamento, V.fecha_inicio, V.fecha_fin, V.diasTomado,
-                    HV.DiasRestantes, EH.descripcion
-                FROM vacacion V
-                INNER JOIN usuario U ON V.id_usuario = U.id_usuario
-                INNER JOIN departamento Dep ON U.id_departamento = Dep.id_departamento
-                INNER JOIN estado_vacacion EH ON V.id_estado_vacacion = EH.id_estado_vacacion
-                INNER JOIN historial_vacaciones HV ON V.id_usuario = HV.id_usuario
-                WHERE (V.id_estado_vacacion = 1 OR V.id_estado_vacacion = 4)
-                AND U.id_usuario = ?";
-
-        $params = [$id_usuario];
-        $types = "i";
-
-        if (!empty($search)) {
-            $sql .= " AND V.id_vacacion = ?";
-            $params[] = $search;
-            $types .= "i";
-        }
-
-        $sql .= " ORDER BY U.Nombre ASC LIMIT ? OFFSET ?";
-        $params[] = $limit;
-        $params[] = $offset;
-        $types .= "ii";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param($types, ...$params);
+        $stmt = $conn->prepare("
+            SELECT 
+                V.id_vacacion,
+                U.nombre AS Nombre,
+                U.apellido AS Apellido,
+                D.nombre AS Departamento,
+                V.fecha_inicio,
+                V.fecha_fin,
+                V.diasTomado,
+                HV.DiasRestantes,
+                EV.descripcion
+            FROM vacacion V
+            INNER JOIN usuario U ON V.id_usuario = U.id_usuario
+            INNER JOIN departamento D ON U.id_departamento = D.id_departamento
+            INNER JOIN historial_vacaciones HV ON V.id_historial = HV.id_historial
+            INNER JOIN estado_vacacion EV ON V.id_estado_vacacion = EV.id_estado_vacacion
+            WHERE V.id_estado_vacacion IN (1, 4)
+            AND U.id_usuario = ?
+            ORDER BY V.fecha_inicio DESC
+            LIMIT ? OFFSET ?
+        ");
+        
+        $stmt->bind_param("iii", $id_usuario, $limit, $offset);
         $stmt->execute();
         return $stmt->get_result();
-    }
+    }    
 
-
-
-    // Funcion que obtiene las solicitudes pendientes de vacaciones de empleados y que sean del departamento del administrador
-    public function getSolicitudesPendientes($id_departamento, $search = null, $limit = 5, $offset = 0)
+    // Funcion que obtiene las solicitudes pendientes de vacaciones de empleados y que sean del departamento del ADMINISTRADOR
+    public function getSolicitudesPendientes($id_departamento, $limit = 5, $offset = 0)
     {
         $conn = $this->conn;
-        $sql = "SELECT V.id_vacacion, V.id_usuario, U.Nombre, U.Apellido, Dep.Nombre AS Departamento, 
+        $sql = $conn->prepare("SELECT V.id_vacacion, V.id_usuario, U.Nombre, U.Apellido, Dep.Nombre AS Departamento, 
                     V.fecha_inicio, V.fecha_fin, V.diasTomado, HV.DiasRestantes, EH.descripcion
                 FROM vacacion V
                 INNER JOIN usuario U ON V.id_usuario = U.id_usuario
@@ -122,26 +117,14 @@ class VacacionDAOSImpl implements VacacionDAO
                 INNER JOIN estado_vacacion EH ON V.id_estado_vacacion = EH.id_estado_vacacion
                 INNER JOIN historial_vacaciones HV ON V.id_usuario = HV.id_usuario
                 WHERE (V.id_estado_vacacion = 1 OR V.id_estado_vacacion = 4)
-                AND U.id_departamento = ?";
+                AND U.id_departamento = ?
+                /*AND V.id_vacacion = ?*/
+                ORDER BY U.Nombre ASC LIMIT ? OFFSET ?
+                ");
 
-        $params = [$id_departamento];
-        $types = "i";
-
-        if (!empty($search)) {
-            $sql .= " AND V.id_vacacion = ?";
-            $params[] = $search;
-            $types .= "i";
-        }
-
-        $sql .= " ORDER BY U.Nombre ASC LIMIT ? OFFSET ?";
-        $params[] = $limit;
-        $params[] = $offset;
-        $types .= "ii";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param($types, ...$params);
-        $stmt->execute();
-        return $stmt->get_result();
+        $sql->bind_param("iii", $id_departamento, $limit, $offset);
+        $sql->execute();
+        return $sql->get_result();
     }
 
     // Funcion para aprobar una solicitud de vacaciones
