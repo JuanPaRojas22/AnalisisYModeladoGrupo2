@@ -106,6 +106,7 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
             padding: 12px;
             text-align: center;
             border-bottom: 1px solid #ddd;
+            color: black !important;
         }
 
         th {
@@ -146,7 +147,11 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
         .details.show {
             display: block;
             animation: fadeIn 0.3s ease-in-out;
+        }        
+        div {
+            color: black !important;
         }
+    
     </style>
 </head>
 <body>

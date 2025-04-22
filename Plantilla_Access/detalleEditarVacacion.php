@@ -85,8 +85,12 @@ if (isset($_GET['id'])) {
                     </form>
                 <div>
                             
-                <a href="procesarEditarVacacion.php?id=<?php echo $id_historial_solicitud_modificacion; ?>&accion=aprobar" class="btn-aprove"><i class="bi bi-check-circle-fill"></i></a>
-                <a href="procesarEditarVacacion.php?id=<?php echo $id_historial_solicitud_modificacion; ?>&accion=rechazar" class="btn-decline"><i class="bi bi-x-square-fill"></i></a>
+                <a href="procesarEditarVacacion.php?id=<?php echo $id_historial_solicitud_modificacion; ?>&accion=aprobar" class="btn-aprove" style="background-color: #147964; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
+    <i class="bi bi-check-circle-fill"></i>
+</a>                
+<a href="procesarEditarVacacion.php?id=<?php echo $id_historial_solicitud_modificacion; ?>&accion=rechazar" class="btn-decline" style="background-color: #C64A4A; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
+    <i class="bi bi-x-square-fill"></i>
+</a>
                     
                 </div>
 
@@ -158,7 +162,7 @@ if (isset($_GET['id'])) {
             height: 100px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #c9aa5f;
+            border: 2px solid #116B67;
         }
 
         table {
@@ -190,7 +194,7 @@ if (isset($_GET['id'])) {
         }
 
         th {
-            background-color: #bea66a;
+            background-color: #116B67;
             color: #fff;
         }
 
@@ -199,7 +203,7 @@ if (isset($_GET['id'])) {
         }
 
         td {
-            background-color: #bea66a;
+            background-color: #116B67;
         }
 
         .btn-container-wrapper {
@@ -209,7 +213,7 @@ if (isset($_GET['id'])) {
         }
 
         .btn-container {
-            background-color: #c9aa5f;
+            background-color: #116B67;
             color: white;
             padding: 8px 12px;
             font-size: 16px;
@@ -221,42 +225,7 @@ if (isset($_GET['id'])) {
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-container:hover {}
-        .btn-aprove {
-            display: inline-block;
-            background-color: #c9aa5f;
-            color: white;
-            padding: 10px 20px;
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            transition: background-color 0.3s;
-        }
-
-        .btn-aprove:hover {
-            background-color: rgb(0, 255, 34);
-        }
-
-        .btn-decline {
-            display: inline-block;
-            background-color: #c9aa5f;
-            color: white;
-            padding: 10px 20px;
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            transition: background-color 0.3s;
-        }
-
-        .btn-decline:hover {
-            background-color: rgb(255, 0, 0);
-        }
+      
     </style>
 
 </body>

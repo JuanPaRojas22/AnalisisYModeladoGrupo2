@@ -5,7 +5,6 @@ session_start();
 include 'conexion.php';
 include 'template.php';
 
-
 $id_usuario = $_SESSION['id_usuario'];
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_POST['accion']) && $_POST['accion'] == 'registrar') {
@@ -63,11 +62,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-
 ob_end_flush(); // Libera el búfer y envía la salida al navegador
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="es">
@@ -76,195 +72,349 @@ ob_end_flush(); // Libera el búfer y envía la salida al navegador
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
     <link href="assets/css/style.css" rel="stylesheet">
-    <link href="assets/css/style-responsive.css" rel="stylesheet">
-    <!-- Bootstrap core CSS -->
-    <link href="assets/css/bootstrap.css" rel="stylesheet">
-    <!--external css-->
-    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
-
-    <!-- Custom styles for this template -->
-    <link href="assets/css/style.css" rel="stylesheet">
-    <link href="assets/css/style-responsive.css" rel="stylesheet">
-    <title>Registrar Solicitud de Permiso</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listado Permisos Laborales</title>
+
+    <style>
+     body {
+    font-family: 'Ruda', sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 70%;
+   
+    margin: 50px auto; /* Centering the container */
+    padding: 15px;
+   
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.btn {
+    display: inline-block;
+    background-color: #147665;
+    color: white;
+    padding: 10px 20px;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    transition: background-color 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+.btn:hover {
+    background-color: #147665;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 12px; /* Reducir el tamaño de la fuente */
+}
+
+th, td {
+    padding: 8px; /* Reducir el espaciado de las celdas */
+    text-align: center;
+    font-size: 12px; /* Reducir el tamaño de la fuente */
+    color: #555;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #116B67;
+    color: white;
+}
+th:first-child {
+    border-radius: 8px 0 0 0; /* Redondear la esquina superior izquierda */
+}
+th:last-child {
+    border-radius: 0 8px 0 0; /* Redondear la esquina superior derecha */
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+.no-records {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+}
+
+button {
+    background-color: #0B4F6C;
+    color: white;
+    padding: 10px 20px;
+    font-size: 12px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    margin-bottom: 20px;
+}
+
+button:hover {
+    background-color: #147665;
+}
+
+button a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button:active {
+    background-color: #147665;
+    box-shadow: 0 4px 10px rgb(254, 254, 254);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 500px;
+    text-align: center;
+    font-weight: bold;
+    color: black;
+    margin-top: 50px;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.modal-content a {
+    display: block;
+    margin: 10px 0;
+    padding: 10px;
+    text-decoration: none;
+    color: white;
+    background-color: #c9aa5f;
+    border-radius: 5px;
+}
+
+.modal-content a:hover {
+    background-color: darkgray;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.modal-content form {
+    display: flex;
+    flex-direction: column; /* Organiza los elementos en columnas */
+    gap: 15px; /* Espaciado entre los elementos */
+}
+
+/* Estilo para las etiquetas */
+.modal-content label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Estilo para los campos de entrada */
+.modal-content input, 
+.modal-content textarea {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    width: 100%; /* Asegura que los campos ocupen todo el ancho disponible */
+}
+
+
+
+    </style>
 
 </head>
 
 <body>
-    <section class="container" id="container">
-    <a href="VerPlanilla.php" class="button"><i class="bi bi-arrow-return-left"></i>
-    </a>
-        <h1>Listado de Permisos Laborales</h1>
 
-        <div class="button-container">
-            <button class="btn" onclick="abrirModal('modal3')">
-                <i class="bi bi-journal-plus"> Solicitar Permiso</i>
-            </button>
+<section class="container">
+<a href="VerPlanilla.php" class="button" style="background-color: #0E5D6A; color: white; padding: 12px 25px; font-size: 14px; border-radius: 8px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transition: background-color 0.3s, transform 0.3s; margin-bottom: 20px; position: relative; right:100px; left: 0px; margin-left: 20px;">
+    <i class="bi bi-arrow-return-left"></i>
+</a>
 
-            <button id="ejecutar_approbar" class="btn">
-                <a href="procesarPermiso.php">
-                    <i class="bi bi-card-checklist"> Aprovar Solicitud</i>
-                </a>
-            </button>
-            <button class="btn" onclick="abrirModal('modal2')">
-                <i class="bi bi-file-earmark-medical"></i> Detalles Permisos
-            </button>
-        </div>
+<style>
+    .button:hover {
+        background-color: #0E5D6A; /* Cambio de color al pasar el ratón */
+        transform: translateY(-2px); /* Efecto de elevación al pasar el ratón */
+    }
+</style>
 
-        <!-- Modal 2 - Detalles de Permisos -->
-        <!-- Modal -->
-        <div id="modal2" class="modal">
-            <div class="modal-contenido">
-                <span class="close" onclick="cerrarModal('modal2')">&times;</span>
-                <h3 style="text-align: center; color: black; font-weight: bold;">Historial de Permisos</h3>
-                <table>
-                    <tr>
-                        <th>Usuario</th>
-                        <th>Fecha Inicio</th>
-                        <th>Fecha Fin</th>
-                        <th>Días Tomados</th>
-                        <th>Razón</th>
-                        <th>Estado</th>
-                    </tr>
-                    <?php
-                    $sql = "SELECT u.nombre as nombre,u.apellido as apellido, h.FechaInicio as FechaInicio, h.FechaFin as FechaFin, h.DiasTomados as DiasTomados, h.Razon as Razon, h.Estado as Estado
+    <h1>Listado de Permisos Laborales</h1>
+
+    <div class="button-container">
+        <button class="btn" onclick="abrirModal('modal3')">
+            <i class="bi bi-journal-plus"> Solicitar Permiso</i>
+        </button>
+        <button id="ejecutar_approbar" class="btn">
+            <a href="procesarPermiso.php">
+                <i class="bi bi-card-checklist"> Aprobar Solicitud</i>
+            </a>
+        </button>
+        <button class="btn" onclick="abrirModal('modal2')">
+            <i class="bi bi-file-earmark-medical"></i> Detalles Permisos
+        </button>
+    </div>
+
+    <!-- Modal 2 - Detalles de Permisos -->
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal('modal2')">&times;</span>
+            <h3>Historial de Permisos</h3>
+            <table>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Días Tomados</th>
+                    <th>Razón</th>
+                    <th>Estado</th>
+                </tr>
+                <?php
+                $sql = "SELECT u.nombre, u.apellido, h.FechaInicio, h.FechaFin, h.DiasTomados, h.Razon, h.Estado
                         FROM historial_permisos h
                         JOIN usuario u ON h.id_usuario = u.id_usuario
                         WHERE h.id_usuario = ?";
-
-
-                    $stmt = $conn->prepare($sql);
-
-                    if (!$stmt) {
-                        die("Error en la preparación de la consulta: " . $conn->error);
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $id_usuario);
+                $stmt->execute();
+                $resultado = $stmt->get_result();
+                if ($resultado->num_rows > 0) {
+                    while ($fila = $resultado->fetch_assoc()) {
+                        echo "<tr>
+                            <td>{$fila['nombre']} {$fila['apellido']}</td>
+                            <td>{$fila['FechaInicio']}</td>
+                            <td>{$fila['FechaFin']}</td>
+                            <td>{$fila['DiasTomados']}</td>
+                            <td>{$fila['Razon']}</td>
+                            <td>{$fila['Estado']}</td>
+                        </tr>";
                     }
-
-                    $stmt->bind_param("i", $id_usuario); // i = integer (entero)
-                    
-                    $stmt->execute();
-                    $resultado = $stmt->get_result(); // Obtener el resultado de la ejecución
-                    
-                    if ($resultado->num_rows > 0) {
-                        while ($fila = $resultado->fetch_assoc()) {
-                            echo "<tr>
-                                <td>{$fila['nombre']} {$fila['apellido']}</td>
-                                <td>{$fila['FechaInicio']}</td>
-                                <td>{$fila['FechaFin']}</td>
-                                <td>{$fila['DiasTomados']}</td>
-                                <td>{$fila['Razon']}</td>
-                                <td>{$fila['Estado']}</td>
-                              </tr>";
-                        }
-                    } else {
-                        echo "<tr><td colspan='7'>No hay datos disponibles</td></tr>";
-                    }
-                    ?>
-                </table>
-            </div>
+                } else {
+                    echo "<tr><td colspan='6'>No hay datos disponibles</td></tr>";
+                }
+                ?>
+            </table>
         </div>
+    </div>
 
-        <div id="modal3" class="modal">
+    <!-- Modal 3 - Solicitar Permiso -->
+    <div id="modal3" class="modal">
     <div class="modal-content">
         <span class="close" onclick="cerrarModal('modal3')">&times;</span>
         <h3>Solicitar Permiso</h3>
         <form action="permisos_laborales.php" method="POST">
             <input type="hidden" name="accion" value="registrar">
             <input type="hidden" name="id_usuario" value="1">
+            
             <label for="tipo_permiso">Tipo de Permiso:</label>
-            <input type="text" name="tipo_permiso" required><br>
+            <input type="text" name="tipo_permiso" required>
+            
             <label for="fecha_inicio">Fecha Inicio:</label>
-            <input type="date" name="fecha_inicio" required><br>
+            <input type="date" name="fecha_inicio" required>
+            
             <label for="fecha_fin">Fecha Fin:</label>
-            <input type="date" name="fecha_fin" required><br>
+            <input type="date" name="fecha_fin" required>
+            
             <label for="dias_permiso">Días de Permiso:</label>
-            <input type="number" name="dias_permiso" required><br>
+            <input type="number" name="dias_permiso" required>
+            
             <label for="motivo">Motivo:</label>
-            <textarea name="motivo" required></textarea><br>
+            <textarea name="motivo" required></textarea>
+            
             <button type="submit" class="btn">Guardar Permiso</button>
         </form>
     </div>
 </div>
 
-
-
-        <?php
-        // Incluir la conexión a la base de datos
-        include 'conexion.php';
-
-        // Consulta SQL para obtener los permisos laborales con sus estados
-        $sql = "SELECT DISTINCT p.id_permiso as permiso, p.id_usuario as id, p.tipo_permiso, p.fecha_inicio, p.fecha_fin, p.motivo, e.descripcion AS estado, u.nombre AS usuario
-        FROM permisos_laborales p
-        JOIN estado_permiso e ON p.id_estado = e.id_estado
-        JOIN usuario u ON p.id_usuario = u.id_usuario
-        WHERE p.id_usuario = ?"; // Filtra por el id_usuario del usuario logueado
-        
-        // Prepara la consulta
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $id_usuario); // Usamos el ID del usuario de la sesión
-        $stmt->execute();
-
-        // Ejecutar la consulta
-        $result = $stmt->get_result();
-
-
-        // Comprobar si hubo error en la consulta
-        if (!$result) {
-            die("Error en la consulta SQL: " . $conn->error);
-        }
-        ?>
-
-        <!-- Mostrar Tabla de Permisos -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Fecha Inicio</th>
-                    <th>Fecha Fin</th>
-                    <th>Tipo de Permiso</th>
-                    <th>Motivo</th>
-                    <th>Estado</th>
-                    <th>Acción</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                // Verificar si hay datos
-                if ($result->num_rows > 0) {
-                    // Recorrer los resultados y mostrar cada fila
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<tr>";
-                        echo "<td>" . htmlspecialchars($row['usuario']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['fecha_inicio']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['fecha_fin']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['tipo_permiso']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['motivo']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['estado']) . "</td>";
-                        echo "<td>
-                        <form action='permisos_laborales.php' method='POST'>
-                        <input type='hidden' name='accion' value='eliminar'>
-                        <input type='hidden' name='id_permiso' value='" . $row['permiso'] . "'>
-                        <button type='submit' class='btn-danger'><i class='bi bi-trash'></i></button>
-                        </form></td>";
-                        echo "</tr>";
-
-                    }
-                } else {
-                    echo "<tr><td colspan='6' >No hay permisos registrados.</td></tr>";
+    <!-- Tabla de Permisos -->
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>Tipo de Permiso</th>
+                <th>Motivo</th>
+                <th>Estado</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            $sql = "SELECT p.id_permiso, u.nombre, u.apellido, p.fecha_inicio, p.fecha_fin, p.tipo_permiso, p.motivo, e.descripcion AS estado
+                    FROM permisos_laborales p
+                    JOIN estado_permiso e ON p.id_estado = e.id_estado
+                    JOIN usuario u ON p.id_usuario = u.id_usuario
+                    WHERE p.id_usuario = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $id_usuario);
+            $stmt->execute();
+            $resultado = $stmt->get_result();
+            if ($resultado->num_rows > 0) {
+                while ($row = $resultado->fetch_assoc()) {
+                    echo "<tr>
+                        <td>{$row['nombre']} {$row['apellido']}</td>
+                        <td>{$row['fecha_inicio']}</td>
+                        <td>{$row['fecha_fin']}</td>
+                        <td>{$row['tipo_permiso']}</td>
+                        <td>{$row['motivo']}</td>
+                        <td>{$row['estado']}</td>
+                        <td>
+                            <form action='permisos_laborales.php' method='POST'>
+                                <input type='hidden' name='accion' value='eliminar'>
+                                <input type='hidden' name='id_permiso' value='{$row['id_permiso']}'>
+                                <button type='submit' class='btn-danger'><i class='bi bi-trash'></i></button>
+                            </form>
+                        </td>
+                    </tr>";
                 }
-                ?>
-        </table>
-    </section>
+            } else {
+                echo "<tr><td colspan='7'>No hay permisos registrados.</td></tr>";
+            }
+            ?>
+        </tbody>
+    </table>
+</section>
 
-    <script>
+<script>
     // Función para cerrar el modal
     function cerrarModal(modalId) {
         var modal = document.getElementById(modalId);
@@ -276,11 +426,10 @@ ob_end_flush(); // Libera el búfer y envía la salida al navegador
         document.getElementById(id).style.display = "flex";
     }
 
-    // Función para cerrar el modal cuando se hace clic fuera de él
+    // Cerrar el modal si se hace clic fuera de él
     window.onclick = function(event) {
         var modals = document.querySelectorAll('.modal');
         modals.forEach(function(modal) {
-            // Verifica si el clic fue fuera del modal y lo cierra
             if (event.target === modal) {
                 modal.style.display = "none";
             }
@@ -289,277 +438,4 @@ ob_end_flush(); // Libera el búfer y envía la salida al navegador
 </script>
 
 </body>
-<style>
-    
-    body {
-        font-family: 'Ruda', sans-serif;
-        background-color: #f7f7f7;
-        margin: 0;
-        padding: 0;
-    }
-
-
-
-
-    .container {
-        
-        width: 100%;
-        margin-top: 200px;
-        padding: 20px;
-        background-color: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-    }
-
-    h1 {
-        text-align: center;
-        color: #333;
-        margin-bottom: 50px;
-        font-weight: bold;
-    }
-
-    .btn {
-        display: inline-block;
-        background-color: #c9aa5f;
-        color: white;
-        padding: 10px 20px;
-        font-size: 25px;
-        font-weight: bold;
-        text-align: center;
-        text-decoration: none;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        transition: background-color 0.3s;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-    }
-
-    
-
-    .btn:hover {
-        background-color: #c9aa5f;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-        border-radius: 8px;
-        overflow: hidden;
-        font-weight: bold;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-
-    }
-
-
-    #ejecutar_approbar a {
-        text-decoration: none;
-        /* Eliminar subrayado del enlace */
-        color: inherit;
-        /* El enlace tomará el color del ícono */
-    }
-
-    th,
-    td {
-        padding: 12px;
-        text-align: center;
-        font-size: 16px;
-        color: #555;
-        border-bottom: 1px solid #ddd;
-    }
-
-    th {
-        background-color: #c9aa5f;
-        color: #fff;
-    }
-
-    tr:hover {
-        background-color: #f1f1f1;
-    }
-
-    .no-records {
-        text-align: center;
-        font-style: italic;
-        color: #888;
-    }
-
-    /* Modal Styles */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-    }
-
-    .modal-content {
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        width: 300px;
-        text-align: center;
-        font-weight: bold;
-        color: black;
-        text-align: center;
-
-    }
-
-    .modal-ajuste {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-
-    }
-    .btn-danger{
-        font-size: 30px;
-        border-radius: 10px;
-        align-items: center;
-    }
-    .button {
-        display: inline-block;
-        background-color: #c9aa5f;
-        color: white;
-        padding: 10px 20px;
-        font-size: 16px;
-        font-weight: bold;
-        text-align: center;
-        text-decoration: none;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        transition: background-color 0.3s;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-    }
-
-    .modal-contenido {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        width: 70%;
-        position: relative;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-    }
-
-    label {
-        display: block;
-        margin-top: 10px;
-        font-weight: bold;
-        color: black;
-
-    }
-
-    input[type="text"],
-    input[type="date"],
-    input[type="number"],
-
-    textarea {
-        width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-sizing: border-box;
-        font-weight: bold;
-
-        text-align: center;
-
-    }
-
-    textarea {
-        height: 80px;
-        resize: none;
-    }
-
-
-    .close {
-        position: absolute;
-        top: 10px;
-        right: 20px;
-        font-size: 25px;
-        cursor: pointer;
-    }
-
-    .modal-content a {
-        display: block;
-        margin: 10px 0;
-        padding: 10px;
-        text-decoration: none;
-        color: white;
-        background-color: #c9aa5f;
-        border-radius: 5px;
-    }
-
-    .modal-content a:hover {
-        background-color: darkgray;
-    }
-
-    .button-container {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-    }
-</style>
-
-
-<style>
-    body {
-        font-family: 'Ruda', sans-serif;
-        background-color: #f7f7f7;
-        margin: 0;
-        padding: 0;
-    }
-
-
-    /* Estilos para el modal */
-    .modal {
-        display: none;
-        /* Inicialmente oculto */
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-        padding-top: 60px;
-    }
-
-    .modal-content {
-        background-color: #fefefe;
-        margin: 5% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 600px;
-    }
-
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-</style>
-
-
-
 </html>

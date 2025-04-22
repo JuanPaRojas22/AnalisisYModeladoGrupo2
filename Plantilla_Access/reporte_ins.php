@@ -55,7 +55,7 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
 
         .btn-export {
             display: inline-block;
-            background-color: #c9aa5f;
+            background-color: #168761;
             color: white;
             padding: 12px 20px;
             font-size: 16px;
@@ -69,36 +69,64 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
         }
 
         .btn-export:hover {
-            background-color: #b5935b;
+            background-color: #168761;
         }
 
         .table-container {
             overflow-x: auto;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
+       /* Bordes dorados solo en las celdas y encabezado */
+       table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 12px; /* Reducir el tamaño de la fuente */
+    margin-left: auto; /* Centrar la tabla */
+    margin-right: auto; /* Centrar la tabla */
+}
 
-        th, td {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
+th, td {
+    padding: 8px; /* Reducir el espaciado de las celdas */
+    text-align: center;
+    font-size: 12px; /* Reducir el tamaño de la fuente */
+    color: #555;
+    border-bottom: 1px solid #ddd;
+}
 
-        th {
-            background-color: #c9aa5f;
-            color: white;
-        }
+th {
+    background-color: #116B67;
+    color: white;
+}
 
-        tr:hover {
-            background-color: #f1f1f1;
-        }
+tr:hover {
+    background-color: #f7f7f7;
+}
+
+td {
+    background-color: #f7f7f7;
+}
+/* Solo las esquinas superiores redondeadas */
+th:first-child {
+    border-radius: 8px 0 0 0; /* Redondear la esquina superior izquierda */
+}
+
+th:last-child {
+    border-radius: 0 8px 0 0; /* Redondear la esquina superior derecha */
+}
+
+
+
+tr:nth-child(even) td {
+    background-color: #f1f1f1; /* Filas alternas gris claro */
+}
+
+
+
+
 
         .btn-more {
-            background-color: #c9aa5f;
+            background-color: #147964;
             color: white;
             padding: 6px 12px;
             font-size: 14px;
@@ -110,7 +138,7 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
         }
 
         .btn-more:hover {
-            background-color: #b5935b;
+            background-color: #147964;
         }
 
         /* Estilos del detalle oculto */

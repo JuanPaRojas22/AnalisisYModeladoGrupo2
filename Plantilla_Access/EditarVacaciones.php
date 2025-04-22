@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header("Location: login.php");
@@ -20,6 +20,7 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,16 +28,9 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
     <meta name="author" content="Dashboard">
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
-    <title>Gestión de Usuarios</title>
+    <title>Gestión de Vacaciones</title>
 
-    <!-- Bootstrap core CSS -->
-    <link href="assets/css/bootstrap.css" rel="stylesheet">
-    <!--external css-->
-    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
 
-    <!-- Custom styles for this template -->
-    <link href="assets/css/style.css" rel="stylesheet">
-    <link href="assets/css/style-responsive.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -50,10 +44,11 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
         }
     </style>
 </head>
+
 <body>
 
     <section id="container">
-        
+
         <section id="main-content">
             <section class="wrapper site-min-height">
 
@@ -69,23 +64,101 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                 if ($conn->connect_error) {
                     die("Error de conexión: " . $conn->connect_error);
                 }
+
+                $search = isset($_GET['search']) && is_numeric($_GET['search']) ? (int) $_GET['search'] : null;
+                $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+                $limit = 5;
+
+                if (!empty($search)) {
+                    // Mostrar la fila N del orden
+                    $offset = $search - 1;
+                    $limit = 1;
+                    $page = 1; // para evitar interferencia con paginación
+                } else {
+                    $offset = ($page - 1) * $limit;
+                }
+
+
+
+                /*
+                if (!empty($search)) {
+                    $offset = 0;
+                    $limit = 1;
+                }
+                */
+
                 // Consulta para obtener el departamento del usuario              
-                $result = $Historial_Solicitud_Modificacion_VacacionesDAO->getSolicitudesEditarPendientes_O_Aprobadas($userDepartment);
+                $result = $Historial_Solicitud_Modificacion_VacacionesDAO->getSolicitudesEditarPendientes_O_Aprobadas($userDepartment, $search, $limit, $offset);
 
                 ?>
                 <html lang="es">
+
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    
-                    
+
+
                     <style>
+                        /* Estilos específicos para la página editarvacaciones */
+                        /* Modal */
+                        .modal-contenido {
+                            padding: 20px;
+                            width: 80%;
+                            max-width: 600px;
+                            margin: 10% auto;
+                            background-color: #fff;
+                            border-radius: 8px;
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        }
+
+                        /* Agrupar los elementos del formulario */
+                        .form-group {
+                            margin-bottom: 15px;
+                            /* Espacio entre cada sección del formulario */
+                        }
+
+                        /* Etiquetas de formulario */
+                        .form-group label {
+                            display: block;
+                            /* Asegura que las etiquetas estén en su propia línea */
+                            font-weight: bold;
+                            margin-bottom: 5px;
+                        }
+
+                        /* Campos de texto */
+                        .form-group input {
+                            width: 100%;
+                            /* Los inputs ocupan todo el ancho disponible */
+                            padding: 10px;
+                            font-size: 16px;
+                            border-radius: 5px;
+                            border: 1px solid #ddd;
+                        }
+
+                        /* Botón */
+                        .form-group button {
+                            width: 100%;
+                            padding: 10px;
+                            background-color: #0D566B;
+                            color: white;
+                            font-size: 18px;
+                            font-weight: bold;
+                            border-radius: 5px;
+                            border: none;
+                            cursor: pointer;
+                        }
+
+                        .form-group button:hover {
+                            background-color: #084d59;
+                        }
+
                         body {
                             font-family: 'Ruda', sans-serif;
                             background-color: #f7f7f7;
                             margin: 0;
                             padding: 0;
                         }
+
                         .container {
                             width: 80%;
                             margin: 50px auto;
@@ -93,24 +166,23 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             background-color: #ffffff;
                             border-radius: 8px;
                             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
                         }
-                        h1 {
-                            text-align: center;
-                            color: #333;
-                            margin-bottom: 50px;
-                            margin-right: 10%;
-                            font-weight: bold;
-                        }
-                        h3 {
+
+                        /* Títulos */
+                        h1,
+                        h3,
+                        h4 {
                             text-align: center;
                             color: black;
-                            margin-bottom: 50px;
-                            margin-right: 10%;
                             font-weight: bold;
+                            margin-bottom: 20px;
                         }
+
+                        /* Estilos del botón */
                         .btn {
                             display: inline-block;
-                            background-color: #c9aa5f;
+                            background-color: #0D566B;
                             color: white;
                             padding: 10px 20px;
                             font-size: 25px;
@@ -121,12 +193,16 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             margin-bottom: 20px;
                             transition: background-color 0.3s;
                         }
+
                         .btn:hover {
-                            background-color: #c9aa5f;
+                            background-color: #0D566B;
                         }
+
                         .btn:active {
-                            background-color: #c9aa5f;
+                            background-color: #0D566B;
                         }
+
+                        /* Tabla */
                         table {
                             width: 100%;
                             border-collapse: collapse;
@@ -134,6 +210,7 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             border-radius: 8px;
                             overflow: hidden;
                         }
+
                         th,
                         td {
                             padding: 12px;
@@ -142,86 +219,127 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             color: #555;
                             border-bottom: 1px solid #ddd;
                         }
+
                         th {
-                            background-color: #c9aa5f;
+                            background-color: #116B67;
                             color: #fff;
                         }
+
                         tr:hover {
                             background-color: #f1f1f1;
                         }
+
                         td {
                             background-color: #f9f9f9;
                         }
+
                         .no-records {
                             text-align: center;
                             font-style: italic;
                             color: #888;
                         }
-                        /* Estilos del fondo del modal */
-                        .modal {
-                            display: none;
-                            position: fixed;
-                            z-index: 1;
-                            left: 0;
-                            top: 0;
-                            width: 100%;
-                            height: 100%;
-                            background-color: rgba(0, 0, 0, 0.5);
-                            justify-content: center;
-                            align-items: center;
-                        }
-                        /* Contenido del modal */
-                        .modal-content {
-                            background-color: white;
-                            padding: 20px;
-                            border-radius: 10px;
-                            width: 300px;
-                            text-align: center;
-                            margin-bottom: 5%;
 
-                        }
-                        /* Botón de cerrar */
-                        .close {
-                            position: absolute;
-                            top: 10px;
-                            right: 20px;
-                            font-size: 25px;
-                            cursor: pointer;
-                        }
-                        /* Botones dentro del modal */
-                        .modal-content a {
-                            display: block;
-                            margin: 10px 0;
-                            padding: 10px;
-                            text-decoration: none;
-                            color: white;
-                            background-color: gray;
-                            border-radius: 5px;
-                            background-color: #c9aa5f;
-                        }
-                        .modal-content a:hover {
-                            background-color: darkgray;
-                        }
-                        /* Estilos para los botones alineados */
-                        .button-container {
+                        /* Contenedor para los botones y la búsqueda */
+                        .d-flex {
                             display: flex;
                             justify-content: space-between;
-                            /* Distribuye el espacio entre los botones */
+                            /* o try 'start' si están muy separados */
+                            align-items: center;
+                            gap: 20px;
+                            /* espacio entre botón y form */
+                            flex-wrap: wrap;
+                            /* para que no se rompa en pantallas pequeñas */
+                        }
+
+                        /* Ajustes del botón "Volver" */
+                        .btn-back {
+                            background-color: #0B4F6C;
+                            color: white;
+                            padding: 10px 20px;
+                            font-size: 16px;
+                            font-weight: bold;
+                            text-align: center;
+                            text-decoration: none;
+                            border-radius: 5px;
+                            border: none;
+                            cursor: pointer;
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+                            transition: background-color 0.3s;
+                        }
+
+                        .btn-back:hover {
+                            background-color: #0A3D55;
+                        }
+
+                        /* Formulario de búsqueda */
+                        form {
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            /* Espacio entre los elementos */
+                            margin-right: 50%;
+                            /* Hace que el formulario ocupe el espacio disponible */
+                        }
+
+                        .input-group {
+                            min-width: 220px;
+                            flex-grow: 1;
+                            /* Hace que el grupo de entrada crezca para ocupar espacio */
+                        }
+
+                        .input-group input {
+                            min-width: 150px;
                             width: 100%;
+                            /* Asegura que el input ocupe todo el espacio disponible */
+                        }
+
+                        .btn-primary {
+                            background-color: #0D566B;
+                            color: white;
+                            font-size: 18px;
+                            font-weight: bold;
+                            padding: 10px 15px;
+                            border-radius: 5px;
+                            border: none;
+                            cursor: pointer;
+
+                        }
+
+                        .btn-primary:hover {
+                            background-color: #084d59;
                         }
                     </style>
                 </head>
-                <body>               
+
+                <body class="editarvacaciones">
+                    <?php
+                    $solicitudesCount = $result->num_rows;
+                    ?>
                     <div class="container">
                         <h1>Editar Vacaciones</h1>
-                        <?php
-                            $solicitudesCount = $result->num_rows;
-                        ?>
-                        <h4>Bienvenido, <?php echo $_SESSION['username']; ?> tienes <?php echo $solicitudesCount; ?> solicitudes de edición de vacaciones.</h4>
+                        <h4>Bienvenido, <?php echo $_SESSION['username']; ?> tienes <?php echo $solicitudesCount; ?>
+                            solicitudes de edición de vacaciones.</h4>
+
+                        <!-- Contenedor para los botones y búsqueda -->
+                        <div class="d-flex" style="gap: 20px; align-items: center;">
+                            <button class="btn btn-back" onclick="window.history.back()">Volver</button>
+
+                            <form method="GET" style="display: flex; align-items: center; gap: 10px;">
+                                <input type="number" name="search" class="form-control" placeholder="Buscar fila..."
+                                    min="1" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
+                                    style="min-width: 300px; margin-bottom: 8%; margin-left: 50%;">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </form>
+                        </div>
+
+
                         <!-- Mostrar tabla con los cambios de puesto -->
                         <table>
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Nombre</th>
                                     <th>Apellido</th>
                                     <th>Departamento</th>
@@ -234,19 +352,25 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                                 </tr>
                             </thead>
                             <tbody>
+
                                 <?php
+
+                                // Se inicializa un contador
+                                $contador = $offset + 1;
+
                                 // Mostrar los resultados de la consulta
                                 if ($result->num_rows > 0) {
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<tr>
+                                <td>" . $contador++ . "</td>        
                                 <td>" . $row['Nombre'] . "</td>
                                 <td>" . $row['Apellido'] . "</td>
                                 <td>" . $row['Departamento'] . "</td>
                                 <td>" . $row['NuevaFechaInicio'] . "</td>
                                 <td>" . $row['NuevaFechaFin'] . "</td>
                                 <td>" . $row['dias_solicitados'] . "</td>
-                                <td>" . $row['DiasRestantes']. "</td>
-                                <td>" . $row['estado']. "</td>
+                                <td>" . $row['DiasRestantes'] . "</td>
+                                <td>" . $row['estado'] . "</td>
                                 <td>
                                     <a class='btn btn-success' style='font-size: 2.5rem;' href='detalleEditarVacacion.php?id=" . $row['id_historial_solicitud_modificacion'] . "' >
                                         <i class='bi bi-file-earmark-person'></i> 
@@ -260,17 +384,46 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                                 ?>
                             </tbody>
                         </table>
+                        <?php
+                        if (empty($search)) {
+                            $total_sql = "SELECT COUNT(*) as total
+                            FROM Historial_Solicitud_Modificacion_Vacaciones HSMV
+                            INNER JOIN usuario U ON HSMV.id_usuario = U.id_usuario
+                            WHERE HSMV.estado = 'Pendiente' AND U.id_departamento = ?";
+                            $stmt_total = $conn->prepare($total_sql);
+                            $stmt_total->bind_param("i", $userDepartment);
+                            $stmt_total->execute();
+                            $total_result = $stmt_total->get_result();
+                            $total_rows = $total_result->fetch_assoc()['total'];
+                            $total_pages = ceil($total_rows / $limit);
+                        } else {
+                            $total_pages = 0;
+                        }
+                        ?>
+
+                        <?php if ($total_pages > 1): ?>
+                            <nav aria-label="Page navigation" class="mt-4">
+                                <ul class="pagination justify-content-end"
+                                    style="width: 80%; margin: auto; padding-right: 20px;">
+                                    <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $page - 1 ?>">Anterior</a>
+                                    </li>
+                                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                        <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                            <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                                        </li>
+                                    <?php endfor; ?>
+                                    <li class="page-item <?= $page >= $total_pages ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $page + 1 ?>">Siguiente</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        <?php endif; ?>
+
+
                     </div>
             </section>
-            <script>
-    // Función para abrir el modal
-    function abrirModal(modalId) {
-        document.getElementById(modalId).style.display = 'flex';
-    }
-    // Función para cerrar el modal
-    function cerrarModal(modalId) {
-        document.getElementById(modalId).style.display = 'none';
-    }
-</script>
+
 </body>
+
 </html>

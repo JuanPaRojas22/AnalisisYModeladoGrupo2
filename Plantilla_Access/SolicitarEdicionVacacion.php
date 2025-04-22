@@ -87,103 +87,136 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-        body {
-            font-family: 'Ruda', sans-serif;
-            background-color: #f7f7f7;
-            margin: 0;
-            padding: 0;
-        }
+<style>
+    body {
+        font-family: 'Ruda', sans-serif;
+        background-color: #f7f7f7;
+        margin: 0;
+        padding: 0;
+    }
 
-        .container {
-            width: 80%;
-            max-width: 2000px;
-            margin: 50px auto 200px 250px;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-        }
+    .container {
+        width: 60%;
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        position: relative;
+        text-align: center;
+    }
 
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 50px;
-            font-weight: bold;
-        }
+    h1 {
+        color: #333;
+        margin-bottom: 20px;
+        font-weight: bold;
+        font-size: 28px;
+    }
 
-        input[type=text], input[type=date], input[type=number] {
-            width: 100%;
-            padding: 15px;
-            margin: 5px 0 22px 0;
-            display: inline-block;
-            border: none;
-            background: #f1f1f1;
-        }
+    .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
 
-        input:focus {
-            background-color: #ddd;
-            outline: none;
-        }
+    .form-group label {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
 
-        .btn-container {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
+    input[type="text"], input[type="date"], input[type="number"] {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ddd;
+        background: #f9f9f9;
+        font-size: 16px;
+        border-radius: 5px;
+    }
 
-        .btn {
-            display: inline-block;
-            background-color: #c9aa5f; /* Color amarillo */
-            color: white;
-            padding: 10px 20px;
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-            border: none; /* Elimina cualquier borde */
-            outline: none; /* Evita resplandores al hacer clic */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6); /* Sombra negra, no verde */
-        }
+    input:focus {
+        background-color: #e8f4f8;
+        outline: none;
+        border-color: #147964;
+    }
 
-        /* Cambio de color al pasar el mouse */
-        .btn:hover {
-            background-color: darkgray; /* Mismo efecto del botón "Solicitar" */
-        }
-        .btn1 {
-            display: inline-block;
-            background-color: green; /* Color verde para el botón */
-            color: white;
-            padding: 10px 20px;
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6); /* Sombra normal */
-            border: none; /* Elimina cualquier borde negro */
-        }
+    .btn-container {
+        margin-top: 20px;
+    }
 
-        /* Cambio de color al pasar el mouse */
-        .btn1:hover {
-            background-color: darkgreen; /* Se oscurece en hover */
-        }
+    .btn {
+        background-color: #0B4F6C;
+        color: white;
+        padding: 8px 16px; /* Reduced padding */
+        font-size: 14px; /* Smaller font size */
+        font-weight: bold;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
 
-        /* Contenedor para alinear el botón a la derecha */
-        .clearfix {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 20px;
+    .btn:hover {
+        background-color: #C64A4A;
+    }
+
+    .btn1 {
+        background-color: #147964;
+        color: white;
+        padding: 8px 16px; /* Reduced padding */
+        font-size: 14px; /* Smaller font size */
+        font-weight: bold;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn1:hover {
+        background-color: #147964;
+    }
+
+    /* Positioning the 'Volver' button in the left corner */
+    .volunteer-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background-color: #C64A4A;
+        color: white;
+        padding: 8px 16px; /* Reduced padding */
+        font-size: 14px; /* Smaller font size */
+        font-weight: bold;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .volunteer-btn:hover {
+        background-color: #C64A4A;
+    }
+    td, div {
+            color: black !important;
         }
-    </style>
+</style>
+
+
 </head>
 <body>
 
 <div class="container">
-    <a href="SolicitarVacacion.php" class="btn btn-success">Volver</a>
+    
     <h1>Solicitar Edición de Vacaciones</h1>
     <p>Por favor, complete este formulario para solicitar la edición de sus vacacion.</p>
     <hr>
@@ -200,7 +233,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <label for="razon_modificacion"><b>Razón</b></label>
         <input type="text" placeholder="Ingrese la razón" name="razon_modificacion" required>
-
+        <a href="SolicitarVacacion.php" class="volunteer-btn">Volver</a>
         <div class="clearfix">
             <button type="submit" class="btn1">Solicitar</button>
         </div>

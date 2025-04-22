@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-left: 35%;
         }
         .header-section {
-            background-color: #c9aa5f;
+            background-color: #106469;
             color: white;
             padding: 15px;
             text-align: center;
@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #c9aa5f;
+            border: 3px solid #116B67;
         }
         .info-section {
             display: flex;
@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-top: 20px;
         }
         .btn {
-            background-color: #c9aa5f;
+            background-color: #0B4F6C;
             color: white;
             padding: 12px 20px;
             font-size: 18px;

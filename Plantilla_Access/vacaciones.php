@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header("Location: login.php");
@@ -17,7 +17,7 @@ $user_id = $_SESSION['id_usuario'];
 $userDepartmentData = $UsuarioDAO->getUserDepartmentById($user_id);
 $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] : null;
 
-    
+
 
 
 ?>
@@ -55,16 +55,14 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
         }
     </style>
 </head>
+
 <body>
 
     <section id="container">
-        
-    <!--[if lt IE 9]>
+
+        <!--[if lt IE 9]>
       QUIERO HACER QUE SOLO MUESTRE LAS PENDIENTES DE VACACIONES DE UN USUARIO ADMINISTRADOR
     <![endif]-->
-    
-            
-        
         <section id="main-content">
             <section class="wrapper site-min-height">
 
@@ -83,7 +81,20 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
 
                 // Consulta para obtener el departamento del usuario
                 
-                $result = $VacacionDAO->getSolicitudesPendientes($userDepartment);
+                $search = isset($_GET['search']) ? (int) $_GET['search'] : null;
+                $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+                $limit = 5;
+                $offset = ($page - 1) * $limit;
+
+                if (!empty($search)) {
+                    // Mostrar solo 1 fila desde la posición indicada por el número buscado
+                    $offset = $search - 1;
+                    $limit = 1;
+                }
+
+                //$result = $VacacionDAO->getVacacionesSolicitadas($id_usuario, null, $limit, $offset);
+                
+                $result = $VacacionDAO->getSolicitudesPendientes($userDepartment, null, $limit, $offset);
 
 
                 ?>
@@ -117,6 +128,7 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             margin-bottom: 50px;
                             margin-right: 10%;
                             font-weight: bold;
+                            margin-left: 10%;
                         }
 
                         h3 {
@@ -129,26 +141,27 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
 
                         .btn {
                             display: inline-block;
-                            background-color: #c9aa5f;
+                            background-color: #106469;
                             color: white;
                             padding: 10px 20px;
-                            font-size: 25px;
+                            font-size: 18px;
                             font-weight: bold;
                             text-align: center;
                             text-decoration: none;
                             border-radius: 5px;
                             margin-bottom: 20px;
                             transition: background-color 0.3s;
+                            margin-left: 2%;
                         }
 
 
 
                         .btn:hover {
-                            background-color: #c9aa5f;
+                            background-color: #106469;
                         }
 
                         .btn:active {
-                            background-color: #c9aa5f;
+                            background-color: #106469;
                         }
 
                         table {
@@ -169,7 +182,7 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                         }
 
                         th {
-                            background-color: #c9aa5f;
+                            background-color: #116B67;
                             color: #fff;
                         }
 
@@ -191,7 +204,7 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                         .modal {
                             display: none;
                             position: fixed;
-                            z-index: 1;
+                            z-index: 9999;
                             left: 0;
                             top: 0;
                             width: 100%;
@@ -230,20 +243,84 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                             color: white;
                             background-color: gray;
                             border-radius: 5px;
-                            background-color: #c9aa5f;
+                            background-color: #0B4F6C;
                         }
 
                         .modal-content a:hover {
                             background-color: darkgray;
                         }
 
+                        .d-flex {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                        }
+
                         /* Estilos para los botones alineados */
                         .button-container {
-                            display: flex;
-                            justify-content: space-between;
-                            /* Distribuye el espacio entre los botones */
-                            width: 100%;
+                            margin-right: 20px;
+                            /* Ajuste para dar algo de espacio al botón */
+
                         }
+
+                        .search-container {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            margin-top: 10px;
+                            /* Ajusta el valor según lo que necesites */
+
+                        }
+
+                        .input-group-sm {
+                            display: flex;
+                        }
+
+                        .input-group-sm .form-control {
+                            margin-right: 10px;
+                        }
+
+                        .search-container .input-group-sm button {
+                            margin-top: -5px;
+                            /* Ajusta el valor según lo necesites */
+                        }
+
+                        /*
+                        .expanding-form {
+                            width: auto;
+                            margin-right: 10%;
+                            position: relative;
+                        }
+
+                        .expanding-search {
+                            width: 50px;
+                            transition: width 0.4s ease-in-out;
+                            padding-left: 50%;
+                        }
+
+                        .expanding-search:focus {
+                            width: 250px;
+                        }
+*/
+                        /* .pagination {
+                            width: 80%;
+                            margin: 20px auto 0 auto;
+                            justify-content: center;
+                            padding-right: 20px;
+                        }*/
+
+                        /* .pagination .page-link {
+                            color: #147964;
+                            background-color: #f9f9f9;
+                            border: 1px solid #ddd;
+                            font-weight: bold;
+                        }*/
+
+                        /* .pagination .page-item.active .page-link {
+                            background-color: #116B67;
+                            color: white;
+                            border-color: #116B67;
+                        }*/
                     </style>
                 </head>
 
@@ -251,13 +328,40 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                     <div class="container">
                         <h1>Listado Vacaciones</h1>
 
-                        <div class="button-container">
 
-                            <!-- Botón para abrir el segundo modal (resto de los botones) -->
-                            <button class="btn" onclick="abrirModal('modal2')">
-                                <i class="bi bi-journal-medical"></i>
-                            </button>
+
+                        <!-- Contenedor para el buscador y el botón -->
+                        <div class="d-flex justify-content-center align-items-center mb-4"
+                            style="flex-wrap: nowrap; width: 100%;">
+
+                            <!-- Botón para abrir el modal -->
+                            <div class="button-container">
+                                <button class="btn" onclick="abrirModal('modal2')">
+                                    <i class="bi bi-journal-medical"></i>
+                                </button>
+                            </div>
+
+                            <!-- Formulario de búsqueda centrado -->
+                            <div class="search-container">
+                                <form method="GET" class="d-flex align-items-center"
+                                    style="gap: 5px; margin-right: 10px;">
+                                    <input type="hidden" name="id_departamento"
+                                        value="<?= htmlspecialchars($userDepartment) ?>">
+
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" name="search" class="form-control"
+                                            placeholder="Buscar fila..." min="1"
+                                            value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
+                                            style="width: 300px; font-size: 13px;">
+                                        <button class="btn" type="submit">
+                                            <i class="bi bi-search"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
+
+
 
 
                         <!-- Modal 2 con el resto de los botones -->
@@ -269,61 +373,112 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                                 <a href="Consulta_permisos_vacaciones.php">Historial</a>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Mostrar tabla con los cambios de puesto -->
-                        <table>
-                            <thead>
-                                <tr>
 
-                                    <th>Nombre</th>
-                                    <th>Apellido</th>
-                                    <th>Departamento</th>
-                                    <th>Fecha Inicio</th>
-                                    <th>Dias Tomados</th>
-                                    <th>Dias Restantes</th>
-                                    <th>Estado</th>
-                                    <th>Detalles</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                // Mostrar los resultados de la consulta
-                                if ($result->num_rows > 0) {
-                                    while ($row = $result->fetch_assoc()) {
-                                        echo "<tr>
+                    <!-- Mostrar tabla con los cambios de puesto -->
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Departamento</th>
+                                <th>Fecha Inicio</th>
+                                <th>Dias Tomados</th>
+                                <th>Dias Restantes</th>
+                                <th>Estado</th>
+                                <th>Detalles</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            // Se inicializa un contador
+                            $contador = $offset + 1;
+
+                            // Mostrar los resultados de la consulta
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                                    echo "<tr>
+                                <td>" . $contador++ . "</td>
                                 <td>" . $row['Nombre'] . "</td>
                                 <td>" . $row['Apellido'] . "</td>
                                 <td>" . $row['Departamento'] . "</td>
                                 <td>" . $row['fecha_inicio'] . "</td>
                                 <td>" . $row['diasTomado'] . "</td>
-                                <td>" . $row['DiasRestantes']. "</td>
+                                <td>" . $row['DiasRestantes'] . "</td>
                                 <td>" . $row['descripcion'] . "</td>
                                 <td><a class='btn btn-success' style='font-size: 2.5rem;' href='detalleVacacion.php?id=" . $row['id_vacacion'] . "' >
                                     <i class='bi bi-file-earmark-person'></i> 
                                 </a></td>
                               </tr>";
-                                    }
-                                } else {
-                                    echo "<tr><td colspan='9' class='no-records'>No se encontraron registros.</td></tr>";
                                 }
-                                ?>
-                            </tbody>
-                        </table>
+                            } else {
+                                echo "<tr><td colspan='9' class='no-records'>No se encontraron registros.</td></tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+
+                    <?php
+                    $total_sql = "SELECT COUNT(*) as total
+                                        FROM vacacion V
+                                        INNER JOIN usuario U ON V.id_usuario = U.id_usuario
+                                        WHERE (V.id_estado_vacacion = 1 OR V.id_estado_vacacion = 4)
+                                        AND U.id_departamento = ?";
+                    $params = [$userDepartment];
+                    $types = "i";
+
+                    if (!empty($search)) {
+                        $total_pages = 0;
+                    } else {
+                        $stmt_total = $conn->prepare($total_sql);
+                        $stmt_total->bind_param($types, ...$params);
+                        $stmt_total->execute();
+                        $total_result = $stmt_total->get_result();
+                        $total_rows = $total_result->fetch_assoc()['total'];
+                        $total_pages = ceil($total_rows / $limit);
+                    }
+                    ?>
+
+                    <?php if ($total_pages > 1): ?>
+                        <nav aria-label="Page navigation" class="mt-4">
+                            <ul class="pagination justify-content-end"
+                                style="width: 80%; margin: auto; padding-right: 20px;">
+                                <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                                    <a class="page-link" href="?page=<?= $page - 1 ?>">Anterior</a>
+                                </li>
+                                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $i ?>">
+                                            <?= $i ?>
+                                        </a>
+                                    </li>
+                                <?php endfor; ?>
+                                <li class="page-item <?= $page >= $total_pages ? 'disabled' : '' ?>">
+                                    <a class="page-link" href="?page=<?= $page + 1 ?>">Siguiente</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    <?php endif; ?>
+
+
+
                     </div>
             </section>
 
             <script>
-            // Función para abrir el modal
-            function abrirModal(modalId) {
-                document.getElementById(modalId).style.display = 'flex';
-            }
+                // Función para abrir el modal
+                function abrirModal(modalId) {
+                    document.getElementById(modalId).style.display = 'flex';
+                }
 
-            // Función para cerrar el modal
-            function cerrarModal(modalId) {
-                document.getElementById(modalId).style.display = 'none';
-            }
-</script>
-            
+                // Función para cerrar el modal
+                function cerrarModal(modalId) {
+                    document.getElementById(modalId).style.display = 'none';
+                }
+            </script>
+
 </body>
 
 </html>

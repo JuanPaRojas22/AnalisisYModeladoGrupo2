@@ -39,6 +39,39 @@ if ($id_departamento == 'all') {
 <!DOCTYPE html>
 <html lang="en">
 
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="Dashboard">
+  <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Bootstrap core CSS -->
+  <link href="assets/css/bootstrap.css" rel="stylesheet">
+  <!--external css-->
+  <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+  <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="assets/css/zabuto_calendar.css">
+  <link rel="stylesheet" type="text/css" href="assets/js/gritter/css/jquery.gritter.css" />
+  <link rel="stylesheet" type="text/css" href="assets/lineicons/style.css">
+
+  <!-- Custom styles for this template -->
+  <link href="assets/css/style.css" rel="stylesheet">
+  <link href="assets/css/style-responsive.css" rel="stylesheet">
+
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        td, div {
+            color: black !important;
+        }
+    </style>
+</head>
 
 
 <!-- **********************************************************************************************************************************************************
@@ -68,7 +101,7 @@ if ($id_departamento == 'all') {
                                 }
                                 ?>
                             </select>
-                            <button class="btn" style="font-size: 1.5rem; color: black;">
+                            <button class="btn" style="font-size: 1.5rem; color: #f1f1f1;">
                                 <i class="bi bi-funnel-fill"></i>
                             </button>
                         </div>
@@ -88,7 +121,7 @@ if ($id_departamento == 'all') {
                                 }
                                 ?>
                             </select>
-                            <button class="btn" style="font-size: 2rem; color: black;">
+                            <button class="btn" style="font-size: 2rem; color: #f1f1f1;">
                                 <i class="bi bi-filetype-pdf"></i>
                             </button>
                         </div>
@@ -212,13 +245,13 @@ if ($id_departamento == 'all') {
     }
 
     select:hover {
-        border-color: #a88c4a;
+        border-color: #106469;
     }
 
     select:focus {
         outline: none;
-        border-color: #805d24;
-        box-shadow: 0 0 5px rgba(200, 150, 60, 0.6);
+        border-color: #106469;
+        box-shadow: 106469;
     }
 
     .container {
@@ -264,7 +297,7 @@ if ($id_departamento == 'all') {
 
     .btn {
         display: inline-block;
-                        background-color: #c9aa5f;
+                        background-color: #0B4F6C;
                         color: white;
                         padding: 12px 20px;
                         font-size: 16px;
@@ -280,11 +313,11 @@ if ($id_departamento == 'all') {
 
 
     .btn:hover {
-        background-color: #c9aa5f;
+        background-color: #0B4F6C;
     }
 
     .btn:active {
-        background-color: #c9aa5f;
+        background-color: #0D566B;
     }
 
 
@@ -367,7 +400,7 @@ if ($id_departamento == 'all') {
         color: white;
         background-color: gray;
         border-radius: 5px;
-        background-color: #c9aa5f;
+        background-color: #106469;
     }
 
     .modal-content a:hover {

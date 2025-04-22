@@ -120,28 +120,29 @@ class Historial_Solicitud_Modificacion_VacacionesDAOSImpl implements Historial_S
     }
 
     // Funcion que obtiene las solicitudes de editar vacaciones aprobadas o pendientes de empleados del departamento del administrador actual. 
-    public function getSolicitudesEditarPendientes_O_Aprobadas($id_departamento){
-        $function_conn = $this->conn;
-        // Se obtienen las solicitudes de editar vacaciones aprobadas o pendientes de empleados del departamento del administrador actual. 
-        $stmt = $function_conn->prepare(
-            "SELECT HSMV.id_historial_solicitud_modificacion, HSMV.id_usuario, U.Nombre, U.Apellido, Dep.Nombre AS Departamento, 
-            HSMV.fecha_inicio AS NuevaFechaInicio, HSMV.fecha_fin AS NuevaFechaFin, HSMV.dias_solicitados, HV.DiasRestantes, HSMV.estado
-            FROM Historial_Solicitud_Modificacion_Vacaciones HSMV
-            INNER JOIN usuario U ON HSMV.id_usuario = U.id_usuario
-            INNER JOIN departamento Dep ON U.id_departamento = Dep.id_departamento
-            INNER JOIN vacacion V ON HSMV.id_vacacion = V.id_vacacion
-            INNER JOIN estado_vacacion EH ON V.id_estado_vacacion = EH.id_estado_vacacion
-            INNER JOIN historial_vacaciones HV ON V.id_historial = HV.id_historial
-            WHERE HSMV.estado = 'Pendiente'
-            AND U.id_departamento = ?
-            ORDER BY U.Nombre ASC");
-        
-        // Se ejecuta el comando
-        $stmt->bind_param("i", $id_departamento);
+    public function getSolicitudesEditarPendientes_O_Aprobadas($id_departamento, $search = null, $limit = 5, $offset = 0){
+        $conn = $this->conn;
+        $sql = "SELECT HSMV.id_historial_solicitud_modificacion, HSMV.id_usuario, U.Nombre, U.Apellido, Dep.Nombre AS Departamento, 
+                HSMV.fecha_inicio AS NuevaFechaInicio, HSMV.fecha_fin AS NuevaFechaFin, HSMV.dias_solicitados, HV.DiasRestantes, HSMV.estado
+                FROM Historial_Solicitud_Modificacion_Vacaciones HSMV
+                INNER JOIN usuario U ON HSMV.id_usuario = U.id_usuario
+                INNER JOIN departamento Dep ON U.id_departamento = Dep.id_departamento
+                INNER JOIN vacacion V ON HSMV.id_vacacion = V.id_vacacion
+                INNER JOIN estado_vacacion EH ON V.id_estado_vacacion = EH.id_estado_vacacion
+                INNER JOIN historial_vacaciones HV ON V.id_historial = HV.id_historial
+                WHERE HSMV.estado = 'Pendiente'
+                AND U.id_departamento = ?
+                ORDER BY U.Nombre ASC
+                LIMIT ? OFFSET ?";
+    
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iii", $id_departamento, $limit, $offset);
         $stmt->execute();
-
-        return $stmt->get_result(); // Se retorna el resultado de la consulta
+    
+        return $stmt->get_result();
     }
+    
+    
 
     // Funcion que aprueba una solicitud de modificacion de vacacione 
     // Cuando se apruebbe la solicitud de vacacions, se modifique los dias restantes del empleado, 

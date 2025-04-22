@@ -1,5 +1,10 @@
 <?php
 session_start();
+// Verificar si el usuario está logueado
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: login.php");
+    exit();
+}
 include 'template.php';
 
 ?>
@@ -85,15 +90,19 @@ include 'template.php';
                             let acciones = document.createElement("div");
                             acciones.classList.add("mt-3", "flex", "justify-between");
 
-                            let btnEditar = document.createElement("button");
-                            btnEditar.innerText = "Editar";
-                            btnEditar.classList.add("bg-blue-500", "text-white", "px-3", "py-1", "rounded");
-                            btnEditar.onclick = function() { abrirModalEditar(feriado); };
+                            let btnEditar = document.createElement("button"); 
+btnEditar.innerText = "Editar";
+btnEditar.style.backgroundColor = "#0B4F6C"; // Color personalizado
+btnEditar.classList.add("text-white", "px-3", "py-1", "rounded");
+btnEditar.onclick = function() { abrirModalEditar(feriado); };
 
-                            let btnEliminar = document.createElement("button");
-                            btnEliminar.innerText = "Eliminar";
-                            btnEliminar.classList.add("bg-red-500", "text-white", "px-3", "py-1", "rounded");
-                            btnEliminar.onclick = function() { eliminarFeriado(feriado.id); };
+
+let btnEliminar = document.createElement("button");
+btnEliminar.innerText = "Eliminar";
+btnEliminar.style.backgroundColor = "#8B0000"; // Rojo oscuro
+btnEliminar.classList.add("text-white", "px-3", "py-1", "rounded");
+btnEliminar.onclick = function() { eliminarFeriado(feriado.id); };
+
 
                             acciones.appendChild(btnEditar);
                             acciones.appendChild(btnEliminar);
@@ -181,11 +190,16 @@ include 'template.php';
             });
         }
     </script>
+    <style>
+        td, div {
+            color: black !important;
+        }
+    </style>
 </head>
 <body class="p-8 bg-gray-200">
     <div class="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-        <h1 class="text-3xl font-bold mb-6 text-center"> Gestión de Días Feriados</h1>
-        <button class="bg-green-500 text-white px-4 py-2 rounded mb-6 w-full" onclick="abrirModal()">Agregar Feriado</button>
+        <h1 class="text-3xl font-bold mb-6 text-center" style="color:#0B4F6C"> Gestión de Días Feriados</h1>
+        <button style="background-color: #147964;" class="text-white px-4 py-2 rounded mb-6 w-full" onclick="abrirModal()">Agregar Feriado</button>
 
         <div id="listaFeriados"></div>
     </div>
@@ -202,8 +216,8 @@ include 'template.php';
             </label>
             <div class="flex justify-end mt-4">
                 <button onclick="cerrarModal()" class="px-4 py-2 bg-gray-400 rounded mr-2">Cancelar</button>
-                <button onclick="guardarFeriado()" class="px-4 py-2 bg-blue-500 text-white rounded">Guardar</button>
-            </div>
+                <button onclick="guardarFeriado()" class="px-4 py-2 text-white rounded" style="background-color: #147964;">Guardar</button>
+                </div>
         </div>
     </div>
 </body>

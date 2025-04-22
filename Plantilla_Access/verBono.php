@@ -249,6 +249,169 @@ session_start();
       MAIN CONTENT
       *********************************************************************************************************************************************************** -->
         <!--main content start-->
+        <style>
+                    body {
+                        font-family: 'Ruda', sans-serif;
+                        background-color: #f7f7f7;  /* Blanco cremoso */
+                        margin: 0;
+                        padding: 0;
+
+                    }
+
+                    .container {
+    width: 90%; /* Aumentar el tamaño del contenedor */
+    margin: 50px auto; /* Centrar el contenedor */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra alrededor del contenedor */
+}
+
+                    h1 {
+                        text-align: center;
+                        color: #333;
+                        margin-bottom: 50px;
+                        margin-right: 2%;
+                        font-weight: bold;
+
+                    }
+
+                    h3 {
+                        text-align: center;
+                        color: black;
+                        margin-bottom: 50px;
+                        margin-right: 10%;
+                        font-weight: bold;
+                    }
+
+                    .btn {
+                        display: inline-block;
+                        background-color: #0C536C;
+                        color: white;
+                        padding: 12px 20px;
+                        font-size: 16px;
+                        font-weight: bold;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        margin-bottom: 20px;
+                        transition: background-color 0.3s;
+                        cursor: pointer;
+                        border: none;
+                    }
+
+                    .btn:hover {
+                        background-color: #0C536C;
+                    }
+                    
+
+                    .btn:active {
+                        background-color: #0C536C;
+                        box-shadow: 0 4px 10px rgb(254, 254, 254);
+
+                    }
+
+                    table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 12px; /* Reducir el tamaño de la fuente */
+}
+
+th, td {
+    padding: 8px; /* Reducir el espaciado de las celdas */
+    text-align: center;
+    font-size: 12px; /* Reducir el tamaño de la fuente */
+    color: #555;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #116B67;
+    color: white;
+}
+th:first-child {
+    border-radius: 8px 0 0 0; /* Redondear la esquina superior izquierda */
+}
+th:last-child {
+    border-radius: 0 8px 0 0; /* Redondear la esquina superior derecha */
+}
+
+
+tr:hover {
+    background-color: #f7f7f7;
+}
+
+                   td {
+                        background-color: #f7f7f7;
+                    }
+
+                    .no-records {
+                        text-align: center;
+                        font-style: italic;
+                        color: #888;
+                    }
+
+                    /* Estilos del fondo del modal */
+                    .modal {
+                        display: none;
+                        position: fixed;
+                        z-index: 1;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                        height: 100%;
+                        background-color: rgba(0, 0, 0, 0.5);
+                        justify-content: center;
+                        align-items: center;
+                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+
+                    }
+
+                    /* Contenido del modal */
+                    .modal-content {
+                        background-color: white;
+                        padding: 20px;
+                        border-radius: 10px;
+                        width: 300px;
+                        text-align: center;
+                        margin-bottom: 5%;
+
+                    }
+
+                    /* Botón de cerrar */
+                    .close {
+                        position: absolute;
+                        top: 10px;
+                        right: 20px;
+                        font-size: 25px;
+                        cursor: pointer;
+                    }
+
+                    /* Botones dentro del modal */
+                    .modal-content a {
+                        display: block;
+                        margin: 10px 0;
+                        padding: 10px;
+                        text-decoration: none;
+                        color: white;
+                        background-color: gray;
+                        border-radius: 5px;
+                        background-color: #147964;
+                    }
+
+                    .modal-content a:hover {
+                        background-color: darkgray;
+                    }
+
+                    /* Estilos para los botones alineados */
+                    .button-container {
+                        display: flex;
+                        justify-content: space-between;
+                        /* Distribuye el espacio entre los botones */
+                        width: 100%;
+
+                    }
+                </style>
         <section id="main-content">
             <section class="wrapper site-min-height">
 
