@@ -250,6 +250,14 @@ session_start();
       *********************************************************************************************************************************************************** -->
         <!--main content start-->
         <style>
+            
+        .title-style {
+            text-align: center;
+            color: #333;
+            margin-bottom: 50px;
+            margin-right: 2%;
+            font-weight: bold;
+        }
                     body {
                         font-family: 'Ruda', sans-serif;
                         background-color: #f7f7f7;  /* Blanco cremoso */
@@ -257,6 +265,7 @@ session_start();
                         padding: 0;
 
                     }
+                    
 
                     .container {
     width: 90%; /* Aumentar el tamaño del contenedor */
@@ -267,6 +276,7 @@ session_start();
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra alrededor del contenedor */
 }
 
+
                     h1 {
                         text-align: center;
                         color: #333;
@@ -274,6 +284,13 @@ session_start();
                         margin-right: 2%;
                         font-weight: bold;
 
+                    }
+                    h2{
+                        text-align: center;
+            color: #333;
+            margin-bottom: 50px;
+            margin-right: 2%;
+            font-weight: bold;
                     }
 
                     h3 {
@@ -436,11 +453,11 @@ tr:hover {
 
                 <body>
                     <div class="container">
-                        <h2 class="text-center mt-4">Bonos Aplicados</h2>
+                    <h2 style="text-align: center; color: #333; margin-bottom: 50px; margin-right: 2%; font-weight: bold;">Bonos Aplicados</h2>
                         <table class="table table-bordered mt-4">
                             <thead>
                                 <tr>
-                                    <th>ID Bono</th>
+                  }
                                     <th>Empleado</th>
                                     <th>Razón</th>
                                     <th>Monto</th>
@@ -450,7 +467,7 @@ tr:hover {
                             <tbody>
                                 <?php while ($row = $result->fetch_assoc()): ?>
                                     <tr>
-                                        <td><?php echo $row['id_bono']; ?></td>
+                                       
                                         <td><?php echo $row['nombre']; ?></td>
                                         <td><?php echo $row['razon']; ?></td>
                                         <td>₡<?php echo number_format($row['monto_total'], 2); ?></td>

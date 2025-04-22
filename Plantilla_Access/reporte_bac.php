@@ -48,111 +48,134 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reporte BAC</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Ruda:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Ruda:wght@400;700&display=swap');
 
-        body {
-            font-family: 'Ruda', sans-serif;
-            background-color: #f7f7f7;
-            margin: 0;
-            padding: 20px;
-        }
+    body {
+        font-family: 'Ruda', sans-serif;
+        background-color: #f7f7f7;
+        margin: 0;
+        padding: 20px;
+    }
 
-        .container {
-            max-width: 1000px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
+    .container {
+        max-width: 1000px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
 
-        h1 {
-            color: #333;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
+    h1 {
+        color: #333;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
 
-        .btn-export {
-            display: inline-block;
-            background-color: #c9aa5f;
-            color: white;
-            padding: 12px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            transition: background-color 0.3s;
-            cursor: pointer;
-            border: none;
-        }
+    .btn-export {
+        display: inline-block;
+        background-color: #168761;
+        color: white;
+        padding: 12px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        transition: background-color 0.3s;
+        cursor: pointer;
+        border: none;
+    }
 
-        .btn-export:hover {
-            background-color: #b5935b;
-        }
+    .btn-export:hover {
+        background-color: #168761;
+    }
 
-        .table-container {
-            overflow-x: auto;
-        }
+    .table-container {
+        overflow-x: auto;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
+    table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 12px; /* Reducir el tamaño de la fuente */
+    margin-left: auto; /* Centrar la tabla */
+    margin-right: auto; /* Centrar la tabla */
+}
 
-        th, td {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-            color: black !important;
-        }
+th, td {
+    padding: 8px; /* Reducir el espaciado de las celdas */
+    text-align: center;
+    font-size: 12px; /* Reducir el tamaño de la fuente */
+    color: #555;
+    border-bottom: 1px solid #ddd;
+}
 
-        th {
-            background-color: #c9aa5f;
-            color: white;
-        }
+th {
+    background-color: #116B67;
+    color: white;
+}
 
-        tr:hover {
-            background-color: #f1f1f1;
-        }
+tr:hover {
+    background-color: #f7f7f7;
+}
 
-        .btn-more {
-            background-color: #c9aa5f;
-            color: white;
-            padding: 6px 12px;
-            font-size: 14px;
-            font-weight: bold;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+td {
+    text-align: center;
+    padding: 12px;
+     /* Bordes dorados */
+    background-color: #f9f9f9; /* Fondo blanco */
+}
 
-        .btn-more:hover {
-            background-color: #b5935b;
-        }
+/* Redondear solo las esquinas superiores del encabezado */
+th:first-child {
+    border-radius: 8px 0 0 0; /* Redondear la esquina superior izquierda */
+}
 
-        .details {
-            display: none;
-            background: #fff7e6;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 5px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease-in-out;
-        }
+th:last-child {
+    border-radius: 0 8px 0 0; /* Redondear la esquina superior derecha */
+}
 
-        .details.show {
-            display: block;
-            animation: fadeIn 0.3s ease-in-out;
-        }        
-        div {
-            color: black !important;
-        }
-    
-    </style>
+
+
+tr:nth-child(even) td {
+    background-color: #f1f1f1; /* Filas alternas gris claro */
+}
+
+
+    .btn-more {
+        background-color: #147964;
+        color: white;
+        padding: 6px 12px;
+        font-size: 14px;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .btn-more:hover {
+        background-color: #147964;
+    }
+
+    .details {
+        display: none;
+        background:rgb(231, 229, 227);
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 5px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .details.show {
+        display: block;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+</style>
 </head>
 <body>
 

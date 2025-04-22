@@ -29,10 +29,12 @@ while ($row = $result->fetch_assoc()) {
         <h1>Reporte de Ausencias</h1>
 
         <form method="POST" action="exportarReporte.php">
-            <button class="btn" type="submit">Exportar Reporte</button>
+        <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+    <button type="submit" class="btn">Exportar Reporte</button>
+</div>
 
         </form>
-        <table >
+        <table id="dataTable">
             <thead>
                 <tr>
                     <th>Empleado</th>
@@ -50,9 +52,11 @@ while ($row = $result->fetch_assoc()) {
                 <?php endforeach; ?>
             </tbody>
         </table>
+        <div class="pagination" id="pagination">
+        </div>
     </div>
 
-    <h2>Gráfico de Ausencias</h2>
+    
     <canvas id="ausenciasChart" width="400" height="200"></canvas>
     <script>
         const data = <?php echo json_encode($data); ?>;
@@ -82,10 +86,76 @@ while ($row = $result->fetch_assoc()) {
         });
 
     </script>
+    <script>
+        const rowsPerPage = 10; // Número de filas por página
+        const table = document.getElementById('dataTable');
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const pagination = document.getElementById('pagination');
+
+        // Función para mostrar una página específica
+        function displayPage(page) {
+            const start = (page - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+
+            rows.forEach((row, index) => {
+                row.style.display = index >= start && index < end ? '' : 'none';
+            });
+
+            // Actualizar botones de paginación
+            const buttons = pagination.querySelectorAll('button');
+            buttons.forEach((button, index) => {
+                button.classList.toggle('active', index + 1 === page);
+            });
+        }
+
+        // Crear botones de paginación
+        function setupPagination() {
+            const totalPages = Math.ceil(rows.length / rowsPerPage);
+            pagination.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.addEventListener('click', () => displayPage(i));
+                pagination.appendChild(button);
+            }
+
+            // Mostrar la primera página por defecto
+            displayPage(1);
+        }
+
+        // Inicializar paginación
+        setupPagination();
+    </script>
 </body>
 
 </html>
 <style>
+    .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    margin: 0 5px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    background-color: #f7f7f7;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.pagination button.active {
+    background-color: #147964;
+    color: white;
+}
+
+.pagination button:hover {
+    background-color: #ddd;
+}
 body {
     font-family: 'Ruda', sans-serif;
     background-color: #f7f7f7;

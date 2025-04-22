@@ -160,6 +160,53 @@ $result = $conn->query($query);
                     td, div {
             color: black !important;
         }
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .search-container input {
+            padding: 10px;
+            width: 50%;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            margin: 0 5px;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            background-color: #f7f7f7;
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            background-color: #147964;
+            color: white;
+        }
+
+        .pagination button:hover {
+            background-color: #ddd;
+        }
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .search-container input {
+            padding: 10px;
+            width: 50%;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
     </style>
 <body>
     <div class="container mt-5">
@@ -169,10 +216,10 @@ $result = $conn->query($query);
     Exportar Reporte
 </button>
 </form>
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="dataTable">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    
                     <th>Nombre Completo</th>
                     <th>Fecha de Ingreso</th>
                     <th>Antigüedad (Años)</th>
@@ -185,7 +232,7 @@ $result = $conn->query($query);
             <tbody>
                 <?php while ($row = $result->fetch_assoc()): ?>
                     <tr>
-                        <td><?= $row['id_usuario'] ?></td>
+                        
                         <td><?= htmlspecialchars($row['nombre_completo']) ?></td>
                         <td><?= $row['fecha_ingreso'] ?></td>
                         <td><?= $row['antiguedad_anios'] ?></td>
@@ -197,6 +244,66 @@ $result = $conn->query($query);
                 <?php endwhile; ?>
             </tbody>
         </table>
-    </div>
+        <div class="pagination" id="pagination">
+            <!-- Los botones de paginación se generarán aquí -->
+        </div>
+        <script>
+        // Variables para la paginación
+        const rowsPerPage = 10;
+        const table = document.getElementById('dataTable');
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const pagination = document.getElementById('pagination');
+
+        // Función para mostrar una página específica
+        function displayPage(page) {
+            const start = (page - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+
+            rows.forEach((row, index) => {
+                row.style.display = index >= start && index < end ? '' : 'none';
+            });
+
+            // Actualizar botones de paginación
+            const buttons = pagination.querySelectorAll('button');
+            buttons.forEach((button, index) => {
+                button.classList.toggle('active', index + 1 === page);
+            });
+        }
+
+        // Crear botones de paginación
+        function setupPagination() {
+            const totalPages = Math.ceil(rows.length / rowsPerPage);
+            pagination.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.addEventListener('click', () => displayPage(i));
+                pagination.appendChild(button);
+            }
+
+            // Mostrar la primera página por defecto
+            displayPage(1);
+        }
+
+        // Función para buscar en la tabla
+        function searchTable() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+
+            rows.forEach(row => {
+                const cells = Array.from(row.querySelectorAll('td'));
+                const rowText = cells.map(cell => cell.textContent.toLowerCase()).join(' ');
+                row.style.display = rowText.includes(filter) ? '' : 'none';
+            });
+
+            // Actualizar paginación después de filtrar
+            setupPagination();
+        }
+
+        // Inicializar paginación
+        setupPagination();
+    </script>
 </body>
 </html>
