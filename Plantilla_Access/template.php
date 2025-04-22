@@ -282,7 +282,7 @@ $aporte = $row['aporte'];
         </div>
         <!-- Footer -->
         <footer class="site-footer">
-            <div class="text-center">2024 - Your Company</div>
+            <div class="text-center">2025 - Acces Perssonel</div>
         </footer>
     </section>
 

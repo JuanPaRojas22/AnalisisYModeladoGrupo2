@@ -295,7 +295,8 @@ if (!isset($_SESSION['id_usuario'])) {
                         <?php endif; ?>
 
                     </div>
-
+                    <input type="text" id="searchInput" class="custom-input" onkeyup="searchTable()"
+                        placeholder="Buscar Empleado...">
 
 
                     <!-- Modal 1 con 3 botones -->
@@ -326,13 +327,12 @@ if (!isset($_SESSION['id_usuario'])) {
                             <a href="Filtro_clasificacion_empleado.php">Ver Clasificaciones</a>
                         </div>
                     </div>
+                </div>
 
-                    <div id="mensaje_alerta"></div>
+                <div id="mensaje_alerta"></div>
 
+                <div class="container">
 
-
-
-                    <!-- Mostrar tabla con los cambios de puesto -->
                     <table>
                         <thead>
                             <tr>
@@ -375,8 +375,35 @@ if (!isset($_SESSION['id_usuario'])) {
 
                     </table>
 
+
                 </div>
         </section>
+
+        <script>
+            function searchTable() {
+                let input = document.getElementById('searchInput');
+                let filter = input.value.toLowerCase();
+                let table = document.querySelector('table');
+                let rows = table.getElementsByTagName('tr');
+
+                // Iterar sobre las filas de la tabla (saltando la primera fila que es el encabezado)
+                for (let i = 1; i < rows.length; i++) {
+                    let cells = rows[i].getElementsByTagName('td');
+                    let rowText = '';
+                    // Concatenar el texto de todas las celdas en cada fila
+                    for (let j = 0; j < cells.length; j++) {
+                        rowText += cells[j].textContent.toLowerCase() + ' ';
+                    }
+
+                    // Verificar si el texto de la fila coincide con el término de búsqueda
+                    if (rowText.indexOf(filter) > -1) {
+                        rows[i].style.display = '';
+                    } else {
+                        rows[i].style.display = 'none';
+                    }
+                }
+            }
+        </script>
 </body>
 
 </html>

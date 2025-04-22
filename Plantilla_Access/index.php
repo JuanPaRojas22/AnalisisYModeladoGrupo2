@@ -25,7 +25,7 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
 
     <style>
         body {
-            
+
             margin: 0;
             padding: 0;
             font-family: 'Ruda', sans-serif;
@@ -33,7 +33,7 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
             background-image: url('assets/progra/img9.webp');
             background-size: cover;
             background-position: center;
-            
+
 
 
         }
@@ -47,7 +47,8 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
             align-items: center;
             color: white;
             text-align: center;
-            pointer-events: none; /* <- permite hacer clics a través de esta capa */
+            pointer-events: none;
+            /* <- permite hacer clics a través de esta capa */
 
         }
 
@@ -59,91 +60,108 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.4);
-            pointer-events: none; /* <- permite hacer clics a través de esta capa */
+            pointer-events: none;
+            /* <- permite hacer clics a través de esta capa */
 
             /* Sombra para hacer el texto más legible */
         }
+
         .hero-content {
-    position: relative;
-    z-index: 2;
-    color: white;
-    padding: 20px;
-    width: 80%; /* Asegura que el contenido no ocupe todo el ancho */
-}
+            position: relative;
+            z-index: 2;
+            color: white;
+            padding: 20px;
+            width: 80%;
+            /* Asegura que el contenido no ocupe todo el ancho */
+        }
 
-.mission-vision {
-    display: flex;
-    justify-content: center; /* Centra las columnas horizontalmente */
-    gap: 40px; /* Espacio entre columnas */
-    width: 100%;
-    margin-left: 15%;
-    max-width: 1200px;
-    text-align: center; /* Asegura que los títulos y descripciones se centren dentro de las columnas */
-    margin-top: 20px; /* Ajuste para separar del borde superior */
-}
+        .mission-vision {
+            display: flex;
+            justify-content: center;
+            /* Centra las columnas horizontalmente */
+            gap: 40px;
+            /* Espacio entre columnas */
+            width: 100%;
+            margin-left: 15%;
+            max-width: 1200px;
+            text-align: center;
+            /* Asegura que los títulos y descripciones se centren dentro de las columnas */
+            margin-top: 20px;
+            /* Ajuste para separar del borde superior */
+        }
 
-.column {
-    width: 45%; /* Establece el tamaño de cada columna */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 500px;
-    text-align: center; /* Centra el contenido del texto dentro de la columna */
-}
+        .column {
+            width: 45%;
+            /* Establece el tamaño de cada columna */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 500px;
+            text-align: center;
+            /* Centra el contenido del texto dentro de la columna */
+        }
 
-.hero-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 15px;
-}
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
 
-.hero-description {
-    font-size: 1.3rem;
-    margin-bottom: 30px;
-}
+        .hero-description {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+        }
 
 
 
         .buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    position: absolute; /* Posiciona los botones fuera del hero-content */
-    top: 60%; /* Ajusta la posición vertical de los botones */
-    left: 50%; /* Centra los botones horizontalmente */
-    transform: translateX(-50%); /* Asegura que los botones estén perfectamente centrados */
-    width: 100%; /* Asegura que ocupe todo el ancho */
-    margin-top: 20px; /* Espacio adicional si es necesario */
-}
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            position: absolute;
+            /* Posiciona los botones fuera del hero-content */
+            top: 60%;
+            /* Ajusta la posición vertical de los botones */
+            left: 50%;
+            /* Centra los botones horizontalmente */
+            transform: translateX(-50%);
+            /* Asegura que los botones estén perfectamente centrados */
+            width: 100%;
+            /* Asegura que ocupe todo el ancho */
+            margin-top: 20px;
+            /* Espacio adicional si es necesario */
+        }
 
-.btn-hero {
-    padding: 15px 30px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    border-radius: 50px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    text-decoration: none; /* Elimina el subrayado del enlace */
-}
+        .btn-hero {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
+            /* Elimina el subrayado del enlace */
+        }
 
-.btn-hero:hover {
-    background-color: #1abc9c;
-    transform: translateY(-5px);
-}
+        .btn-hero:hover {
+            background-color: #1abc9c;
+            transform: translateY(-5px);
+        }
 
-.btn-hero:focus {
-    outline: none;
-}
+        .btn-hero:focus {
+            outline: none;
+        }
 
-.btn-hero.learn-more {
-    background-color: #333;
-    color: white;
-}
+        .btn-hero.learn-more {
+            background-color: #333;
+            color: white;
+        }
 
-.btn-hero.purchase {
-    background-color: #1abc9c;
-    color: white;
-    margin-left: 8%;
-}
+        .btn-hero.purchase {
+            background-color: #1abc9c;
+            color: white;
+            margin-left: 8%;
+            
+        }
     </style>
 </head>
 
@@ -152,30 +170,34 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
 
     <!-- Hero Section -->
     <section class="hero-section">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-        <div class="mission-vision">
-            <div class="column">
-                <h1 class="hero-title">Misión</h1>
-                <p class="hero-description">Brindar un entorno laboral organizado y justo para los médicos, ofreciendo herramientas modernas y fáciles de usar para la administración de sus horarios y beneficios.</p>
-            </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="mission-vision">
+                <div class="column">
+                    <h1 class="hero-title">Misión</h1>
+                    <p class="hero-description">Brindar un entorno laboral organizado y justo para los médicos,
+                        ofreciendo herramientas modernas y fáciles de usar para la administración de sus horarios y
+                        beneficios.</p>
+                </div>
 
-            <div class="column">
-                <h1 class="hero-title">Visión</h1>
-                <p class="hero-description">Ser el aliado tecnológico líder en el sector salud, ofreciendo soluciones que mejoren la experiencia de trabajo para los médicos y optimicen la gestión administrativa para las instituciones de salud.</p>
+                <div class="column">
+                    <h1 class="hero-title">Visión</h1>
+                    <p class="hero-description">Ser el aliado tecnológico líder en el sector salud, ofreciendo
+                        soluciones que mejoren la experiencia de trabajo para los médicos y optimicen la gestión
+                        administrativa para las instituciones de salud.</p>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <div class="buttons">
-                
-                <a href="tutorial.php" class="btn-hero purchase">Tutorial de la Pagina</a>
-            </div>
+
+        <a href="tutorial.php" class="btn-hero purchase">Tutorial de la Pagina</a>
+    </div>
 
     <!-- Bootstrap JS -->
 
-   
+
 </body>
 
 </html>
