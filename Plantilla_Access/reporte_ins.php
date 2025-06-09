@@ -38,7 +38,7 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 2000px;
             margin: auto;
             background: white;
             padding: 20px;

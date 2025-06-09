@@ -17,9 +17,6 @@ $user_id = $_SESSION['id_usuario'];
 $userDepartmentData = $UsuarioDAO->getUserDepartmentById($user_id);
 $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] : null;
 
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -86,12 +83,9 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                 $limit = 5;
                 $offset = ($page - 1) * $limit;
 
-               
-
                 //$result = $VacacionDAO->getVacacionesSolicitadas($id_usuario, null, $limit, $offset);
                 
                 $result = $VacacionDAO->getSolicitudesPendientes($userDepartment, $limit, $offset);
-
 
                 ?>
 

@@ -3,56 +3,87 @@
 $conn = new mysqli("localhost", "root", "", "GestionEmpleados");
 mysqli_set_charset($conn, "utf8mb4");
 
-
 // Se valida la conexión a la base de datos
 if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
 
-
-// Inicializar variables de error y mensaje
+// Inicializar sesión y variables de error
 session_start();
-$error_message = ""; // Variable para manejar errores
+$error_message = "";
 
-// Se verifica si el método de solicitud es POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
-    // Se verifica si los campos de usuario y contraseña no están vacíos
-    if (!empty($username) && !empty($password)) {
-        $sql = "SELECT * FROM USUARIO WHERE username = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param('s', $username);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        // Se verifica si el usuario existe
-        if ($result->num_rows > 0) {
-            $usuario = $result->fetch_assoc();
-            // Se verifica si la contraseña coincide con la de la base de datos
-            if (isset($usuario['password']) && password_verify($password, $usuario['password'])) {
-                $_SESSION['id_usuario'] = $usuario['id_usuario'];
-                $_SESSION['username'] = $usuario['username']; // Aquí guardamos el username real
-                $_SESSION['nombre'] = $usuario['nombre'];
-                $_SESSION['id_rol'] = $usuario['id_rol'];
-                $_SESSION['logged_in'] = true;
+// Inicializar variables de intentos y bloqueo si no existen
+if (!isset($_SESSION['intentos_fallidos'])) {
+    $_SESSION['intentos_fallidos'] = 0;
+    $_SESSION['bloqueado_hasta'] = null;
+}
 
-                header("Location: index.php?login=success&username=" . urlencode($usuario['nombre']));
-                exit();
-            } else {
-                // Se muestra un mensaje de error si la contraseña no coincide
-                $error_message = "Contraseña incorrecta.";
-            }
+// Verificar si hay un bloqueo activo
+if ($_SESSION['bloqueado_hasta'] !== null && time() < $_SESSION['bloqueado_hasta']) {
+    $tiempoRestante = $_SESSION['bloqueado_hasta'] - time();
+    $minutos = floor($tiempoRestante / 60);
+    $segundos = $tiempoRestante % 60;
+    $error_message = "Cuenta bloqueada. Intente nuevamente en $minutos minutos y $segundos segundos.";
+} else {
+    // Si el método de solicitud es POST
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $username = $_POST['username'] ?? '';
+        $password = $_POST['password'] ?? '';
+
+        if (!empty($username) && !empty($password)) {
+            $sql = "SELECT * FROM USUARIO WHERE username = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param('s', $username);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($_SESSION['bloqueado_hasta'] !== null && time() < $_SESSION['bloqueado_hasta']) {
+    $tiempoRestante = $_SESSION['bloqueado_hasta'] - time();
+    $minutos = floor($tiempoRestante / 60);
+    $segundos = $tiempoRestante % 60;
+    $error_message = "Cuenta bloqueada. Intente nuevamente en $minutos minutos y $segundos segundos.";
+} else {
+    // Proceso de login
+    if ($result->num_rows > 0) {
+        $usuario = $result->fetch_assoc();
+        if (isset($usuario['password']) && password_verify($password, $usuario['password'])) {
+            // Resetea los intentos fallidos si el login es exitoso
+            $reset_sql = "UPDATE USUARIO SET intentos_fallidos = 0, bloqueado_hasta = NULL WHERE username = ?";
+            $reset_stmt = $conn->prepare($reset_sql);
+            $reset_stmt->bind_param('s', $username);
+            $reset_stmt->execute();
+
+            // Login correcto: asigna datos y redirige
+            $_SESSION['id_usuario'] = $usuario['id_usuario'];
+            $_SESSION['username'] = $usuario['username'];
+            $_SESSION['nombre'] = $usuario['nombre'];
+            $_SESSION['id_rol'] = $usuario['id_rol'];
+            $_SESSION['logged_in'] = true;
+
+            header("Location: index.php?login=success&username=" . urlencode($usuario['nombre']));
+            exit();
         } else {
-            // Se muestra un mensaje de error si el usuario no existe
-            $error_message = "Usuario no registrado.";
+            $_SESSION['intentos_fallidos']++;
+
+            if ($_SESSION['intentos_fallidos'] >= 5) {
+                $_SESSION['bloqueado_hasta'] = time() + (5 * 60); // bloquea por 5 minutos
+                $error_message = "Cuenta bloqueada por demasiados intentos. Intente más tarde.";
+            } else {
+                $error_message = "Contraseña incorrecta. Intento {$_SESSION['intentos_fallidos']} de 5.";
+            }
         }
     } else {
-        // Se muestra un mensaje de error si los campos de usuario y contraseña están vacíos, es decir que no se se hizo la solicitud POST
-        $error_message = "Por favor, completa todos los campos.";
+        $error_message = "Usuario no encontrado.";
     }
 }
 
+        } else {
+            $error_message = "Por favor, completa todos los campos.";
+        }
+    }
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -64,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="author" content="Dashboard">
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
-    <title>DASHGUM - Bootstrap Admin Template</title>
+    <title>Accces Personnel</title>
 
     <!-- Bootstrap core CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet">

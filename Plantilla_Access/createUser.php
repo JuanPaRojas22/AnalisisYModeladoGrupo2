@@ -39,6 +39,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ) {
         echo "<script>alert('Por favor, complete todos los campos obligatorios.');</script>";
     } else {
+        // Excepcion para aceptar solo cierto tipo de archivos de imagen
+        
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        $fileType = mime_content_type($_FILES['direccion_imagen']['tmp_name']);
+        $fileName = $_FILES['direccion_imagen']['name'];
+        $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
+
+        // Validar el tipo MIME y la extensión
+        if (!in_array($fileType, $allowedTypes) || !in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])) {
+            echo "<script>
+                        alert('Solo se permiten archivos de imagen JPG, PNG o GIF.');
+                        window.location.href = 'createUser.php';
+                  </script>";
+            exit;
+        }
+        
+
         // Manejo de la imagen (por defecto NULL)
         $direccion_imagen = null;
         if (isset($_FILES['direccion_imagen']) && $_FILES['direccion_imagen']['error'] === UPLOAD_ERR_OK) {
@@ -57,6 +74,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Encriptar la contraseña antes de guardarla
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+        // EXCEPCIONES 
+        // 1. Verificar si el correo electronico o username ya existen en la base de datos
+        $checkStmt = $conn->prepare("SELECT COUNT(*) FROM Usuario WHERE correo_electronico = ? OR username = ?");
+        $checkStmt->bind_param("ss", $correo_electronico, $username);
+        $checkStmt->execute();
+        $checkStmt->bind_result($count);
+        $checkStmt->fetch();
+        $checkStmt->close();
+        // Se verifica si la cantidad de registros es mayor a 0, lo que indica que ya existe un usuario con ese correo o username.
+        if ($count > 0) {
+            echo "<script>
+                    alert('El correo electrónico o el nombre de usuario ya están en uso. Por favor, elija otro.');
+                    window.location.href = 'createUser.php';
+                  </script>";
+            exit; // Terminar la ejecución del script si ya existe el usuario
+
+        }
+
+        // 2. Verificar que solo se coloquen letras, numeros y _ (es decir nada de caracteres especiales) en el campo de username
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
+            echo "<script>
+                    alert('El nombre de usuario solo puede contener letras, números y guiones bajos.');
+                    window.location.href = 'createUser.php';
+                  </script>";
+            exit; // Terminar la ejecución del script si ya existe el usuario
+        }
+
+        // 3. Verificar que solo se coloquen letras (es decir nada de caracteres especiales) en el campo de nombre y apellido
+        if (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$/', $nombre) || !preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$/', $apellido)) {
+            echo "<script>
+                        alert('El nombre y el apellido solo pueden contener letras y espacios.');
+                        window.location.href = 'createUser.php';
+                  </script>";
+            exit; // Terminar la ejecución del script si ya existe el usuario
+        }
+
 
         if ($stmt) {
             // Asignar los parámetros recibidos por el formulario

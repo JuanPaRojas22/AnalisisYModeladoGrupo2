@@ -1151,3 +1151,9 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+-- Atributos nuevos en usuario para poder controlar la cantiddad maxima de inicios de sesion por usuario
+ALTER TABLE USUARIO
+ADD COLUMN intentos_fallidos INT DEFAULT 0,
+ADD COLUMN bloqueado_hasta DATETIME DEFAULT NULL;
+
