@@ -59,7 +59,7 @@ require 'template.php';
 
             <div class="container">
                 <a href="VerPlanilla.php" class="button"><i class="bi bi-arrow-return-left"></i></a>
-                <h1 class="text-center" style="margin-left: 10%;">Calcular Horas Extras</h1>
+                <h1 class="text-center" style="margin-left: 10%; color: black;" >Calcular Horas Extras</h1>
 
                 <!-- Formulario con un botón para calcular horas extras -->
                 <form class='form' method="post" enctype="multipart/form-data">
@@ -103,10 +103,11 @@ require 'template.php';
 
     h1 {
         text-align: center;
-        color: #333;
         margin-bottom: 50px;
         margin-right: 10%;
         font-weight: bold;
+        color: black !important;
+        
     }
 
     h3 {
@@ -210,7 +211,11 @@ require 'template.php';
     }
 
     td {
-        background-color: #f9f9f9;
+        color: black !important;
+    }
+
+    label {
+        color: black !important;
     }
 
     .no-records {

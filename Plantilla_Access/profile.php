@@ -2,6 +2,10 @@
 session_start();
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 include "template.php";
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: login.php");
+    exit;
+}
 
 // Conexión a la base de datos
 $conn = new mysqli("localhost", "root", "", "GestionEmpleados");
