@@ -202,7 +202,7 @@ ob_end_flush(); // Libera el búfer y envía la salida al navegador
         }
 
         button:hover {
-            background-color: #147665;
+            background-color: #168761;
         }
 
         button a {
@@ -291,6 +291,9 @@ ob_end_flush(); // Libera el búfer y envía la salida al navegador
             width: 100%;
             /* Asegura que los campos ocupen todo el ancho disponible */
         }
+        .button1{
+            background-color: #168761;
+        }
     </style>
 
 </head>
@@ -373,7 +376,7 @@ ob_end_flush(); // Libera el búfer y envía la salida al navegador
 
                 <form action="reporte_permisos.php" method="get" target="_blank">
                     <input type="hidden" name="id_usuario" value="<?= $id_usuario ?>">
-                    <button type="submit">Descargar PDF</button>
+                    <button type="submit" class="button1">Descargar PDF</button>
                 </form>
             </div>
         </div>
@@ -402,7 +405,7 @@ ob_end_flush(); // Libera el búfer y envía la salida al navegador
                     <label for="motivo">Motivo:</label>
                     <textarea name="motivo" required></textarea>
 
-                    <button type="submit" class="btn">Guardar Permiso</button>
+                    <button type="submit" class="btn" >Guardar Permiso</button>
                 </form>
             </div>
         </div>
