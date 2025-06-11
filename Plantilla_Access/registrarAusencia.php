@@ -1,17 +1,48 @@
 <?php
 session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: login.php");
+    exit;
+}
+// Conexión a la base de datos
+$conexion = new mysqli("localhost", "root", "", "gestionempleados");
+if ($conexion->connect_error) {
+    die("Error de conexión: " . $conexion->connect_error);
+}
+
+// Verificar autenticación del usuario
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$id_usuario = $_SESSION['id_usuario'];
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
+
+// Incluir la plantilla
 include 'template.php';
-require 'conexion.php';
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id_usuario = $_POST['id_usuario'];
-    $fecha = $_POST['fecha'];
-    $motivo = $_POST['motivo'];
-    $registrado_por = $_SESSION['id_usuario']; // ID del administrador que registra la ausencia
+    $id_usuario    = $_POST['id_usuario'];
+    $fecha         = $_POST['fecha'];
+    $motivo        = $_POST['motivo'];
+    $justificada   = $_POST['justificada'];    // ← Nuevo
+    $registrado_por = $_SESSION['id_usuario'];
 
-    $query = "INSERT INTO Ausencias (id_usuario, fecha, motivo, registrado_por) VALUES (?, ?, ?, ?)";
+    // Ahora incluimos la columna justificada en el INSERT
+    $query = "INSERT INTO Ausencias 
+              (id_usuario, fecha, motivo, justificada, registrado_por) 
+              VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("issi", $id_usuario, $fecha, $motivo, $registrado_por);
+    // Tipos: i = integer, s = string
+    $stmt->bind_param("isssi", 
+        $id_usuario, 
+        $fecha, 
+        $motivo, 
+        $justificada, 
+        $registrado_por
+    );
 
     if ($stmt->execute()) {
         echo "<script>alert('Ausencia registrada correctamente.');</script>";
@@ -54,6 +85,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label for="motivo">Motivo:</label>
             <input type="text" name="motivo" required>
         </div>
+        <div class="form-group">
+    <label for="justificada">Justificada:</label>
+    <select name="justificada" required>
+        <option value="No">No</option>
+        <option value="Sí">Sí</option>
+    </select>
+</div>
         <button type="submit" class="btn btn-register">Registrar Ausencia</button>
     </form>
 </div>

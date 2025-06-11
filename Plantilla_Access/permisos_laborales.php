@@ -1,9 +1,30 @@
 <?php
 ob_start(); // Inicia el búfer de salida
 // Conexión a la base de datos
+
 session_start();
-include 'conexion.php';
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: login.php");
+    exit;
+}
+// Conexión a la base de datos
+$conexion = new mysqli("localhost", "root", "", "gestionempleados");
+if ($conexion->connect_error) {
+    die("Error de conexión: " . $conexion->connect_error);
+}
+
+// Verificar autenticación del usuario
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$id_usuario = $_SESSION['id_usuario'];
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
+
+// Incluir la plantilla
 include 'template.php';
+
 
 $id_usuario = $_SESSION['id_usuario'];
 if ($_SERVER["REQUEST_METHOD"] === "POST") {

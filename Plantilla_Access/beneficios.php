@@ -26,7 +26,7 @@ include 'template.php';
 <!-- Contenedor Principal -->
 <div class="container mt-4">
     <h2 class="text-center">Mis Beneficios Médicos Activos</h2>
-    <h4 class="text-center text-primary">Empleado: <span id="nombreUsuario">Cargando...</span></h4>
+    <h4 class="text-center text-primary">Empleado: <span id="nombreUsuario">No existen beneficios médicos activos asignados a su perfil.</span></h4>
 
     <!-- Contenedor de Cards -->
     <div class="row" id="beneficiosContainer">
