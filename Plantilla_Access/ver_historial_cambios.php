@@ -1,163 +1,99 @@
 <?php
-session_start();
 
-// Verificar si el usuario está logueado
+session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: login.php");
+    exit;
+}
+// Conexión a la base de datos
+$conexion = new mysqli("localhost", "root", "", "gestionempleados");
+if ($conexion->connect_error) {
+    die("Error de conexión: " . $conexion->connect_error);
+}
+
+// Verificar autenticación del usuario
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: login.php");
-    exit();
+    exit;
 }
 
-include "template.php";
+$id_usuario = $_SESSION['id_usuario'];
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
 
+// Incluir la plantilla
+include 'template.php';
 ?>
-
 
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="Dashboard">
-    <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
-
-    <title>Historial</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="assets/css/bootstrap.css" rel="stylesheet">
-    <!--external css-->
-    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
-
-    <!-- Custom styles for this template -->
-    <link href="assets/css/style.css" rel="stylesheet">
-    <link href="assets/css/style-responsive.css" rel="stylesheet">
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <style>
-        td, div {
-            color: black !important;
-        }
-    </style>
-</head>
-
-<body>
-
-    <section id="container">
-        
-        <!--sidebar end-->
-
-        <!-- **********************************************************************************************************************************************************
-      MAIN CONTENT
-      *********************************************************************************************************************************************************** -->
-        <!--main content start-->
-<section id="main-content">
-    <section class="wrapper site-min-height">
-        <h1>Historial</h1>
-        <!-- /MAIN CONTENT -->
-        <?php
-        // Verificar si el usuario está logueado
-// Conexión a la base de datos
-$host = "localhost"; 
-$usuario = "root"; 
-$clave = ""; 
-$bd = "gestionempleados"; 
-$conn = new mysqli($host, $usuario, $clave, $bd);
-if ($conn->connect_error) {
-    die("Error de conexión: " . $conn->connect_error);
-}
-
-// Consulta para obtener el historial de cambios
-$sql = "SELECT hc.id_historial, u.nombre AS nombre_usuario, hc.puesto_anterior, hc.nuevo_puesto, hc.fecha_cambio, hc.motivo, hc.fechacreacion, hc.sueldo_anterior, hc.sueldo_nuevo
-        FROM Historial_Cargos hc
-        JOIN Usuario u ON hc.id_usuario = u.id_usuario
-        ORDER BY hc.fecha_cambio DESC";
-
-$result = $conn->query($sql);
-
-?>
-
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historial de Cambios de Puesto</title>
+    <title>Historial</title>
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/style-responsive.css" rel="stylesheet">
     <style>
         body {
+            background-color: #f5f5f5;
             font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
-            margin: 0;
-            padding: 0;
         }
 
         .container {
-            width: 80%;
+            max-width: 95%;
             margin: 50px auto;
-            padding: 20px;
+            padding: 30px;
             background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
             text-align: center;
-            color: #333;
             margin-bottom: 30px;
-            color: black !important;
+            font-size: 28px;
+            color: #333;
         }
+
         .btn {
             display: inline-block;
-            background-color: #116B67;
+            background-color: #147964;
             color: white;
             padding: 10px 20px;
-            font-size: 16px;
             font-weight: bold;
-            text-align: center;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 6px;
             margin-bottom: 20px;
-            transition: background-color 0.3s;
         }
 
         .btn:hover {
-            background-color: #147665;
+            background-color: #116B67;
         }
 
-        .btn:active {
-            background-color: #147665;
-        }
-        
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
             border-radius: 8px;
             overflow: hidden;
         }
 
-        th, td {
-            padding: 12px;
-            text-align: left;
-            font-size: 16px;
-            color: #555;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
+        thead {
             background-color: #116B67;
-            color: #fff;
+            color: white;
         }
 
-        tr:hover {
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            color: #333;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:hover {
             background-color: #f1f1f1;
-        }
-
-        td {
-            color: black !important;
         }
 
         .no-records {
@@ -165,59 +101,102 @@ $result = $conn->query($sql);
             font-style: italic;
             color: #888;
         }
-        
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Historial de Cambios de Puesto</h1>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-        <a href="registrar_cambio_puesto.php" class="btn">
-            Ir al Formulario de Cambio de Puesto
-        </a>
-        <!-- Mostrar tabla con los cambios de puesto -->
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Usuario</th>
-                    <th>Puesto Anterior</th>
-                    <th>Nuevo Puesto</th>
-                    <th>Fecha de Cambio</th>
-                    <th>Motivo</th>
-                    <th>Fecha de Creación</th>
-                    <th>Sueldo Anterior</th>
-                    <th>Sueldo Nuevo</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                // Mostrar los resultados de la consulta
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<tr>
-                                <td>" . $row['id_historial'] . "</td>
-                                <td>" . $row['nombre_usuario'] . "</td>
-                                <td>" . $row['puesto_anterior'] . "</td>
-                                <td>" . $row['nuevo_puesto'] . "</td>
-                                <td>" . $row['fecha_cambio'] . "</td>
-                                <td>" . $row['motivo'] . "</td>
-                                <td>" . $row['fechacreacion'] . "</td>
-                                <td>" . $row['sueldo_anterior'] . "</td>
-                                <td>" . $row['sueldo_nuevo'] . "</td>
-                              </tr>";
-                    }
-                } else {
-                    echo "<tr><td colspan='9' class='no-records'>No se encontraron registros.</td></tr>";
-                }
-                ?>
-            </tbody>
-        </table>
-    </div>
+<script>
+    function generarPDF() {
+        const { jsPDF } = window.jspdf;
+
+        const contenedor = document.querySelector('.container');
+
+        html2canvas(contenedor).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+            pdf.addImage(imgData, 'PNG', 0, 10, pdfWidth, pdfHeight);
+            pdf.save("reporte_historial_cambios.pdf");
+        });
+    }
+</script>
+<body>
+<section id="container">
+    <section id="main-content">
+        <section class="wrapper site-min-height">
+
+            <?php
+            $conn = new mysqli("localhost", "root", "", "gestionempleados");
+            if ($conn->connect_error) {
+                die("Error de conexión: " . $conn->connect_error);
+            }
+
+            $sql = "SELECT 
+                        hc.id_historial_cargos, 
+                        u.nombre AS nombre_usuario, 
+                        hc.nuevo_puesto, 
+                        hc.fecha_cambio, 
+                        hc.motivo, 
+                        hc.fechacreacion, 
+                        hc.sueldo_nuevo
+                    FROM Historial_Cargos hc
+                    JOIN Usuario u ON hc.id_usuario = u.id_usuario
+                    ORDER BY hc.fecha_cambio DESC";
+
+            $result = $conn->query($sql);
+            ?>
+
+            <div class="container">
+                <h1>Historial de Cambios de Puesto</h1>
+
+                <a href="registrar_cambio_puesto.php" class="btn">
+                    Ir al Formulario de Cambio de Puesto
+                </a>
+                <button onclick="generarPDF()" class="btn">
+    Descargar Reporte en PDF
+</button>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Usuario</th>
+                            <th>Nuevo Puesto</th>
+                            <th>Fecha de Cambio</th>
+                            <th>Motivo</th>
+                            <th>Fecha de Creación</th>
+                            <th>Sueldo Nuevo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<tr>
+                                    <td>{$row['id_historial_cargos']}</td>
+                                    <td>{$row['nombre_usuario']}</td>
+                                    <td>{$row['nuevo_puesto']}</td>
+                                    <td>{$row['fecha_cambio']}</td>
+                                    <td>{$row['motivo']}</td>
+                                    <td>{$row['fechacreacion']}</td>
+                                    <td>₡" . number_format($row['sueldo_nuevo'], 2) . "</td>
+                                </tr>";
+                            }
+                        } else {
+                            echo "<tr><td colspan='7' class='no-records'>No se encontraron registros.</td></tr>";
+                        }
+
+                        $conn->close();
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </section>
+</section>
 </body>
 </html>
-
-<?php
-// Cerrar la conexión
-$conn->close();
-?>

@@ -1,9 +1,26 @@
 <?php 
+session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: login.php");
+    exit;
+}
 // Conexión a la base de datos
 $conexion = new mysqli("localhost", "root", "", "gestionempleados");
 if ($conexion->connect_error) {
     die("Error de conexión: " . $conexion->connect_error);
 }
+
+// Verificar autenticación del usuario
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$id_usuario = $_SESSION['id_usuario'];
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
+
+// Incluir la plantilla
+include 'template.php';
 
 // Consulta para obtener los datos de las tablas usuario, planilla, nacionalidades, ocupaciones y departamento
 $sql = "SELECT u.id_usuario, u.nombre, u.apellido, u.correo_electronico, u.numero_telefonico, u.fecha_nacimiento, u.sexo, u.estado_civil, 
@@ -17,9 +34,7 @@ $sql = "SELECT u.id_usuario, u.nombre, u.apellido, u.correo_electronico, u.numer
 
 $resultado = $conexion->query($sql);
 
-session_start();
-include 'template.php';
-$username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
+
 ?>
 <!DOCTYPE html>
 <html lang="es">

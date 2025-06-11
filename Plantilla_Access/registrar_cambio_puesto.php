@@ -1,121 +1,38 @@
-
 <?php
 session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: login.php");
+    exit;
+}
+// Conexión a la base de datos
+$conexion = new mysqli("localhost", "root", "", "gestionempleados");
+if ($conexion->connect_error) {
+    die("Error de conexión: " . $conexion->connect_error);
+}
 
-// Verificar si el usuario está logueado
+// Verificar autenticación del usuario
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: login.php");
-    exit();
+    exit;
 }
 
-include 'template.php'; // Incluir el encabezado de la plantilla
+$id_usuario = $_SESSION['id_usuario'];
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
 
+// Incluir la plantilla
+include 'template.php';
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="Dashboard">
-    <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
-
-    <title>Cambio de Puesto</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="assets/css/bootstrap.css" rel="stylesheet">
-    <!--external css-->
-    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
-
-    <!-- Custom styles for this template -->
-    <link href="assets/css/style.css" rel="stylesheet">
-    <link href="assets/css/style-responsive.css" rel="stylesheet">
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-</head>
-
-<body>
-
-    <section id="container">
-
-        <section id="main-content">
-    <section class="wrapper site-min-height">
-        <h1>Cambio</h1>
-        <!-- /MAIN CONTENT -->
-        <?php
-        // Conexión a la base de datos
-        $host = "localhost"; 
-        $usuario = "root"; 
-        $clave = ""; 
-        $bd = "gestionempleados"; 
-
-        $conn = new mysqli($host, $usuario, $clave, $bd);
-
-        // Verificar si la conexión fue exitosa
-        if ($conn->connect_error) {
-            die("Error de conexión: " . $conn->connect_error);
-        }
-
-        // Variables para almacenar los mensajes de error y éxito
-        $mensaje = "";
-
-        // Obtener los usuarios de la base de datos
-$query = "SELECT id_usuario, nombre, apellido FROM Usuario";
-$result = $conn->query($query);
-
-// Verificar si se obtuvieron resultados
-if ($result->num_rows > 0) {
-    $usuarios = [];
-    while ($row = $result->fetch_assoc()) {
-        $usuarios[] = $row;
-    }
-} else {
-    $usuarios = [];
-}
-
-// Si el formulario se ha enviado
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Obtener los datos del formulario
-    $id_usuario = $_POST['id_usuario'];
-    $puesto_anterior = $_POST['puesto_anterior'];
-    $nuevo_puesto = $_POST['nuevo_puesto'];
-    $sueldo_anterior = $_POST['sueldo_anterior'];
-    $sueldo_nuevo = $_POST['sueldo_nuevo'];
-    $motivo = $_POST['motivo'];
-    $fecha_cambio = $_POST['fecha_cambio'];
-
-    // Validar que los sueldos sean valores numéricos válidos
-    if (!is_numeric($sueldo_anterior) || $sueldo_anterior <= 0) {
-        $mensaje = "El sueldo anterior debe ser un valor numérico mayor que 0.";
-    } elseif (!is_numeric($sueldo_nuevo) || $sueldo_nuevo <= 0) {
-        $mensaje = "El sueldo nuevo debe ser un valor numérico mayor que 0.";
-    } else {
-        // Insertar los datos en la base de datos
-        $query = "INSERT INTO historial_cargos (id_usuario, puesto_anterior, nuevo_puesto, sueldo_anterior, sueldo_nuevo, motivo, fecha_cambio, fechacreacion, usuariocreacion) 
-          VALUES ('$id_usuario', '$puesto_anterior', '$nuevo_puesto', '$sueldo_anterior', '$sueldo_nuevo', '$motivo', '$fecha_cambio', CURDATE(), 'usuario_logueado')";
-
-        if ($conn->query($query) === TRUE) {
-            $mensaje = "Cambio de puesto registrado con éxito.";
-        } else {
-            $mensaje = "Error al registrar el cambio de puesto: " . $conn->error;
-        }
-    }
-}
-?>
-
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
     <title>Registrar Cambio de Puesto</title>
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/style-responsive.css" rel="stylesheet">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -125,47 +42,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .container {
-            width: 80%;
-            margin: 50px auto;
-            padding: 20px;
+            max-width: 700px;
+            margin: 50px auto; /* centrado */
+            padding: 25px;
             background-color: #ffffff;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            color: black;
         }
 
         h1 {
             text-align: center;
-            color: #333;
+            color: black;
             margin-bottom: 30px;
         }
 
         .button {
-        display: inline-block;
-        background-color: #147964;
-        color: #000;
-        padding: 10px 20px;
-        font-size: 16px;
-        font-weight: bold;
-         text-align: center;
-        text-decoration: none;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        transition: background-color 0.3s;
+            display: inline-block;
+            background-color: #147964;
+            color: black;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
         }
-
-        
-        /* Estilo del select */
-        select {
-         width: 100%;  
-        padding: 10px;  
-        font-size: 16px; 
-        margin-bottom: 20px;  
-        border: 1px solid #ccc;  
-        border-radius: 5px;  
-        background-color: #fff;  
-        color: #333;  
-        }
-
 
         form {
             width: 100%;
@@ -173,90 +77,154 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         label {
             font-size: 16px;
-            color: #333;
+            color: black;
             margin-bottom: 8px;
             display: block;
         }
 
-        input, textarea, button {
+        input, textarea, button, select {
+            width: 100%;
             padding: 10px;
             font-size: 16px;
             margin-bottom: 20px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            color: black; /* for input text */
+            background-color: white;
+        }
+
+        textarea {
+            resize: vertical;
         }
 
         button {
             background-color: #147964;
-            color: #000;
+            color: black;
+            font-weight: bold;
             border: none;
             cursor: pointer;
         }
 
-        
+        p {
+            font-weight: bold;
+            color: #116B67;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-    <a href="ver_historial_cambios.php" class="button" style="background-color: #147964; color: black; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Historial de Cambios</a>
+        <a href="ver_historial_cambios.php" class="button">Historial de Cambios</a>
 
         <h1>Registrar Cambio de Puesto</h1>
 
-        <!-- Mostrar mensaje de éxito o error -->
+        <?php
+        $conn = new mysqli("localhost", "root", "", "gestionempleados");
+        if ($conn->connect_error) {
+            die("Error de conexión: " . $conn->connect_error);
+        }
+
+        $mensaje = "";
+
+        $query = "SELECT id_usuario, nombre, apellido FROM Usuario";
+        $result = $conn->query($query);
+        $usuarios = ($result->num_rows > 0) ? $result->fetch_all(MYSQLI_ASSOC) : [];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id_usuario     = $_POST['id_usuario'];
+            $nuevo_puesto   = $_POST['nuevo_puesto'];
+            $sueldo_nuevo   = $_POST['sueldo_nuevo'];
+            $motivo         = $_POST['motivo'];
+            $fecha_cambio   = $_POST['fecha_cambio'];
+
+            if (!is_numeric($sueldo_nuevo) || $sueldo_nuevo <= 0) {
+                $mensaje = "El sueldo nuevo debe ser un valor numérico mayor que 0.";
+            } else {
+                $query = "INSERT INTO historial_cargos (
+                            id_usuario, 
+                            nuevo_puesto, 
+                            sueldo_nuevo, 
+                            motivo, 
+                            fecha_cambio, 
+                            fechacreacion, 
+                            usuariocreacion
+                        ) VALUES (
+                            '$id_usuario', 
+                            '$nuevo_puesto', 
+                            '$sueldo_nuevo', 
+                            '$motivo', 
+                            '$fecha_cambio', 
+                            CURDATE(), 
+                            'usuario_logueado'
+                        )";
+
+                if ($conn->query($query) === TRUE) {
+                    $mensaje = "Cambio de puesto registrado con éxito.";
+                } else {
+                    $mensaje = "Error al registrar el cambio de puesto: " . $conn->error;
+                }
+            }
+        }
+        ?>
+
         <?php if ($mensaje): ?>
             <p><?php echo $mensaje; ?></p>
         <?php endif; ?>
 
-        <!-- Formulario para registrar el cambio de puesto -->
-<form action="registrar_cambio_puesto.php" method="POST">
-    <!-- Campo para seleccionar el usuario -->
-    <label for="id_usuario">Seleccione el Usuario:</label>
-    <select name="id_usuario" required>
-        <option value="">Seleccione un usuario</option>
-        <?php foreach ($usuarios as $usuario): ?>
-            <option value="<?php echo $usuario['id_usuario']; ?>">
-                <?php echo $usuario['nombre'] . ' ' . $usuario['apellido']; ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
+        <form action="registrar_cambio_puesto.php" method="POST">
+            <label for="id_usuario">Seleccione el Usuario:</label>
+            <select name="id_usuario" required>
+                <option value="">Seleccione un usuario</option>
+                <?php foreach ($usuarios as $usuario): ?>
+                    <option value="<?php echo $usuario['id_usuario']; ?>">
+                        <?php echo $usuario['nombre'] . ' ' . $usuario['apellido']; ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
 
-    <!-- Campo para Puesto Anterior -->
-    <label for="puesto_anterior">Puesto Anterior:</label>
-    <input type="text" name="puesto_anterior" required>
+            <label for="puesto_anterior">Puesto Anterior (ID de ocupación):</label>
+            <input type="text" name="puesto_anterior" id="puesto_anterior" readonly>
 
-    <!-- Campo para Nuevo Puesto -->
-    <label for="nuevo_puesto">Nuevo Puesto:</label>
-    <input type="text" name="nuevo_puesto" required>
+            <label for="sueldo_anterior">Sueldo Anterior:</label>
+            <input type="number" name="sueldo_anterior" id="sueldo_anterior" readonly>
 
-    <!-- Campo para Sueldo Anterior -->
-    <label for="sueldo_anterior">Sueldo Anterior:</label>
-    <input type="number" name="sueldo_anterior" step="any" required>
+            <label for="nuevo_puesto">Nuevo Puesto:</label>
+            <input type="text" name="nuevo_puesto" required>
 
-    <!-- Campo para Nuevo Sueldo -->
-    <label for="sueldo_nuevo">Nuevo Sueldo:</label>
-    <input type="number" name="sueldo_nuevo" step="any" required>
+            <label for="sueldo_nuevo">Nuevo Sueldo:</label>
+            <input type="number" name="sueldo_nuevo" step="any" required>
 
-    <!-- Campo para Motivo del Cambio -->
-    <label for="motivo">Motivo del Cambio:</label>
-    <textarea name="motivo" required></textarea>
+            <label for="motivo">Motivo del Cambio:</label>
+            <textarea name="motivo" required></textarea>
 
-    <!-- Campo para Fecha de Cambio -->
-    <label for="fecha_cambio">Fecha de Cambio:</label>
-    <input type="date" name="fecha_cambio" required>
+            <label for="fecha_cambio">Fecha de Cambio:</label>
+            <input type="date" name="fecha_cambio" required>
 
-    <!-- Botón para enviar el formulario -->
-    <button type="submit">Registrar Cambio</button>
-</form>
-</div>
+            <button type="submit">Registrar Cambio</button>
+        </form>
+    </div>
+
+    <!-- Script para autocompletar datos -->
+    <script>
+    document.querySelector('select[name="id_usuario"]').addEventListener('change', function () {
+        const id_usuario = this.value;
+
+        if (id_usuario !== "") {
+            fetch(`obtener_datos_usuario.php?id_usuario=${id_usuario}`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('puesto_anterior').value = data.puesto_anterior || '';
+                    document.getElementById('sueldo_anterior').value = data.sueldo_anterior || '';
+                })
+                .catch(error => {
+                    console.error('Error al obtener datos:', error);
+                    document.getElementById('puesto_anterior').value = '';
+                    document.getElementById('sueldo_anterior').value = '';
+                });
+        } else {
+            document.getElementById('puesto_anterior').value = '';
+            document.getElementById('sueldo_anterior').value = '';
+        }
+    });
+    </script>
 </body>
 </html>
-
-
-
-
-</section>
-</section>
-
-   
-
-

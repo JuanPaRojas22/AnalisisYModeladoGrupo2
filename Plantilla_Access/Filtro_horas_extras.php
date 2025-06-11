@@ -1,8 +1,27 @@
 <?php
-session_start();
-require 'conexion.php';
-require 'template.php';
 
+session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: login.php");
+    exit;
+}
+// Conexión a la base de datos
+$conexion = new mysqli("localhost", "root", "", "gestionempleados");
+if ($conexion->connect_error) {
+    die("Error de conexión: " . $conexion->connect_error);
+}
+
+// Verificar autenticación del usuario
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$id_usuario = $_SESSION['id_usuario'];
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
+
+// Incluir la plantilla
+include 'template.php';
 // Verificar si se han enviado los filtros
 if (isset($_POST['filtrar'])) {
     $usuario = $_POST['usuario'];
@@ -98,9 +117,9 @@ if (isset($_POST['filtrar'])) {
         <a href="VerPlanilla.php" class="btn btn-secondary">
             <i ></i> Devolver
         </a>
-        <button class="btn" type="submit" name="filtrar">
-            <i class="bi bi-funnel"></i> Filtrar
-        </button>
+        <button class="btn" type="submit" name="filtrar" id="btnFiltrar">
+    <i class="bi bi-funnel"></i> Filtrar
+</button>
     </form>
 
     <?php if (!empty($data)): ?>
@@ -145,6 +164,17 @@ if (isset($_POST['filtrar'])) {
         </table>
 
     </div>
+    <script>
+document.getElementById('btnFiltrar').addEventListener('click', function (e) {
+    const usuario = document.getElementById('usuario').value;
+    const departamento = document.getElementById('departamento').value;
+
+    if (!usuario && !departamento) {
+        e.preventDefault(); // Detiene el envío del formulario
+        alert('Debe seleccionar un usuario o un departamento para filtrar.');
+    }
+});
+</script>
 </body>
 
 </html>
