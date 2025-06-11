@@ -17,7 +17,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $query_calculo = "SELECT id_usuario, 
                              SUM(salario_base) AS total_salario, 
                              SUM(total_bonos) AS total_bonos, 
-                             SUM(pago_horas_extras) AS total_horas_extras 
+                             SUM(pago_horas_extras) AS total_horas_extras,
+                             COUNT(DISTINCT DATE_FORMAT(fecha_pago, '%Y-%m')) AS meses_trabajados
                       FROM pago_planilla 
                       WHERE fecha_pago >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH) 
                       GROUP BY id_usuario";
@@ -104,8 +105,8 @@ ob_end_flush();  // Envía todo el contenido del búfer al navegador
             <!-- Mostrar tabla con los datos de historial de aguinaldo -->
 
             <form action="calcular_aguinaldo.php" method="post">
-            <label class="h1" style="color: black; font-size: 20px;" for="metodo_pago">Método de Pago:</label>
-            <select name="metodo_pago" required>
+                <label class="h1" style="color: black; font-size: 20px;" for="metodo_pago">Método de Pago:</label>
+                <select name="metodo_pago" required>
                     <option value="Transferencia">Transferencia</option>
                     <option value="Efectivo">Efectivo</option>
                     <option value="Cheque">Cheque</option>
@@ -114,18 +115,19 @@ ob_end_flush();  // Envía todo el contenido del búfer al navegador
                 <button class='btn' type="submit"><i class="bi bi-calculator"></i></button>
             </form>
             <div>
-               
-                    <?php
 
-                    $year = date("Y");  // Asigna el año actual
-                    
-                    // Mostrar el mensaje si el aguinaldo ya ha sido registrado
-                    if (isset($_GET['aguinaldo_registrado']) && $_GET['aguinaldo_registrado'] == 'error'): ?>
-                        <div class="alert alert-success mt-3 text-center mx-auto text-dark ">
-                            ¡Aguinaldos ya registrados para el año
-                            <?php echo $year; ?>!
-                        </div>
-                    <?php endif; ?>
+                <?php
+
+                $year = date("Y");  // Asigna el año actual
+                
+                // Mostrar el mensaje si el aguinaldo ya ha sido registrado
+                if (isset($_GET['aguinaldo_registrado']) && $_GET['aguinaldo_registrado'] == 'error'): ?>
+                    <div class="alert alert-success mt-3 text-center mx-auto text-dark ">
+                        ¡Aguinaldos ya registrados para el año
+                        <?php echo $year; ?>!
+                    </div>
+                <?php endif; ?>
+
             </div>
         </div>
         <table>
@@ -137,6 +139,8 @@ ob_end_flush();  // Envía todo el contenido del búfer al navegador
                     <th>Aguinaldo Total</th>
                     <th>Fecha de Pago</th>
                     <th>Método de Pago</th>
+                    <th>Meses Trabajados</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -161,6 +165,8 @@ ob_end_flush();  // Envía todo el contenido del búfer al navegador
                         <td>" . $row['total_aguinaldo'] . "</td>
                         <td>" . $row['fecha_pago'] . "</td>
                         <td>" . $row['metodo_pago'] . "</td>
+                        <td>" . $row["meses_trabajados"] . "</td>
+
                       </tr>";
                     }
                 } else {
@@ -179,111 +185,125 @@ ob_end_flush();  // Envía todo el contenido del búfer al navegador
 
 
 
- <style>
-      body {
-    font-family: 'Ruda', sans-serif;
-    background-color: #f7f7f7;
-    margin: 0;
-    padding: 0;
-}
+        <style>
+            body {
+                font-family: 'Ruda', sans-serif;
+                background-color: #f7f7f7;
+                margin: 0;
+                padding: 0;
+            }
 
-.container {
-    width: 80%;
-    flex-direction: column;
-    background-color: #f7f7f7;
-    justify-content: flex-start;
-    align-items: center; /* Ensures the content is centered */
-    padding: 10px;
-    max-width: 90%; /* Reduced max-width for smaller appearance */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-    margin-top: 20px;
-    border-radius: 12px;
-}
-
-
-
-
-h1 {
-    text-align: center;
-    color: black;
-    margin-bottom: 20px; /* Reduced margin */
-    font-size: 20px; /* Smaller font size */
-    font-weight: bold;
-}
-
-select {
-    width: 30%; /* Smaller width for the select dropdown */
-    padding: 8px; /* Reduced padding */
-    font-size: 14px; /* Smaller font size */
-    border: 2px solid rgb(15, 15, 15);
-    border-radius: 5px;
-    background: #f9f9f9;
-    color: black;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-}
-
-.btn {
-    display: inline-block;
-    background-color: #147665;
-    color: #f7f7f7;
-    padding: 8px 16px; /* Reduced padding */
-    font-size: 14px; /* Smaller font size */
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    margin-top: 15px;
-    transition: background-color 0.3s;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-}
+            .container {
+                width: 80%;
+                flex-direction: column;
+                background-color: #f7f7f7;
+                justify-content: flex-start;
+                align-items: center;
+                /* Ensures the content is centered */
+                padding: 10px;
+                max-width: 90%;
+                /* Reduced max-width for smaller appearance */
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+                margin-top: 20px;
+                border-radius: 12px;
+            }
 
 
 
 
-.table-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-}
+            h1 {
+                text-align: center;
+                color: black;
+                margin-bottom: 20px;
+                /* Reduced margin */
+                font-size: 20px;
+                /* Smaller font size */
+                font-weight: bold;
+            }
 
-table {
-    width: 80%;  /* You can adjust this width to fit your design */
-    margin-left: 130px;  /* This will move the table to the right */
-    border-collapse: collapse;
-    margin-top: 15px;
-    border-radius: 8px;
-    overflow: hidden;
-}
+            select {
+                width: 30%;
+                /* Smaller width for the select dropdown */
+                padding: 8px;
+                /* Reduced padding */
+                font-size: 14px;
+                /* Smaller font size */
+                border: 2px solid rgb(15, 15, 15);
+                border-radius: 5px;
+                background: #f9f9f9;
+                color: black;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-align: center;
+            }
+
+            .btn {
+                display: inline-block;
+                background-color: #147665;
+                color: #f7f7f7;
+                padding: 8px 16px;
+                /* Reduced padding */
+                font-size: 14px;
+                /* Smaller font size */
+                font-weight: bold;
+                text-align: center;
+                text-decoration: none;
+                border-radius: 5px;
+                margin-bottom: 15px;
+                margin-top: 15px;
+                transition: background-color 0.3s;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            }
 
 
-th, td {
-    padding: 8px; /* Reduced padding */
-    text-align: center;
-    font-size: 14px; /* Smaller font size */
-    color: #555;
-    border-bottom: 1px solid #ddd;
-}
 
-th {
-    background-color: #116B67;
-    color: #fff;
-}
 
-tr:hover {
-    background-color: #f7f7f7;
-}
+            .table-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+            }
 
-td {
-    background-color: #f7f7f7;
-}
+            table {
+                width: 80%;
+                /* You can adjust this width to fit your design */
+                margin-left: 130px;
+                /* This will move the table to the right */
+                border-collapse: collapse;
+                margin-top: 15px;
+                border-radius: 8px;
+                overflow: hidden;
+            }
 
-.no-records {
-    text-align: center;
-    font-style: italic;
-    color: #888;
-}
-  </style>
+
+            th,
+            td {
+                padding: 8px;
+                /* Reduced padding */
+                text-align: center;
+                font-size: 14px;
+                /* Smaller font size */
+                color: #555;
+                border-bottom: 1px solid #ddd;
+            }
+
+            th {
+                background-color: #116B67;
+                color: #fff;
+            }
+
+            tr:hover {
+                background-color: #f7f7f7;
+            }
+
+            td {
+                background-color: #f7f7f7;
+            }
+
+            .no-records {
+                text-align: center;
+                font-style: italic;
+                color: #888;
+            }
+        </style>

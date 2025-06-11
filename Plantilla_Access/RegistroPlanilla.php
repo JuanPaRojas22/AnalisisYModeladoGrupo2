@@ -57,7 +57,7 @@ if (!isset($_SESSION['id_usuario'])) {
                 $salario_base = $_POST['salario_base'];
                 $hora_entrada = $_POST['hora_entrada'];
                 $hora_salida = $_POST['hora_salida'];
-                $codigo_bac = $_POST['codigo_bac'];
+                $Cuenta_Bac = $_POST['Cuenta_Bac'];
                 $codigo_caja = $_POST['codigo_caja'];
                 $codigo_INS = $_POST['codigo_INS'];
 
@@ -72,22 +72,22 @@ if (!isset($_SESSION['id_usuario'])) {
                     $stmtCheck->store_result();
 
                     if ($stmtCheck->num_rows > 0) {
-                        echo "<p style='color:red;'><strong>Error: Este usuario ya está registrado en la planilla</strong></p>";
-                        $mensaje = "Error: Este usuario ya está registrado en la planilla.";
+                        //echo "<p style='color:red;'><strong>Error: Este usuario ya está registrado en la planilla</strong></p>";
+                        $mensaje = "<span style='color: red;'>Error: Este usuario ya está registrado en la planilla.</span>";
                     } else {
-                        $query = "INSERT INTO planilla (id_usuario, salario_base, hora_entrada, hora_salida, codigo_bac, Codigo_CCSS, codigo_INS) 
+                        $query = "INSERT INTO planilla (id_usuario, salario_base, hora_entrada, hora_salida, Cuenta_Bac, Codigo_CCSS, codigo_INS) 
                                   VALUES (?, ?, ?, ?, ?, ?, ?)";
                         $stmtInsert = $conn->prepare($query);
 
                         if (!$stmtInsert) {
                             echo "<p style='color:red;'><strong>Error al preparar el INSERT:</strong> " . $conn->error . "</p>";
                         } else {
-                            $stmtInsert->bind_param("issssss", $id_usuario, $salario_base, $hora_entrada, $hora_salida, $codigo_bac, $codigo_caja, $codigo_INS);
+                            $stmtInsert->bind_param("issssss", $id_usuario, $salario_base, $hora_entrada, $hora_salida, $Cuenta_Bac, $codigo_caja, $codigo_INS);
 
                             if ($stmtInsert->execute()) {
-                                $mensaje = "Empleado registrado con éxito.";
+                                $mensaje = "<span style='color: black;'>Empleado registrado con éxito.</span>";
                             } else {
-                                echo "<p style='color:red;'><strong>Error al ejecutar el INSERT:</strong> " . $stmtInsert->error . "</p>";
+                                //echo "<p style='color:red;'><strong>Error al ejecutar el INSERT:</strong> " . $stmtInsert->error . "</p>";
                                 $mensaje = "Error al registrar al empleado.";
                             }
                         }
@@ -133,8 +133,8 @@ if (!isset($_SESSION['id_usuario'])) {
                                 class="form-registro" required>
                         </div>
 
-                        <label for="codigo_bac">Código BAC:</label>
-                        <input class="input-custom" type="text" name="codigo_bac" required style="text-align: center">
+                        <label for="Cuenta_Bac">Código BAC:</label>
+                        <input class="input-custom" type="text" name="Cuenta_Bac" required style="text-align: center">
 
                         <label for="codigo_caja">Código Caja:</label>
                         <input class="input-custom" type="text" name="codigo_caja" required style="text-align: center">
