@@ -5,6 +5,7 @@ $conexion = new mysqli("localhost", "root", "", "gestionempleados");
 if ($conexion->connect_error) {
     die("Error de conexión: " . $conexion->connect_error);
 }
+session_start();
 
 // Consulta para obtener los datos de las tablas usuario, planilla, nacionalidades, ocupaciones y departamento
 $sql = "
@@ -23,7 +24,7 @@ $sql = "
         p.hrs,
         p.salario_base,
         p.salario_neto,
-        p.codigo_bac,
+        p.Cuenta_Bac,
         u.direccion_domicilio,
         p.tipo_quincena,
         d.nombre AS departamento
@@ -36,7 +37,11 @@ $sql = "
 
 $resultado = $conexion->query($sql);
 
-session_start();
+if (!$resultado) {
+    die("❌ Error en la consulta SQL: " . $conexion->error);
+}
+
+
 include 'template.php';
 $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
 ?>
@@ -208,7 +213,7 @@ tr:nth-child(even) td {
             <tbody>
                 <?php while ($fila = $resultado->fetch_assoc()) { ?>
                 <tr>
-                    <td><?php echo $fila['codigo_bac']; ?></td>
+                    <td><?php echo $fila['Cuenta_Bac']; ?></td>
                     <td><?php echo $fila['nombre']; ?></td>
                     <td><?php echo $fila['apellido']; ?></td>
                     <td><?php echo $fila['correo_electronico']; ?></td>

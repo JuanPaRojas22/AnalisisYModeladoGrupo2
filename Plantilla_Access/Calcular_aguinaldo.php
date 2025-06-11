@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                              SUM(salario_base) AS total_salario, 
                              SUM(total_bonos) AS total_bonos, 
                              SUM(pago_horas_extras) AS total_horas_extras,
-                             COUNT(DISTINCT DATE_FORMAT(fecha_pago, '%Y-%m')) AS meses_trabajados
+                    
                       FROM pago_planilla 
                       WHERE fecha_pago >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH) 
                       GROUP BY id_usuario";
@@ -139,7 +139,7 @@ ob_end_flush();  // Envía todo el contenido del búfer al navegador
                     <th>Aguinaldo Total</th>
                     <th>Fecha de Pago</th>
                     <th>Método de Pago</th>
-                    <th>Meses Trabajados</th>
+                  
 
                 </tr>
             </thead>
@@ -165,7 +165,7 @@ ob_end_flush();  // Envía todo el contenido del búfer al navegador
                         <td>" . $row['total_aguinaldo'] . "</td>
                         <td>" . $row['fecha_pago'] . "</td>
                         <td>" . $row['metodo_pago'] . "</td>
-                        <td>" . $row["meses_trabajados"] . "</td>
+                     
 
                       </tr>";
                     }
