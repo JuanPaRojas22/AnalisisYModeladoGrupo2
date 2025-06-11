@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
-include "template.php";
+//include "template.php";
 
 // Conexión a la base de datos
 $conn = new mysqli("localhost", "root", "", "GestionEmpleados");
@@ -47,17 +47,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "<script>alert('No se subió ningún archivo o ocurrió un error.');</script>";
     }
 
-    if (empty($errores)) {
-        $UsuarioDAO->updateUser($nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_ocupacion, $id_nacionalidad, $user_id);
-        $_SESSION['nombre'] = $nombre;
-        $_SESSION['apellido'] = $apellido;
-        $_SESSION['direccion_imagen'] = $direccion_imagen;
-        echo "<p style='color: green;'>Actualización exitosa.</p>";
-    } else {
-        foreach ($errores as $error) {
-            echo "<p style='color: red;'>$error</p>";
-        }
-    }
+    $resultado = $UsuarioDAO->updateUser($nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_ocupacion, $id_nacionalidad, $user_id);
+
+if ($resultado === true) {
+    $_SESSION['nombre'] = $nombre;
+    $_SESSION['apellido'] = $apellido;
+    $_SESSION['direccion_imagen'] = $direccion_imagen;
+    echo "<p style='color: green;'>Actualización exitosa.</p>";
+} else {
+    echo "<p style='color: red;'>$resultado</p>"; // Mostrar el error
+}
+
 }
 // Verifica si el parámetro 'id' está presente en la URL
 if (isset($_GET['id'])) {
@@ -160,7 +160,7 @@ if (isset($_GET['id'])) {
             </div>
             <div class="col-md-9">
                 <h3>Información del Usuario</h3>
-                <form action="profile.php" method="post" enctype="multipart/form-data">
+                <form action="editarPerfil.php" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($user['id_usuario']); ?>">
                     <div class="row">
                         <div class="col-md-6">

@@ -5,6 +5,13 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header("Location: login.php");
     exit;
 }
+
+// Verificar si el usuario es administrador (id_rol == 2)
+if ($_SESSION['id_rol'] == 3 OR $_SESSION['id_rol'] == 1) { // Verificar si el usuario es un empleado
+    header("Location: index.php"); // Redirigir a la página de inicio si no es administrador
+    exit;
+}
+
 include 'template.php';
 
 $id_usuario = $_GET['id_usuario'] ?? null;

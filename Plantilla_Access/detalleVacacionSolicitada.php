@@ -4,9 +4,6 @@ require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
 include "template.php";
 
-// $UsuarioDAO = new UsuarioDAOSImpl();
-// $user_id = $_SESSION['id_usuario'];
-
 // Instancia el DAO
 $UsuarioDAO = new UsuarioDAOSImpl();
 $VacacionDAO = new VacacionDAOSImpl(); 
@@ -14,10 +11,16 @@ $VacacionDAO = new VacacionDAOSImpl();
 if (isset($_GET['id'])) {
     $id_vacacion = $_GET['id'];
     // Obtiene el id del usuario de la vacacion actual
-    $id_usuario = $VacacionDAO->getUserByIdVacacion($id_vacacion);
+    $id_usuario_vacacion = $VacacionDAO->getUserByIdVacacion($id_vacacion);
+
+    // Validación: solo el usuario dueño puede ver la vacación
+    if (!isset($_SESSION['id_usuario']) || $_SESSION['id_usuario'] != $id_usuario_vacacion) {
+        echo "<div style='color: red; font-weight: bold; text-align: center; margin-top: 40px;'>Acceso denegado. No tienes permiso para ver esta vacación.</div>";
+        exit;
+    }
 
     // Obtiene los detalles del usuario por id
-    $user = $UsuarioDAO->getUserById($id_usuario);
+    $user = $UsuarioDAO->getUserById($id_usuario_vacacion);
 
     // Obtiene la vacacion actual del usuario
     //$vacacion = $UsuarioDAO->getVacacionByUserId($id_usuario);
@@ -26,7 +29,7 @@ if (isset($_GET['id'])) {
     $vacaciones = $VacacionDAO->getDetalleVacacion($id_vacacion);
 
     // Obtiene los historiales de vacaciones del usuario actual
-    $historial_vacaciones = $UsuarioDAO->getHistorialVacacionesByUserId($id_usuario);
+    $historial_vacaciones = $UsuarioDAO->getHistorialVacacionesByUserId($id_usuario_vacacion);
     // Si el usuario no existe
     if (!$user) {
         echo "Usuario no encontrado.";

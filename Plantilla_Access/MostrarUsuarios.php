@@ -6,6 +6,11 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header("Location: login.php");
     exit;
 }
+// Verificar si el usuario es administrador (id_rol == 2)
+if ($_SESSION['id_rol'] == 3 OR $_SESSION['id_rol'] == 1) { // Verificar si el usuario es un empleado
+    header("Location: index.php"); // Redirigir a la página de inicio si no es administrador
+    exit;
+}
 require 'template.php';
 
 
@@ -41,10 +46,37 @@ if ($id_departamento == 'all') {
 <html lang="en">
 
 <head>
-  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="Dashboard">
+  <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Bootstrap core CSS -->
+  <link href="assets/css/bootstrap.css" rel="stylesheet">
+  <!--external css-->
+  <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+  <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="assets/css/zabuto_calendar.css">
+  <link rel="stylesheet" type="text/css" href="assets/js/gritter/css/jquery.gritter.css" />
+  <link rel="stylesheet" type="text/css" href="assets/lineicons/style.css">
 
+  <!-- Custom styles for this template -->
+  <link href="assets/css/style.css" rel="stylesheet">
+  <link href="assets/css/style-responsive.css" rel="stylesheet">
 
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        td, div {
+            color: black !important;
+        }
+    </style>
 </head>
 
 
@@ -60,6 +92,11 @@ if ($id_departamento == 'all') {
 
             <div class="specific-container"
                 style="display: flex; flex-direction: column; gap: 20px; width: 100%; align-items: center;">
+                <div class="row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                     <button onclick="window.location.href='registroEmpleado.php'">
+                                Registrar Usuario
+                     </button>
+                </div>
                 <!-- Añadido flex-direction: column para apilar los formularios -->
                 <div class="row">
                     <!-- Formulario 2 con select -->

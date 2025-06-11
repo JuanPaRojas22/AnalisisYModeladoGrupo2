@@ -39,6 +39,15 @@ interface VacacionDAO
     // Funcion para obtener todos los dias reservados por el empleado para que no se muestren en el calendario
     public function getFechasReservadasEmpleado($id_usuario);
 
+    // Funcion para obtener una vacacion a editar y comparar si la fecha de hoy no sea menor a
+    // 8 dias de la fecha de inicio de la vacacion
+    public function puedeEditarVacacion($id_vacacion);
+
+    // Funcion para mostrar las vacaciones de un usuario por estado
+    public function getVacacionesPorEstado($id_usuario, array $estados, $limit = 5, $offset = 0);
+
+    // Funcion para la paginacion de las vacaciones por estado
+    public function contarVacacionesPorEstado($id_usuario, $estados);
     
 
 }

@@ -361,6 +361,7 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                                 <th>Dias Tomados</th>
                                 <th>Dias Restantes</th>
                                 <th>Estado</th>
+                                <th>Razon</th>
                                 <th>Detalles</th>
                             </tr>
                         </thead>
@@ -377,6 +378,7 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                                 <td>" . $row['diasTomado'] . "</td>
                                 <td>" . $row['DiasRestantes'] . "</td>
                                 <td>" . $row['descripcion'] . "</td>
+                                <td>" . $row['razon'] . "</td>
                                 <td><a class='btn btn-success' style='font-size: 2.5rem;' href='detalleVacacion.php?id=" . $row['id_vacacion'] . "' >
                                     <i class='bi bi-file-earmark-person'></i> 
                                 </a></td>
