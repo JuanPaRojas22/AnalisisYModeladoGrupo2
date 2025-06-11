@@ -1157,3 +1157,7 @@ ALTER TABLE USUARIO
 ADD COLUMN intentos_fallidos INT DEFAULT 0,
 ADD COLUMN bloqueado_hasta DATETIME DEFAULT NULL;
 
+--cambios paula
+ALTER TABLE ausencias
+ADD COLUMN justificada ENUM('Sí', 'No') DEFAULT 'No';
+
