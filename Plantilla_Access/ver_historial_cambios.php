@@ -153,12 +153,16 @@ include 'template.php';
             <div class="container">
                 <h1>Historial de Cambios de Puesto</h1>
 
+                
                 <a href="registrar_cambio_puesto.php" class="btn">
                     Ir al Formulario de Cambio de Puesto
                 </a>
-                <button onclick="generarPDF()" class="btn">
-    Descargar Reporte en PDF
-</button>
+                
+                <form action="reporte_puestos.php" method="get" target="_blank">
+                    <input type="hidden" name="id_usuario" value="<?= $id_usuario ?>">
+                    <button type="submit" class="btn">Descargar PDF</button>
+                </form>
+
 
                 <table>
                     <thead>
