@@ -26,6 +26,9 @@ interface Historial_Solicitud_Modificacion_VacacionesDAO
         // Cuando se rechace la solicitud de vacacions, se cambie el estado de la solicitud a rechazada.
         public function rechazarSolicitudModificacionVacaciones($id_historial_solicitud_modificacion);
 
+        // Funcion para la paginacion de las solicitudes de modificacion de vacaciones por estado
+        public function contarHistorialModificadoPorUsuario($id_usuario);
+
     }
 
 

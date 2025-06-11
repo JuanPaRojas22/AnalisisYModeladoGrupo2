@@ -8,6 +8,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
 require_once __DIR__ . '/Impl/historialVacacionesDAOSImpl.php';
+require_once __DIR__ . '/Impl/Historial_Solicitud_Modificacion_VacacionesDAOSImpl.php';
 include 'conexion.php';
 include "template.php";
 
@@ -18,6 +19,7 @@ $id_departamento = $_GET['id_departamento'] ?? null;
 $UsuarioDAO = new UsuarioDAOSImpl();
 $VacacionDAO = new VacacionDAOSImpl();
 $HistorialVacacionDAO = new historialVacacionesDAOSImpl();
+$Historial_Solicitud_Modificacion_VacacionesDAO = new Historial_Solicitud_Modificacion_VacacionesDAOSImpl();
 $id_usuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null;
 
 // Obtiene los detalles del departamento de usuario por id
@@ -33,9 +35,6 @@ $fechasReservadas = $VacacionDAO->getFechasReservadasEmpleado($id_usuario);
 $rangosFechas = array_map(function ($row) {
     return ["from" => $row['fecha_inicio'], "to" => $row['fecha_fin']];
 }, $fechasReservadas);
-
-
-
 
 // Mostrar las fechas reservadas en formato JSON para el calendario
 //echo json_encode($rangosFechas);
@@ -200,17 +199,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         div {
             color: black !important;
         }
+        
     </style>
 </head>
 
 <body>
 
     <section id="container">
-
-        <!--[if lt IE 9]>
-      QUIERO HACER QUE SOLO MUESTRE LAS PENDIENTES DE VACACIONES DE UN USUARIO ADMINISTRADOR
-    <![endif]-->
-
 
 
         <section id="main-content">
@@ -236,15 +231,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $limit = 5;
                 $offset = ($page - 1) * $limit;
 
-                /*
-                if (!empty($search)) {
-                    // Mostrar solo 1 fila desde la posición indicada por el número buscado
-                    $offset = $search - 1;
-                    $limit = 1;
+                $filtro = $_GET['filtro'] ?? 'pendiente';
+                switch($filtro) {
+                case 'pendiente':
+                    $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [1], $limit, $offset);
+                    break;
+                case 'aprobadas':
+                    $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [2,4], $limit, $offset);
+                    break;
+                case 'rechazadas':
+                    $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [3], $limit, $offset);
+                    break;
+                case 'modificadas':
+                    // obtiene exclusivamente las vacaciones modificadas aprobadas o pendientes
+                    $result = $Historial_Solicitud_Modificacion_VacacionesDAO->getHistorialSolicitudModificacionPorUsuario($id_usuario, $limit, $offset);
+                    break;
+                default:
+                    $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [1], $limit, $offset);
                 }
-                */
 
-                $result = $VacacionDAO->getVacacionesSolicitadas($id_usuario, $limit, $offset);
 
                 ?>
 
@@ -554,6 +559,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             color: white;
                             border-color: #116B67;
                         }
+                        /* Estilo base para los tabs */
+            .nav-tabs .nav-link {
+    color: #147964;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    font-weight: bold;
+}
+
+/* Estilo cuando están activos (seleccionados) */
+.nav-tabs .nav-link.active {
+    background-color: #116B67;
+    color: white;
+    border-color: #116B67 #116B67 #f9f9f9;
+}
+
+/* Opcional: quitar borde inferior del tab activo */
+.nav-tabs {
+    border-bottom: 1px solid #ddd;
+}
+
                     </style>
                 </head>
 
@@ -696,8 +721,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             configurarCalendario("#fecha_fin_solicitud");
                         </script>
                     </div>
+                    
+                        <ul class="nav nav-tabs justify-content-center mb-3 ">
+                            <li class="nav-item">
+                                <a class="nav-link <?= $filtro === 'pendiente' ? 'active' : '' ?>" href="?filtro=pendiente">Pendientes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?= $filtro === 'aprobadas' ? 'active' : '' ?>" href="?filtro=aprobadas">Aprobadas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?= $filtro === 'rechazadas' ? 'active' : '' ?>" href="?filtro=rechazadas">Rechazadas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?= $filtro === 'modificadas' ? 'active' : '' ?>" href="?filtro=modificadas">Modificadas</a>
+                            </li>
+                        </ul>
+
                     <!-- <a href="EditarVacaciones.php">Editar Vacaciones</a> -->
-                    <<link rel="stylesheet"
+                    <link rel="stylesheet"
                         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
                         <table>
                             <thead>
@@ -718,26 +759,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 // Mostrar los resultados de la consulta
                                 if ($result->num_rows > 0) {
                                     while ($row = $result->fetch_assoc()) {
-                                        echo "<tr>
-                                <td>" . $row['Nombre'] . "</td>
-                                <td>" . $row['Apellido'] . "</td>
-                                <td>" . $row['Departamento'] . "</td>
-                                <td>" . $row['fecha_inicio'] . "</td>
-                                <td>" . $row['fecha_fin'] . "</td>
-                                <td>" . $row['diasTomado'] . "</td>
-                                <td>" . $row['DiasRestantes'] . "</td>
-                                <td>" . $row['descripcion'] . "</td>
-                                <td>
-                                    <div class='d-flex flex-column gap-2'>  
-                                        <a class='btn btn-primary' style='font-size: 2.5rem;' href='detalleVacacionSolicitada.php?id=" . $row['id_vacacion'] . "' >
-                                            <i class='bi bi-file-earmark-person'></i> 
-                                        </a>
-                                        <a class='btn btn-success' style='font-size: 2.5rem;' href='SolicitarEdicionVacacion.php?id=" . $row['id_vacacion'] . "' >
-                                            <i class='bi bi-pencil-square'></i> 
-                                        </a>
-                                    </div>
-                                </td>
-                              </tr>";
+                                        echo "<tr>";
+                                        echo "<td>" . $row['nombre'] . "</td>";
+                                        echo "<td>" . $row['apellido'] . "</td>";
+                                        echo "<td>" . $row['Departamento'] . "</td>";
+
+                                        if ($filtro === 'modificadas') {
+                                            echo "<td>{$row['fecha_inicio']}</td>";
+                                            echo "<td>{$row['fecha_fin']}</td>";
+                                            echo "<td>{$row['dias_solicitados']}</td>";
+                                            echo "<td>{$row['DiasRestantes']}</td>";
+                                            echo "<td>{$row['estado_modificacion']}</td>";
+                                        } else {
+                                            echo "<td>{$row['fecha_inicio']}</td>";
+                                            echo "<td>{$row['fecha_fin']}</td>";
+                                            echo "<td>{$row['diasTomado']}</td>";
+                                            echo "<td>{$row['DiasRestantes']}</td>";
+                                            echo "<td>{$row['descripcion']}</td>";
+                                        }
+
+                                        if ($filtro !== 'modificadas') {
+                                            echo "<td>
+                                                <div class='d-flex flex-column gap-2'>  
+                                                    <a class='btn btn-primary' style='font-size: 2.5rem;' href='detalleVacacionSolicitada.php?id=" . $row['id_vacacion'] . "' >
+                                                        <i class='bi bi-file-earmark-person'></i> 
+                                                    </a>";
+                                        } else{
+                                            echo "<td>
+                                    <a class='btn btn-success' style='font-size: 2.5rem;' href='detalleEditarVacacion.php?id=" . $row['id_registro'] . "' >
+                                        <i class='bi bi-file-earmark-person'></i> 
+                                    </a>
+                                </td>";
+                                        }
+
+                                        
+
+                                        if ($filtro !== 'modificadas') {
+                                            $puedeEditar = $VacacionDAO->puedeEditarVacacion($row['id_vacacion']);
+                                            if ($puedeEditar) {
+                                                echo "<a class='btn btn-success' style='font-size: 2.5rem;' href='SolicitarEdicionVacacion.php?id=" . $row['id_vacacion'] . "' >
+                                                        <i class='bi bi-pencil-square'></i> 
+                                                    </a>";
+                                            } else {
+                                                echo "<button class='btn btn-secondary' style='font-size: 2.5rem;' onclick='alert(\"No se puede editar esta vacación. Deben faltar al menos 8 días para su inicio.\")'>
+                                                        <i class='bi bi-pencil-square'></i> 
+                                                    </button>";
+                                            }
+                                        }
+
+                                        echo "</div></td>";
+                                        echo "</tr>";
                                     }
                                 } else {
                                     echo "<tr><td colspan='9' class='no-records'>No se encontraron registros.</td></tr>";
@@ -748,53 +819,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
                         <?php
+                            // Obtener total de resultados según el filtro actual
+                            $totalFilas = 0;
+                            switch ($filtro) {
+                                case 'pendiente':
+                                    $totalFilas = $VacacionDAO->contarVacacionesPorEstado($id_usuario, [1]);
+                                    break;
+                                case 'aprobadas':
+                                    $totalFilas = $VacacionDAO->contarVacacionesPorEstado($id_usuario, [2,4]);
+                                    break;
+                                case 'rechazadas':
+                                    $totalFilas = $VacacionDAO->contarVacacionesPorEstado($id_usuario, [3]);
+                                    break;
+                                case 'modificadas':
+                                    $totalFilas = $Historial_Solicitud_Modificacion_VacacionesDAO->contarHistorialModificadoPorUsuario($id_usuario);
+                                    break;
+                                default:
+                                    $totalFilas = $VacacionDAO->contarVacacionesPorEstado($id_usuario, [1]);
+                                    break;
+                            }
 
-                        $total_sql = "SELECT COUNT(*) as total
-                                    FROM vacacion V
-                                    INNER JOIN usuario U ON V.id_usuario = U.id_usuario
-                                    WHERE (V.id_estado_vacacion = 1 OR V.id_estado_vacacion = 4)
-                                    AND U.id_usuario = ?";
+                            $totalPaginas = ceil($totalFilas / $limit);
+                            ?>
 
-                        $params = [$id_usuario];
-                        $types = "i";
-
-                        if (!empty($search)) {
-                            // Si se buscó una fila específica, la paginación no es necesaria
-                            $total_pages = 0;
-                        } else {
-                            $stmt_total = $conn->prepare($total_sql);
-                            $stmt_total->bind_param($types, ...$params);
-                            $stmt_total->execute();
-                            $total_result = $stmt_total->get_result();
-                            $total_rows = $total_result->fetch_assoc()['total'];
-                            $total_pages = ceil($total_rows / $limit);
-                        }
-                        ?>
-
-                        <?php if ($total_pages > 1): ?>
-                            <nav aria-label="Page navigation" class="mt-4">
-                                <ul class="pagination justify-content-end"
-                                    style="width: 80%; margin: auto; padding-right: 20px;">
-                                    <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
-                                        <a class="page-link" href="?page=<?= $page - 1 ?>">Anterior</a>
-                                    </li>
-                                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                            <nav aria-label="Paginación">
+                                <ul class="pagination justify-content-center">
+                                    <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
                                         <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                                            <a class="page-link" href="?page=<?= $i ?>">
-                                                <?= $i ?>
-                                            </a>
+                                            <a class="page-link" href="?page=<?= $i ?>&filtro=<?= $filtro ?>"><?= $i ?></a>
                                         </li>
                                     <?php endfor; ?>
-                                    <li class="page-item <?= $page >= $total_pages ? 'disabled' : '' ?>">
-                                        <a class="page-link" href="?page=<?= $page + 1 ?>">Siguiente</a>
-                                    </li>
                                 </ul>
-                            </nav>*
-
-                        <?php endif; ?>
-
-
-
+                            </nav>
 
             </section>
             <script>

@@ -296,11 +296,37 @@ class UsuarioDAOSImpl implements UsuarioDAO
     // Funcion para poder actualizar un usuario
     public function updateUser($nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_ocupacion, $id_nacionalidad, $id_usuario)
     {
-        $conn = $this->conn;
-        $query = "UPDATE Usuario SET nombre = ?, apellido = ?, fecha_nacimiento = ?, fecha_ingreso = ?,  correo_electronico = ?, username = ?, numero_telefonico = ?, direccion_imagen = ?, sexo = ?, estado_civil = ?, direccion_domicilio = ?, id_ocupacion = ?, id_nacionalidad = ? WHERE id_usuario = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("sssssssssssiii", $nombre, $apellido, $fecha_nacimiento, $fecha_ingreso,$correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_ocupacion, $id_nacionalidad, $id_usuario);
-        return $stmt->execute();
+
+        try {
+            // Excepcion por si se intenta subir una imagen que no es de tipo jpg, png o gif
+            if (isset($_FILES['direccion_imagen']) && $_FILES['direccion_imagen']['error'] === UPLOAD_ERR_OK) {
+                $fileType = mime_content_type($_FILES['direccion_imagen']['tmp_name']);
+                if (!in_array($fileType, ['image/jpeg', 'image/png', 'image/gif'])) {
+                    throw new Exception('La imagen debe ser de tipo JPG, PNG o GIF.');
+                }
+            }
+
+            // Excepcion por si se intenta subir una imagen mayor a 3MB
+            if (isset($_FILES['direccion_imagen']) && $_FILES['direccion_imagen']['error'] === UPLOAD_ERR_OK) {
+            $fileSize = $_FILES['direccion_imagen']['size'];
+            if ($fileSize > 2 * 1024 * 1024) { // 3MB
+                throw new Exception('La imagen no debe ser mayor a 3MB.');
+            }
+            }
+
+            $conn = $this->conn;
+            $query = "UPDATE Usuario SET nombre = ?, apellido = ?, fecha_nacimiento = ?, fecha_ingreso = ?,  correo_electronico = ?, username = ?, numero_telefonico = ?, direccion_imagen = ?, sexo = ?, estado_civil = ?, direccion_domicilio = ?, id_ocupacion = ?, id_nacionalidad = ? WHERE id_usuario = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("sssssssssssiii", $nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_ocupacion, $id_nacionalidad, $id_usuario);
+            // En caso de algun error en la base de datos, se lanza una excepcion
+            if (!$stmt->execute()) {
+                throw new Exception("Error al actualizar el usuario: " . $stmt->error);
+            }
+            return true;
+
+        } catch (Exception $e) {
+            return "Error: " . $e->getMessage();
+        }
     }
 
 
@@ -358,20 +384,4 @@ class UsuarioDAOSImpl implements UsuarioDAO
 
     
 }
-
-
-
-
-
-
-$UsuarioDAO = new UsuarioDAOSImpl();
-
-// $UsuarioDAO->AgregarUsuario(1, 1, "Juan", "Perez", "1990-01-01", date("Y-m-d"), "Developer", "juan.perez@example.com", "juanperez", "password123", "1234567890", "path/to/image.jpg", "M", "Single", date("Y-m-d H:i:s"), "admin", date("Y-m-d H:i:s"), "admin");
-
-/* $users = $UsuarioDAO->getAllUsers();
-
- foreach ($users as $user) {
-     echo $user->id_usuario . ": " . $user->id_departamento . " - " . $user->id_rol . " - " . $user->nombre . " - " . $user->apellido . " - " . $user->fecha_nacimiento . " - " . $user->fecha_ingreso . " - " . $user->cargo . " - " . $user->correo_electronico . " - " . $user->username . " - " . $user->password . " - " . $user->numero_telefonico . " - " . $user->direccion_imagen . " - " . $user->sexo . " - " . $user->estado_civil . " - " . $user->fechacreacion . " - " . $user->usuariocreacion . " - " . $user->fechamodificacion . " - " . $user->usuariomodificacion . "<br>";
- }*/
-
 ?>

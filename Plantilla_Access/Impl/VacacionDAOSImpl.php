@@ -94,7 +94,7 @@ class VacacionDAOSImpl implements VacacionDAO
             INNER JOIN departamento D ON U.id_departamento = D.id_departamento
             INNER JOIN historial_vacaciones HV ON V.id_historial = HV.id_historial
             INNER JOIN estado_vacacion EV ON V.id_estado_vacacion = EV.id_estado_vacacion
-            WHERE V.id_estado_vacacion IN (1, 4)
+            WHERE V.id_estado_vacacion IN (1)
             AND U.id_usuario = ?
             ORDER BY V.fecha_inicio DESC
             LIMIT ? OFFSET ?
@@ -110,7 +110,7 @@ class VacacionDAOSImpl implements VacacionDAO
     {
         $conn = $this->conn;
         $sql = $conn->prepare("SELECT V.id_vacacion, V.id_usuario, U.Nombre, U.Apellido, Dep.Nombre AS Departamento, 
-                    V.fecha_inicio, V.fecha_fin, V.diasTomado, HV.DiasRestantes, EH.descripcion
+                    V.fecha_inicio, V.fecha_fin, V.diasTomado, HV.DiasRestantes, EH.descripcion, V.razon
                 FROM vacacion V
                 INNER JOIN usuario U ON V.id_usuario = U.id_usuario
                 INNER JOIN departamento Dep ON U.id_departamento = Dep.id_departamento
@@ -381,13 +381,15 @@ class VacacionDAOSImpl implements VacacionDAO
         // Si se da uno o mas errores se retorna la lista de errores y no se ingresa la vacacion
         if(!empty($errores)){
             return $errores;
+            //var_dump($errores);
+            //exit;
         }
     
         // Se enlazan los parametros
         $fecha_fin_formateada = $fecha_fin->format('Y-m-d');
         // Si es un medio día, el cálculo de días es 0.5
 
-        
+        /*
         if ($diasTomado == 0.5) {
             // Si el empleado pide medio día, solo se valida la fecha de inicio
             $dias_solicitados = 0.5;  // Medio día
@@ -407,6 +409,7 @@ class VacacionDAOSImpl implements VacacionDAO
         } else {
             $fecha_fin_str = null; // No se necesita la fecha de fin para medio día
         }
+        */
 
         // Se ingresa la vacacion por el administrador
         $stmt = $function_conn->prepare(
@@ -443,27 +446,99 @@ class VacacionDAOSImpl implements VacacionDAO
     }
 
 
-    // Funcion para obtener todos los dias reservados por el empleado para que no pueda solicitar vacaciones en esas fechas
-    public function getFechasReservadasEmpleado($id_usuario){
-        $function_conn = $this->conn;
-        // Se obtienen las fechas reservadas por el empleado
-        $stmt = $function_conn->prepare(
-            "SELECT fecha_inicio, fecha_fin
-            FROM vacacion
-            WHERE id_usuario = ? AND (id_estado_vacacion = 1 OR id_estado_vacacion = 2)"
-        );
-        $stmt->bind_param("i", $id_usuario);
-        // Se ejecuta el comando
+    public function getFechasReservadasEmpleado($id_usuario)
+{
+    $function_conn = $this->conn;
+
+    $fechas_reservadas = [];
+
+    // 1. Obtener las fechas de vacaciones del usuario
+    $stmtVacaciones = $function_conn->prepare(
+        "SELECT fecha_inicio, fecha_fin
+        FROM vacacion
+        WHERE id_usuario = ? AND (id_estado_vacacion = 1 OR id_estado_vacacion = 2)"
+    );
+    $stmtVacaciones->bind_param("i", $id_usuario);
+    $stmtVacaciones->execute();
+    $resultVacaciones = $stmtVacaciones->get_result();
+
+    while ($row = $resultVacaciones->fetch_assoc()) {
+        $fechas_reservadas[] = $row;
+    }
+    $stmtVacaciones->close();
+
+    // 2. Obtener los días feriados
+    $queryFeriados = "SELECT fecha AS fecha_inicio, fecha AS fecha_fin FROM dias_feriados";
+    $resultFeriados = $function_conn->query($queryFeriados);
+
+    while ($row = $resultFeriados->fetch_assoc()) {
+        $fechas_reservadas[] = $row; // Cada día feriado es un rango de 1 solo día
+    }
+
+    return $fechas_reservadas;
+}
+
+    // Funcion para obtener una vacacion a editar y comparar si la fecha de hoy no sea menor a
+    // 8 dias de la fecha de inicio de la vacacion
+    public function puedeEditarVacacion($id_vacacion)
+    {
+        $stmt = $this->conn->prepare("SELECT fecha_inicio FROM vacacion WHERE id_vacacion = ?");
+        $stmt->bind_param("i", $id_vacacion);
         $stmt->execute();
         $result = $stmt->get_result();
-        $fechas_reservadas = [];
-        while ($row = $result->fetch_assoc()) {
-            $fechas_reservadas[] = $row;
-        }
-        $stmt->close();
 
-        return $fechas_reservadas;
+        if ($row = $result->fetch_assoc()) {
+            $fecha_inicio_vacacion = new DateTime($row['fecha_inicio']);
+            $fecha_limite = new DateTime(); // hoy
+            $fecha_limite->modify('+8 days'); // hoy + 8 días
+
+            if ($fecha_inicio_vacacion > $fecha_limite) {
+                return true; // Puede editar
+            }
+        }
+        return false; // No puede editar
     }
+
+    public function getVacacionesPorEstado($id_usuario, array $estados, $limit = 5, $offset = 0) {
+        $placeholders = implode(',', array_fill(0, count($estados), '?'));
+        $types = str_repeat('i', count($estados) + 3);
+        $sql = "
+        SELECT V.id_vacacion, U.nombre, U.apellido, D.nombre AS Departamento,
+                V.fecha_inicio, V.fecha_fin, V.diasTomado, HV.DiasRestantes, EV.descripcion
+        FROM vacacion V
+        JOIN usuario U ON V.id_usuario = U.id_usuario
+        JOIN departamento D ON U.id_departamento = D.id_departamento
+        JOIN historial_vacaciones HV ON V.id_historial = HV.id_historial
+        JOIN estado_vacacion EV ON V.id_estado_vacacion = EV.id_estado_vacacion
+        WHERE V.id_estado_vacacion IN ($placeholders)
+            AND U.id_usuario = ?
+        ORDER BY V.fecha_inicio DESC
+        LIMIT ? OFFSET ?
+        ";
+        $stmt = $this->conn->prepare($sql);
+        $bindParams = array_merge($estados, [$id_usuario, $limit, $offset]);
+        $stmt->bind_param($types, ...$bindParams);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
+    public function contarVacacionesPorEstado($id_usuario, $estados) {
+        global $conn;
+        $placeholders = implode(',', array_fill(0, count($estados), '?'));
+        $types = str_repeat('i', count($estados) + 1);
+        $params = array_merge([$id_usuario], $estados);
+
+        $stmt = $conn->prepare("SELECT COUNT(*) as total FROM vacacion WHERE id_usuario = ? AND id_estado_vacacion IN ($placeholders)");
+        $stmt->bind_param($types, ...$params);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        return $result['total'] ?? 0;
+    }
+
+
+
+
+
 }   
 
 ?>
