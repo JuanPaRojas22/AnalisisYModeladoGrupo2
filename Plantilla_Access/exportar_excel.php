@@ -32,8 +32,8 @@ echo "<tr>
         <th>Nombre</th>
         <th>Apellido</th>
         <th>Fecha Nacimiento</th>
-        <th>Teléfono</th>
-        <th>Correo Electrónico</th>
+        <th>Telefono</th>
+        <th>Correo Electronico</th>
         <th>Sexo</th>
         <th>Estado Civil</th>
         <th>Nacionalidad</th>
@@ -41,9 +41,9 @@ echo "<tr>
         <th>Horas</th>
         <th>Salario Base</th>
         <th>Salario Neto</th>
-        <th>Ocupación</th>
+        <th>Ocupacion</th>
         <th>Departamento</th>
-        <th>Dirección</th>
+        <th>Direccion</th>
         <th>Tipo de Quincena</th>
         
     </tr>";
