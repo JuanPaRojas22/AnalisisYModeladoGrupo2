@@ -46,6 +46,7 @@ if (!isset($_SESSION['id_usuario'])) {
             justify-content: center;
             align-items: center;
             z-index: 1000; /* Asegura que el overlay esté por encima de otros elementos */
+            color: black;
         }
 
         /* Estilo para el contenido del tutorial */
@@ -56,6 +57,7 @@ if (!isset($_SESSION['id_usuario'])) {
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
             width: 300px;
+            color: black;
         }
 
         .welcome-text {
@@ -65,6 +67,7 @@ if (!isset($_SESSION['id_usuario'])) {
             color: #333;
             margin-bottom: 20px;
             line-height: 1.5;
+            color: black;
         }
 
         .start-button {
@@ -97,7 +100,15 @@ if (!isset($_SESSION['id_usuario'])) {
         /* Sidebar */
         #sidebar {
             z-index: 1; /* Asegura que el menú esté por encima del overlay */
+            
         }
+        /* Cambiar el color del texto dentro del tooltip de Intro.js */
+.introjs-tooltiptext {
+    color:black; /* Cambia esto al color que desees */
+    font-family: 'Ruda', sans-serif; /* Opcional: usar la misma fuente */
+    font-size: 1.2rem; /* Tamaño del texto */
+    
+}
     </style>
 </head>
 

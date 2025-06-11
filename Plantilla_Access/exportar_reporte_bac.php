@@ -24,7 +24,7 @@ $sql = "
         p.hrs,
         p.salario_base,
         p.salario_neto,
-        p.codigo_bac,
+        p.Cuenta_Bac,
         u.direccion_domicilio,
         p.tipo_quincena,
         d.nombre AS departamento
@@ -60,7 +60,7 @@ echo "<tr>
 // Recorrer los resultados y generar las filas de la tabla en Excel
 while ($fila = $resultado->fetch_assoc()) {
     echo "<tr>
-            <td>{$fila['codigo_bac']}</td>
+            <td>{$fila['Cuenta_Bac']}</td>
             <td>{$fila['nombre']}</td>
             <td>{$fila['apellido']}</td>
             <td>{$fila['correo_electronico']}</td>
