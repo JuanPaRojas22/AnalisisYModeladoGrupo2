@@ -26,7 +26,7 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 // Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
 
-echo "Conectado correctamente con SSL.";
+//echo "Conectado correctamente con SSL.";
 
 
 // Inicializar sesión y variables de error
