@@ -23,7 +23,7 @@ class UsuarioDAOSImpl implements UsuarioDAO
 
         // Configuramos SSL
         mysqli_ssl_set($this->conn, NULL, NULL, $ssl_ca, NULL, NULL);
-        mysqli_options($this->conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
+        mysqli_options($this->conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
 
         // Conexión con SSL
         if (!$this->conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
