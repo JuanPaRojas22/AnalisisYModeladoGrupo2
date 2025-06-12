@@ -1,6 +1,6 @@
 <?php
 // Se hace la conexión a la base de datos
-$conn = new mysqli("accespersoneldb.mysql.database.azure.com", "adminUser", "admin123+", "GestionEmpleados");
+$conn = new mysqli("127.0.0.1", "adminUser", "admin123+", "GestionEmpleados");
 mysqli_set_charset($conn, "utf8mb4");
 
 // Se valida la conexión a la base de datos
