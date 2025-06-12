@@ -250,7 +250,7 @@ class Historial_Solicitud_Modificacion_VacacionesDAOSImpl implements Historial_S
         SELECT HSMV.id_historial_solicitud_modificacion AS id_registro,
                 U.nombre, U.apellido, Dep.nombre AS Departamento,
                 HSMV.fecha_inicio, HSMV.fecha_fin, HSMV.dias_solicitados,
-                HSMV.estado AS estado_modificacion 
+                HSMV.estado AS estado_modificacion, 
                 HV.DiasRestantes
         FROM historial_solicitud_modificacion_vacaciones HSMV
         JOIN usuario U ON HSMV.id_usuario = U.id_usuario

@@ -42,7 +42,7 @@ class PDF extends FPDF
     }
 }
 
-class GenerarReporteHistorial
+class GenerarReporteVacacion
 {
     private $conn;
 
@@ -51,21 +51,24 @@ class GenerarReporteHistorial
         $this->conn = $conn;
     }
 
-    // Función para obtener el historial de vacaciones
-    public function getHistorialVacaciones($fecha_inicio, $fecha_fin, $id_usuario, $id_departamento)
+    // Función para obtener las vacaciones
+    public function getVacaciones($fecha_inicio, $fecha_fin, $id_usuario, $id_departamento, $id_estado_vacacion)
     {
         $sql = "SELECT 
-                    h.id_historial,
+                    v.id_vacacion,
                     u.nombre AS empleado,
                     d.nombre AS departamento,
-                    h.Razon,
-                    h.DiasTomados,
-                    h.FechaInicio,
-                    h.FechaFin,
-                    h.DiasRestantes
-                FROM historial_vacaciones h
-                LEFT JOIN usuario u ON h.id_usuario = u.id_usuario
-                LEFT JOIN departamento d ON u.id_departamento = d.id_departamento
+                    v.razon,
+                    v.diasTomado,
+                    v.fecha_inicio,
+                    v.fecha_fin,
+                    h.DiasRestantes,
+                    ev.descripcion AS estado
+                FROM vacacion v
+                INNER JOIN usuario u ON v.id_usuario = u.id_usuario
+                INNER JOIN departamento d ON u.id_departamento = d.id_departamento
+                INNER JOIN estado_vacacion ev ON v.id_estado_vacacion = ev.id_estado_vacacion
+                INNER JOIN historial_vacaciones h ON v.id_historial = h.id_historial
                 WHERE h.FechaInicio BETWEEN ? AND ?";
 
         $param_types = "ss";
@@ -80,6 +83,12 @@ class GenerarReporteHistorial
             $sql .= " AND u.id_departamento = ?";
             $param_types .= "i";
             $params[] = $id_departamento;
+        }
+
+        if (!empty($id_estado_vacacion)) {
+            $sql .= " AND v.id_estado_vacacion = ?";
+            $param_types .= "i";
+            $params[] = $id_estado_vacacion;
         }
 
         $stmt = $this->conn->prepare($sql);
@@ -100,9 +109,9 @@ class GenerarReporteHistorial
         return $historial;
     }
 
-    public function generarPDF($fecha_inicio, $fecha_fin, $id_usuario, $id_departamento)
+    public function generarPDF($fecha_inicio, $fecha_fin, $id_usuario, $id_departamento, $id_estado_vacacion)
     {
-        $historial = $this->getHistorialVacaciones($fecha_inicio, $fecha_fin, $id_usuario, $id_departamento);
+        $historial = $this->getVacaciones($fecha_inicio, $fecha_fin, $id_usuario, $id_departamento, $id_estado_vacacion);
 
         if (empty($historial)) {
             echo "<script>
@@ -123,17 +132,18 @@ class GenerarReporteHistorial
 
             $pdf->TableRow('Empleado', $fila['empleado']);
             $pdf->TableRow('Departamento', $fila['departamento']);
-            $pdf->TableRow('Razón', $fila['Razon']);
-            $pdf->TableRow('Días Tomados', $fila['DiasTomados']);
-            $pdf->TableRow('Fecha Inicio', $fila['FechaInicio']);
-            $pdf->TableRow('Fecha Fin', $fila['FechaFin']);
+            $pdf->TableRow('Razón', $fila['razon']);
+            $pdf->TableRow('Días Tomados', $fila['diasTomado']);
+            $pdf->TableRow('Fecha Inicio', $fila['fecha_inicio']);
+            $pdf->TableRow('Fecha Fin', $fila['fecha_fin']);
             $pdf->TableRow('Días Restantes', $fila['DiasRestantes']);
+            $pdf->TableRow('Estado', $fila['estado']);
 
             $pdf->Ln(10);
         }
 
         // Descargar el PDF
-        $pdf->Output('D', 'reporte_historial_vacaciones.pdf');
+        $pdf->Output('D', 'reporte_vacaciones.pdf');
     }
 }
 
@@ -142,8 +152,9 @@ $fecha_inicio = !empty($_GET['fecha_inicio']) ? $_GET['fecha_inicio'] : '2000-01
 $fecha_fin = !empty($_GET['fecha_fin']) ? $_GET['fecha_fin'] : date('Y-m-d');
 $id_usuario = !empty($_GET['id_usuario']) ? $_GET['id_usuario'] : null;
 $id_departamento = !empty($_GET['id_departamento']) ? $_GET['id_departamento'] : null;
+$id_estado_vacacion = !empty($_GET['id_estado_vacacion']) ? $_GET['id_estado_vacacion'] : null;
 
 // Generar el PDF
-$reporte = new GenerarReporteHistorial($conn);
-$reporte->generarPDF($fecha_inicio, $fecha_fin, $id_usuario, $id_departamento);
+$reporte = new GenerarReporteVacacion($conn);
+$reporte->generarPDF($fecha_inicio, $fecha_fin, $id_usuario, $id_departamento, $id_estado_vacacion);
 ?>
