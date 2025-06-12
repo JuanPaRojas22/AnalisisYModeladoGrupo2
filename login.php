@@ -7,7 +7,7 @@ $password = "admin123+";
 $dbname = "gestionEmpleados";
 $port = 3306;
 
-// Ruta al certificado CA para validar SSL (ajusta la ruta según donde tengas el archivo)
+// Ruta al certificado CA para validar SSL
 $ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
 
 // Inicializamos mysqli
@@ -16,8 +16,8 @@ $conn = mysqli_init();
 // Configuramos SSL
 $conn->ssl_set(NULL, NULL, $ssl_ca, NULL, NULL);
 
-// Intentamos conectar usando SSL
-if (!$conn->real_connect($host, $user, $password, $dbname, $port)) {
+// Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
+if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
     die("Error de conexión: " . mysqli_connect_error());
 }
 
@@ -25,6 +25,8 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port)) {
 mysqli_set_charset($conn, "utf8mb4");
 
 echo "Conectado correctamente con SSL.";
+
+
 // Inicializar sesión y variables de error
 session_start();
 $error_message = "";
