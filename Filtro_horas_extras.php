@@ -5,11 +5,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header("Location: login.php");
     exit;
 }
-// Conexión a la base de datos
-$conexion = new mysqli("localhost", "root", "", "gestionempleados");
-if ($conexion->connect_error) {
-    die("Error de conexión: " . $conexion->connect_error);
-}
+$conn
 
 // Verificar autenticación del usuario
 if (!isset($_SESSION['id_usuario'])) {
