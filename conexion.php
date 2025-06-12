@@ -14,7 +14,7 @@ $ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
 $conn = mysqli_init();
 
 // Configuramos SSL
-mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
+mysqli_ssl_set($conn, NULL, NULL, $ssl_ca, NULL, NULL);
 mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
 
