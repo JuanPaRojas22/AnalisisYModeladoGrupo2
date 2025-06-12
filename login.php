@@ -1,13 +1,30 @@
 <?php
 // Se hace la conexión a la base de datos
-$conn = new mysqli("accespersoneldb.mysql.database.azure.com", "adminUser", "admin123+", "gestionEmpleados");
-mysqli_set_charset($conn, "utf8mb4");
+// Parámetros de conexión
+$host = "accespersoneldb.mysql.database.azure.com";
+$user = "adminUser";
+$password = "admin123+";
+$dbname = "gestionEmpleados";
+$port = 3306;
 
-// Se valida la conexión a la base de datos
-if ($conn->connect_error) {
-    die("Error de conexión: " . $conn->connect_error);
+// Ruta al certificado CA para validar SSL (ajusta la ruta según donde tengas el archivo)
+$ssl_ca = 'F:/xampp/phpMyAdmin/certs/BaltimoreCyberTrustRoot.crt.pem';
+
+// Inicializamos mysqli
+$conn = mysqli_init();
+
+// Configuramos SSL
+$conn->ssl_set(NULL, NULL, $ssl_ca, NULL, NULL);
+
+// Intentamos conectar usando SSL
+if (!$conn->real_connect($host, $user, $password, $dbname, $port)) {
+    die("Error de conexión: " . mysqli_connect_error());
 }
 
+// Establecemos el charset
+mysqli_set_charset($conn, "utf8mb4");
+
+echo "Conectado correctamente con SSL.";
 // Inicializar sesión y variables de error
 session_start();
 $error_message = "";
