@@ -4,7 +4,7 @@ require_once __DIR__ . '/../Models/usuario.php';
 
 class UsuarioDAOSImpl implements UsuarioDAO
 {
-    private $conn;
+    private $conexion;
 
     public function __construct()
     {
