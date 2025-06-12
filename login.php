@@ -8,7 +8,7 @@ $dbname = "gestionEmpleados";
 $port = 3306;
 
 // Ruta al certificado CA para validar SSL (ajusta la ruta según donde tengas el archivo)
-$ssl_ca = 'F:/xampp/phpMyAdmin/certs/BaltimoreCyberTrustRoot.crt.pem';
+$ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
 
 // Inicializamos mysqli
 $conn = mysqli_init();
