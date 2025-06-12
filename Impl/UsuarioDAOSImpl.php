@@ -8,24 +8,27 @@ class UsuarioDAOSImpl implements UsuarioDAO
 
     public function __construct()
     {
-       $host = 'accespersoneldb.mysql.database.azure.com';
-$user = 'adminUser';
-$pass = 'admin123+'; // usa tu contraseña real
-$db = 'gestionEmpleados';
+    $host = 'accespersoneldb.mysql.database.azure.com';
+    $user = 'adminUser';
+    $pass = 'admin123+';
+    $db = 'gestionEmpleados';
 
-$ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
+    $ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
 
-$mysqli = mysqli_init();
+    $this->conexion = mysqli_init(); // Aquí usamos $this->conexion
 
-mysqli_ssl_set($mysqli, NULL, NULL, $ssl_ca, NULL, NULL);
-mysqli_options($mysqli, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
+    mysqli_ssl_set($this->conexion, NULL, NULL, $ssl_ca, NULL, NULL);
+    mysqli_options($this->conexion, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
 
-if (!$mysqli->real_connect($host, $user, $pass, $db, 3306, NULL, MYSQLI_CLIENT_SSL)) {
-    die("❌ Conexión fallida: " . mysqli_connect_error());
-}
+    if (!$this->conexion->real_connect($host, $user, $pass, $db, 3306, NULL, MYSQLI_CLIENT_SSL)) {
+        die("❌ Conexión fallida: " . mysqli_connect_error());
+    }
 
-echo "✅ Conexión SSL exitosa.";
-$mysqli->close();
+    // No cierres la conexión aquí, porque probablemente la usarás después
+    // $this->conexion->close(); ← quita esta línea
+
+    // Puedes dejar esto para verificar:
+    echo "✅ Conexión SSL exitosa.\n";
 
     }
 
