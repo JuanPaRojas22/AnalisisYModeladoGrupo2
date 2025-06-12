@@ -26,8 +26,7 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 // Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
 
-// Establecer la codificación UTF-8
-$conexion->set_charset("utf8");
+
 
 // Consulta para obtener los datos de las tablas usuario, planilla, nacionalidades, ocupaciones y departamento
 $sql = "SELECT u.id_usuario, u.nombre, u.apellido, u.correo_electronico, u.numero_telefonico, u.fecha_nacimiento, u.sexo, u.estado_civil, 
