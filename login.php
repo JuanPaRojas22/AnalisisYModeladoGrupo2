@@ -14,7 +14,9 @@ $ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
 $conn = mysqli_init();
 
 // Configuramos SSL
-$conn->ssl_set(NULL, NULL, $ssl_ca, NULL, NULL);
+mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
+mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
+
 
 // Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
 if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
