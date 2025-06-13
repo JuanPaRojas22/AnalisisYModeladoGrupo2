@@ -1,7 +1,7 @@
 <?php
 session_start();
 include 'template.php';
-// Conexión a la base de datos
+
 // Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
@@ -9,66 +9,63 @@ $password = "admin123+";
 $dbname = "gestionEmpleados";
 $port = 3306;
 
-// Ruta al certificado CA para validar SSL
+// Ruta al certificado SSL (ajústala si es necesario)
 $ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
 
-// Inicializamos mysqli
-$mysqli = mysqli_init();
+// Inicializamos conexión
+$conn = mysqli_init();
 
 // Configuramos SSL
-mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
+mysqli_ssl_set($conn, NULL, NULL, $ssl_ca, NULL, NULL);
 mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
-
-// Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
+// Intentamos conectar
 if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
-    die("Error de conexión: " . mysqli_connect_error());
+    die("❌ Error de conexión: " . mysqli_connect_error());
 }
 
-// Establecemos el charset
+// Establecemos charset
 mysqli_set_charset($conn, "utf8mb4");
 
-// Obtener las preguntas frecuentes fijas (últimas 5)
+// Obtener preguntas frecuentes (últimas 5)
 $query_faq = "SELECT * FROM preguntasfrecuentes ORDER BY fecha_creacion DESC LIMIT 5";
-$result_faq = $mysqli->query($query_faq);
+$result_faq = $conn->query($query_faq);
 
-// Obtener las preguntas de los usuarios
+// Obtener preguntas de los usuarios
 $query_preguntas_usuario = "SELECT * FROM preguntas_usuario ORDER BY fecha_creacion DESC";
-$result_preguntas_usuario = $mysqli->query($query_preguntas_usuario);
+$result_preguntas_usuario = $conn->query($query_preguntas_usuario);
 
-// Procesar el formulario de agregar pregunta
+// Procesar el formulario de agregar pregunta del usuario
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_usuario'])) {
     $pregunta_usuario = $_POST['pregunta_usuario'];
-    $usuario_creacion = $_SESSION['username']; // Obtener el nombre del usuario desde la sesión
+    $usuario_creacion = $_SESSION['username'] ?? 'anónimo';
     $fecha_creacion = date('Y-m-d');
 
-    // Insertar la nueva pregunta de usuario en la base de datos
     $query = "INSERT INTO preguntas_usuario (pregunta, usuario_creacion, fecha_creacion) VALUES (?, ?, ?)";
-    $stmt = $mysqli->prepare($query);
+    $stmt = $conn->prepare($query);
     $stmt->bind_param("sss", $pregunta_usuario, $usuario_creacion, $fecha_creacion);
     $stmt->execute();
     $stmt->close();
 
-    // Recargar las preguntas de usuario para mostrar la nueva
-    $result_preguntas_usuario = $mysqli->query($query_preguntas_usuario);
+    $result_preguntas_usuario = $conn->query($query_preguntas_usuario);
 }
+
 // Procesar el formulario de agregar pregunta frecuente
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && isset($_POST['respuesta_faq'])) {
     $pregunta_faq = $_POST['pregunta_faq'];
     $respuesta_faq = $_POST['respuesta_faq'];
     $fecha_creacion = date('Y-m-d');
 
-    // Insertar la nueva FAQ en la base de datos
     $query = "INSERT INTO preguntasfrecuentes (pregunta, respuesta, fecha_creacion) VALUES (?, ?, ?)";
-    $stmt = $mysqli->prepare($query);
+    $stmt = $conn->prepare($query);
     $stmt->bind_param("sss", $pregunta_faq, $respuesta_faq, $fecha_creacion);
     $stmt->execute();
     $stmt->close();
 
-    // Recargar las preguntas frecuentes
-    $result_faq = $mysqli->query($query_faq);
+    $result_faq = $conn->query($query_faq);
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
