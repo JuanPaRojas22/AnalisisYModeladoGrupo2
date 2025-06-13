@@ -21,9 +21,9 @@ class UsuarioDAOSImpl implements UsuarioDAO
         }
 
         // Inicializa correctamente la conexión
-        $this->$conn = mysqli_init();
+        $this->conn = mysqli_init();
 
-        mysqli_ssl_set($this->$conn, NULL, NULL, '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem', NULL, NULL);
+        mysqli_ssl_set($this->conn, NULL, NULL, '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem', NULL, NULL);
 
 if (!$this->$conn->real_connect(
     $host,
