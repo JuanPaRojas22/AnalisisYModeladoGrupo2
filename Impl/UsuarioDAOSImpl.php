@@ -24,9 +24,17 @@ class UsuarioDAOSImpl implements UsuarioDAO
 
         mysqli_ssl_set($this->conexion, NULL, NULL, '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem', NULL, NULL);
 
-        if (!$this->conexion->real_connect($host, $user, $pass, $db, 3306, NULL, MYSQLI_CLIENT_SSL)) {
-        die("❌ Conexión SSL fallida: " . mysqli_connect_error());
-        }
+if (!$this->conexion->real_connect(
+    $host,
+    $user,
+    $pass,
+    $db,
+    3306,
+    NULL, // no socket
+    MYSQLI_CLIENT_SSL
+)) {
+    die("❌ Conexión SSL fallida: " . mysqli_connect_error());
+}
 
         echo "✅ Conexión SSL exitosa";
     }
