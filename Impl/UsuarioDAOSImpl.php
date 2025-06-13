@@ -9,37 +9,17 @@ class UsuarioDAOSImpl implements UsuarioDAO
     public function __construct()
     {
         
-        $host = 'accespersoneldb.mysql.database.azure.com';
-        $user = 'adminUser';
-        $pass = 'admin123+';
-        $db   = 'gestionEmpleados';
+        require_once '/home/site/wwwroot/conexion.php'; // Asegúrate de usar la ruta correcta
 
-        $ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
-
-        if (!file_exists($ssl_ca)) {
-            die("❌ Certificado SSL no encontrado en: $ssl_ca");
+        // Verifica que la variable $conn se haya definido correctamente en conexion.php
+        if (!isset($conn)) {
+            die("❌ Error: No se estableció la conexión en conexion.php");
         }
 
-        // Inicializa correctamente la conexión
-        $this->conn = mysqli_init();
-
-        mysqli_ssl_set($this->conn, NULL, NULL, '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem', NULL, NULL);
-
-if (!$this->conn->real_connect(
-    $host,
-    $user,
-    $pass,
-    $db,
-    3306,
-    NULL, // no socket
-    MYSQLI_CLIENT_SSL
-)) {
-    die("❌ Conexión SSL fallida: " . mysqli_connect_error());
-}
-
-        echo "✅ Conexión SSL exitosa";
+        $this->conn = $conn;
     }
 
+    
     public function getAllUsers()
     {
         $function_conn = $this->conn;
