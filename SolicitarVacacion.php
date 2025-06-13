@@ -9,7 +9,6 @@ require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
 require_once __DIR__ . '/Impl/historialVacacionesDAOSImpl.php';
 require_once __DIR__ . '/Impl/Historial_Solicitud_Modificacion_VacacionesDAOSImpl.php';
-include 'conexion.php';
 include "template.php";
 
 // Obtener el ID del departamento del usuario desde la sesión
