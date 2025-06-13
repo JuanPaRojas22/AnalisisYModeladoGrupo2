@@ -4,10 +4,11 @@ require_once __DIR__ . '/../Models/usuario.php';
 
 class UsuarioDAOSImpl implements UsuarioDAO
 {    
-    private $conexion;
+    private $conn;
 
     public function __construct()
     {
+        
         $host = 'accespersoneldb.mysql.database.azure.com';
         $user = 'adminUser';
         $pass = 'admin123+';
@@ -20,11 +21,11 @@ class UsuarioDAOSImpl implements UsuarioDAO
         }
 
         // Inicializa correctamente la conexión
-        $this->conexion = mysqli_init();
+        $this->$conn = mysqli_init();
 
-        mysqli_ssl_set($this->conexion, NULL, NULL, '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem', NULL, NULL);
+        mysqli_ssl_set($this->$conn, NULL, NULL, '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem', NULL, NULL);
 
-if (!$this->conexion->real_connect(
+if (!$this->$conn->real_connect(
     $host,
     $user,
     $pass,
