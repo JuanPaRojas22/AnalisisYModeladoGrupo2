@@ -7,13 +7,13 @@ class UsuarioDAOSImpl implements UsuarioDAO
     private $conexion;
 
     public function __construct()
-    {
-     $host = 'accespersoneldb.mysql.database.azure.com';
+     {
+        $host = 'accespersoneldb.mysql.database.azure.com';
         $user = 'adminUser';
         $pass = 'admin123+';
-        $db   = 'gestionEmpleados';
+        $db = 'gestionEmpleados';
 
-        $ssl_ca = '/home/site/wwwroot/certs/DigiCertGlobalRootG2.crt.pem';
+        $ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
 
         if (!file_exists($ssl_ca)) {
             die("❌ Certificado SSL no encontrado en: $ssl_ca");
@@ -21,16 +21,17 @@ class UsuarioDAOSImpl implements UsuarioDAO
 
         $this->conexion = mysqli_init();
 
-        // Configurar SSL
         mysqli_ssl_set($this->conexion, NULL, NULL, $ssl_ca, NULL, NULL);
-        mysqli_options($this->conexion, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
+        mysqli_options($this->conexion, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
 
-        // Conexión con MySQL usando SSL
         if (!$this->conexion->real_connect($host, $user, $pass, $db, 3306, NULL, MYSQLI_CLIENT_SSL)) {
             die("❌ Conexión SSL fallida: " . mysqli_connect_error());
         }
 
-        echo "✅ Conexión SSL exitosa\n";
+        echo "✅ Conexión SSL exitosa";
+
+        // Comenta el cierre si querés seguir usando la conexión luego
+        // $this->conexion->close();
     }
 
     public function getAllUsers()
