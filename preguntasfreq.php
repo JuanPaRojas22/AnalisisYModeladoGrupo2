@@ -13,7 +13,7 @@ $port = 3306;
 $ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
 
 // Inicializamos mysqli
-$conn = mysqli_init();
+$mysqli = mysqli_init();
 
 // Configuramos SSL
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
