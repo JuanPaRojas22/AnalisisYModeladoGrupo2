@@ -11,7 +11,7 @@ class UsuarioDAOSImpl implements UsuarioDAO
      $host = 'accespersoneldb.mysql.database.azure.com';
         $user = 'adminUser';
         $pass = 'admin123+';
-        $db = 'gestionEmpleados';
+        $db   = 'gestionEmpleados';
 
         $ssl_ca = '/home/site/wwwroot/certs/DigiCertGlobalRootG2.crt.pem';
 
@@ -21,17 +21,16 @@ class UsuarioDAOSImpl implements UsuarioDAO
 
         $this->conexion = mysqli_init();
 
+        // Configurar SSL
         mysqli_ssl_set($this->conexion, NULL, NULL, $ssl_ca, NULL, NULL);
         mysqli_options($this->conexion, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
 
+        // Conexión con MySQL usando SSL
         if (!$this->conexion->real_connect($host, $user, $pass, $db, 3306, NULL, MYSQLI_CLIENT_SSL)) {
             die("❌ Conexión SSL fallida: " . mysqli_connect_error());
         }
 
-        echo "✅ Conexión SSL exitosa";
-
-        $this->conexion->close();
-
+        echo "✅ Conexión SSL exitosa\n";
     }
 
     public function getAllUsers()
