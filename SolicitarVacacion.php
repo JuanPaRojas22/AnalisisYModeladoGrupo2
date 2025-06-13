@@ -211,11 +211,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <section class="wrapper site-min-height">
 
                 <!-- /MAIN CONTENT -->
-                <?php
+                 <?php
                 // Verificar si el usuario está logueado
                 // Conexión a la base de datos
 // Parámetros de conexión
-$host = "accespersoneldb.mysql.database.azure.com";
+/*$host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
 $password = "admin123+";
 $dbname = "gestionEmpleados";
@@ -238,7 +238,7 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 }
 
 // Establecemos el charset
-mysqli_set_charset($conn, "utf8mb4");
+mysqli_set_charset($conn, "utf8mb4");*/
 
                 // Consulta para obtener el departamento del usuario
                 
@@ -267,7 +267,7 @@ mysqli_set_charset($conn, "utf8mb4");
                 }
 
 
-                ?>
+                ?>-->
 
                 <html lang="es">
 
