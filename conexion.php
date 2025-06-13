@@ -43,3 +43,4 @@ function obtenerConexion(): mysqli
 
     return $conn;
 }
+?>
