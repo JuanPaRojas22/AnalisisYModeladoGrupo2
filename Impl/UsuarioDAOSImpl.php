@@ -22,18 +22,12 @@ class UsuarioDAOSImpl implements UsuarioDAO
         // Inicializa correctamente la conexión
         $this->conexion = mysqli_init();
 
-        // Usa $ssl_ca correctamente aquí
-        mysqli_ssl_set($this->conexion, NULL, NULL, $ssl_ca, NULL, NULL);
-        
-        // (Opcional en Azure Linux) desactiva verificación estricta del hostname
-        mysqli_options($this->conexion, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
+        mysqli_ssl_set($this->conexion, NULL, NULL, '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem', NULL, NULL);
 
-        // Realiza la conexión
         if (!$this->conexion->real_connect($host, $user, $pass, $db, 3306, NULL, MYSQLI_CLIENT_SSL)) {
-            die("❌ Conexión SSL fallida: " . mysqli_connect_error());
+        die("❌ Conexión SSL fallida: " . mysqli_connect_error());
         }
 
-        // Éxito
         echo "✅ Conexión SSL exitosa";
     }
 
