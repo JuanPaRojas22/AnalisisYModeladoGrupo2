@@ -25,7 +25,7 @@ class UsuarioDAOSImpl implements UsuarioDAO
 
         mysqli_ssl_set($this->conn, NULL, NULL, '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem', NULL, NULL);
 
-if (!$this->$conn->real_connect(
+if (!$this->conn->real_connect(
     $host,
     $user,
     $pass,
