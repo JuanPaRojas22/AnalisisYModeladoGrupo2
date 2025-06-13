@@ -13,7 +13,7 @@ function obtenerConexion(): mysqli
     $port     = 3306;
 
     // Ruta al certificado CA que ya subiste a /home/site/wwwroot/certs/
-    $ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
+    $ssl_ca = '/home/site/wwwroot/certs/DigiCertGlobalRootG2.crt.pem';
 
     if (!file_exists($ssl_ca)) {
         die("❌ Certificado SSL no encontrado en: $ssl_ca");
