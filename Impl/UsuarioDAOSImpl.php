@@ -1,22 +1,16 @@
 <?php
+require_once __DIR__ . '/../conexion.php';
 require_once __DIR__ . '/../Interfaces/UsuarioDAO.php';
 require_once __DIR__ . '/../Models/usuario.php';
 
 class UsuarioDAOSImpl implements UsuarioDAO
-{    
-    private $conn;
+{
+    private mysqli $conn;
 
     public function __construct()
     {
-        
-        require_once '/home/site/wwwroot/conexion.php'; // Asegúrate de usar la ruta correcta
-
-        // Verifica que la variable $conn se haya definido correctamente en conexion.php
-        if (!isset($conn)) {
-            die("❌ Error: No se estableció la conexión en conexion.php");
-        }
-
-        $this->conn = $conn;
+        // Obtengo la conexión ya configurada en conexion.php
+        $this->conn = obtenerConexion();
     }
 
     
