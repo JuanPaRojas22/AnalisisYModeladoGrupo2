@@ -29,8 +29,9 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 mysqli_set_charset($conn, "utf8mb4");
 
 // Obtener los aportes fijas (últimas 5)
+// Obtener los aportes fijos (últimas 5)
 $query_aport = "SELECT * FROM aportes ORDER BY id_usuario DESC LIMIT 5";
-$result_aport = $mysqli->query($query_aport);
+$result_aport = $conn->query($query_aport);
 
 // Obtener las aportes de los usuarios
 $query_aportes_usuario = "
@@ -39,7 +40,8 @@ $query_aportes_usuario = "
     JOIN usuario ON aportes.id_usuario = usuario.id_usuario
     ORDER BY aportes.id_usuario DESC
 ";
-$result_aportes_usuario = $mysqli->query($query_aportes_usuario);
+$result_aportes_usuario = $conn->query($query_aportes_usuario);
+
 
 ?>
 
