@@ -67,6 +67,9 @@ if (isset($_POST['filtrar'])) {
     if (!empty($departamento)) {  // Verificar si el filtro de departamento no está vacío
         $query .= " AND d.id_departamento = '$departamento'";  // Filtro de departamento
     }
+
+    $query .= " GROUP BY u.id_usuario, u.nombre, d.Nombre";
+
     // Muestra la consulta SQL generada para depuración
 //echo "<pre>" . $query . "</pre>";
 
