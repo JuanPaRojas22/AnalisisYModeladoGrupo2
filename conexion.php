@@ -4,6 +4,7 @@
  * Conexión segura SSL a Azure MySQL usando MySQLi (orientado a objetos)
  */
 
+<?php
 function obtenerConexion(): mysqli
 {
     $host     = "accespersoneldb.mysql.database.azure.com";
@@ -12,7 +13,6 @@ function obtenerConexion(): mysqli
     $dbname   = "gestionEmpleados";
     $port     = 3306;
 
-    // Ruta al certificado raíz proporcionado por Azure
     $ssl_ca = '/home/site/wwwroot/certs/fullchain.pem';
 
     if (!file_exists($ssl_ca)) {
@@ -21,28 +21,28 @@ function obtenerConexion(): mysqli
 
     $conn = mysqli_init();
 
-    // Establecer el CA (para verificar el certificado del servidor)
-    $conn->ssl_set(null, null, $ssl_ca, null, null);
-
-    // Habilitar verificación del certificado del servidor (recomendado para producción)
+    // Primero las opciones
     $conn->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
 
-if (!$conn->real_connect(
-    $host,
-    $user,
-    $password,
-    $dbname,
-    $port,
-    null,
-    MYSQLI_CLIENT_SSL
-)) {
-    die("❌ Conexión SSL fallida: " . $conn->connect_error);
-}
+    // Luego el certificado
+    $conn->ssl_set(null, null, $ssl_ca, null, null);
 
+    if (!$conn->real_connect(
+        $host,
+        $user,
+        $password,
+        $dbname,
+        $port,
+        null,
+        MYSQLI_CLIENT_SSL
+    )) {
+        die("❌ Conexión SSL fallida: " . $conn->connect_error);
+    }
 
     $conn->set_charset("utf8mb4");
 
     return $conn;
 }
+?>
 
 ?>
