@@ -56,7 +56,7 @@ $sql = "
     LEFT JOIN departamento d ON u.id_departamento = d.id_departamento
 ";
 
-$resultado = $conexion->query($sql);
+$resultado = $conn->query($sql);
 
 // Configurar la cabecera para la descarga del archivo Excel
 header("Content-Type: application/vnd.ms-excel");
@@ -98,5 +98,5 @@ while ($fila = $resultado->fetch_assoc()) {
 echo "</table>";
 
 // Cerrar la conexión
-$conexion->close();
+$conn->close();
 ?>
