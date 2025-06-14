@@ -32,10 +32,10 @@ mysqli_set_charset($conn, "utf8mb4");
 
 // Obtener todos los usuarios con sus beneficios
 $sql = "SELECT u.id_usuario, CONCAT(u.nombre, ' ', u.apellido) AS nombre, COUNT(b.id_beneficio) AS total_beneficios
-        FROM usuario u
-        LEFT JOIN beneficios b ON u.id_usuario = b.id_usuario
-        GROUP BY u.id_usuario
-        ORDER BY u.nombre";
+FROM usuario u
+LEFT JOIN beneficios b ON u.id_usuario = b.id_usuario
+GROUP BY u.id_usuario, u.nombre, u.apellido
+ORDER BY u.nombre";
 
 $resultado = $conn->query($sql);
 $usuarios = [];
