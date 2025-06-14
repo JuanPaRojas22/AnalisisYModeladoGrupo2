@@ -504,7 +504,7 @@ class VacacionDAOSImpl implements VacacionDAO
         $placeholders = implode(',', array_fill(0, count($estados), '?'));
         $types = str_repeat('i', count($estados) + 3);
         $sql = "
-        SELECT V.id_vacacion, U.nombre, U.apellido, D.nombre AS Departamento,
+        SELECT DISTINCT V.id_vacacion, U.nombre, U.apellido, D.nombre AS Departamento,
                 V.fecha_inicio, V.fecha_fin, V.diasTomado, HV.DiasRestantes, EV.descripcion
         FROM vacacion V
         JOIN usuario U ON V.id_usuario = U.id_usuario
