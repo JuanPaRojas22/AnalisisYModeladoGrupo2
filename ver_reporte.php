@@ -1,48 +1,87 @@
-<?php 
-include 'conexion.php'; 
+<?php
+include 'conexion.php';
 session_start();
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header("Location: login.php");
     exit;
 }
-
-// Verificar si el usuario es administrador (id_rol == 2)
-if ($_SESSION['id_rol'] == 3 OR $_SESSION['id_rol'] == 1) { // Verificar si el usuario es un empleado
-    header("Location: index.php"); // Redirigir a la página de inicio si no es administrador
+if ($_SESSION['id_rol'] == 3 || $_SESSION['id_rol'] == 1) {
+    header("Location: index.php");
     exit;
 }
-
 include 'template.php';
 
+// Filtros
 $id_usuario = $_GET['id_usuario'] ?? null;
 $id_departamento = $_GET['id_departamento'] ?? null;
+$id_estado_vacacion = $_GET['id_estado_vacacion'] ?? null;
 
-$sql = "SELECT 
-            h.id_historial,
-            u.nombre AS empleado,
-            d.nombre AS departamento,
-            h.Razon,
-            h.DiasTomados,
-            h.FechaInicio,
-            h.FechaFin,
-            h.DiasRestantes
-        FROM historial_vacaciones h
-        LEFT JOIN usuario u ON h.id_usuario = u.id_usuario
-        LEFT JOIN departamento d ON u.id_departamento = d.id_departamento
-        WHERE 1 = 1";
+// Paginación
+$resultadosPorPagina = 5;
+$paginaActual = isset($_GET['pagina']) ? max(1, intval($_GET['pagina'])) : 1;
+$offset = ($paginaActual - 1) * $resultadosPorPagina;
 
+// Armar filtros y conteo total
+$sqlTotal = "SELECT COUNT(*) as total FROM vacacion v
+    INNER JOIN usuario u ON v.id_usuario = u.id_usuario
+    INNER JOIN departamento d ON u.id_departamento = d.id_departamento
+    INNER JOIN estado_vacacion ev ON v.id_estado_vacacion = ev.id_estado_vacacion
+    INNER JOIN historial_vacaciones h ON v.id_historial = h.id_historial
+    WHERE 1 = 1";
 $params = [];
-if ($id_usuario) { 
-    $sql .= " AND h.id_usuario = ?";
+$tipos = "";
+
+if ($id_usuario) {
+    $sqlTotal .= " AND h.id_usuario = ?";
     $params[] = $id_usuario;
+    $tipos .= "i";
 }
-if ($id_departamento) { 
-    $sql .= " AND u.id_departamento = ?";
+if ($id_departamento) {
+    $sqlTotal .= " AND u.id_departamento = ?";
     $params[] = $id_departamento;
+    $tipos .= "i";
 }
+if ($id_estado_vacacion) {
+    $sqlTotal .= " AND v.id_estado_vacacion = ?";
+    $params[] = $id_estado_vacacion;
+    $tipos .= "i";
+}
+$stmtTotal = $conn->prepare($sqlTotal);
+if ($params) $stmtTotal->bind_param($tipos, ...$params);
+$stmtTotal->execute();
+$totalFilas = $stmtTotal->get_result()->fetch_assoc()['total'];
+$totalPaginas = ceil($totalFilas / $resultadosPorPagina);
+$stmtTotal->close();
+
+// Consulta con paginación
+$sql = "SELECT
+        v.id_vacacion,
+        u.nombre AS empleado,
+        d.nombre AS departamento,
+        v.razon,
+        v.diasTomado,
+        v.fecha_inicio,
+        v.fecha_fin,
+        h.DiasRestantes,
+        ev.descripcion AS estado
+    FROM vacacion v
+    INNER JOIN usuario u ON v.id_usuario = u.id_usuario
+    INNER JOIN departamento d ON u.id_departamento = d.id_departamento
+    INNER JOIN estado_vacacion ev ON v.id_estado_vacacion = ev.id_estado_vacacion
+    INNER JOIN historial_vacaciones h ON v.id_historial = h.id_historial
+    WHERE 1 = 1";
+
+if ($id_usuario) $sql .= " AND h.id_usuario = ?";
+if ($id_departamento) $sql .= " AND u.id_departamento = ?";
+if ($id_estado_vacacion) $sql .= " AND v.id_estado_vacacion = ?";
+$sql .= " LIMIT ? OFFSET ?";
+
+$params[] = $resultadosPorPagina;
+$params[] = $offset;
+$tipos .= "ii";
 
 $stmt = $conn->prepare($sql);
-if ($params) $stmt->bind_param(str_repeat("i", count($params)), ...$params);
+$stmt->bind_param($tipos, ...$params);
 $stmt->execute();
 $result = $stmt->get_result();
 $historial = $result->fetch_all(MYSQLI_ASSOC);
@@ -173,6 +212,34 @@ $stmt->close();
                     .btn-export:hover {
                         background-color: #168761;
                     }
+                    .pagination {
+    width: 80%;
+    margin: 40px auto 60px auto; /* aumenta separación superior e inferior */
+    justify-content: center; /* centrado */
+    gap: 10px; /* espacio entre botones */
+}
+
+.pagination .page-link {
+    color: #147964;
+    background-color: #f9f9f9;
+    border: 2px solid #147964;
+    font-weight: bold;
+    font-size: 18px; /* ✅ más grande */
+    padding: 12px 18px; /* ✅ más ancho y alto */
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+.pagination .page-link:hover {
+    background-color: #e0f4f2;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #116B67;
+    color: white;
+    border-color: #116B67;
+}
+
     </style>
 </head>
 <body>
@@ -215,6 +282,21 @@ $stmt->close();
                 </select>
             </div>
 
+            <div class="col-md-6">
+                <label class="form-label">Estado:</label>
+                <select class="form-select" name="id_estado_vacacion">
+                    <option value="">Todos</option>
+                    <?php
+                    $query_dept = "SELECT id_estado_vacacion, descripcion FROM estado_vacacion";
+                    $result_dept = $conn->query($query_dept);
+                    while ($dept = $result_dept->fetch_assoc()) {
+                        $selected = ($id_estado_vacacion == $dept['id_estado_vacacion']) ? "selected" : "";
+                        echo "<option value='{$dept['id_estado_vacacion']}' $selected>{$dept['descripcion']}</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+
             <div class="col-md-12 text-center">
                 <button type="submit" class="btn">Filtrar</button>
             </div>
@@ -226,7 +308,6 @@ $stmt->close();
         <table class="table">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Empleado</th>
                     <th>Departamento</th>
                     <th>Razón</th>
@@ -234,6 +315,7 @@ $stmt->close();
                     <th>Fecha Inicio</th>
                     <th>Fecha Fin</th>
                     <th>Días Restantes</th>
+                    <th>Estado</th>
                 </tr>
             </thead>
             <tbody>
@@ -242,14 +324,14 @@ $stmt->close();
                 <?php else: ?>
                     <?php foreach ($historial as $fila) : ?>
                     <tr>
-                        <td><?= $fila['id_historial'] ?></td>
                         <td><?= $fila['empleado'] ?></td>
                         <td><?= $fila['departamento'] ?></td>
-                        <td><?= $fila['Razon'] ?></td>
-                        <td><?= $fila['DiasTomados'] ?></td>
-                        <td><?= $fila['FechaInicio'] ?></td>
-                        <td><?= $fila['FechaFin'] ?></td>
+                        <td><?= $fila['razon'] ?></td>
+                        <td><?= $fila['diasTomado'] ?></td>
+                        <td><?= $fila['fecha_inicio'] ?></td>
+                        <td><?= $fila['fecha_fin'] ?></td>
                         <td><?= $fila['DiasRestantes'] ?></td>
+                        <td><?= $fila['estado'] ?></td>
                     </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
@@ -257,14 +339,41 @@ $stmt->close();
         </table>
     </div>
 
-    <div class="pdf-container">
-    <form action="generar_pdf.php" method="GET">
+    <div class="text-center mt-4">
+    <!-- Botón para descargar reporte -->
+    <form action="generar_pdf.php" method="GET" class="mb-3">
         <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($id_usuario) ?>">
         <input type="hidden" name="id_departamento" value="<?= htmlspecialchars($id_departamento) ?>">
-        <button type="submit"class="btn-export">
-        📥 Descargar Reporte</button>
-        
+        <input type="hidden" name="id_estado_vacacion" value="<?= htmlspecialchars($id_estado_vacacion) ?>">
+        <button type="submit" class="btn btn-success">
+            📥 Descargar Reporte
+        </button>
     </form>
+
+    <!-- Paginación debajo del botón -->
+    <nav>
+        <ul class="pagination justify-content-center">
+            <?php if ($paginaActual > 1): ?>
+                <li class="page-item">
+                    <a class="page-link" href="?pagina=<?= $paginaActual - 1 ?>&id_usuario=<?= $id_usuario ?>&id_departamento=<?= $id_departamento ?>&id_estado_vacacion=<?= $id_estado_vacacion ?>">Anterior</a>
+                </li>
+            <?php endif; ?>
+
+            <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                <li class="page-item <?= ($i == $paginaActual) ? 'active' : '' ?>">
+                    <a class="page-link" href="?pagina=<?= $i ?>&id_usuario=<?= $id_usuario ?>&id_departamento=<?= $id_departamento ?>&id_estado_vacacion=<?= $id_estado_vacacion ?>"><?= $i ?></a>
+                </li>
+            <?php endfor; ?>
+
+            <?php if ($paginaActual < $totalPaginas): ?>
+                <li class="page-item">
+                    <a class="page-link" href="?pagina=<?= $paginaActual + 1 ?>&id_usuario=<?= $id_usuario ?>&id_departamento=<?= $id_departamento ?>&id_estado_vacacion=<?= $id_estado_vacacion ?>">Siguiente</a>
+                </li>
+            <?php endif; ?>
+        </ul>
+    </nav>
+</div>
+
 </div>
 </div>
 
