@@ -4,35 +4,12 @@ require_once __DIR__ . '/../Models/Historial_Solicitud_Modificacion_Vacaciones.p
 
 class Historial_Solicitud_Modificacion_VacacionesDAOSImpl implements Historial_Solicitud_Modificacion_VacacionesDAO
 {
-    private $conn;
+    private mysqli $conn;
 
     public function __construct()
     {
-        // Parámetros de conexión
-        $host = "accespersoneldb.mysql.database.azure.com";
-        $user = "adminUser";
-        $password = "admin123+";
-        $dbname = "gestionEmpleados";
-        $port = 3306;
-
-        // Ruta al certificado CA
-        $ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
-
-        // Inicializamos mysqli
-        $this->conn = mysqli_init();
-
-        // Configuramos SSL
-        mysqli_ssl_set($this->conn, NULL, NULL, $ssl_ca, NULL, NULL);
-        mysqli_options($this->conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
-
-        // Conexión con SSL
-        if (!$this->conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
-            die("Error de conexión: " . mysqli_connect_error());
-        }
-
-        // Charset
-        mysqli_set_charset($this->conn, "utf8mb4");
-
+        // Obtengo la conexión ya configurada en conexion.php
+        $this->conn = obtenerConexion();
     }
 
      // Funcion que ingresa un historial de solicitud de modificacion de vacaciones
