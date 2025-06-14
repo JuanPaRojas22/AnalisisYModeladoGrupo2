@@ -1,5 +1,6 @@
 <?php 
 session_start();
+include 'template.php';
 // Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
@@ -50,7 +51,6 @@ while ($row = $result_beneficios->fetch_assoc()) {
 }
 $stmt_beneficios->close();
 
-include 'template.php';
 ?>
 
 <div class="container mt-5">
