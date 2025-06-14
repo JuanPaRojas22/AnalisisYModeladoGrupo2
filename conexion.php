@@ -30,7 +30,7 @@ function obtenerConexion(): mysqli
 
     // Intenta conectar con SSL
     if (!$conn->real_connect(    $host,
-    $username,
+    $user,
     $password,
     $database,
     3306,
