@@ -56,7 +56,7 @@ $sql = "
     LEFT JOIN departamento d ON u.id_departamento = d.id_departamento
 ";
 
-$resultado = $conexion->query($sql);
+$resultado = $conn->query($sql);
 
 if (!$resultado) {
     die("❌ Error en la consulta SQL: " . $conexion->error);
