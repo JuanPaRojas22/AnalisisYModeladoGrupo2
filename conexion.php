@@ -1,10 +1,4 @@
 <?php
-/**
- * conexion.php
- * Conexión segura SSL a Azure MySQL usando MySQLi (orientado a objetos)
- */
-
-<?php
 function obtenerConexion(): mysqli
 {
     $host     = "accespersoneldb.mysql.database.azure.com";
@@ -43,6 +37,4 @@ function obtenerConexion(): mysqli
 
     return $conn;
 }
-?>
-
 ?>
