@@ -30,7 +30,7 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 
 // Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
-
+}
 
 // Verificar autenticación del usuario
 if (!isset($_SESSION['id_usuario'])) {
