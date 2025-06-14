@@ -75,5 +75,5 @@ if (empty($beneficios)) {
 echo json_encode($beneficios, JSON_PRETTY_PRINT); // 🔥 Muestra el JSON de manera legible
 
 $stmt->close();
-$conexion->close();
+$conn->close();
 ?>
