@@ -632,9 +632,9 @@ mysqli_set_charset($conn, "utf8mb4");
 
                             <form action="generar_reporteVacaciones.php" method="GET"
                                 style="display: inline-block; width: auto;">
-                                <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($id_usuario) ?>">
-                                <input type="hidden" name="id_departamento"
-                                    value="<?= htmlspecialchars($id_departamento) ?>">
+                                <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($id_usuario ?? '') ?>">
+                                <input type="hidden" name="id_departamento" value="<?= htmlspecialchars($id_departamento ?? '') ?>">
+
                                 <button type="submit" class="btn btn-success">Descargar PDF</button>
 
                             </form>
