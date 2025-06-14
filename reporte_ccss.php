@@ -56,7 +56,7 @@ $sql = "
     LEFT JOIN departamento d ON u.id_departamento = d.id_departamento
 ";
 
-$resultado = $conexion->query($sql);
+$resultado = $conn->query($sql);
 
 session_start();
 include 'template.php';
