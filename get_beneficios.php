@@ -53,7 +53,7 @@ $sql = "SELECT b.id_beneficio,
         INNER JOIN usuario u ON b.id_usuario = u.id_usuario
         WHERE b.id_usuario = ?";
 
-$stmt = $conexion->prepare($sql);
+$stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id_usuario);
 $stmt->execute();
 $resultado = $stmt->get_result();
