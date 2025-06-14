@@ -29,11 +29,12 @@ function obtenerConexion(): mysqli
     $conn->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
 
     // Intenta conectar con SSL
-    if (!$conn->real_connect(    $host,
+    if (!$conn->real_connect(    
+    $host,
     $user,
     $password,
-    $database,
-    3306,
+    $dbname,
+    $port,
     null,
     MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT)) {
         die("❌ Conexión SSL fallida: " . $conn->connect_error);
