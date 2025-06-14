@@ -106,5 +106,5 @@ else {
     echo json_encode(["success" => false, "message" => "Acción no válida"]);
 }
 
-$conexion->close();
+$conn->close();
 ?>
