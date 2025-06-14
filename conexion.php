@@ -15,11 +15,11 @@ function obtenerConexion(): mysqli
 
     $conn = mysqli_init();
 
-    // Primero las opciones
-    $conn->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
-
-    // Luego el certificado
+    // Establecer certificado CA
     $conn->ssl_set(null, null, $ssl_ca, null, null);
+
+    // Deshabilitar verificación del certificado del servidor (solo para probar)
+    $conn->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
     if (!$conn->real_connect(
         $host,
@@ -28,7 +28,7 @@ function obtenerConexion(): mysqli
         $dbname,
         $port,
         null,
-        MYSQLI_CLIENT_SSL
+        MYSQLI_CLIENT_SSL | MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT
     )) {
         die("❌ Conexión SSL fallida: " . $conn->connect_error);
     }
