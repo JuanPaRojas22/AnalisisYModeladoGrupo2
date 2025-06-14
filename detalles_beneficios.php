@@ -31,7 +31,7 @@ $id_usuario = $_GET['id_usuario'] ?? 0;
 
 // Obtener datos del usuario
 $sql_usuario = "SELECT CONCAT(nombre, ' ', apellido) AS nombre FROM usuario WHERE id_usuario = ?";
-$stmt_usuario = $conexion->prepare($sql_usuario);
+$stmt_usuario = $conn->prepare($sql_usuario);
 $stmt_usuario->bind_param("i", $id_usuario);
 $stmt_usuario->execute();
 $result_usuario = $stmt_usuario->get_result();
@@ -40,7 +40,7 @@ $stmt_usuario->close();
 
 // Obtener beneficios del usuario
 $sql_beneficios = "SELECT * FROM beneficios WHERE id_usuario = ?";
-$stmt_beneficios = $conexion->prepare($sql_beneficios);
+$stmt_beneficios = $conn->prepare($sql_beneficios);
 $stmt_beneficios->bind_param("i", $id_usuario);
 $stmt_beneficios->execute();
 $result_beneficios = $stmt_beneficios->get_result();
