@@ -38,13 +38,13 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 // Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
         $sql = "SELECT id_usuario FROM historial_solicitud_modificacion_vacaciones WHERE id_historial_solicitud_modificacion = ?";
-        $stmt = $conexion->prepare($sql);
+        $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $id_historial_solicitud_modificacion);
         $stmt->execute();
         $stmt->bind_result($id_usuario);
         $stmt->fetch();
         $stmt->close();
-        $conexion->close();
+        $conn->close();
         return $id_usuario;
     }
     // Función para obtener el correo del usuario basado en su ID
