@@ -13,7 +13,7 @@ function obtenerConexion(): mysqli
     $port     = 3306;
 
     // Ruta al certificado raíz proporcionado por Azure
-    $ssl_ca = '/home/site/wwwroot/certs/DigiCertGlobalRootG2.crt.pem';
+    $ssl_ca = '/home/site/wwwroot/certs/fullchain.pem';
 
     if (!file_exists($ssl_ca)) {
         die("❌ Certificado SSL no encontrado en: $ssl_ca");
@@ -27,17 +27,18 @@ function obtenerConexion(): mysqli
     // Habilitar verificación del certificado del servidor (recomendado para producción)
     $conn->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
 
-    if (!$conn->real_connect(
-        $host,
-        $user,
-        $password,
-        $dbname,
-        $port,
-        null,
-        MYSQLI_CLIENT_SSL
-    )) {
-        die("❌ Conexión SSL fallida: " . $conn->connect_error);
-    }
+if (!$conn->real_connect(
+    $host,
+    $user,
+    $password,
+    $dbname,
+    $port,
+    null,
+    MYSQLI_CLIENT_SSL
+)) {
+    die("❌ Conexión SSL fallida: " . $conn->connect_error);
+}
+
 
     $conn->set_charset("utf8mb4");
 
