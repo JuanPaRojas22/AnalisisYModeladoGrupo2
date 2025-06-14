@@ -246,28 +246,28 @@ class Historial_Solicitud_Modificacion_VacacionesDAOSImpl implements Historial_S
     }
 
     // Funcion para obtener el historial de solicitudes de modificacion de vacaciones de un empleado en especifico y su vacacion original solicitada.
-    public function getHistorialSolicitudModificacionPorUsuario($id_usuario, $limit = 5, $offset = 0) {
-        $sql = "
-        SELECT HSMV.id_historial_solicitud_modificacion AS id_registro,
-                U.nombre, U.apellido, Dep.nombre AS Departamento,
-                HSMV.fecha_inicio, HSMV.fecha_fin, HSMV.dias_solicitados,
-                HSMV.estado AS estado_modificacion 
-                HV.DiasRestantes
-        FROM historial_solicitud_modificacion_vacaciones HSMV
-        JOIN usuario U ON HSMV.id_usuario = U.id_usuario
-        JOIN departamento Dep ON U.id_departamento = Dep.id_departamento
-        JOIN vacacion V ON HSMV.id_vacacion = V.id_vacacion
-        JOIN historial_vacaciones HV ON V.id_historial = HV.id_historial
-        WHERE HSMV.id_usuario = ?
-        ORDER BY HSMV.fecha_solicitud DESC
-        LIMIT ? OFFSET ?
-        ";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("iii", $id_usuario, $limit, $offset);
-        $stmt->execute();
-        return $stmt->get_result();
-    }
-    
+public function getHistorialSolicitudModificacionPorUsuario($id_usuario, $limit = 5, $offset = 0) {
+    $sql = "
+    SELECT HSMV.id_historial_solicitud_modificacion AS id_registro,
+            U.nombre, U.apellido, Dep.nombre AS Departamento,
+            HSMV.fecha_inicio, HSMV.fecha_fin, HSMV.dias_solicitados,
+            HSMV.estado AS estado_modificacion, 
+            HV.DiasRestantes
+    FROM historial_solicitud_modificacion_vacaciones HSMV
+    JOIN usuario U ON HSMV.id_usuario = U.id_usuario
+    JOIN departamento Dep ON U.id_departamento = Dep.id_departamento
+    JOIN vacacion V ON HSMV.id_vacacion = V.id_vacacion
+    JOIN historial_vacaciones HV ON V.id_historial = HV.id_historial
+    WHERE HSMV.id_usuario = ?
+    ORDER BY HSMV.fecha_solicitud DESC
+    LIMIT ? OFFSET ?
+    ";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("iii", $id_usuario, $limit, $offset);
+    $stmt->execute();
+    return $stmt->get_result();
+}
+
     public function contarHistorialModificadoPorUsuario($id_usuario) {
         global $conn;
         $stmt = $conn->prepare("SELECT COUNT(*) as total FROM historial_solicitud_modificacion_vacaciones WHERE id_usuario = ?");
