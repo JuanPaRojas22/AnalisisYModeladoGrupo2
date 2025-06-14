@@ -94,7 +94,7 @@ mysqli_set_charset($conn, "utf8mb4");
                 FROM Historial_Solicitud_Modificacion_Vacaciones HSMV
                 WHERE HSMV.id_historial_solicitud_modificacion = ?";
         //consulta
-        $stmt = $conn->prepare($sql);
+        $stmt = $conexion->prepare($sql);
 
         // Enlaza el parámetro (i = entero)
         $stmt->bind_param("i", $id_historial_solicitud_modificacion);
