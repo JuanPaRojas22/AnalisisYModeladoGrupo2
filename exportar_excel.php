@@ -38,7 +38,7 @@ $sql = "SELECT u.id_usuario, u.nombre, u.apellido, u.correo_electronico, u.numer
         LEFT JOIN ocupaciones o ON u.id_ocupacion = o.id_ocupacion
         LEFT JOIN departamento d ON u.id_departamento = d.id_departamento"; // JOIN a departamento agregado
 
-$resultado = $conexion->query($sql);
+$resultado = $conn->query($sql);
 
 // Establecer cabeceras para exportar como Excel
 header("Content-Type: application/vnd.ms-excel");
