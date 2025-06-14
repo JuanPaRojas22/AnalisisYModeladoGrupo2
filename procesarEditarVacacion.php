@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/conexion.php';
 require_once __DIR__ . '/Impl/Historial_Solicitud_Modificacion_VacacionesDAOSImpl.php';
 require_once __DIR__ . '/mailer.php'; //  PHPMailer para enviar correos
 
@@ -37,6 +38,7 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 
 // Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
+        
         $sql = "SELECT id_usuario FROM historial_solicitud_modificacion_vacaciones WHERE id_historial_solicitud_modificacion = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $id_historial_solicitud_modificacion);
@@ -49,7 +51,7 @@ mysqli_set_charset($conn, "utf8mb4");
     }
     // Función para obtener el correo del usuario basado en su ID
     function obtenerCorreoUsuario($id_usuario) {
-        $conexion = new mysqli("localhost", "root", "", "GestionEmpleados");
+        $conexion = obtenerConexion();
         if ($conexion->connect_error) {
             die("Conexión fallida: " . $conexion->connect_error);
         }
@@ -68,7 +70,7 @@ mysqli_set_charset($conn, "utf8mb4");
 
     // Funcion para obtener el id_vacacion basado en el id_historial_solicitud_modificacion
     function obtenerIdVacacionPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion) {
-        $conexion = new mysqli("localhost", "root", "", "GestionEmpleados");
+        $conexion = obtenerConexion();
         if ($conexion->connect_error) {
             die("Conexión fallida: " . $conexion->connect_error);
         }
@@ -85,7 +87,7 @@ mysqli_set_charset($conn, "utf8mb4");
 
     // Función para obtener nuevos datos basado en el id_historial_solicitud_modificacion
     function obtenerDatosNuevosPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion) {
-        $conn = new mysqli("localhost", "root", "", "GestionEmpleados");
+        $conexion = obtenerConexion();
         
         $sql = "SELECT HSMV.fecha_inicio AS NuevaFechaInicio, HSMV.fecha_fin AS NuevaFechaFin, 
                 HSMV.dias_solicitados AS NuevosDiasSolicitados, HSMV.razon_modificacion
@@ -146,7 +148,7 @@ mysqli_set_charset($conn, "utf8mb4");
 
     // Función para obtener el id_vacacion basado en el id_usuario
     function obtenerIdHistorialPorUsuario($id_usuario) {
-        $conexion = new mysqli("localhost", "root", "", "GestionEmpleados");
+        $conexion = obtenerConexion();
         if ($conexion->connect_error) {
             die("Conexión fallida: " . $conexion->connect_error);
         }
