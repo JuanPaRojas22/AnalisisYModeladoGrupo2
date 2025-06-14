@@ -37,7 +37,7 @@ $sql = "SELECT u.id_usuario, CONCAT(u.nombre, ' ', u.apellido) AS nombre, COUNT(
         GROUP BY u.id_usuario
         ORDER BY u.nombre";
 
-$resultado = $conexion->query($sql);
+$resultado = $conn->query($sql);
 $usuarios = [];
 
 while ($row = $resultado->fetch_assoc()) {
