@@ -1,7 +1,7 @@
 <?php
 session_start();
 include 'template.php';
-$nombre = $_SESSION['nombre'] ??;
+$nombre = $_SESSION['nombre'];
 
 // Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
