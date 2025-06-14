@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../conexion.php';
 require_once __DIR__ . '/../Interfaces/VacacionDAO.php';
 require_once __DIR__ . '/../Models/Vacacion.php';
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
