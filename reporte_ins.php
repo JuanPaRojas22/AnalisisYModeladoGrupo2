@@ -52,7 +52,7 @@ $sql = "SELECT u.id_usuario, u.nombre, u.apellido, u.correo_electronico, u.numer
         LEFT JOIN ocupaciones o ON u.id_ocupacion = o.id_ocupacion
         LEFT JOIN departamento d ON u.id_departamento = d.id_departamento"; // Agregado JOIN a departamento
 
-$resultado = $conexion->query($sql);
+$resultado = $conn->query($sql);
 
 
 ?>
@@ -295,5 +295,5 @@ tr:nth-child(even) td {
 
 <?php
 // Cerrar la conexión
-$conexion->close();
+$conn->close();
 ?>
