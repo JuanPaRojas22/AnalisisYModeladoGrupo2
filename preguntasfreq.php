@@ -1,6 +1,7 @@
 <?php
 session_start();
 include 'template.php';
+$nombre = $_SESSION['nombre'] ??;
 
 // Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
@@ -272,5 +273,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
 </script>
 <?php
 // Cerrar la conexión a la base de datos
-$mysqli->close();
+$conn->close();
 ?>
