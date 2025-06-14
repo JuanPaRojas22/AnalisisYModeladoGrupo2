@@ -59,7 +59,7 @@ $sql = "
 $resultado = $conn->query($sql);
 
 if (!$resultado) {
-    die("❌ Error en la consulta SQL: " . $conexion->error);
+    die("❌ Error en la consulta SQL: " . $conn->error);
 }
 
 
@@ -282,5 +282,5 @@ tr:nth-child(even) td {
 
 <?php
 // Cerrar la conexión
-$conexion->close();
+$conn->close();
 ?>
