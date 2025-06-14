@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../conexion.php';
 require_once __DIR__ . '/../Interfaces/Historial_Solicitud_Modificacion_VacacionesDAO.php';
 require_once __DIR__ . '/../Models/Historial_Solicitud_Modificacion_Vacaciones.php';
 
