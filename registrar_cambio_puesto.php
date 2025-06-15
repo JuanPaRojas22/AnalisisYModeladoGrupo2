@@ -190,7 +190,7 @@ include 'template.php';
                             id_usuario, nuevo_puesto, sueldo_nuevo, motivo, fecha_cambio, fechacreacion, usuariocreacion
                          ) VALUES (?, ?, ?, ?, ?, CURDATE(), 'usuario_logueado')";
                 $stmt1 = $conn->prepare($sql1);
-                $stmt1->bind_param("iisdss", $id_usuario, $nuevo_puesto, $sueldo_nuevo, $motivo, $fecha_cambio);
+                $stmt1->bind_param("issdss", $id_usuario, $nuevo_puesto, $sueldo_nuevo, $motivo, $fecha_cambio);
                 $stmt1->execute();
 
                 // Insertar en historialLocupacion
