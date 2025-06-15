@@ -176,9 +176,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
         }
 
 .modal-content {
-    width: 60%; /* cualquier tamaño */
-    max-width: 700px; /* ancho máximo  */
-    margin: auto; /* centra horizontalmente */
+    width: 60%;
+    max-width: 700px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
 }
 
         h3 {
