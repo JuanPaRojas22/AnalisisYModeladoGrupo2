@@ -172,6 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
         .modal-body textarea {
             resize: vertical;
             border-radius: 5px;
+            color: black;
         }
 
 .modal-content {
