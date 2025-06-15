@@ -175,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
             color: black;
         }
 
-.modal-content {
+.modal-contenido {
     width: 60%;
     max-width: 700px;
     background-color: white;
@@ -233,7 +233,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
 
             <!-- Modal para agregar FAQ -->
             <div id="faqModal" class="modal">
-                <div class="modal-content">
+                <div class="modal-contenido">
                     <span class="close" id="closeFaqModalBtn">&times;</span>
                     <h2>Agregar Pregunta Frecuente</h2>
                     <form method="POST">
