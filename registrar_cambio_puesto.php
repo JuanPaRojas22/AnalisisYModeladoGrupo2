@@ -140,7 +140,7 @@ include 'template.php';
 
 <body>
     <div class="container">
-        <a href="ver_historial_cambios.php" class="button">Historial de Cambios</a>
+        <a class='btn' href="ver_historial_cambios.php" >Historial de Cambios</a>
 
         <h1>Registrar Cambio de Puesto</h1>
 
