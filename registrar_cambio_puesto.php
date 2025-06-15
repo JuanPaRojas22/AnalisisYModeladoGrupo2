@@ -80,11 +80,11 @@ include 'template.php';
         }
 
         .button {
-            display: inline-block;
+            /*display: inline-block;*/
             background-color: #147964;
             color: black;
             padding: 10px 20px;
-            font-size: 8px;
+            font-size: 12px;
             font-weight: bold;
             text-align: center;
             text-decoration: none;
