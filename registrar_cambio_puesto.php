@@ -200,13 +200,6 @@ include 'template.php';
                     $stmt1->bind_param("iidss", $id_usuario, $nuevo_puesto, $sueldo_nuevo, $motivo, $fecha_cambio);
                     $stmt1->execute();
 
-                    // Insertar en historialLocupacion
-                    $sql2 = "INSERT INTO historialLocupacion (
-                            id_usuario, id_ocupacion, fecha_cambio, fechacreacion
-                         ) VALUES (?, ?, ?, CURDATE())";
-                    $stmt2 = $conn->prepare($sql2);
-                    $stmt2->bind_param("iis", $id_usuario, $nuevo_puesto, $fecha_cambio);
-                    $stmt2->execute();
 
                     $conn->commit();
                     $mensaje = "Cambio de puesto registrado con éxito.";
