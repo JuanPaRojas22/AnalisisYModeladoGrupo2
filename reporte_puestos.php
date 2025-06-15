@@ -1,5 +1,6 @@
 <?php
 require 'conexion.php';
+$conn = obtenerConexion();
 require 'fpdf/fpdf.php';  // Para exportar a PDF
 
 // Consulta sin filtro
