@@ -34,7 +34,7 @@ $sql = "SELECT u.id_ocupacion, p.salario_base
         WHERE u.id_usuario = '$id_usuario' 
         LIMIT 1";
 
-$resultado = $conexion->query($sql);
+$resultado = $conn->query($sql);
 
 $data = [];
 
