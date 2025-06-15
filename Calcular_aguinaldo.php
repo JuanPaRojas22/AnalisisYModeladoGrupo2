@@ -40,68 +40,69 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Calcular el aguinaldo para todos los usuarios
     $query_calculo = "SELECT id_usuario, 
-                             SUM(salario_base) AS total_salario, 
-                             SUM(total_bonos) AS total_bonos, 
-                             SUM(pago_horas_extras) AS total_horas_extras,
-                    
-                      FROM pago_planilla 
-                      WHERE fecha_pago >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH) 
-                      GROUP BY id_usuario";
+    SUM(salario_base) AS total_salario, 
+    SUM(total_bonos) AS total_bonos, 
+    SUM(pago_horas_extras) AS total_horas_extras
+FROM pago_planilla 
+WHERE fecha_pago >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH) 
+GROUP BY id_usuario";
 
-    // Verifica si la conexión sigue abierta antes de ejecutar la consulta
-    if ($conn->ping()) {
-        $stmt = $conn->prepare($query_calculo);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        while ($row = $result->fetch_assoc()) {
-            $id_usuario = $row["id_usuario"];
-            $total_sum = $row["total_salario"] + $row["total_bonos"] + $row["total_horas_extras"];
-
-            // Calcular el aguinaldo (dividir entre 12)
-            $aguinaldo = $total_sum / 12;
-
-            // Verificar si ya existe un aguinaldo registrado en el mismo año para este usuario
-            $year = date("Y");
-            $query_check = "SELECT COUNT(*) FROM historial_aguinaldo WHERE id_usuario = ? AND YEAR(fecha_pago) = ?";
-            $stmt_check = $conn->prepare($query_check);
-            $stmt_check->bind_param("is", $id_usuario, $year);
-            $stmt_check->execute();
-            $stmt_check->bind_result($count);
-            $stmt_check->fetch();
-            $stmt_check->close();
-
-            // Si ya existe un aguinaldo para este año, no hacer nada
-            if ($count > 0) {
-                header("Location: Calcular_aguinaldo.php?aguinaldo_registrado=error");
-            } else {
-                // Insertar el pago del aguinaldo en la tabla historial_aguinaldo
-                $query_insert = "INSERT INTO historial_aguinaldo (id_usuario, total_aguinaldo, fecha_pago, metodo_pago) 
-                                 VALUES (?, ?, ?, ?)";
-                $stmt_insert = $conn->prepare($query_insert);
-                $stmt_insert->bind_param("idss", $id_usuario, $aguinaldo, $fecha_pago, $metodo_pago);
-
-                if ($stmt_insert->execute()) {
-                    // Mostrar el total sumado y el aguinaldo calculado para depuración
-                    echo "<br>ID Usuario: " . $id_usuario . "<br>";
-                    echo "Total sumado: " . $total_sum . "<br>";
-                    echo "Aguinaldo calculado: " . $aguinaldo . "<br>";
-                    echo "Método de pago: " . $metodo_pago . "<br>";
-                    echo "Fecha de pago: " . $fecha_pago . "<br>";
-                    echo "Aguinaldo registrado correctamente para el usuario con ID: " . $id_usuario . "<br>";
-                } else {
-                    echo "Error al registrar el aguinaldo para el usuario con ID: " . $id_usuario . "<br>";
-                }
-
-                $stmt_insert->close();
-            }
-        }
-
-        // Cerrar el statement principal
-        $stmt->close();
-    } else {
-        echo "La conexión a la base de datos ha fallado. Intente nuevamente.";
+    // Verificar si la conexión sigue abierta antes de ejecutar la consulta
+    $stmt = $conn->prepare($query_calculo);
+    if (!$stmt) {
+        die("Error en prepare: " . $conn->error);
     }
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    while ($row = $result->fetch_assoc()) {
+        $id_usuario = $row["id_usuario"];
+        $total_sum = $row["total_salario"] + $row["total_bonos"] + $row["total_horas_extras"];
+    
+        // Calcular el aguinaldo (dividir entre 12)
+        $aguinaldo = $total_sum / 12;
+    
+        // Verificar si ya existe un aguinaldo registrado en el mismo año para este usuario
+        $year = date("Y");
+        $query_check = "SELECT COUNT(*) FROM historial_aguinaldo WHERE id_usuario = ? AND YEAR(fecha_pago) = ?";
+        $stmt_check = $conn->prepare($query_check);
+        if (!$stmt_check) {
+            die("Error en prepare: " . $conn->error);
+        }
+        $stmt_check->bind_param("ii", $id_usuario, $year);
+        $stmt_check->execute();
+        $stmt_check->bind_result($count);
+        $stmt_check->fetch();
+        $stmt_check->close();
+    
+        if ($count > 0) {
+            header("Location: Calcular_aguinaldo.php?aguinaldo_registrado=error");
+            exit;  // Muy importante para evitar seguir ejecutando
+        } else {
+            $query_insert = "INSERT INTO historial_aguinaldo (id_usuario, total_aguinaldo, fecha_pago, metodo_pago) 
+                             VALUES (?, ?, ?, ?)";
+            $stmt_insert = $conn->prepare($query_insert);
+            if (!$stmt_insert) {
+                die("Error en prepare: " . $conn->error);
+            }
+            $stmt_insert->bind_param("idss", $id_usuario, $aguinaldo, $fecha_pago, $metodo_pago);
+    
+            if ($stmt_insert->execute()) {
+                echo "<br>ID Usuario: " . $id_usuario . "<br>";
+                echo "Total sumado: " . $total_sum . "<br>";
+                echo "Aguinaldo calculado: " . $aguinaldo . "<br>";
+                echo "Método de pago: " . $metodo_pago . "<br>";
+                echo "Fecha de pago: " . $fecha_pago . "<br>";
+                echo "Aguinaldo registrado correctamente para el usuario con ID: " . $id_usuario . "<br>";
+            } else {
+                echo "Error al registrar el aguinaldo para el usuario con ID: " . $id_usuario . "<br>";
+            }
+            $stmt_insert->close();
+        }
+    }
+    
+    $stmt->close();
+    
 
     // Cerrar la conexión después de que todo haya terminado
 
@@ -164,7 +165,7 @@ ob_end_flush();  // Envía todo el contenido del búfer al navegador
                     <th>Aguinaldo Total</th>
                     <th>Fecha de Pago</th>
                     <th>Método de Pago</th>
-                  
+
 
                 </tr>
             </thead>
