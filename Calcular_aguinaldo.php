@@ -1,9 +1,5 @@
 <?php
 ob_start();  // Inicia el búfer de salida
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    header("Location: login.php");
-    exit;
-}
 // Conexión a la base de datos
 // Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
@@ -32,6 +28,10 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 mysqli_set_charset($conn, "utf8mb4");
 session_start();
 include "template.php";
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: login.php");
+    exit;
+}
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
