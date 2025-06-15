@@ -108,7 +108,7 @@ include 'template.php';
         textarea,
         btn,
         select {
-            /*width: 100%;*/
+            width: 100%;
             padding: 10px;
             font-size: 16px;
             margin-bottom: 20px;
