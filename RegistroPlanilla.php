@@ -75,7 +75,7 @@ if (!isset($_SESSION['id_usuario'])) {
                         //echo "<p style='color:red;'><strong>Error: Este usuario ya está registrado en la planilla</strong></p>";
                         $mensaje = "<span style='color: red;'>Error: Este usuario ya está registrado en la planilla.</span>";
                     } else {
-                        $query = "INSERT INTO planilla (id_usuario, salario_base, hora_entrada, hora_salida, codigo_Bac, Codigo_CCSS, codigo_INS)
+                        $query = "INSERT INTO planilla (id_usuario, salario_base, hora_entrada, hora_salida, Cuenta_Bac, Codigo_CCSS, codigo_INS)
                                   VALUES (?, ?, ?, ?, ?, ?, ?)";
                         $stmtInsert = $conn->prepare($query);
  
