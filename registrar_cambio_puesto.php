@@ -106,7 +106,7 @@ include 'template.php';
 
         input,
         textarea,
-        button,
+        btn,
         select {
             /*width: 100%;*/
             padding: 10px;
