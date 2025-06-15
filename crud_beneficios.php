@@ -88,7 +88,7 @@ elseif ($action == 'delete') {
 
     if ($id_beneficio > 0) {
         $sql = "DELETE FROM beneficios WHERE id_beneficio = ?";
-        $stmt = $conexion->prepare($sql);
+        $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $id_beneficio);
         
         if ($stmt->execute()) {
