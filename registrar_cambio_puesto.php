@@ -123,7 +123,7 @@ include 'template.php';
             resize: vertical;
         }
 
-        button {
+        btn {
             background-color: #147964;
             color: black;
             font-weight: bold;
