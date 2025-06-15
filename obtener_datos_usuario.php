@@ -28,7 +28,7 @@ mysqli_set_charset($conn, "utf8mb4");
 $id_usuario = $_GET['id_usuario'];
 
 // Traer ocupación y salario base
-$sql = "SELECT u.id_ocupacion, p.salario_base 
+$sql = "SELECT u.id_ocupacion,u.nombre_ocupacion, p.salario_base 
         FROM Usuario u
         LEFT JOIN Planilla p ON u.id_usuario = p.id_usuario 
         WHERE u.id_usuario = '$id_usuario' 
@@ -41,7 +41,7 @@ $data = [];
 if ($resultado->num_rows > 0) {
     $fila = $resultado->fetch_assoc();
     $data = [
-        'puesto_anterior' => $fila['id_ocupacion'],
+        'puesto_anterior' => $fila['nombre_ocupacion'],
         'sueldo_anterior' => $fila['salario_base']
     ];
 }
