@@ -47,6 +47,9 @@ if ($departamento != "") {
     $query .= " AND d.id_departamento = '$departamento'";  // Filtro de departamento
 }
 
+// Agregar GROUP BY para las columnas no agregadas
+$query .= " GROUP BY u.nombre, u.apellido, d.Nombre";
+
 $result = mysqli_query($conn, $query);
 $data = [];
 if ($result && mysqli_num_rows($result) > 0) {
