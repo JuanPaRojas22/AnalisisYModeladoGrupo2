@@ -166,7 +166,7 @@ include 'template.php';
 
     // Obtener lista de ocupaciones
     $ocupaciones = [];
-    $consultaOcupaciones = "SELECT id_ocupacion, nombre_ocupacion FROM Ocupacion";
+    $consultaOcupaciones = "SELECT id_ocupacion, nombre_ocupacion FROM Ocupaciones";
     $resOcupaciones = $conn->query($consultaOcupaciones);
     if ($resOcupaciones && $resOcupaciones->num_rows > 0) {
         $ocupaciones = $resOcupaciones->fetch_all(MYSQLI_ASSOC);
@@ -202,10 +202,10 @@ include 'template.php';
                 $stmt2->execute();
 
                 $conn->commit();
-                $mensaje = "✅ Cambio de puesto registrado con éxito.";
+                $mensaje = "Cambio de puesto registrado con éxito.";
             } catch (Exception $e) {
                 $conn->rollback();
-                $mensaje = "❌ Error al registrar el cambio: " . $conn->error;
+                $mensaje = "Error al registrar el cambio: " . $conn->error;
             }
         }
     }
