@@ -79,8 +79,8 @@ include 'template.php';
             margin-bottom: 30px;
         }
 
-        .button {
-            /*display: inline-block;*/
+        .btn {
+            display: inline-block;
             background-color: #147964;
             color: black;
             padding: 10px 20px;
@@ -251,7 +251,7 @@ include 'template.php';
             <label for="fecha_cambio">Fecha de Cambio:</label>
             <input type="date" name="fecha_cambio" required>
 
-            <button type="submit">Registrar Cambio</button>
+            <button class='btn' type="submit">Registrar Cambio</button>
         </form>
     </div>
 
