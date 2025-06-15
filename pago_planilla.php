@@ -4,6 +4,7 @@ date_default_timezone_set('America/Costa_Rica');
 
 // Conexión a la base de datos
 require 'conexion.php';
+$conn = obtenerConexion();    // Llama a la función y guarda la conexión en $conn
 session_start();
 
 // Inicializar la variable $mensaje
