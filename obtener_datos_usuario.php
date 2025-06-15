@@ -28,11 +28,14 @@ mysqli_set_charset($conn, "utf8mb4");
 $id_usuario = $_GET['id_usuario'];
 
 // Traer ocupación y salario base
-$sql = "SELECT u.id_ocupacion,u.nombre_ocupacion, p.salario_base 
-        FROM Usuario u
-        LEFT JOIN Planilla p ON u.id_usuario = p.id_usuario 
-        WHERE u.id_usuario = '$id_usuario' 
-        LIMIT 1";
+$sql = "SELECT 
+    o.nombre_ocupacion, 
+    p.salario_base 
+    FROM Usuario u
+    LEFT JOIN Planilla p ON u.id_usuario = p.id_usuario
+    LEFT JOIN ocupaciones o ON u.id_ocupacion = hl.id_ocupacion
+    WHERE u.id_usuario = '$id_usuario' 
+    LIMIT 1";
 
 $resultado = $conn->query($sql);
 
