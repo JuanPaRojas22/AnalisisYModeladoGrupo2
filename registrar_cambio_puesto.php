@@ -84,7 +84,7 @@ include 'template.php';
             background-color: #147964;
             color: black;
             padding: 10px 20px;
-            font-size: 16px;
+            font-size: 8px;
             font-weight: bold;
             text-align: center;
             text-decoration: none;
