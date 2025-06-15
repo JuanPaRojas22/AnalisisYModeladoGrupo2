@@ -33,7 +33,7 @@ $sql = "SELECT
     p.salario_base 
     FROM Usuario u
     LEFT JOIN Planilla p ON u.id_usuario = p.id_usuario
-    LEFT JOIN ocupaciones o ON u.id_ocupacion = hl.id_ocupacion
+    LEFT JOIN ocupaciones o ON u.id_ocupacion = o.nombre_ocupacion
     WHERE u.id_usuario = '$id_usuario' 
     LIMIT 1";
 
