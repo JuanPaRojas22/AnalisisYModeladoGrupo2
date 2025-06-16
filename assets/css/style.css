@@ -133,6 +133,11 @@ a, a:hover, a:focus {
     color: #fff;
 }
 
+        form {
+            width: 100%;
+        }
+
+
 #container {
     width: 100%;
     height: 100%;
