@@ -291,7 +291,7 @@ $aporte = $row['aporte'];
 
 
         <!-- Modal -->
-        <div id="miModal">
+        <div id="miModal" class='modal'>
             <div class="modal-contenido">
                 <span class="cerrar" onclick="cerrarModal()">&times;</span>
                 <h2>Haz tu aporte</h2>
