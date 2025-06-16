@@ -102,7 +102,7 @@ $aporte = $row['aporte'];
             <div class="sidebar-toggle-box">
                 <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
             </div>
-            <a href="index.php" class="logo"><b>Acces Perssonel</b></a>
+            <a href="index.php" class="logo"><b>Access Perssonel</b></a>
             <div class="nav notify-row" id="top_menu">
                 <!-- Notifications -->
                 <ul class="nav top-menu">
