@@ -39,7 +39,7 @@ body {
 
 
       /* Fondo del modal de aportes */
-      .modal-aportes {
+      .modal {
         display: none; /* Oculto por defecto */
         position: fixed;
         z-index: 999;
