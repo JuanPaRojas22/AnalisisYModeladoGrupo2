@@ -296,7 +296,7 @@ $aporte = $row['aporte'];
                 <span class="cerrar" onclick="cerrarModal()">&times;</span>
                 <h2>Haz tu aporte</h2>
                 <form id="enviarAporte">
-                    <input type="text" value="<?php echo $_SESSION['nombre']; ?>" readonly>
+                    <input type="text" value=" echo $_SESSION['nombre']; ?>" readonly>
                     <textarea  id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
                     <button type="submit" class="enviar">Enviar</button>
                 </form>
