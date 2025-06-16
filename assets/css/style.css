@@ -84,7 +84,7 @@ body {
   
       /* Estilos del formulario */
       input, textarea {
-        width: 100%;
+        width: 50%;
         padding: 10px;
         margin: 8px 0px;
         border: 1px solid;
@@ -92,7 +92,16 @@ body {
         text-align: center;
         color: #000;
       }
-
+      .custom-input{
+        width: 50%;
+        padding: 10px;
+        margin: 8px 25%;
+        border: 1px solid;
+        border-radius: 5px;
+        text-align: center;
+        color: #000;
+      }
+  
       button.enviar {
         background-color: #09354b;
         color: white;
@@ -123,8 +132,6 @@ a, a:hover, a:focus {
     background: #205d85d8;
     color: #fff;
 }
-
-
 
 #container {
     width: 100%;
