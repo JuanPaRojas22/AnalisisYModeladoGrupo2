@@ -286,9 +286,9 @@ $aporte = $row['aporte'];
             </div>
         </aside>
 
-        <!-- Botón flotante -->
+        <!-- Botón flotante 
         <button class="boton-flotante" onclick="abrirModal()">✨ Hacer un aporte</button>
-
+        -->
 
         <!-- Modal -->
        <!--  <div id="miModal" class="modal">
@@ -326,7 +326,7 @@ $aporte = $row['aporte'];
                 document.getElementById("miModal").style.display = "none";
             }
 
-            // Función para enviar el aporte
+           // Función para enviar el aporte
             function enviarAporte(event) {
                 event.preventDefault();
                 const mensaje = document.getElementById("aporte").value;
