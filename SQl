@@ -1161,3 +1161,8 @@ ADD COLUMN bloqueado_hasta DATETIME DEFAULT NULL;
 ALTER TABLE ausencias
 ADD COLUMN justificada ENUM('Sí', 'No') DEFAULT 'No';
 
+--Cambios Paula Fecha: 14 de Julio
+
+ALTER TABLE usuario
+ADD COLUMN token_recuperacion VARCHAR(255) NULL,
+ADD COLUMN token_expira DATETIME NULL;
