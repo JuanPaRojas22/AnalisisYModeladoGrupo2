@@ -1,6 +1,9 @@
 <?php
 require 'conexion.php';
 
+$conn = obtenerConexion(); 
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $token = $_POST['token'];
     $password = $_POST['password'];
