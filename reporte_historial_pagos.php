@@ -4,7 +4,7 @@ require_once 'fpdf/fpdf.php';
 
 // Parámetros de conexión a Azure
 $host = "accespersoneldb.mysql.database.azure.com";
-$user = "adminUser@accespersoneldb";
+$user = "adminUser";
 $password = "admin123+";
 $dbname = "gestionEmpleados";
 $port = 3306;
