@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("sss", $token, $expira, $correo);
         $stmt->execute();
 
-        $enlace = "https://TU_DOMINIO/reset_password.php?token=$token"; // Cambia por tu dominio real
+        $enlace = "https://accesspersonel-fue0gkhkabeahsgd.canadacentral-01.azurewebsites.net/reset_password.php?token=$token"; // Cambia por tu dominio real
         $asunto = "Recuperación de contraseña";
         $mensaje = "Hola, haz clic en el siguiente enlace para cambiar tu contraseña:<br><a href='$enlace'>$enlace</a>";
 
