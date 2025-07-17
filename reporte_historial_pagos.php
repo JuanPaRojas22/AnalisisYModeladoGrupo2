@@ -4,13 +4,13 @@ require_once 'fpdf/fpdf.php';
 
 // Parámetros de conexión a Azure
 $host = "accespersoneldb.mysql.database.azure.com";
-$user = "adminUser@accespersoneldb"; // 👈 IMPORTANTE: el usuario debe ir con el @host
+$user = "adminUser@accespersoneldb";
 $password = "admin123+";
 $dbname = "gestionEmpleados";
 $port = 3306;
 
-// Ruta al certificado SSL (ajústala si estás en un entorno local diferente o en Azure App Service)
-$ssl_ca = "/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem"; // o './certs/BaltimoreCyberTrustRoot.crt.pem' si es local
+
+$ssl_ca = "/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem"; 
 
 // Inicializar conexión mysqli
 $conn = mysqli_init();
@@ -22,7 +22,15 @@ mysqli_ssl_set($conn, NULL, NULL, $ssl_ca, NULL, NULL);
 mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
 // Intentar conexión usando SSL
-if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
+if (!$conn->real_connect(
+    $host,
+    $user,
+    $password,
+    $dbname,
+    $port,
+    NULL,
+    MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT
+)) {
     die("Error de conexión: " . mysqli_connect_error());
 }
 

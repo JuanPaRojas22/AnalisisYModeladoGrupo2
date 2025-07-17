@@ -2,6 +2,8 @@
 require 'conexion.php';
 require 'mailer.php';
 
+$conn = obtenerConexion(); 
+
 $mensaje_resultado = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -21,14 +23,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("sss", $token, $expira, $correo);
         $stmt->execute();
 
-        $enlace = "http://localhost/AnalisisYModeladoGrupo2/Plantilla_Access/reset_password.php?token=" . $token;
+        $enlace = "https://TU_DOMINIO/reset_password.php?token=$token"; // Cambia por tu dominio real
         $asunto = "Recuperación de contraseña";
         $mensaje = "Hola, haz clic en el siguiente enlace para cambiar tu contraseña:<br><a href='$enlace'>$enlace</a>";
 
         if (enviarCorreo($correo, $asunto, $mensaje)) {
             $mensaje_resultado = "✅ Revisa tu correo para restablecer tu contraseña.";
         } else {
-            $mensaje_resultado = "❌ Error al enviar el correo. Intentalo más tarde.";
+            $mensaje_resultado = "❌ Error al enviar el correo. Intenta más tarde.";
         }
     } else {
         $mensaje_resultado = "⚠️ El correo no está registrado.";
