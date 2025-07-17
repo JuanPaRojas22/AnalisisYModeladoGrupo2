@@ -51,7 +51,7 @@ class PDF extends FPDF
         $logoWidth = 60;
         $logoX = ($pageWidth - $logoWidth) / 2; // Centrado
     
-        $this->Image('assets/img/logo_acces_perssonel.jpeg', $logoX, 10, $logoWidth);
+        $this->Image('assets/img/logo_acces_perssonel.jpeg', $logoX, 10, $logoWidth);// logo de la pagina
         
         // Mover el cursor hacia abajo para dejar espacio al logo (ajusta según tu imagen)
         $this->SetY(40); 
