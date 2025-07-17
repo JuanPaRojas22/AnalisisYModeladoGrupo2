@@ -10,7 +10,7 @@ $dbname = "gestionEmpleados";
 $port = 3306;
 
 
-$ssl_ca = "/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem"; 
+$ssl_ca = "/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem";
 
 // Inicializar conexión mysqli
 $conn = mysqli_init();
@@ -22,15 +22,17 @@ mysqli_ssl_set($conn, NULL, NULL, $ssl_ca, NULL, NULL);
 mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
 // Intentar conexión usando SSL
-if (!$conn->real_connect(
-    $host,
-    $user,
-    $password,
-    $dbname,
-    $port,
-    NULL,
-    MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT
-)) {
+if (
+    !$conn->real_connect(
+        $host,
+        $user,
+        $password,
+        $dbname,
+        $port,
+        NULL,
+        MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT
+    )
+) {
     die("Error de conexión: " . mysqli_connect_error());
 }
 
@@ -49,6 +51,9 @@ class PDF extends FPDF
         $this->SetFont('Arial', 'I', 12);
         $this->Cell(0, 10, 'Generado el ' . date('d/m/Y'), 0, 1, 'C');
         $this->Ln(10);
+        // Agregar logo y centrarlo
+        $this->Image('assets/img/logo_acces_perssonel.jpeg', 75, 10, 60);  // Posición centrada
+        $this->Ln(45); // Espacio después del logo
     }
 
     function Footer()
