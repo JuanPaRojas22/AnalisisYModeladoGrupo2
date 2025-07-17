@@ -1,6 +1,9 @@
 <?php
 require 'conexion.php';
 
+$conn = obtenerConexion(); 
+
+
 $token = $_GET['token'] ?? '';
 
 if (empty($token)) {
