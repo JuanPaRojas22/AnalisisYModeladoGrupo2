@@ -46,15 +46,27 @@ class PDF extends FPDF
 {
     function Header()
     {
+        // Centrar el logo horizontalmente
+        $pageWidth = $this->GetPageWidth();
+        $logoWidth = 60;
+        $logoX = ($pageWidth - $logoWidth) / 2; // Centrado
+    
+        $this->Image('assets/img/logo_acces_perssonel.jpeg', $logoX, 10, $logoWidth);
+        
+        // Mover el cursor hacia abajo para dejar espacio al logo (ajusta según tu imagen)
+        $this->SetY(40); 
+    
+        // Título del reporte
         $this->SetFont('Arial', 'B', 16);
         $this->Cell(0, 10, utf8_decode('Reporte de Historial de Pagos'), 0, 1, 'C');
+    
+        // Fecha centrada
         $this->SetFont('Arial', 'I', 12);
         $this->Cell(0, 10, 'Generado el ' . date('d/m/Y'), 0, 1, 'C');
-        $this->Ln(10);
-        // Agregar logo y centrarlo
-        $this->Image('assets/img/logo_acces_perssonel.jpeg', 75, 10, 60);  // Posición centrada
-        $this->Ln(45); // Espacio después del logo
+    
+        $this->Ln(5); // Espacio adicional si lo deseas
     }
+    
 
     function Footer()
     {
