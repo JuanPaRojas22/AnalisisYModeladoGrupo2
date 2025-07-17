@@ -10,13 +10,33 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
 }
 
 
-// Conexión a la base de datos (ajusta los valores de conexión según tu configuración)
-$conn = new mysqli("localhost", "root", "", "gestionempleados");
+// Parámetros de conexión
+$host = "accespersoneldb.mysql.database.azure.com";
+$user = "adminUser";
+$password = "admin123+";
+$dbname = "gestionEmpleados";
+$port = 3306;
 
-// Verificar la conexión
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
+// Ruta al certificado CA para validar SSL
+$ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
+
+// Inicializamos mysqli
+$conn = mysqli_init();
+
+// Configuramos SSL
+mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
+mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
+
+
+// Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
+if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
+    die("Error de conexión: " . mysqli_connect_error());
 }
+
+// Establecemos el charset
+mysqli_set_charset($conn, "utf8mb4");
+
+//echo "Conectado correctamente con SSL.";
 
 // Consulta para obtener el número de nuevos aportes
 $query = "SELECT COUNT(*) AS aporte FROM aportes WHERE aporte = 0";  // Ajusta la tabla y condición según tu estructura
@@ -30,7 +50,6 @@ $aporte = $row['aporte'];
 
 
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -83,7 +102,7 @@ $aporte = $row['aporte'];
             <div class="sidebar-toggle-box">
                 <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
             </div>
-            <a href="index.php" class="logo"><b>Acces Perssonel</b></a>
+            <a href="index.php" class="logo"><b>Access Perssonel</b></a>
             <div class="nav notify-row" id="top_menu">
                 <!-- Notifications -->
                 <ul class="nav top-menu">
@@ -208,8 +227,6 @@ $aporte = $row['aporte'];
                                     <li><a href="reporte_hacienda.php"><i class="bi bi-bank"></i>Hacienda</a></li>
                                     <li><a href="Dias_Feriados.php"><i class="bi bi-calendar3"></i>
                                     Feriados</a></li>
-                                    <li><a href="historial_salarios.php"><i class="bi bi-calendar3"></i>
-                                    Historial Salarios</a></li>
                                 </ul>
                                 <?php endif; ?>
                             </li>
@@ -255,7 +272,6 @@ $aporte = $row['aporte'];
                             </a>
                         </li>
                         <li><a href="preguntasfreq.php"><i class="bi bi-question-octagon-fill"></i>Preguntas Frecuentes</a></li>
-<li><a href="historial_salarios.php"><i class="bi bi-cash-coin"></i>Historial Salarios</a></li>
 
                 </ul>
                 </li>
@@ -270,22 +286,23 @@ $aporte = $row['aporte'];
             </div>
         </aside>
 
-        <!-- Botón flotante -->
+        <!-- Botón flotante 
         <button class="boton-flotante" onclick="abrirModal()">✨ Hacer un aporte</button>
-
+        -->
 
         <!-- Modal -->
-        <div id="miModal" class="modal">
+       <!--  <div id="miModal" class="modal">
             <div class="modal-contenido">
                 <span class="cerrar" onclick="cerrarModal()">&times;</span>
                 <h2>Haz tu aporte</h2>
                 <form id="enviarAporte">
-                    <input type="text" value="<?php echo $_SESSION['nombre']; ?>" readonly>
+                    <input type="text" value=" echo $_SESSION['nombre']; ?>" readonly>
                     <textarea  id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
                     <button type="submit" class="enviar">Enviar</button>
                 </form>
             </div>
-        </div>
+        </div>-->
+                    
         <!-- Footer -->
         <footer class="site-footer">
             <div class="text-center">2025 - Acces Perssonel</div>
@@ -309,7 +326,7 @@ $aporte = $row['aporte'];
                 document.getElementById("miModal").style.display = "none";
             }
 
-            // Función para enviar el aporte
+           // Función para enviar el aporte
             function enviarAporte(event) {
                 event.preventDefault();
                 const mensaje = document.getElementById("aporte").value;
