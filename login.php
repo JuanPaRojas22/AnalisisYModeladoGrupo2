@@ -240,6 +240,12 @@ if ($_SESSION['bloqueado_hasta'] !== null && time() < $_SESSION['bloqueado_hasta
                 <input type="text" name="username" class="form-control" placeholder="User" autofocus>
                 <br>
                 <input type="password" name="password" class="form-control" placeholder="Password">
+
+                 <!-- Enlace para recuperar contraseña -->
+               <div style="margin-top: 10px; text-align: center;">
+    <a href="forgot_password.php" style="color: white; font-weight: bold; display: inline-block; width: 100%;">
+        ¿Olvidaste tu contraseña?
+    </a>
                 <!-- <label class="checkbox">
                         <span class="pull-right">
                             <a data-toggle="modal" href="login.php#myModal"> Forgot Password?</a>

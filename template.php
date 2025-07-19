@@ -227,6 +227,8 @@ $aporte = $row['aporte'];
                                     <li><a href="reporte_hacienda.php"><i class="bi bi-bank"></i>Hacienda</a></li>
                                     <li><a href="Dias_Feriados.php"><i class="bi bi-calendar3"></i>
                                     Feriados</a></li>
+                                    <li><a href="historial_salarios.php"><i class="bi bi-calendar3"></i>
+                                    Historial Salarios</a></li>
                                 </ul>
                                 <?php endif; ?>
                             </li>
