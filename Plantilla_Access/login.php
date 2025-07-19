@@ -1,6 +1,6 @@
 <?php
 // Se hace la conexión a la base de datos
-$conn = new mysqli("localhost", "root", "", "GestionEmpleados");
+$conn = new mysqli("127.0.0.1", "root", "", "gestionEmpleados");
 mysqli_set_charset($conn, "utf8mb4");
 
 // Se valida la conexión a la base de datos
@@ -58,6 +58,8 @@ if ($_SESSION['bloqueado_hasta'] !== null && time() < $_SESSION['bloqueado_hasta
             $_SESSION['username'] = $usuario['username'];
             $_SESSION['nombre'] = $usuario['nombre'];
             $_SESSION['id_rol'] = $usuario['id_rol'];
+            $_SESSION['id_departamento'] = $usuario['id_departamento']; 
+
             $_SESSION['logged_in'] = true;
 
             header("Location: index.php?login=success&username=" . urlencode($usuario['nombre']));
@@ -219,6 +221,12 @@ if ($_SESSION['bloqueado_hasta'] !== null && time() < $_SESSION['bloqueado_hasta
                 <input type="text" name="username" class="form-control" placeholder="User" autofocus>
                 <br>
                 <input type="password" name="password" class="form-control" placeholder="Password">
+                 <!-- Enlace para recuperar contraseña -->
+               <div style="margin-top: 10px; text-align: center;">
+    <a href="forgot_password.php" style="color: white; font-weight: bold; display: inline-block; width: 100%;">
+        ¿Olvidaste tu contraseña?
+    </a>
+</div>
                 <!-- <label class="checkbox">
                         <span class="pull-right">
                             <a data-toggle="modal" href="login.php#myModal"> Forgot Password?</a>

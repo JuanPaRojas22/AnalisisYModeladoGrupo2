@@ -31,6 +31,7 @@ $aporte = $row['aporte'];
 
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -207,6 +208,8 @@ $aporte = $row['aporte'];
                                     <li><a href="reporte_hacienda.php"><i class="bi bi-bank"></i>Hacienda</a></li>
                                     <li><a href="Dias_Feriados.php"><i class="bi bi-calendar3"></i>
                                     Feriados</a></li>
+                                    <li><a href="historial_salarios.php"><i class="bi bi-calendar3"></i>
+                                    Historial Salarios</a></li>
                                 </ul>
                                 <?php endif; ?>
                             </li>
@@ -252,6 +255,7 @@ $aporte = $row['aporte'];
                             </a>
                         </li>
                         <li><a href="preguntasfreq.php"><i class="bi bi-question-octagon-fill"></i>Preguntas Frecuentes</a></li>
+<li><a href="historial_salarios.php"><i class="bi bi-cash-coin"></i>Historial Salarios</a></li>
 
                 </ul>
                 </li>
@@ -277,7 +281,7 @@ $aporte = $row['aporte'];
                 <h2>Haz tu aporte</h2>
                 <form id="enviarAporte">
                     <input type="text" value="<?php echo $_SESSION['nombre']; ?>" readonly>
-                    <textarea id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
+                    <textarea  id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
                     <button type="submit" class="enviar">Enviar</button>
                 </form>
             </div>

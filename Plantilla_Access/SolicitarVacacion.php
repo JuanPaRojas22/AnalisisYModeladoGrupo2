@@ -560,24 +560,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             border-color: #116B67;
                         }
                         /* Estilo base para los tabs */
-            .nav-tabs .nav-link {
-    color: #147964;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    font-weight: bold;
-}
+                        .nav-tabs .nav-link {
+                            color: #147964;
+                            background-color: #f9f9f9;
+                            border: 1px solid #ddd;
+                            font-weight: bold;
+                        }
 
-/* Estilo cuando están activos (seleccionados) */
-.nav-tabs .nav-link.active {
-    background-color: #116B67;
-    color: white;
-    border-color: #116B67 #116B67 #f9f9f9;
-}
+                        /* Estilo cuando están activos (seleccionados) */
+                        .nav-tabs .nav-link.active {
+                            background-color: #116B67;
+                            color: white;
+                            border-color: #116B67 #116B67 #f9f9f9;
+                        }
 
-/* Opcional: quitar borde inferior del tab activo */
-.nav-tabs {
-    border-bottom: 1px solid #ddd;
-}
+                        /* Opcional: quitar borde inferior del tab activo */
+                        .nav-tabs {
+                            border-bottom: 1px solid #ddd;
+                        }
 
                     </style>
                 </head>

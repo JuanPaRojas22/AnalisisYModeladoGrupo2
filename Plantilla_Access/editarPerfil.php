@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
-//include "template.php";
+include "template.php";
 
 // Conexión a la base de datos
 $conn = new mysqli("localhost", "root", "", "GestionEmpleados");
@@ -160,7 +160,7 @@ if (isset($_GET['id'])) {
             </div>
             <div class="col-md-9">
                 <h3>Información del Usuario</h3>
-                <form action="editarPerfil.php" method="post" enctype="multipart/form-data">
+                <form action="profile.php" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($user['id_usuario']); ?>">
                     <div class="row">
                         <div class="col-md-6">
