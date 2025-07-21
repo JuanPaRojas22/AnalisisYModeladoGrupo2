@@ -1,9 +1,9 @@
 <?php
 ob_start();  // Inicia el búfer de salida
-
+session_start();
 require 'conexion.php';
 require 'template.php';
-session_start();
+
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header("Location: login.php");
     exit;
@@ -19,7 +19,7 @@ $conn = obtenerConexion();
 // }
 
 $mensaje = "";
-ob_end_flush();  // Envía todo el contenido del búfer al navegador
+
 ?>
 
 <!DOCTYPE html>
@@ -231,6 +231,7 @@ ob_end_flush();  // Envía todo el contenido del búfer al navegador
                     /* Box shadow */
                     border-radius: 10px;
                     /* Rounded corners */
+                    color: black;
                 }
 
 
@@ -392,3 +393,7 @@ ob_end_flush();  // Envía todo el contenido del búfer al navegador
         console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
     }
 </script>
+
+<?php
+ob_end_flush();
+?>
