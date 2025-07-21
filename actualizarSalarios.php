@@ -246,6 +246,7 @@ $mensaje = "";
                 .form-group {
                     margin-bottom: 20px;
                     /* Spacing between fields */
+                    max-height: 1000px;
                 }
 
                 .form-group.text-center {
@@ -281,7 +282,7 @@ $mensaje = "";
                                             <?php endwhile; ?>
                                         </select>
                                     </div>
-                                    <div class="form-group d-flex justify-content-center gap-3 flex-wrap mt-4">
+                                    <div class="form-group">
                                         <label for="nuevo_salario_base">Nuevo Salario Base:</label>
                                         <input type="number" step="0.01" id="nuevo_salario_base"
                                             name="nuevo_salario_base" class="form-control" required>
