@@ -235,16 +235,6 @@ $mensaje = "";
                     color: black;
                 }
 
-                body {
-                    background-color: #f5f5f5;
-                    /* Color de fondo para ver mejor el contenedor */
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    min-height: 100vh;
-                    margin: 0;
-                }
-
 
 
                 h2 {
@@ -256,7 +246,7 @@ $mensaje = "";
                 .form-group {
                     margin-bottom: 20px;
                     /* Spacing between fields */
-                    max-height: 1500px;
+                    max-height: 1000px;
                 }
 
                 .form-group.text-center {
@@ -279,7 +269,7 @@ $mensaje = "";
                         <div class="card" style="border-radius: 10px;">
                             <div class="card-body">
                                 <h2 class="text-center mt-4">Actualizar Salarios</h2>
-                                <form action="" method="POST" class="mt-4 form-group">
+                                <form action="" method="POST" class="mt-4">
                                     <div class="form-group">
                                         <label for="id_usuario">Empleado:</label>
                                         <select id="id_usuario" name="id_usuario" class="form-control" required>
