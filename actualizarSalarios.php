@@ -269,7 +269,7 @@ $mensaje = "";
                         <div class="card" style="border-radius: 10px;">
                             <div class="card-body">
                                 <h2 class="text-center mt-4">Actualizar Salarios</h2>
-                                <form action="" method="POST" class="mt-4">
+                                <form action="" method="POST" class="mt-4 form-group">
                                     <div class="form-group">
                                         <label for="id_usuario">Empleado:</label>
                                         <select id="id_usuario" name="id_usuario" class="form-control" required>
