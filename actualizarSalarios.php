@@ -219,20 +219,15 @@ $mensaje = "";
 
             <style>
                 .container-fluid {
-                    max-width: 800px;
-                    /* Increase the width of the container */
+                    max-width: 1000px;
+                    /* Más ancho */
                     margin: 50px auto;
-                    /* Center the container */
-                    padding: 40px;
-                    /* Add more space inside the container */
+                    padding: 50px;
                     background-color: white;
-                    /* Background color */
                     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-                    /* Box shadow */
-                    border-radius: 10px;
-                    /* Rounded corners */
-                    color: black;
+                    border-radius: 12px;
                 }
+
 
 
 
@@ -254,7 +249,7 @@ $mensaje = "";
 
                 .form-group button,
                 .form-group a {
-                    justify-content: center;
+
                     padding: 10px 20px;
                     font-size: 15px;
                 }
@@ -280,7 +275,7 @@ $mensaje = "";
                                             <?php endwhile; ?>
                                         </select>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group d-flex justify-content-center gap-3 flex-wrap mt-4">
                                         <label for="nuevo_salario_base">Nuevo Salario Base:</label>
                                         <input type="number" step="0.01" id="nuevo_salario_base"
                                             name="nuevo_salario_base" class="form-control" required>
