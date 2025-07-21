@@ -219,15 +219,21 @@ $mensaje = "";
 
             <style>
                 .container-fluid {
-                    max-width: 1000px;
-                    /* Más ancho */
+                    max-width: 800px;
+                    /* Increase the width of the container */
+                    max-height: 100px;
                     margin: 50px auto;
-                    padding: 50px;
+                    /* Center the container */
+                    padding: 40px;
+                    /* Add more space inside the container */
                     background-color: white;
+                    /* Background color */
                     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-                    border-radius: 12px;
+                    /* Box shadow */
+                    border-radius: 10px;
+                    /* Rounded corners */
+                    color: black;
                 }
-
 
 
 
