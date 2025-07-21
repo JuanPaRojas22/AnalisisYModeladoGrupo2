@@ -1,4 +1,6 @@
 <?php
+ob_start();  // Inicia el búfer de salida
+
 require 'conexion.php';
 require 'template.php';
 session_start();
@@ -17,6 +19,7 @@ $conn = obtenerConexion();
 // }
 
 $mensaje = "";
+ob_end_flush();  // Envía todo el contenido del búfer al navegador
 ?>
 
 <!DOCTYPE html>
