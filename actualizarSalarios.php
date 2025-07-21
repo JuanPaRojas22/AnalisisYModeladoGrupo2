@@ -246,7 +246,7 @@ $mensaje = "";
                 .form-group {
                     margin-bottom: 20px;
                     /* Spacing between fields */
-                    max-height: 1000px;
+                    max-height: 1500px;
                 }
 
                 .form-group.text-center {
