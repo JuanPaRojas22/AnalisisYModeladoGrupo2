@@ -218,7 +218,7 @@ $mensaje = "";
             <link href="assets/css/style.css" rel="stylesheet">
 
             <style>
-                .container-custom {
+                .container-fluid {
                     max-width: 800px;
                     /* Increase the width of the container */
                     max-height: 800px;
@@ -275,7 +275,7 @@ $mensaje = "";
             <body>
                 <section id="container">
                     <!-- Añadimos un contenedor blanco aquí -->
-                    <div class="container-custom">
+                    <div class="container-fluid">
                         <div class="card" style="border-radius: 10px;">
                             <div class="card-body">
                                 <h2 class="text-center mt-4">Actualizar Salarios</h2>
