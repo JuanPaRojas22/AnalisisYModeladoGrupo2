@@ -254,6 +254,7 @@ $mensaje = "";
 
                 .form-group button,
                 .form-group a {
+                    justify-content: center;
                     padding: 10px 20px;
                     font-size: 15px;
                 }
