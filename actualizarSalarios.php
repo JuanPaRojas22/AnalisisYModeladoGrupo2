@@ -221,7 +221,7 @@ $mensaje = "";
                 .container-fluid {
                     max-width: 800px;
                     /* Increase the width of the container */
-                    max-height: 100px;
+                    max-height: 800px;
                     margin: 50px auto;
                     /* Center the container */
                     padding: 40px;
