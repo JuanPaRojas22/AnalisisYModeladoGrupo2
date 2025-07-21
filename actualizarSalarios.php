@@ -218,7 +218,7 @@ $mensaje = "";
             <link href="assets/css/style.css" rel="stylesheet">
 
             <style>
-                .container-fluid {
+                .container-custom {
                     max-width: 800px;
                     /* Increase the width of the container */
                     max-height: 800px;
@@ -233,6 +233,16 @@ $mensaje = "";
                     border-radius: 10px;
                     /* Rounded corners */
                     color: black;
+                }
+
+                body {
+                    background-color: #f5f5f5;
+                    /* Color de fondo para ver mejor el contenedor */
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    min-height: 100vh;
+                    margin: 0;
                 }
 
 
@@ -265,7 +275,7 @@ $mensaje = "";
             <body>
                 <section id="container">
                     <!-- Añadimos un contenedor blanco aquí -->
-                    <div class="container-fluid">
+                    <div class="container-custom">
                         <div class="card" style="border-radius: 10px;">
                             <div class="card-body">
                                 <h2 class="text-center mt-4">Actualizar Salarios</h2>
