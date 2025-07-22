@@ -16,15 +16,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $descripcion = $_POST["concepto"];
 
     //Insertar deducción
-
-    $smt = $conn->prepare("INSERT INTO deducciones(id_usuario, deudor,razon,lugar, monto_quincenal, monto_mensual, concepto) VALUES (?,?,?,?,?,?,?)");
+    $smt = $conn->prepare("INSERT INTO deducciones(id_usuario, deudor, razon, lugar, monto_quincenal, monto_mensual, concepto) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $deudor = "Trabajador";
-    $concepto = "Retenciones Quincenales de Ley";
     $lugar = "Entidades Gubernamentales de Costa Rica";
-
-    // Seguro Social (quincenal)
-    $razon = "Deducción Extra";
-    $smt->bind_param("issdds", $id_usuario, $tipo_deduccion, $monto, $descripcion);
+    
+    $smt->bind_param("isssdds", $id_usuario, $deudor, $tipo_deduccion, $lugar, $monto_quincenal, $monto_mensual, $descripcion);
+    
 
     if ($smt->execute()) {
         //Obtener salario base del usuario
