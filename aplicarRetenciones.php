@@ -230,7 +230,7 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
           }
 
           .btn-pequeno {
-            padding: 4px 10px;
+            padding: 4px 6px;
             font-size: 12px;
             line-height: 1.2;
           }
