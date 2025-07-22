@@ -90,7 +90,7 @@ $result_empleados = $conn->query("SELECT DISTINCT id_usuario, nombre, apellido F
                         <select name="id_usuario" id="id_usuario" class="form-control" required>
                             <option value="">Seleccione un empleado</option>
                             <?php while ($row = $result_empleados->fetch_assoc()): ?>
-                                <option value="<?= $row['id_usuario'] ?>"><?= $row['nombre'] ?><?= $row['apellido'] ?></option>
+                                <option value="<?= $row['id_usuario'] ?>"><?= $row['nombre'] ?>.' '.<?= $row['apellido'] ?></option>
                             <?php endwhile; ?>
                         </select>
                     </div>
