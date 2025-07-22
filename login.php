@@ -81,7 +81,8 @@ if ($_SESSION['bloqueado_hasta'] !== null && time() < $_SESSION['bloqueado_hasta
             $_SESSION['id_rol'] = $usuario['id_rol'];
             $_SESSION['logged_in'] = true;
 
-            header("Location: index.php?login=success&username=" . urlencode($usuario['nombre']));
+            header("Location: index.php");
+
             exit();
         } else {
             $_SESSION['intentos_fallidos']++;
