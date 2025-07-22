@@ -161,7 +161,7 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
 
 
         /* Asegura que el textarea no se vea fuera del diseño */
-        textarea, label {
+        textarea, input, select {
             resize: vertical;
             font-weight: bold;
             font-size: 16px;
