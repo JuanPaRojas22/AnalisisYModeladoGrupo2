@@ -125,8 +125,7 @@ $result_empleados = $conn->query("SELECT DISTINCT id_usuario, nombre, apellido F
         /* Container Styles */
         .contenedor-deduccion {
             max-height: 75%;
-            max-width: 75%;
-            /* o usa 1200px si preferís fijo */
+            max-width: 50%;
             margin: 50px auto;
             padding: 30px;
             background-color: white;
