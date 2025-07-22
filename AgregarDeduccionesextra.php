@@ -111,7 +111,7 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
     </div>
     <style>
         /* Container Styles */
-        .container {
+        .container{
             min-height: 600px;
             max-width: 1000px;
             /* Limit the container width */
