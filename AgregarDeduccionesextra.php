@@ -62,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 // Obtener lista de empleados
-$result_empleados = $conn->query("SELECT DISTINCT id_usuario, nombre FROM usuario");
+$result_empleados = $conn->query("SELECT DISTINCT id_usuario, nombre, apeliido FROM usuario");
 ?>
 
 <!DOCTYPE html>
