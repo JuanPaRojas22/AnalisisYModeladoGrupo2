@@ -72,7 +72,7 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
 </head>
 
 <body class="bg-light">
-    <div class="container mt-5" style="max-width: 600px;">
+    <div class="container mt-5">
         <div class="card shadow" style="border-radius: 15px;">
             <div class="card-body">
                 <h3 class="text-center mb-4">Agregar Deducción Manual</h3>
@@ -89,16 +89,13 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
                     <div class="form-group">
                         <label for="tipo_deduccion">Tipo de Deducción</label>
                         <input type="text" name="tipo_deduccion" id="tipo_deduccion" class="form-control" required>
-                    </div>
-                    <div class="form-group">
+
                         <label for="monto">Monto</label>
                         <input type="number" name="monto" id="monto" class="form-control" step="0.01" required>
-                    </div>
-                    <div class="form-group">
+
                         <label for="descripcion">Descripción (opcional)</label>
                         <textarea name="descripcion" id="descripcion" class="form-control"></textarea>
-                    </div>
-                    <div class="text-center">
+
                         <button class="btn btn-success" type="submit">Agregar Deducción</button>
                         <a href="VerPlanilla.php" class="btn btn-secondary">Volver</a>
                     </div>
@@ -111,7 +108,7 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
     </div>
     <style>
         /* Container Styles */
-        .container{
+        .container {
             min-height: 600px;
             max-width: 1000px;
             /* Limit the container width */
