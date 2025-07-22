@@ -4,14 +4,13 @@ require_once __DIR__ . '/../Models/Historial_Solicitud_Modificacion_Vacaciones.p
 
 class Historial_Solicitud_Modificacion_VacacionesDAOSImpl implements Historial_Solicitud_Modificacion_VacacionesDAO
 {
-    private $conn;
+    private mysqli $conn;
 
     public function __construct()
     {
-        $this->conn = new mysqli("localhost", "root", "", "GestionEmpleados");
-
+        // Obtengo la conexión ya configurada en conexion.php
+        $this->conn = obtenerConexion();
     }
-
      // Funcion que ingresa un historial de solicitud de modificacion de vacaciones
      public function IngresarHistorialSolicitudModificacionVacaciones
      ($id_vacacion, $fecha_solicitud, $fecha_resolucion, $fecha_inicio, $fecha_fin, $dias_solicitados, 
