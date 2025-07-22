@@ -88,7 +88,7 @@ $result_empleados = $conn->query("SELECT DISTINCT id_usuario, nombre, apellido F
     <div class="contenedor-deduccion">
         <div>
             <div class="card-body">
-                <h3 class="text-center mb-4">Agregar Deducción Manual</h3>
+                <h3 class="text-center mb-4">Agregar Deducción Extra</h3>
                 <form method="POST">
                     <div class="form-group">
                         <label for="id_usuario">Empleado</label>

@@ -236,6 +236,10 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
               <div class="card" style="border-radius: 15px; padding: 30px; box-shadow: 0 4px 10px rgb(255, 255, 255);">
                 <div class="card-body">
                   <h2 class="text-center mb-4">Aplicar Deducción Salarial</h2>
+                  <div class="form-group text-center">
+                    <button type="submit" class="btn btn-success">Aplicar Deducción</button>
+                  </div>
+
                   <form action="" method="POST" class="form-horizontal">
                     <!-- Select Employee -->
                     <div class="form-group">
