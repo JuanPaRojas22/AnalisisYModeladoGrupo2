@@ -17,11 +17,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     //Insertar deducción
 
-    $smt = $conn->prepare("INSERT INTO deducciones(id_usuario, razon, monto_mensual, concepto) VALUES (?,?,?,?)");
+    $smt = $conn->prepare("INSERT INTO deducciones(id_usuario, razon,monto_quincenal, monto_mensual, concepto) VALUES (?,?,?,?)");
     $smt->bind_param("isds", $id_usuario, $tipo_deduccion, $monto, $descripcion);
 
     if ($smt->execute()) {
-        // 2. Obtener salario base del usuario
+        //Obtener salario base del usuario
         $stmt_salario = $conn->prepare("SELECT salario_base FROM Planilla WHERE id_usuario = ?");
         $stmt_salario->bind_param("i", $id_usuario);
         $stmt_salario->execute();
@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $salario_quincenal = $salario_base / 2;
 
         //Sumar todas las deducciones quincenales
-        $stmt_ded = $conn->prepare("SELECT SUM(monto) AS Total_Deduciones FROM deducciones WHERE id_usuario = ?");
+        $stmt_ded = $conn->prepare("SELECT SUM(monto_quincenal) AS Total_Deduciones FROM deducciones WHERE id_usuario = ?");
         $stmt_ded->bind_param("i", $id_usuario);
         $stmt_ded->execute();
         $total_deducciones = $stmt_ded->get_result()->fetch_assoc()['Total_Deduciones'] ?? 0;
