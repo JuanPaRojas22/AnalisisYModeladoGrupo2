@@ -219,6 +219,15 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
             background-color: #147964;
           }
 
+          a.btn {
+            background-color: #0B4F6C;
+            /* Blue */
+            color: white;
+          }
+
+          a.btn:hover {
+            background-color: #0B4F6C;
+          }
 
           .btn-pequeno {
             padding: 4px 6px;
@@ -236,7 +245,7 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
               <div class="card" style="border-radius: 15px; padding: 30px; box-shadow: 0 4px 10px rgb(255, 255, 255);">
                 <div class="card-body">
                   <h2 class="text-center mb-4">Aplicar Deducción Salarial</h2>
-                  <a href="AgregarDeduccionesextra.php" class="btn-pequeno" >Agregar Deducción Extra</a>
+                  <a href="AgregarDeduccionesextra.php" class="btn" >Agregar Deducción Extra</a>
                   <form action="" method="POST" class="form-horizontal">
                     <!-- Select Employee -->
                     <div class="form-group">
@@ -267,7 +276,7 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
                     <!-- Buttons -->
                     <div class="form-group text-center">
                       <button type="submit" class="btn btn-success">Aplicar Deducción</button>
-                      <a href="VerPlanilla.php" class="btn btn-info">Volver</a>
+                      <a href="VerPlanilla.php" class="btn">Volver</a>
                     </div>
                   </form>
                 </div>
