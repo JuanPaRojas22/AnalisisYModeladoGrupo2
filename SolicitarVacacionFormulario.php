@@ -7,7 +7,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
 require_once __DIR__ . '/Impl/historialVacacionesDAOSImpl.php';
-//include "template.php";
+include "template.php";
 
 $UsuarioDAO = new UsuarioDAOSImpl();
 $VacacionDAO = new VacacionDAOSImpl();
