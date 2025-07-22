@@ -457,7 +457,7 @@ class VacacionDAOSImpl implements VacacionDAO
     $stmtVacaciones = $function_conn->prepare(
         "SELECT fecha_inicio, fecha_fin
         FROM vacacion
-        WHERE id_usuario = ? AND (id_estado_vacacion = 1 OR id_estado_vacacion = 2)"
+        WHERE id_usuario = ? AND (id_estado_vacacion = 1 OR id_estado_vacacion = 2 OR id_estado_vacacion = 4)" // Pendiente, Aprobado, Editar
     );
     $stmtVacaciones->bind_param("i", $id_usuario);
     $stmtVacaciones->execute();
