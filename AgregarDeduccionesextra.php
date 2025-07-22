@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "PSOT") {
     }
 }
 // Obtener lista de empleados
-$result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuarios");
+$result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
 ?>
 
 <!DOCTYPE html>
