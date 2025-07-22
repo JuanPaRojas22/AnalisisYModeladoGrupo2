@@ -4,7 +4,7 @@ require 'conexion.php';
 require 'template.php';
 $conn = obtenerConexion();
 
-if ($_SERVER["REQUEST_METHOD"] == "PSOT") {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_usuario = $_POST["id_usuario"];
     $tipo_deduccion = $_POST["tipo_deduccion"];
     $monto = $_POST["monto"];
@@ -96,8 +96,11 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
                         <label for="descripcion">Descripción (opcional)</label>
                         <textarea name="descripcion" id="descripcion" class="form-control"></textarea>
 
-                        <button class="btn btn-success" type="submit">Agregar Deducción</button>
-                        <a href="VerPlanilla.php" class="btn btn-secondary">Volver</a>
+                        <div class="text-center mt-3">
+                            <button class="btn btn-success" type="submit">Agregar Deducción</button>
+                            <a href="VerPlanilla.php" class="btn btn-secondary">Volver</a>
+                        </div>
+
                     </div>
                 </form>
                 <?php if (!empty($mensaje)): ?>
