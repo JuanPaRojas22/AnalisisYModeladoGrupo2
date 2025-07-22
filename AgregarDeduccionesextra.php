@@ -121,21 +121,16 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
         /* Container Styles */
         .contenedor-deduccion {
             min-height: 600px;
-            max-width: 1000px;
-            /* Limit the container width */
+            max-width: 90%;
+            /* o usa 1200px si preferís fijo */
             margin: 50px auto;
-            /* Center the container */
             padding: 30px;
-            /* Padding inside the container */
             background-color: white;
-            /* White background */
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            /* Add shadow */
             border-radius: 15px;
-            /* Round the corners */
-            height: 100%;
             color: black;
         }
+
 
         /* Card Body Styles */
         .card-body {
