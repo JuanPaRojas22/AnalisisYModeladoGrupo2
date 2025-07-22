@@ -17,8 +17,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     //Insertar deducción
 
-    $smt = $conn->prepare("INSERT INTO deducciones(id_usuario, razon, monto_quincenal, monto_mensual, concepto) VALUES (?,?,?,?,?)");
-    $smt->bind_param("isdds", $id_usuario, $tipo_deduccion, $monto, $descripcion);
+    $smt = $conn->prepare("INSERT INTO deducciones(id_usuario, deudor,razon,lugar, monto_quincenal, monto_mensual, concepto) VALUES (?,?,?,?,?,?,?)");
+    $deudor = "Trabajador";
+    $concepto = "Retenciones Quincenales de Ley";
+    $lugar = "Entidades Gubernamentales de Costa Rica";
+
+    // Seguro Social (quincenal)
+    $razon = "Deducción Extra";
+    $smt->bind_param("issdds", $id_usuario, $tipo_deduccion, $monto, $descripcion);
 
     if ($smt->execute()) {
         //Obtener salario base del usuario
@@ -101,7 +107,7 @@ $result_empleados = $conn->query("SELECT DISTINCT id_usuario, nombre, apellido F
                     </div>
 
                     <div class="form-group">
-                        <label for="monto_mensual">monto_mensual</label>
+                        <label for="monto_mensual">monto Mensual</label>
                         <input type="number" name="monto_mensual" id="monto_mensual" class="form-control" step="0.01" required>
                     </div>
 
