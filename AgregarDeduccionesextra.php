@@ -76,7 +76,7 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
 </head>
 
 <body class="bg-light">
-    <div class="contenedor-deduccion mt-5">
+    <div class=" mt-5">
         <div class="card shadow" style="border-radius: 15px;">
             <div class="card-body">
                 <h3 class="text-center mb-4">Agregar Deducción Manual</h3>
