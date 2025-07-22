@@ -220,13 +220,13 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
           }
 
           a.btn {
-            background-color: #0B4F6C;
+            background-color: #147964;
             /* Blue */
             color: white;
           }
 
           a.btn:hover {
-            background-color: #0B4F6C;
+            background-color: #147964;
           }
 
           .btn-pequeno {
