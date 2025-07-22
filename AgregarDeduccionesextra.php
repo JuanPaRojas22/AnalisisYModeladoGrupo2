@@ -120,8 +120,8 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
     <style>
         /* Container Styles */
         .contenedor-deduccion {
-            min-height: 600px;
-            max-width: 90%;
+            max-height: 75%;
+            max-width: 75%;
             /* o usa 1200px si preferís fijo */
             margin: 50px auto;
             padding: 30px;
