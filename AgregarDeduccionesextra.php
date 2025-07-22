@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     //Insertar deducción
 
-    $smt = $conn->prepare("INSERT INTO deducciones(id_usuario, tipo_deduccion, monto, descripcion) VALUES (?,?,?,?)");
+    $smt = $conn->prepare("INSERT INTO deducciones(id_usuario, razon, monto, concepto) VALUES (?,?,?,?)");
     $smt->bind_param("isds", $id_usuario, $tipo_deduccion, $monto, $descripcion);
 
     if ($smt->execute()) {
@@ -95,8 +95,8 @@ $result_empleados = $conn->query("SELECT DISTINCT id_usuario, nombre, apellido F
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="tipo_deduccion">Tipo de Deducción</label>
-                        <input type="text" name="tipo_deduccion" id="tipo_deduccion" class="form-control" required>
+                        <label for="razon">Tipo de Deducción</label>
+                        <input type="text" name="razon" id="razon" class="form-control" required>
                     </div>
 
                     <div class="form-group">
@@ -105,8 +105,8 @@ $result_empleados = $conn->query("SELECT DISTINCT id_usuario, nombre, apellido F
                     </div>
 
                     <div class="form-group">
-                        <label for="descripcion">Descripción (opcional)</label>
-                        <textarea name="descripcion" id="descripcion" class="form-control"></textarea>
+                        <label for="concepto">Descripción (opcional)</label>
+                        <textarea name="concepto" id="concepto" class="form-control"></textarea>
                     </div>
 
                     <div class="text-center mt-3">
