@@ -2,7 +2,7 @@
 session_start();
 require 'conexion.php';
 require 'template.php';
-$conn = obtenerConexion(); 
+$conn = obtenerConexion();
 
 if ($_SERVER["REQUEST_METHOD"] == "PSOT") {
     $id_usuario = $_POST["id_usuario"];
@@ -56,10 +56,9 @@ if ($_SERVER["REQUEST_METHOD"] == "PSOT") {
         $mensaje = "Error al registrar la deducción.";
 
     }
-    // Obtener lista de empleados
-    $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuarios");
-
 }
+// Obtener lista de empleados
+$result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuarios");
 ?>
 
 <!DOCTYPE html>
