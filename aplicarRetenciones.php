@@ -219,13 +219,13 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
             background-color: #147964;
           }
 
-          a.btn {
+          .btn {
             background-color: #147964;
             /* Blue */
             color: white;
           }
 
-          a.btn:hover {
+          .btn:hover {
             background-color: #147964;
           }
 
