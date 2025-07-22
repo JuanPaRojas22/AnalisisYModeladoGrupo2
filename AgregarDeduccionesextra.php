@@ -151,7 +151,7 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
 
         .form-control {
             width: 100%;
-            height: 200%;
+    
         }
 
         /* Asegura que el textarea no se vea fuera del diseño */
