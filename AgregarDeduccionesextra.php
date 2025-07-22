@@ -151,7 +151,7 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
             margin-bottom: 20px;
         }
 
-        option{
+        option {
             height: 10%;
             text-align: center;
             font-size: 14px;
@@ -159,14 +159,12 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
         }
 
 
-
-        /* Asegura que el textarea no se vea fuera del diseño */
-        textarea, input, select {
-            resize: vertical;
-            font-weight: bold;
-            font-size: 16px;
-            box-sizing: border-box;
-
+        select.form-control,
+        input.form-control,
+        textarea.form-control {
+            font-size: 18px;
+            padding: 12px;
+            height: auto;
         }
 
         /* Button Styles */
