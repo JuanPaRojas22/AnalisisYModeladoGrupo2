@@ -144,15 +144,7 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
             margin-bottom: 20px;
         }
 
-        /* Form Group Styles */
-        .form-group {
-            margin-bottom: 20px;
-        }
 
-        .form-control {
-            width: 100%;
-    
-        }
 
         /* Asegura que el textarea no se vea fuera del diseño */
         textarea.form-control {
