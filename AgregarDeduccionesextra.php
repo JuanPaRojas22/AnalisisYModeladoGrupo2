@@ -14,14 +14,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $monto_mensual = $_POST["monto_mensual"];
     $monto_quincenal= $monto_mensual/2;
     $descripcion = $_POST["concepto"];
-    $aporte= $monto_quincenal;
+    $aportes= $monto_quincenal;
 
     //Insertar deducción
-    $smt = $conn->prepare("INSERT INTO deducciones(id_usuario, aporte ,deudor, razon, lugar, monto_quincenal, monto_mensual, concepto) VALUES (?, ?,?, ?, ?, ?, ?, ?)");
+    $smt = $conn->prepare("INSERT INTO deducciones(id_usuario, aportes,deudor, razon, lugar, monto_quincenal, monto_mensual, concepto) VALUES (?, ?,?, ?, ?, ?, ?, ?)");
     $deudor = "Trabajador";
     $lugar = "Entidades Gubernamentales de Costa Rica";
     
-    $smt->bind_param("issssdds", $id_usuario, $aporte,$deudor, $tipo_deduccion, $lugar, $monto_quincenal, $monto_mensual, $descripcion);
+    $smt->bind_param("idssssdds", $id_usuario, $aportes,$deudor, $tipo_deduccion, $lugar, $monto_quincenal, $monto_mensual, $descripcion);
     
 
     if ($smt->execute()) {
