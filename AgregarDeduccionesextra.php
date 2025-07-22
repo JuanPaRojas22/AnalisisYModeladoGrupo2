@@ -62,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 // Obtener lista de empleados
-$result_empleados = $conn->query("SELECT DISTINCT id_usuario, nombre, apeliido FROM usuario");
+$result_empleados = $conn->query("SELECT DISTINCT id_usuario, nombre, apellido FROM usuario");
 ?>
 
 <!DOCTYPE html>
@@ -90,7 +90,7 @@ $result_empleados = $conn->query("SELECT DISTINCT id_usuario, nombre, apeliido F
                         <select name="id_usuario" id="id_usuario" class="form-control" required>
                             <option value="">Seleccione un empleado</option>
                             <?php while ($row = $result_empleados->fetch_assoc()): ?>
-                                <option value="<?= $row['id_usuario'] ?>"><?= $row['nombre'] ?><?= $row['apeliido'] ?></option>
+                                <option value="<?= $row['id_usuario'] ?>"><?= $row['nombre'] ?><?= $row['apellido'] ?></option>
                             <?php endwhile; ?>
                         </select>
                     </div>
