@@ -93,19 +93,23 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
                     <div class="form-group">
                         <label for="tipo_deduccion">Tipo de Deducción</label>
                         <input type="text" name="tipo_deduccion" id="tipo_deduccion" class="form-control" required>
+                    </div>
 
+                    <div class="form-group">
                         <label for="monto">Monto</label>
                         <input type="number" name="monto" id="monto" class="form-control" step="0.01" required>
+                    </div>
 
+                    <div class="form-group">
                         <label for="descripcion">Descripción (opcional)</label>
                         <textarea name="descripcion" id="descripcion" class="form-control"></textarea>
-
-                        <div class="text-center mt-3">
-                            <button class="btn btn-success" type="submit">Agregar Deducción</button>
-                            <a href="VerPlanilla.php" class="btn btn-secondary">Volver</a>
-                        </div>
-
                     </div>
+
+                    <div class="text-center mt-3">
+                        <button class="btn btn-success" type="submit">Agregar Deducción</button>
+                        <a href="VerPlanilla.php" class="btn btn-secondary">Volver</a>
+                    </div>
+
                 </form>
                 <?php if (!empty($mensaje)): ?>
                     <div class="alert alert-info mt-3 text-center"><?= $mensaje ?></div>
