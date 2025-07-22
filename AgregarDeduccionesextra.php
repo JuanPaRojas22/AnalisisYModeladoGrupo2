@@ -17,8 +17,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     //Insertar deducción
 
-    $smt = $conn->prepare("INSERT INTO deducciones(id_usuario, razon,monto_quincenal, monto_mensual, concepto) VALUES (?,?,?,?,?)");
-    $smt->bind_param("isds", $id_usuario, $tipo_deduccion, $monto, $descripcion);
+    $smt = $conn->prepare("INSERT INTO deducciones(id_usuario, razon, monto_quincenal, monto_mensual, concepto) VALUES (?,?,?,?,?)");
+    $smt->bind_param("isdds", $id_usuario, $tipo_deduccion, $monto, $descripcion);
 
     if ($smt->execute()) {
         //Obtener salario base del usuario
