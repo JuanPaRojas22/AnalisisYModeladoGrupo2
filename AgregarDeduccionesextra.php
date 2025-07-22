@@ -62,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 // Obtener lista de empleados
-$result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
+$result_empleados = $conn->query("SELECT DISTINCT id_usuario, nombre FROM usuario");
 ?>
 
 <!DOCTYPE html>
@@ -90,7 +90,7 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
                         <select name="id_usuario" id="id_usuario" class="form-control" required>
                             <option value="">Seleccione un empleado</option>
                             <?php while ($row = $result_empleados->fetch_assoc()): ?>
-                                <option value="<?= $row['id_usuario'] ?>"><?= $row['nombre'] ?></option>
+                                <option value="<?= $row['id_usuario'] ?>"><?= $row['nombre'] ?><?= $row['apeliido'] ?></option>
                             <?php endwhile; ?>
                         </select>
                     </div>
@@ -162,7 +162,7 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
         select.form-control,
         input.form-control,
         textarea.form-control {
-            font-size: 18px;
+            font-size: 14px;
             padding: 12px;
             height: auto;
         }
