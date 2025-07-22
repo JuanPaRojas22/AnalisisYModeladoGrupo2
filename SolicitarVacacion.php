@@ -603,9 +603,11 @@ mysqli_set_charset($conn, "utf8mb4");
                         <!-- Botones para Solicitar Vacación y Medio Día -->
                         <div class="row"
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <!--
                             <button onclick="document.getElementById('id01').style.display='block'">
                                 Solicitar Vacacion
                             </button>
+                            -->
 
                             <button onclick="window.location.href='SolicitarVacacionFormulario.php'">
                                 Solicitar Medio Día
