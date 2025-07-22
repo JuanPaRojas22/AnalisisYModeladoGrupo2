@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $deudor = "Trabajador";
     $lugar = "Entidades Gubernamentales de Costa Rica";
     
-    $smt->bind_param("idssssdds", $id_usuario, $aportes,$deudor, $tipo_deduccion, $lugar, $monto_quincenal, $monto_mensual, $descripcion);
+    $smt->bind_param("idsssdds", $id_usuario, $aportes,$deudor, $tipo_deduccion, $lugar, $monto_quincenal, $monto_mensual, $descripcion);
     
 
     if ($smt->execute()) {
