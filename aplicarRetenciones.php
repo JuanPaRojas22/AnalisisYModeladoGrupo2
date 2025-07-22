@@ -228,6 +228,12 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
           a.btn:hover {
             background-color: #0B4F6C;
           }
+
+          .btn-pequeno {
+            padding: 4px 10px;
+            font-size: 12px;
+            line-height: 1.2;
+          }
         </style>
 
         <body>
@@ -260,9 +266,6 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
                       <input type="text" id="salario_actual" name="salario_actual" class="form-control" readonly>
                       <input type="hidden" id="salario_base" name="salario_base">
                       <input type="hidden" id="id_planilla" name="id_planilla">
-
-
-
                     </div>
 
 
@@ -270,7 +273,7 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
                     <!-- Buttons -->
                     <div class="form-group text-center">
                       <button type="submit" class="btn btn-success">Aplicar Deducción</button>
-                      <button type="submit" class="button">Agregar Deducción Extra</button>
+                      <button type="submit" class="btn btn-secondary btn-pequeno">Agregar Deducción Extra</button>
                       <a href="VerPlanilla.php" class="btn btn-info">Volver</a>
                     </div>
                   </form>
