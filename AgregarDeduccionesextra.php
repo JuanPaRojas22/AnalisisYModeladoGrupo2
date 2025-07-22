@@ -68,6 +68,7 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
     <meta charset="UTF-8">
     <title>Agregar Deducción Manual</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
 </head>
 
 <body class="bg-light">
@@ -108,6 +109,76 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
             </div>
         </div>
     </div>
+    <style>
+        /* Container Styles */
+        .container-fluid {
+            min-height: 600px;
+            max-width: 1000px;
+            /* Limit the container width */
+            margin: 50px auto;
+            /* Center the container */
+            padding: 30px;
+            /* Padding inside the container */
+            background-color: white;
+            /* White background */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            /* Add shadow */
+            border-radius: 15px;
+            /* Round the corners */
+            height: 100%;
+            color: black;
+        }
+
+        /* Card Body Styles */
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Heading Style */
+        h2 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* Form Group Styles */
+        .form-group {
+            margin-bottom: 20px;
+            /* Add space between form elements */
+        }
+
+        /* Button Styles */
+        button[type="submit"],
+        a.btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            width: auto;
+        }
+
+        button[type="submit"] {
+            background-color: #147964;
+            /* Green */
+            color: white;
+            border: none;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #147964;
+        }
+
+        a.btn {
+            background-color: #0B4F6C;
+            /* Blue */
+            color: white;
+        }
+
+        a.btn:hover {
+            background-color: #0B4F6C;
+        }
+    </style>
 </body>
 
 </html>
