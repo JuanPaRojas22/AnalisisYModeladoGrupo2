@@ -232,7 +232,7 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
           .btn-pequeno {
             padding: 4px 6px;
             font-size: 12px;
-            line-height: 1.2;
+            line-height: 2;
           }
         </style>
 
@@ -273,7 +273,7 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
                     <!-- Buttons -->
                     <div class="form-group text-center">
                       <button type="submit" class="btn btn-success">Aplicar Deducción</button>
-                      <button type="submit" class="btn btn-secondary btn-pequeno">Agregar Deducción Extra</button>
+                      <a href="AgregarDeduccionesextra.php" class="btn btn-info">Aplciar Deducción Extra</a>
                       <a href="VerPlanilla.php" class="btn btn-info">Volver</a>
                     </div>
                   </form>
