@@ -18,6 +18,12 @@ class Historial_Solicitud_Modificacion_VacacionesDAOSImpl implements Historial_S
      $id_usuario, $usuario_aprobador, $razon_modificacion, $estado){
             $function_conn = $this->conn;
 
+            // 2. Se modifica la vacacion original para modificar el estado a VacacionOriginalModificada
+            $stmt2 = $function_conn->prepare(
+                "UPDATE vacacion
+                SET id_estado_vacacion = 5 -- Se cambia a tipo VacacionOriginalModificada
+                WHERE id_vacacion = ?");              
+
             // Se prepara el comando de insercion
             $stmt = $function_conn->prepare(
                 "INSERT INTO historial_solicitud_modificacion_vacaciones 
@@ -40,9 +46,16 @@ class Historial_Solicitud_Modificacion_VacacionesDAOSImpl implements Historial_S
                 $estado
             );
 
+            // Se ejecuta el segundo comando
+            $stmt2->bind_param("i", $id_vacacion);
+            $stmt2->execute();
+            $stmt2->close();
+
             // Se ejecuta el comando
             $stmt->execute();
             $stmt->close();
+
+            
      }
 
     // Funcion para obtener el historial de solicitudes de modificacion de vacaciones de un empleado en especifico y su vacacion original solicitada.
@@ -164,11 +177,13 @@ class Historial_Solicitud_Modificacion_VacacionesDAOSImpl implements Historial_S
             WHERE id_historial_solicitud_modificacion = ?");
 
         // 2. Se modifica la vacacion original para modificar el estado a VacacionOriginalModificada
+        /*
         $stmt2 = $function_conn->prepare(
             "UPDATE vacacion
             SET id_estado_vacacion = 5 -- Se cambia a tipo VacacionOriginalModificada
             WHERE id_vacacion = ?");
 
+        */    
         // 3. Se ingresa una nueva vacacion que sirve como registro de la vacacion modificada
         $stmt3 = $function_conn->prepare(
                 "INSERT INTO vacacion (razon, diasTomado, 
@@ -192,22 +207,19 @@ class Historial_Solicitud_Modificacion_VacacionesDAOSImpl implements Historial_S
                 ");
 
 
-        // 4. Se actualiza el historial de vacaciones para modificar los dias restantes del usuario
-        $stmt4 = $function_conn->prepare(
-            "UPDATE historial_vacaciones
-            SET DiasRestantes = DiasRestantes - ?
-            WHERE id_historial = ?");
 
         // Se ejecuta el primer comando
         $stmt->bind_param("i", $id_historial_solicitud_modificacion);
         $stmt->execute();
         $stmt->close();
 
+        /*
         // Se ejecuta el segundo comando
         $stmt2->bind_param("i", $id_vacacion_usuario_solicitado);
         $stmt2->execute();
         $stmt2->close();
-
+        */
+        
         // Se ejecuta el tercer comando
         $stmt3->bind_param("sissiis", 
         $razon_modificacion, 
@@ -220,10 +232,6 @@ class Historial_Solicitud_Modificacion_VacacionesDAOSImpl implements Historial_S
         $stmt3->execute();
         $stmt3->close();
 
-        // Se ejecuta el cuarto comando
-        $stmt4->bind_param("ii", $NuevosDiasSolicitados, $Id_historial_usuario_solicitado);
-        $stmt4->execute();
-        $stmt4->close();
 
         echo "Solicitud aprobada" . "<br>";
     }
@@ -239,12 +247,23 @@ class Historial_Solicitud_Modificacion_VacacionesDAOSImpl implements Historial_S
             "i",
             $id_historial_solicitud_modificacion
         );
+
+        // Se tiene que volver a activar la vacacion original que se modifico
+        $stmt2 = $function_conn->prepare(
+            "UPDATE vacacion
+            SET id_estado_vacacion = 1 -- Se cambia a tipo Pendiente
+            WHERE id_vacacion = (SELECT id_vacacion FROM historial_solicitud_modificacion_vacaciones WHERE id_historial_solicitud_modificacion = ?)");
+        $stmt2->bind_param("i", $id_historial_solicitud_modificacion);
+        $stmt2->execute();
+        $stmt2->close();
+
+        // Se ejecuta el comando
         $stmt->execute();
         echo "Solicitud rechazada" . "<br>";
         $stmt->close();
     }
 
-    // Funcion para obtener el historial de solicitudes de modificacion de vacaciones de un empleado en especifico y su vacacion original solicitada.
+    // Funcion para obtener el historial de solicitudes de modificacion de vacaciones de un empleado en especifico y su vacacion original solicitada (solo pendientes).
     public function getHistorialSolicitudModificacionPorUsuario($id_usuario, $limit = 5, $offset = 0) {
         $sql = "
         SELECT HSMV.id_historial_solicitud_modificacion AS id_registro,
@@ -257,7 +276,7 @@ class Historial_Solicitud_Modificacion_VacacionesDAOSImpl implements Historial_S
         JOIN departamento Dep ON U.id_departamento = Dep.id_departamento
         JOIN vacacion V ON HSMV.id_vacacion = V.id_vacacion
         JOIN historial_vacaciones HV ON V.id_historial = HV.id_historial
-        WHERE HSMV.id_usuario = ?
+        WHERE HSMV.id_usuario = ? AND HSMV.estado = 'Pendiente'
         ORDER BY HSMV.fecha_solicitud DESC
         LIMIT ? OFFSET ?
         ";

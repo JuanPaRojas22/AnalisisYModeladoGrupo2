@@ -250,10 +250,10 @@ mysqli_set_charset($conn, "utf8mb4");
                 $filtro = $_GET['filtro'] ?? 'pendiente';
                 switch($filtro) {
                 case 'pendiente':
-                    $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [1], $limit, $offset);
+                    $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [1,4], $limit, $offset);
                     break;
                 case 'aprobadas':
-                    $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [2,4], $limit, $offset);
+                    $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [2], $limit, $offset);
                     break;
                 case 'rechazadas':
                     $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [3], $limit, $offset);
@@ -266,9 +266,7 @@ mysqli_set_charset($conn, "utf8mb4");
                     $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [1], $limit, $offset);
                 }
 
-
-                ?>-->
-
+                ?>
                 <html lang="es">
 
                 <head>
@@ -609,7 +607,7 @@ mysqli_set_charset($conn, "utf8mb4");
                                 Solicitar Vacacion
                             </button>
 
-                            <button onclick="window.location.href='SolicitarMedioDia.php'">
+                            <button onclick="window.location.href='SolicitarVacacionFormulario.php'">
                                 Solicitar Medio Día
                             </button>
 
@@ -797,7 +795,7 @@ mysqli_set_charset($conn, "utf8mb4");
                                         if ($filtro !== 'modificadas') {
                                             echo "<td>
                                                 <div class='d-flex flex-column gap-2'>  
-                                                    <a class='btn btn-primary' style='font-size: 2.5rem;' href='detalleVacacionSolicitada.php?id=" . $row['id_vacacion'] . "' >
+                                                    <a class='btn btn-primary' style='font-size: 2.5rem;' href='detalleEditarVacacionUsuario.php?id=" . $row['id_vacacion'] . "' >
                                                         <i class='bi bi-file-earmark-person'></i> 
                                                     </a>";
                                         } else{
