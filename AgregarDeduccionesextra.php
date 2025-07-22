@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "PSOT") {
 
     if ($smt->execute()) {
         // 2. Obtener salario base del usuario
-        $stmt_salario = $conn->prepare("SELECT salario_base FROM usuarios WHERE id_usuario = ?");
+        $stmt_salario = $conn->prepare("SELECT salario_base FROM Planilla WHERE id_usuario = ?");
         $stmt_salario->bind_param("i", $id_usuario);
         $stmt_salario->execute();
         $result_salario = $stmt_salario->get_result();
