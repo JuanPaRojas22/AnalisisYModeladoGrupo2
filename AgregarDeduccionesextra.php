@@ -1,5 +1,9 @@
 <?php
 session_start();
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: login.php");
+    exit;
+}
 require 'conexion.php';
 require 'template.php';
 $conn = obtenerConexion();
@@ -129,6 +133,9 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             border-radius: 15px;
             color: black;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
         }
 
 
