@@ -72,7 +72,7 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
 </head>
 
 <body class="bg-light">
-    <div class="container mt-5">
+    <div class="contenedor-deduccion mt-5">
         <div class="card shadow" style="border-radius: 15px;">
             <div class="card-body">
                 <h3 class="text-center mb-4">Agregar Deducción Manual</h3>
@@ -108,7 +108,7 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
     </div>
     <style>
         /* Container Styles */
-        .container {
+        .contenedor-deduccion {
             min-height: 600px;
             max-width: 1000px;
             /* Limit the container width */
