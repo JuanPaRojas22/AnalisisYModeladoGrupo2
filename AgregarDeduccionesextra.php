@@ -151,7 +151,7 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
             margin-bottom: 20px;
         }
 
-        form{
+        option{
             text-align: center;
             font-size: 14px;
             font-weight: bold;
