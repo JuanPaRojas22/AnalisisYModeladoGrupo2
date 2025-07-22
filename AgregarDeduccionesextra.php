@@ -10,13 +10,14 @@ $conn = obtenerConexion();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_usuario = $_POST["id_usuario"];
-    $tipo_deduccion = $_POST["tipo_deduccion"];
-    $monto = $_POST["monto"];
-    $descripcion = $_POST["descripcion"];
+    $tipo_deduccion = $_POST["razon"];
+    $monto_mensual = $_POST["monto_mensual"];
+    $monto_quincenal= $monto_mensual/2;
+    $descripcion = $_POST["concepto"];
 
     //Insertar deducción
 
-    $smt = $conn->prepare("INSERT INTO deducciones(id_usuario, razon, monto, concepto) VALUES (?,?,?,?)");
+    $smt = $conn->prepare("INSERT INTO deducciones(id_usuario, razon, monto_mensual, concepto) VALUES (?,?,?,?)");
     $smt->bind_param("isds", $id_usuario, $tipo_deduccion, $monto, $descripcion);
 
     if ($smt->execute()) {
@@ -100,8 +101,8 @@ $result_empleados = $conn->query("SELECT DISTINCT id_usuario, nombre, apellido F
                     </div>
 
                     <div class="form-group">
-                        <label for="monto">Monto</label>
-                        <input type="number" name="monto" id="monto" class="form-control" step="0.01" required>
+                        <label for="monto_mensual">monto_mensual</label>
+                        <input type="number" name="monto_mensual" id="monto_mensual" class="form-control" step="0.01" required>
                     </div>
 
                     <div class="form-group">
