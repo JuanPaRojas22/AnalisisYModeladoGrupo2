@@ -145,10 +145,13 @@ $result_empleados = $conn->query("SELECT id_usuario, nombre FROM usuario");
         }
 
         /* Heading Style */
-        h2 {
+        h3 {
             font-size: 28px;
             font-weight: bold;
             margin-bottom: 20px;
+        }
+        .form{
+            text-align: center;
         }
 
 
