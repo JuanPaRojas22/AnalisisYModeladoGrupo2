@@ -270,7 +270,7 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
                     <!-- Buttons -->
                     <div class="form-group text-center">
                       <button type="submit" class="btn btn-success">Aplicar Deducción</button>
-                      <button type="submit" class="btn btn-success">Agregar Deducción Extra</button>
+                      <button type="submit" class="buton">Agregar Deducción Extra</button>
                       <a href="VerPlanilla.php" class="btn btn-info">Volver</a>
                     </div>
                   </form>
