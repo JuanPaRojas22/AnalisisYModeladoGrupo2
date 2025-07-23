@@ -797,12 +797,12 @@ mysqli_set_charset($conn, "utf8mb4");
                                         if ($filtro !== 'modificadas') {
                                             echo "<td>
                                                 <div class='d-flex flex-column gap-2'>  
-                                                    <a class='btn btn-primary' style='font-size: 2.5rem;' href='detalleEditarVacacionUsuario.php?id=" . $row['id_vacacion'] . "' >
+                                                    <a class='btn btn-primary' style='font-size: 2.5rem;' href='detalleEditarVacacion.php?id=" . $row['id_vacacion'] . "' >
                                                         <i class='bi bi-file-earmark-person'></i> 
                                                     </a>";
                                         } else{
                                             echo "<td>
-                                    <a class='btn btn-success' style='font-size: 2.5rem;' href='detalleEditarVacacion.php?id=" . $row['id_registro'] . "' >
+                                    <a class='btn btn-success' style='font-size: 2.5rem;' href='detalleEditarVacacionUsuario.php?id=" . $row['id_registro'] . "' >
                                         <i class='bi bi-file-earmark-person'></i> 
                                     </a>
                                 </td>";
