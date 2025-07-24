@@ -42,7 +42,7 @@ if ($action == 'add') {
     if ($id_usuario > 0 && !empty($razon)) {
         $sql = "INSERT INTO beneficios (id_usuario, razon, monto, identificacion_medismart, valor_plan_total, aporte_patrono, beneficiarios, fechacreacion) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
-        $stmt = $conexion->prepare($sql);
+        $stmt = $conn->prepare($sql);
         $stmt->bind_param("isdsddi", $id_usuario, $razon, $monto, $medismart, $valor_total, $aporte_patrono, $beneficiarios);
         
         if ($stmt->execute()) {
@@ -68,7 +68,7 @@ elseif ($action == 'edit') {
 
     if ($id_beneficio > 0) {
         $sql = "UPDATE beneficios SET razon = ?, monto = ?, identificacion_medismart = ?, valor_plan_total = ?, aporte_patrono = ?, beneficiarios = ?, fechamodificacion = NOW() WHERE id_beneficio = ?";
-        $stmt = $conexion->prepare($sql);
+        $stmt = $conn->prepare($sql);
         $stmt->bind_param("sdsddii", $razon, $monto, $medismart, $valor_total, $aporte_patrono, $beneficiarios, $id_beneficio);
         
         if ($stmt->execute()) {
