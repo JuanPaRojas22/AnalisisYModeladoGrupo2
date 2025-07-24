@@ -158,15 +158,17 @@ document.getElementById("beneficioForm").addEventListener("submit", function(eve
     })
     .then(response => response.json())
     .then(data => {
+        console.log(data); // <--- muestra en consola lo que responde el servidor
         if (data.success) {
             alert("Beneficio actualizado correctamente.");
             location.reload();
         } else {
-            alert("Error al actualizar el beneficio.");
+            alert("Error al actualizar el beneficio: " + data.message); // <--- alerta con mensaje real del backend
         }
     })
-    .catch(error => console.error("Error:", error));
+    .catch(error => console.error("Error en la solicitud:", error));
 });
+
 
 function eliminarBeneficio(id_beneficio) {
     if (confirm("¿Seguro que quieres eliminar este beneficio?")) {
