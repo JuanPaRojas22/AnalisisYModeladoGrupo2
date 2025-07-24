@@ -167,6 +167,7 @@ document.getElementById("beneficioForm").addEventListener("submit", function(eve
     })
     .catch(error => console.error("Error:", error));
 });
+
 function eliminarBeneficio(id_beneficio) {
     if (confirm("¿Seguro que quieres eliminar este beneficio?")) {
         fetch("crud_beneficios.php?action=delete&id=" + id_beneficio, {
