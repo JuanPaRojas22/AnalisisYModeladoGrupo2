@@ -1,8 +1,8 @@
 <?php
-// Establecer zona horaria correcta
+// Establecer zona horaria
 date_default_timezone_set('America/Costa_Rica');
 
-// Conectar a la base de datos
+// Conexión a la base de datos
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
 $password = "admin123+";
@@ -23,20 +23,19 @@ mysqli_set_charset($conn, "utf8mb4");
 // Obtener datos del formulario
 $id = $_POST['id_fecha'];
 $nombre = $_POST['nombre_feriado'];
-$fecha = $_POST['fecha']; // Formato correcto: YYYY-MM-DD
+$fecha = $_POST['fecha']; // 'YYYY-MM-DD'
 $tipo = $_POST['tipo_feriado'];
 $doble_pago = isset($_POST['doble_pago']) ? 1 : 0;
 
-// Actualizar el feriado
+// Asegurar formato de fecha correcto
+$fecha = date('Y-m-d', strtotime($fecha));
+
+// Actualizar en la base de datos
 $query = "UPDATE Dias_Feriados SET nombre_feriado=?, fecha=?, tipo_feriado=?, doble_pago=? WHERE id_fecha=?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("sssii", $nombre, $fecha, $tipo, $doble_pago, $id);
 
-if ($stmt->execute()) {
-    echo "Éxito";
-} else {
-    echo "Error al actualizar feriado";
-}
+echo $stmt->execute() ? "Éxito" : "Error al actualizar feriado";
 
 $stmt->close();
 $conn->close();

@@ -1,8 +1,8 @@
 <?php
-// Establecer zona horaria correcta
+// Establecer zona horaria
 date_default_timezone_set('America/Costa_Rica');
 
-// Conectar a la base de datos
+// Conexión a la base de datos
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
 $password = "admin123+";
@@ -10,7 +10,6 @@ $dbname = "gestionEmpleados";
 $port = 3306;
 $ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
 
-// Inicializamos mysqli
 $conn = mysqli_init();
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
 mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
@@ -23,20 +22,19 @@ mysqli_set_charset($conn, "utf8mb4");
 
 // Obtener datos del formulario
 $nombre = $_POST['nombre_feriado'];
-$fecha = $_POST['fecha']; // Debe venir en formato YYYY-MM-DD
+$fecha = $_POST['fecha']; // Debe venir como 'YYYY-MM-DD'
 $tipo = $_POST['tipo_feriado'];
 $doble_pago = isset($_POST['doble_pago']) ? 1 : 0;
 
-// Insertar el feriado
+// Convertir fecha a formato correcto por si viene desfasada (opcional)
+$fecha = date('Y-m-d', strtotime($fecha));
+
+// Insertar en la base de datos
 $query = "INSERT INTO Dias_Feriados (nombre_feriado, fecha, tipo_feriado, doble_pago) VALUES (?, ?, ?, ?)";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("sssi", $nombre, $fecha, $tipo, $doble_pago);
 
-if ($stmt->execute()) {
-    echo "Éxito";
-} else {
-    echo "Error al agregar feriado";
-}
+echo $stmt->execute() ? "Éxito" : "Error al agregar feriado";
 
 $stmt->close();
 $conn->close();
