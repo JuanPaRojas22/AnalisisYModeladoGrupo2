@@ -3,6 +3,8 @@ session_start();
 require 'conexion.php';
 require 'template.php';
 
+$conn = obtenerConexion(); 
+
 if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['id_rol'])) {
     header("Location: login.php");
     exit;
