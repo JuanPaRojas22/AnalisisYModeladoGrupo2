@@ -59,9 +59,13 @@ include 'template.php';
                 <p class="usuario-texto"><strong>Total de Beneficios:</strong> <?= $usuario['total_beneficios'] ?></p>
 
                 <div class="usuario-botones">
-                <a href="detalles_beneficios.php?id_usuario=<?= $usuario['id_usuario'] ?>" class="btn btn-primary" style="background-color: #0C536C; border-color: #0C536C;">
-    Ver Beneficios
-</a>
+               <form action="set_usuario.php" method="POST" style="display:inline;">
+    <input type="hidden" name="id_usuario" value="<?= $usuario['id_usuario'] ?>">
+    <button type="submit" class="btn btn-primary" style="background-color: #0C536C; border-color: #0C536C;">
+        Ver Beneficios
+    </button>
+</form>
+
 
 <button class="btn btn-success ms-2" onclick="abrirModalAgregar(<?= $usuario['id_usuario'] ?>)" style="background-color: #147665; border-color: #147665;">
     Agregar Beneficio
