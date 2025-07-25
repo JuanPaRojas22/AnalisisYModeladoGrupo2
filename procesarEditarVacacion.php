@@ -3,7 +3,7 @@ session_start();
 require_once __DIR__ . '/conexion.php';
 require_once __DIR__ . '/Impl/Historial_Solicitud_Modificacion_VacacionesDAOSImpl.php';
 require_once __DIR__ . '/notificaciones_util.php'; // nuevo
-include 'template.php';
+
 if (isset($_GET['id']) && isset($_GET['accion'])) {
     $id_historial_solicitud_modificacion = $_GET['id'];
 
