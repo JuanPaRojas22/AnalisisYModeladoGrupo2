@@ -1,7 +1,13 @@
 <?php
 ob_start(); // Inicia el búfer de salida para evitar problemas con las cabeceras
 
-require 'conexion.php';
+// Conexión a la base de datos
+// Parámetros de conexión
+$host = "accespersoneldb.mysql.database.azure.com";
+$user = "adminUser";
+$password = "admin123+";
+$dbname = "gestionEmpleados";
+$port = 3306;
 require_once 'fpdf/fpdf.php'; // Incluir la librería FPDF
 
 if (session_status() == PHP_SESSION_NONE) {

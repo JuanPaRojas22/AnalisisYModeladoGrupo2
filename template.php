@@ -273,6 +273,8 @@ $aporte = $row['aporte'];
                                 <span>Vacaciones</span>
                             </a>
                         </li>
+                             <li><a href="historial_salarios.php"><i class="bi bi-calendar3"></i>
+                                    Historial Salarios</a></li>
                         <li><a href="preguntasfreq.php"><i class="bi bi-question-octagon-fill"></i>Preguntas Frecuentes</a></li>
 
                 </ul>

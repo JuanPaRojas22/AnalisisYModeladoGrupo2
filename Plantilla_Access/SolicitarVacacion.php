@@ -234,10 +234,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $filtro = $_GET['filtro'] ?? 'pendiente';
                 switch($filtro) {
                 case 'pendiente':
-                    $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [1], $limit, $offset);
+                    $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [1,4], $limit, $offset);
                     break;
                 case 'aprobadas':
-                    $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [2,4], $limit, $offset);
+                    $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [2], $limit, $offset);
                     break;
                 case 'rechazadas':
                     $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [3], $limit, $offset);
@@ -589,11 +589,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <!-- Botones para Solicitar Vacación y Medio Día -->
                         <div class="row"
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <!--
                             <button onclick="document.getElementById('id01').style.display='block'">
                                 Solicitar Vacacion
                             </button>
-
-                            <button onclick="window.location.href='SolicitarMedioDia.php'">
+                            -->
+                            <button onclick="window.location.href='SolicitarVacacionFormulario.php'">
                                 Solicitar Medio Día
                             </button>
 
@@ -786,7 +787,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                     </a>";
                                         } else{
                                             echo "<td>
-                                    <a class='btn btn-success' style='font-size: 2.5rem;' href='detalleEditarVacacion.php?id=" . $row['id_registro'] . "' >
+                                    <a class='btn btn-success' style='font-size: 2.5rem;' href='detalleEditarVacacionUsuario.php?id=" . $row['id_registro'] . "' >
                                         <i class='bi bi-file-earmark-person'></i> 
                                     </a>
                                 </td>";

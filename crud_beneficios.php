@@ -42,7 +42,7 @@ if ($action == 'add') {
     if ($id_usuario > 0 && !empty($razon)) {
         $sql = "INSERT INTO beneficios (id_usuario, razon, monto, identificacion_medismart, valor_plan_total, aporte_patrono, beneficiarios, fechacreacion) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
-        $stmt = $conexion->prepare($sql);
+        $stmt = $conn->prepare($sql);
         $stmt->bind_param("isdsddi", $id_usuario, $razon, $monto, $medismart, $valor_total, $aporte_patrono, $beneficiarios);
         
         if ($stmt->execute()) {
@@ -57,7 +57,6 @@ if ($action == 'add') {
 }
 
 elseif ($action == 'edit') {
-    // Editar beneficio
     $id_beneficio = $_POST['id_beneficio'] ?? 0;
     $razon = $_POST['razon'] ?? '';
     $monto = $_POST['monto'] ?? 0;
@@ -67,20 +66,35 @@ elseif ($action == 'edit') {
     $beneficiarios = $_POST['beneficiarios'] ?? 0;
 
     if ($id_beneficio > 0) {
-        $sql = "UPDATE beneficios SET razon = ?, monto = ?, identificacion_medismart = ?, valor_plan_total = ?, aporte_patrono = ?, beneficiarios = ?, fechamodificacion = NOW() WHERE id_beneficio = ?";
-        $stmt = $conexion->prepare($sql);
-        $stmt->bind_param("sdsddii", $razon, $monto, $medismart, $valor_total, $aporte_patrono, $beneficiarios, $id_beneficio);
-        
-        if ($stmt->execute()) {
-            echo json_encode(["success" => true, "message" => "Beneficio actualizado correctamente"]);
-        } else {
-            echo json_encode(["success" => false, "message" => "Error al actualizar el beneficio"]);
+        $sql = "UPDATE beneficios 
+                SET razon = ?, monto = ?, identificacion_medismart = ?, valor_plan_total = ?, 
+                    aporte_patrono = ?, beneficiarios = ?, fechamodificacion = NOW() 
+                WHERE id_beneficio = ?";
+
+        $stmt = $conn->prepare($sql);
+
+        if (!$stmt) {
+            echo json_encode(["success" => false, "message" => "Error en prepare: " . $conn->error]);
+            exit;
         }
+
+        if (!$stmt->bind_param("sdsddii", $razon, $monto, $medismart, $valor_total, $aporte_patrono, $beneficiarios, $id_beneficio)) {
+            echo json_encode(["success" => false, "message" => "Error en bind_param: " . $stmt->error]);
+            exit;
+        }
+
+        if (!$stmt->execute()) {
+            echo json_encode(["success" => false, "message" => "Error en execute: " . $stmt->error]);
+        } else {
+            echo json_encode(["success" => true, "message" => "Beneficio actualizado correctamente"]);
+        }
+
         $stmt->close();
     } else {
         echo json_encode(["success" => false, "message" => "ID de beneficio inválido"]);
     }
 }
+
 
 elseif ($action == 'delete') {
     // Eliminar beneficio

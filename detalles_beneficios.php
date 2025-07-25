@@ -1,6 +1,13 @@
 <?php 
 session_start();
 include 'template.php';
+
+// Validar sesión iniciada
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: login.php"); // Redirige si no hay sesión
+    exit;
+}
+
 // Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
@@ -18,7 +25,6 @@ $conn = mysqli_init();
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
 mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
-
 // Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
 if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
     die("Error de conexión: " . mysqli_connect_error());
@@ -27,8 +33,8 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 // Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
 
-// Obtener ID del usuario
-$id_usuario = $_GET['id_usuario'] ?? 0;
+// Obtener ID del usuario desde la sesión
+$id_usuario = $_SESSION['id_usuario'];
 
 // Obtener datos del usuario
 $sql_usuario = "SELECT CONCAT(nombre, ' ', apellido) AS nombre FROM usuario WHERE id_usuario = ?";
@@ -50,8 +56,8 @@ while ($row = $result_beneficios->fetch_assoc()) {
     $beneficios[] = $row;
 }
 $stmt_beneficios->close();
-
 ?>
+
 
 <div class="container mt-5">
     <h2 class="text-center mb-4">Beneficios de <?= htmlspecialchars($usuario['nombre']) ?></h2>
@@ -158,15 +164,18 @@ document.getElementById("beneficioForm").addEventListener("submit", function(eve
     })
     .then(response => response.json())
     .then(data => {
+        console.log(data); // <--- muestra en consola lo que responde el servidor
         if (data.success) {
             alert("Beneficio actualizado correctamente.");
             location.reload();
         } else {
-            alert("Error al actualizar el beneficio.");
+            alert("Error al actualizar el beneficio: " + data.message); // <--- alerta con mensaje real del backend
         }
     })
-    .catch(error => console.error("Error:", error));
+    .catch(error => console.error("Error en la solicitud:", error));
 });
+
+
 function eliminarBeneficio(id_beneficio) {
     if (confirm("¿Seguro que quieres eliminar este beneficio?")) {
         fetch("crud_beneficios.php?action=delete&id=" + id_beneficio, {
