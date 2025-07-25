@@ -118,7 +118,7 @@ if (isset($_GET['id']) && isset($_GET['accion'])) {
         );
 
         if ($id_usuario && is_numeric($id_usuario)) {
-            insertarNotificacion($id_usuario, "✅ Tu solicitud de modificación de vacaciones fue aprobada. 🎉");
+            insertarNotificacion($id_usuario, "✅ Tu solicitud  de vacaciones fue aprobada. 🎉");
             error_log("📨 Notificación enviada (APROBADA) al usuario $id_usuario");
         } else {
             error_log("⚠️ ID de usuario inválido al insertar notificación (APROBADA)");
@@ -130,7 +130,7 @@ if (isset($_GET['id']) && isset($_GET['accion'])) {
         $DAO->rechazarSolicitudModificacionVacaciones($id_historial_solicitud_modificacion);
 
         if ($id_usuario && is_numeric($id_usuario)) {
-            insertarNotificacion($id_usuario, "❌ Tu solicitud de modificación de vacaciones fue rechazada. Consultá con tu supervisor. 📞");
+            insertarNotificacion($id_usuario, "❌ Tu solicitud  de vacaciones fue rechazada. Consultá con tu supervisor. 📞");
             error_log("📨 Notificación enviada (RECHAZADA) al usuario $id_usuario");
         } else {
             error_log("⚠️ ID de usuario inválido al insertar notificación (RECHAZADA)");
