@@ -13,23 +13,23 @@ function enviarCorreo($correo_destino, $asunto, $mensaje) {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'paulacorderosegura@gmail.com'; //  correo
-        $mail->Password = 'svls mwzw milm bwkq'; // contraseña  de aplicación
+        $mail->Username = 'paulacorderosegura@gmail.com';
+        $mail->Password = 'svls mwzw milm bwkq';
         $mail->SMTPSecure = 'tls';
         $mail->Port = 587;
 
-        $mail->setFrom('paulacorderosegura@gmail.com', 'Sistema de Vacaciones'); //con el que se envia
-        $mail->addAddress($correo_destino, 'User'); //el destinatario que seria el usuario que solicita la vacacion
+        $mail->setFrom('paulacorderosegura@gmail.com', 'Sistema de Vacaciones');
+        $mail->addAddress($correo_destino, 'User');
 
-       $mail->isHTML(true);
-$mail->Subject = $asunto;
-$mail->AltBody = strip_tags($mensaje); // para que llegue como texto plano si bloquean HTML
-$mail->Body = $mensaje;
-
+        $mail->isHTML(true);
+        $mail->Subject = $asunto;
+        $mail->AltBody = strip_tags($mensaje); // Texto plano si bloquean HTML
+        $mail->Body = $mensaje;
 
         $mail->send();
         return true;
     } catch (Exception $e) {
+        echo "❌ Error al enviar correo: " . $mail->ErrorInfo;
         return false;
     }
 }
