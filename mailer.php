@@ -21,9 +21,11 @@ function enviarCorreo($correo_destino, $asunto, $mensaje) {
         $mail->setFrom('paulacorderosegura@gmail.com', 'Sistema de Vacaciones'); //con el que se envia
         $mail->addAddress($correo_destino, 'User'); //el destinatario que seria el usuario que solicita la vacacion
 
-        $mail->isHTML(true);
-        $mail->Subject = $asunto;
-        $mail->Body = $mensaje;
+       $mail->isHTML(true);
+$mail->Subject = $asunto;
+$mail->AltBody = strip_tags($mensaje); // para que llegue como texto plano si bloquean HTML
+$mail->Body = $mensaje;
+
 
         $mail->send();
         return true;

@@ -219,24 +219,12 @@ if ($accion == 'aprobar') {
     );
 
     // 📌 Mensaje con HTML para la aprobación
-    $asunto = "✅ Solicitud de Vacaciones Aprobada";
-    $mensaje = "
-        <html>
-        <head>
-            $css
-        </head>
-        <body>
-            <div class='container'>
-                <div class='header' style='background-color: #4CAF50;'>Solicitud Aprobada</div>
-                <div class='content'>
-                    <p>🎉 Hola, tu solicitud de modificación de vacaciones ha sido <b>aprobada</b>.</p>
-                    <p>Disfruta de tu descanso. 🌴</p>
-                </div>
-                <div class='footer'>Este es un mensaje automático de Gestión de Vacaciones</div>
-            </div>
-        </body>
-        </html>
-    ";
+$asunto = "✅ Solicitud de Vacaciones Aprobada";
+$mensaje = "
+    <p>🎉 Hola, tu solicitud de modificación de vacaciones ha sido <strong>aprobada</strong>.</p>
+    <p>Disfrutá tu descanso. 🌴</p>
+    <p style='font-size:12px;color:#555;'>Este es un mensaje automático del sistema de vacaciones.</p>
+";
 
     enviarCorreo($correo_usuario, $asunto, $mensaje);
 
@@ -246,23 +234,12 @@ if ($accion == 'aprobar') {
 
     // 📌 Mensaje con HTML para el rechazo
     $asunto = "❌ Solicitud de Vacaciones Rechazada";
-    $mensaje = "
-        <html>
-        <head>
-            $css
-        </head>
-        <body>
-            <div class='container'>
-                <div class='header' style='background-color: #d9534f;'>Solicitud Rechazada</div>
-                <div class='content'>
-                    <p>⚠️ Hola, lamentamos informarte que tu solicitud de modificación de vacaciones ha sido <b>rechazada</b>.</p>
-                    <p>Si tienes dudas, por favor contacta con tu supervisor. 📞</p>
-                </div>
-                <div class='footer'>Este es un mensaje automático de Gestión de Vacaciones</div>
-            </div>
-        </body>
-        </html>
-    ";
+$mensaje = "
+    <p>⚠️ Hola, lamentamos informarte que tu solicitud de modificación de vacaciones ha sido <strong>rechazada</strong>.</p>
+    <p>Si tenés dudas, consultá con tu supervisor. 📞</p>
+    <p style='font-size:12px;color:#555;'>Este es un mensaje automático del sistema de vacaciones.</p>
+";
+
 
     enviarCorreo($correo_usuario, $asunto, $mensaje);
 }
