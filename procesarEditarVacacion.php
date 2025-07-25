@@ -226,7 +226,11 @@ $mensaje = "
     <p style='font-size:12px;color:#555;'>Este es un mensaje automático del sistema de vacaciones.</p>
 ";
 
-    enviarCorreo($correo_usuario, $asunto, $mensaje);
+  $enviado = enviarCorreo($correo_usuario, $asunto, $mensaje);
+if (!$enviado) {
+    echo "❌ No se pudo enviar el correo a $correo_usuario";
+}
+
 
 } else if ($accion == 'rechazar') {
     $Historial_Solicitud_ModificacionDAO->rechazarSolicitudModificacionVacaciones($id_historial_solicitud_modificacion);
@@ -241,7 +245,11 @@ $mensaje = "
 ";
 
 
-    enviarCorreo($correo_usuario, $asunto, $mensaje);
+  $enviado = enviarCorreo($correo_usuario, $asunto, $mensaje);
+if (!$enviado) {
+    echo "❌ No se pudo enviar el correo a $correo_usuario";
+}
+
 }
 
     
