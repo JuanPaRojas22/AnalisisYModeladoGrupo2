@@ -101,13 +101,18 @@ if (isset($_GET['id']) && isset($_GET['accion'])) {
             $nuevaFin
         );
 
-        insertarNotificacion($id_usuario, "✅ Tu solicitud de modificación de vacaciones fue aprobada. 🎉");
+      if ($id_usuario && is_numeric($id_usuario)) {
+    insertarNotificacion($id_usuario, "✅ Tu solicitud de modificación de vacaciones fue aprobada. 🎉");
+} else {
+    error_log("⚠️ ID de usuario inválido al intentar insertar notificación (APROBADA)");
+}
 
-    } elseif ($accion == 'rechazar') {
-        $DAO->rechazarSolicitudModificacionVacaciones($id_historial_solicitud_modificacion);
 
-        insertarNotificacion($id_usuario, "❌ Tu solicitud de modificación de vacaciones fue rechazada. Consultá con tu supervisor. 📞");
-    }
+    } if ($id_usuario && is_numeric($id_usuario)) {
+    insertarNotificacion($id_usuario, "❌ Tu solicitud de modificación de vacaciones fue rechazada. Consultá con tu supervisor. 📞");
+} else {
+    error_log("⚠️ ID de usuario inválido al intentar insertar notificación (RECHAZADA)");
+}
 
     header('Location: EditarVacaciones.php');
     exit();
