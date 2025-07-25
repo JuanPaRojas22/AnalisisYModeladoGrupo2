@@ -27,12 +27,12 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 // Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
 
-// Obtener ID del usuario
-$id_usuario = $_GET['id_usuario'] ?? 0;
+// Obtener ID del usuario desde la sesión
+$id_usuario = $_SESSION['id_usuario'];
 
 // Obtener datos del usuario
 $sql_usuario = "SELECT CONCAT(nombre, ' ', apellido) AS nombre FROM usuario WHERE id_usuario = ?";
-$stmt_usuario = $conn->prepare($sql_usuario);
+$stmt_usuario = $conexion->prepare($sql_usuario);
 $stmt_usuario->bind_param("i", $id_usuario);
 $stmt_usuario->execute();
 $result_usuario = $stmt_usuario->get_result();
