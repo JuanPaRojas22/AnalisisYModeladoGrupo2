@@ -2,13 +2,12 @@
 session_start();
 require_once __DIR__ . '/conexion.php';
 require_once __DIR__ . '/Impl/Historial_Solicitud_Modificacion_VacacionesDAOSImpl.php';
-require_once __DIR__ . '/notificaciones_util.php'; // nuevo
+require_once __DIR__ . '/notificaciones_util.php';
 
 if (isset($_GET['id']) && isset($_GET['accion'])) {
     $id_historial_solicitud_modificacion = $_GET['id'];
 
     function obtenerIdUsuarioPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion) {
-        // Conexión SSL
         $host = "accespersoneldb.mysql.database.azure.com";
         $user = "adminUser";
         $password = "admin123+";
@@ -88,35 +87,34 @@ if (isset($_GET['id']) && isset($_GET['accion'])) {
     $accion = $_GET['accion'];
     $DAO = new Historial_Solicitud_Modificacion_VacacionesDAOSImpl();
 
-    if ($accion == 'aprobar') {
-    $DAO->aprobarSolicitudModificacionVacaciones(
-        $id_historial_solicitud_modificacion,
-        $id_vacacion_usuario,
-        $id_usuario,
-        $razon_modificacion,
-        $nuevosDias,
-        $nuevaInicio,
-        $observacion,
-        $id_historial_usuario,
-        $nuevaFin
-    );
+    if ($accion === 'aprobar') {
+        $DAO->aprobarSolicitudModificacionVacaciones(
+            $id_historial_solicitud_modificacion,
+            $id_vacacion_usuario,
+            $id_usuario,
+            $razon_modificacion,
+            $nuevosDias,
+            $nuevaInicio,
+            $observacion,
+            $id_historial_usuario,
+            $nuevaFin
+        );
 
-    if ($id_usuario && is_numeric($id_usuario)) {
-        insertarNotificacion($id_usuario, "✅ Tu solicitud de modificación de vacaciones fue aprobada. 🎉");
-        echo "Notificación enviada correctamente"; exit;
+        if ($id_usuario && is_numeric($id_usuario)) {
+            insertarNotificacion($id_usuario, "✅ Tu solicitud de modificación de vacaciones fue aprobada. 🎉");
+        } else {
+            error_log("⚠️ ID de usuario inválido al intentar insertar notificación (APROBADA)");
+        }
 
-    } else {
-        error_log("⚠️ ID de usuario inválido al intentar insertar notificación (APROBADA)");
-        
+    } elseif ($accion === 'rechazar') {
+        $DAO->rechazarSolicitudModificacionVacaciones($id_historial_solicitud_modificacion);
+
+        if ($id_usuario && is_numeric($id_usuario)) {
+            insertarNotificacion($id_usuario, "❌ Tu solicitud de modificación de vacaciones fue rechazada. Consultá con tu supervisor. 📞");
+        } else {
+            error_log("⚠️ ID de usuario inválido al intentar insertar notificación (RECHAZADA)");
+        }
     }
-
-} else if ($accion == 'rechazar') {
-    if ($id_usuario && is_numeric($id_usuario)) {
-        insertarNotificacion($id_usuario, "❌ Tu solicitud de modificación de vacaciones fue rechazada. Consultá con tu supervisor. 📞");
-    } else {
-        error_log("⚠️ ID de usuario inválido al intentar insertar notificación (RECHAZADA)");
-    }
-}
 
     header('Location: EditarVacaciones.php');
     exit();
