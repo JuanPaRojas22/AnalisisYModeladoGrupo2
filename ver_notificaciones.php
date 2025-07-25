@@ -1,4 +1,4 @@
- <?php
+<?php
 session_start();
 if (!isset($_SESSION['id_usuario'])) {
     header('Location: login.php');
@@ -40,29 +40,23 @@ $stmt->close();
 $conn->close();
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Mis Notificaciones</title>
-    <link href="assets/css/bootstrap.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container mt-5">
-        <h2 class="mb-4">🔔 Mis notificaciones</h2>
-        <?php if (count($notificaciones) > 0): ?>
-            <ul class="list-group">
-                <?php foreach ($notificaciones as $notif): ?>
-                    <li class="list-group-item <?= $notif['leida'] ? '' : 'list-group-item-warning' ?>">
-                        <?= htmlspecialchars($notif['mensaje']) ?>
-                        <br><small class="text-muted"><?= $notif['fecha'] ?></small>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        <?php else: ?>
-            <p>No tenés notificaciones por el momento.</p>
-        <?php endif; ?>
-        <a href="inicio.php" class="btn btn-secondary mt-3">Volver</a>
-    </div>
-</body>
-</html>
+<?php include 'template.php'; ?>
+
+<div class="container mt-5">
+    <h2 class="mb-4">🔔 Mis notificaciones</h2>
+
+    <?php if (count($notificaciones) > 0): ?>
+        <ul class="list-group">
+            <?php foreach ($notificaciones as $notif): ?>
+                <li class="list-group-item <?= $notif['leida'] ? '' : 'list-group-item-warning' ?>">
+                    <?= htmlspecialchars($notif['mensaje']) ?>
+                    <br><small class="text-muted"><?= $notif['fecha'] ?></small>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php else: ?>
+        <div class="alert alert-info">No tenés notificaciones por el momento.</div>
+    <?php endif; ?>
+
+    <a href="inicio.php" class="btn btn-secondary mt-3">Volver</a>
+</div>
