@@ -6,7 +6,7 @@ if (!isset($_SESSION['id_usuario'])) {
 }
 
 $id_usuario = $_SESSION['id_usuario'];
-
+include "template.php";
 // Conexión segura con SSL (Azure)
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
