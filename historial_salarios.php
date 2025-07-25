@@ -3,6 +3,8 @@ session_start();
 require 'conexion.php';
 require 'template.php';
 
+$conn = obtenerConexion(); 
+
 if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['id_rol'])) {
     header("Location: login.php");
     exit;
@@ -43,23 +45,26 @@ if ($id_rol == 3) {
     $stmt->bind_param("i", $id_departamento);
 
 } elseif ($id_rol == 2) {
-    // Admin master: puede ver todos o filtrar por departamento
-    $sql = "SELECT p.*, u.nombre, u.apellido, d.nombre AS departamento
-            FROM pago_planilla p
-            JOIN usuario u ON p.id_usuario = u.id_usuario
-            JOIN departamento d ON u.id_departamento = d.id_departamento";
-
     if (!empty($departamento_filtro)) {
-        $sql .= " WHERE d.id_departamento = ?";
+        $sql = "SELECT p.*, u.nombre, u.apellido, d.nombre AS departamento
+                FROM pago_planilla p
+                JOIN usuario u ON p.id_usuario = u.id_usuario
+                JOIN departamento d ON u.id_departamento = d.id_departamento
+                WHERE d.id_departamento = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $departamento_filtro);
     } else {
+        $sql = "SELECT p.*, u.nombre, u.apellido, d.nombre AS departamento
+                FROM pago_planilla p
+                JOIN usuario u ON p.id_usuario = u.id_usuario
+                JOIN departamento d ON u.id_departamento = d.id_departamento";
         $stmt = $conn->prepare($sql);
     }
 }
 
 $stmt->execute();
 $result = $stmt->get_result();
+
 ?>
 
 
