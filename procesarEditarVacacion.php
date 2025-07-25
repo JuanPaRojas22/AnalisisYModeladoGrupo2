@@ -89,29 +89,33 @@ if (isset($_GET['id']) && isset($_GET['accion'])) {
     $DAO = new Historial_Solicitud_Modificacion_VacacionesDAOSImpl();
 
     if ($accion == 'aprobar') {
-        $DAO->aprobarSolicitudModificacionVacaciones(
-            $id_historial_solicitud_modificacion,
-            $id_vacacion_usuario,
-            $id_usuario,
-            $razon_modificacion,
-            $nuevosDias,
-            $nuevaInicio,
-            $observacion,
-            $id_historial_usuario,
-            $nuevaFin
-        );
+    $DAO->aprobarSolicitudModificacionVacaciones(
+        $id_historial_solicitud_modificacion,
+        $id_vacacion_usuario,
+        $id_usuario,
+        $razon_modificacion,
+        $nuevosDias,
+        $nuevaInicio,
+        $observacion,
+        $id_historial_usuario,
+        $nuevaFin
+    );
 
-      if ($id_usuario && is_numeric($id_usuario)) {
-    insertarNotificacion($id_usuario, "✅ Tu solicitud de modificación de vacaciones fue aprobada. 🎉");
-} else {
-    error_log("⚠️ ID de usuario inválido al intentar insertar notificación (APROBADA)");
-}
+    if ($id_usuario && is_numeric($id_usuario)) {
+        insertarNotificacion($id_usuario, "✅ Tu solicitud de modificación de vacaciones fue aprobada. 🎉");
+        echo "Notificación enviada correctamente"; exit;
 
+    } else {
+        error_log("⚠️ ID de usuario inválido al intentar insertar notificación (APROBADA)");
+        
+    }
 
-    } if ($id_usuario && is_numeric($id_usuario)) {
-    insertarNotificacion($id_usuario, "❌ Tu solicitud de modificación de vacaciones fue rechazada. Consultá con tu supervisor. 📞");
-} else {
-    error_log("⚠️ ID de usuario inválido al intentar insertar notificación (RECHAZADA)");
+} else if ($accion == 'rechazar') {
+    if ($id_usuario && is_numeric($id_usuario)) {
+        insertarNotificacion($id_usuario, "❌ Tu solicitud de modificación de vacaciones fue rechazada. Consultá con tu supervisor. 📞");
+    } else {
+        error_log("⚠️ ID de usuario inválido al intentar insertar notificación (RECHAZADA)");
+    }
 }
 
     header('Location: EditarVacaciones.php');
