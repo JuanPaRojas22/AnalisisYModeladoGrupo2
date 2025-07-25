@@ -1,6 +1,13 @@
 <?php 
 session_start();
 include 'template.php';
+
+// Validar sesión iniciada
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: login.php"); // Redirige si no hay sesión
+    exit;
+}
+
 // Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
@@ -17,7 +24,6 @@ $conn = mysqli_init();
 // Configuramos SSL
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
 mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
-
 
 // Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
 if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
@@ -50,8 +56,8 @@ while ($row = $result_beneficios->fetch_assoc()) {
     $beneficios[] = $row;
 }
 $stmt_beneficios->close();
-
 ?>
+
 
 <div class="container mt-5">
     <h2 class="text-center mb-4">Beneficios de <?= htmlspecialchars($usuario['nombre']) ?></h2>
