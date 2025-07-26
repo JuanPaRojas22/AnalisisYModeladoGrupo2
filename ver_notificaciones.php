@@ -7,6 +7,7 @@ if (!isset($_SESSION['id_usuario'])) {
 
 $id_usuario = $_SESSION['id_usuario'];
 include "template.php";
+
 // Conexión segura con SSL (Azure)
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
@@ -22,10 +23,16 @@ mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
     die("Error de conexión: " . mysqli_connect_error());
 }
-
 mysqli_set_charset($conn, "utf8mb4");
 
-// Corregido: id → id AS id_notificacion
+// ✅ Marcar notificaciones como leídas
+$sql_leer = "UPDATE notificaciones SET leida = 1 WHERE id_usuario = ? AND leida = 0";
+$stmt_leer = $conn->prepare($sql_leer);
+$stmt_leer->bind_param("i", $id_usuario);
+$stmt_leer->execute();
+$stmt_leer->close();
+
+// 🔎 Consultar notificaciones
 $sql = "SELECT id AS id_notificacion, mensaje, leida, fecha FROM notificaciones WHERE id_usuario = ? ORDER BY fecha DESC";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id_usuario);
@@ -45,89 +52,87 @@ $conn->close();
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Mis Notificaciones</title>
-    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <title>🔔 Mis Notificaciones</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-    body {
-        font-family: 'Segoe UI', sans-serif;
-        background-color: #f5f6fa;
-        margin: 0;
-        padding: 0;
-    }
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', sans-serif;
+        }
 
-    .container {
-        max-width: 600px;
-        margin: 60px auto;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        padding: 30px;
-        text-align: center;
-    }
+        .container {
+            max-width: 700px;
+            margin: 80px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
 
-    h1 {
-        color: #2d3436;
-        font-size: 24px;
-        margin-bottom: 25px;
-    }
+        .notificacion {
+            background-color: #ecf0f1;
+            border-left: 5px solid #00b894;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    .notificacion {
-        background-color: #dfe6e9;
-        border-left: 6px solid #00b894;
-        padding: 20px;
-        margin-bottom: 20px;
-        border-radius: 8px;
-        text-align: left;
-        display: flex;
-        align-items: center;
-        font-size: 16px;
-        color: #2d3436;
-    }
+        .notificacion.unread {
+            background-color: #dff9fb;
+            border-left-color: #0984e3;
+        }
 
-    .notificacion i {
-        font-size: 20px;
-        color: #00b894;
-        margin-right: 12px;
-    }
+        .notificacion i {
+            margin-right: 10px;
+            color: #00b894;
+        }
 
-    .volver {
-        display: inline-block;
-        margin-top: 15px;
-        text-decoration: none;
-        background-color: #00b894;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 8px;
-        font-weight: bold;
-        transition: background-color 0.3s ease;
-    }
+        .btn-back {
+            margin-top: 20px;
+            background-color: #00b894;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
 
-    .volver:hover {
-        background-color: #019870;
-    }
-</style>
+        .btn-back:hover {
+            background-color: #019870;
+        }
 
+        .fecha {
+            font-size: 0.85em;
+            color: #7f8c8d;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h2 class="mb-4">🔔 Mis notificaciones</h2>
-        <?php if (count($notificaciones) > 0): ?>
-            <ul class="list-group">
-                <?php foreach ($notificaciones as $notif): ?>
-                    <li class="list-group-item <?= $notif['leida'] ? '' : 'list-group-item-warning' ?>">
-                        <?= htmlspecialchars($notif['mensaje']) ?>
-                        <br><small class="text-muted"><?= $notif['fecha'] ?></small>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        <?php else: ?>
-            <div class="alert alert-info">No tenés notificaciones por el momento.</div>
-        <?php endif; ?>
-        <a href="inicio.php" class="btn btn-secondary mt-3">Volver</a>
-    </div>
+
+<div class="container text-center">
+    <h2 class="mb-4"><i class="fas fa-bell"></i> Mis Notificaciones</h2>
+
+    <?php if (count($notificaciones) > 0): ?>
+        <?php foreach ($notificaciones as $notif): ?>
+            <div class="notificacion <?= $notif['leida'] ? '' : 'unread' ?>">
+                <div class="text-start">
+                    <i class="fas fa-envelope-open-text"></i>
+                    <?= htmlspecialchars($notif['mensaje']) ?>
+                    <div class="fecha"><?= $notif['fecha'] ?></div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <div class="alert alert-info">No tenés notificaciones nuevas.</div>
+    <?php endif; ?>
+
+    <a href="inicio.php" class="btn btn-back">Volver</a>
+</div>
+
 </body>
 </html>
-
-
-
-
