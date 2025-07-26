@@ -48,28 +48,10 @@ $stmt->close();
 $conn->close();
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>🔔 Mis Notificaciones</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<div class="container mt-5 mb-5">
+    <h2 class="mb-4 text-center"><i class="fas fa-bell"></i> Mis Notificaciones</h2>
+
     <style>
-        body {
-            background-color: #f0f2f5;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        .container {
-            max-width: 700px;
-            margin: 80px auto;
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
         .notificacion {
             background-color: #ecf0f1;
             border-left: 5px solid #00b894;
@@ -111,11 +93,6 @@ $conn->close();
             color: #7f8c8d;
         }
     </style>
-</head>
-<body>
-
-<div class="container text-center">
-    <h2 class="mb-4"><i class="fas fa-bell"></i> Mis Notificaciones</h2>
 
     <?php if (count($notificaciones) > 0): ?>
         <?php foreach ($notificaciones as $notif): ?>
@@ -128,11 +105,10 @@ $conn->close();
             </div>
         <?php endforeach; ?>
     <?php else: ?>
-        <div class="alert alert-info">No tenés notificaciones nuevas.</div>
+        <div class="alert alert-info text-center">No tenés notificaciones nuevas.</div>
     <?php endif; ?>
 
-    <a href="inicio.php" class="btn btn-back">Volver</a>
+    <div class="text-center">
+        <a href="index.php" class="btn btn-back">Volver</a>
+    </div>
 </div>
-
-</body>
-</html>
