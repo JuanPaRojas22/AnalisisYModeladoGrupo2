@@ -47,6 +47,66 @@ $conn->close();
     <meta charset="UTF-8">
     <title>Mis Notificaciones</title>
     <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f5f6fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: 60px auto;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        text-align: center;
+    }
+
+    h1 {
+        color: #2d3436;
+        font-size: 24px;
+        margin-bottom: 25px;
+    }
+
+    .notificacion {
+        background-color: #dfe6e9;
+        border-left: 6px solid #00b894;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        color: #2d3436;
+    }
+
+    .notificacion i {
+        font-size: 20px;
+        color: #00b894;
+        margin-right: 12px;
+    }
+
+    .volver {
+        display: inline-block;
+        margin-top: 15px;
+        text-decoration: none;
+        background-color: #00b894;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+    .volver:hover {
+        background-color: #019870;
+    }
+</style>
+
 </head>
 <body>
     <div class="container mt-5">
