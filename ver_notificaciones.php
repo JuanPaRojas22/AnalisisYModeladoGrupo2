@@ -114,7 +114,7 @@ $conn->close();
 </head>
 <body>
 
-
+<div class="container text-center">
     <h2 class="mb-4"><i class="fas fa-bell"></i> Mis Notificaciones</h2>
 
     <?php if (count($notificaciones) > 0): ?>
@@ -132,6 +132,7 @@ $conn->close();
     <?php endif; ?>
 
     <a href="index.php" class="btn btn-back">Volver</a>
+</div>
 
 </body>
 </html>
