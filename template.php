@@ -1,14 +1,16 @@
 <?php
+session_start();
 
 // Verifica si el usuario está autenticado
-if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
-    $nombre = $_SESSION['nombre'];  // Obtener el nombre del usuario
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+    $nombre = $_SESSION['nombre'];
     $username = $_SESSION['username'];
-    $id_rol = $_SESSION['id_rol'];     // Obtener el ID del rol
-    $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'] : 'assets/img/default-profile.png'; // Imagen de perfil
-
+    $id_rol = $_SESSION['id_rol'];
+    $direccion = $_SESSION['direccion_imagen'] ?? 'assets/img/default-profile.png';
+} else {
+    header("Location: login.php");
+    exit();
 }
-
 
 // Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
@@ -16,40 +18,41 @@ $user = "adminUser";
 $password = "admin123+";
 $dbname = "gestionEmpleados";
 $port = 3306;
-
-// Ruta al certificado CA para validar SSL
 $ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
 
 // Inicializamos mysqli
 $conn = mysqli_init();
-
-// Configuramos SSL
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
 mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
-
-// Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
+// Intentamos conectar
 if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
     die("Error de conexión: " . mysqli_connect_error());
 }
 
-// Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
 
-//echo "Conectado correctamente con SSL.";
+// Consulta: Cantidad de aportes no leídos
+$queryAportes = "SELECT COUNT(*) AS aporte FROM aportes WHERE aporte = 0";
+$resultAportes = $conn->query($queryAportes);
+$rowAportes = $resultAportes->fetch_assoc();
+$aporte = $rowAportes['aporte'];
 
-// Consulta para obtener el número de nuevos aportes
-$query = "SELECT COUNT(*) AS aporte FROM aportes WHERE aporte = 0";  // Ajusta la tabla y condición según tu estructura
-$result = $conn->query($query);
-
-// Obtener el número de nuevos aportes
-$row = $result->fetch_assoc();
-$aporte = $row['aporte'];
-
-// Cerrar la conexión
-
-
+// Consulta: Notificaciones no leídas para el usuario actual
+$notificacion = 0;
+if (isset($_SESSION['id_usuario'])) {
+    $id_usuario = $_SESSION['id_usuario'];
+    $queryNotif = "SELECT COUNT(*) AS sin_leer FROM notificaciones WHERE id_usuario = ? AND leida = 0";
+    $stmtNotif = $conn->prepare($queryNotif);
+    $stmtNotif->bind_param("i", $id_usuario);
+    $stmtNotif->execute();
+    $stmtNotif->bind_result($sin_leer);
+    $stmtNotif->fetch();
+    $notificacion = $sin_leer;
+    $stmtNotif->close();
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -276,7 +279,16 @@ $aporte = $row['aporte'];
                              <li><a href="historial_salarios.php"><i class="bi bi-calendar3"></i>
                                     Historial Salarios</a></li>
                         <li><a href="preguntasfreq.php"><i class="bi bi-question-octagon-fill"></i>Preguntas Frecuentes</a></li>
-                       <li><a href="ver_notificaciones.php"><i class="bi bi-bell-fill"></i> Notificaciones</a></li>
+<li>
+    <a href="ver_notificaciones.php" style="position: relative;">
+        <i class="bi bi-bell-fill"></i> Notificaciones
+        <?php if ($notificacion > 0): ?>
+            <span class="badge bg-danger" style="position: absolute; top: 0; right: -5px;">
+                <?php echo $notificacion; ?>
+            </span>
+        <?php endif; ?>
+    </a>
+</li>
 
 </a>
 
