@@ -211,7 +211,7 @@ if ($id_departamento == 'all') {
 
     select {
         width: 70%;
-        padding: 10px;
+        padding: 50;
         font-size: 16px;
         border: 2px solid rgb(15, 15, 15);
         border-radius: 5px;
