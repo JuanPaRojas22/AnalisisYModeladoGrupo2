@@ -67,7 +67,7 @@ if ($id_departamento == 'all') {
                 </div>
             </div>
 
-            <!-- Filtros 
+            <!-- Filtros-->
             <div class="row justify-content-center mb-5">
                 <!-- Filtro de visualización -->
                 <div class="col-md-4 mb-3">
