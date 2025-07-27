@@ -12,11 +12,12 @@ if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['id_rol'])) {
 
 $id_usuario = $_SESSION['id_usuario'];
 $id_rol = $_SESSION['id_rol'];
-$id_departamento = $_SESSION['id_departamento'] ?? null;
+$id_departamento = $_SESSION['id_departamento'] ?? null; // Importante para el rol 1
 $departamento_filtro = $_GET['departamento'] ?? '';
 
 $departamentos = [];
-if ($id_rol == 2) { // Solo el admin general puede ver todos los departamentos
+if ($id_rol == 2) {
+    // Admin master: obtiene todos los departamentos para el filtro
     $query_dept = "SELECT id_departamento, nombre FROM departamento";
     $result_dept = $conn->query($query_dept);
     while ($row = $result_dept->fetch_assoc()) {
@@ -25,13 +26,17 @@ if ($id_rol == 2) { // Solo el admin general puede ver todos los departamentos
 }
 
 if ($id_rol == 3) {
-    // Empleado: ve solo sus propios registros
+    // Empleado: ve solo sus pagos
     $sql = "SELECT * FROM pago_planilla WHERE id_usuario = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id_usuario);
 
 } elseif ($id_rol == 1) {
-    // Admin normal: ve los empleados de su mismo departamento
+    // Admin normal: ve pagos de su propio departamento
+    if (empty($id_departamento)) {
+        die("Error: No se ha encontrado el departamento para este administrador.");
+    }
+
     $sql = "SELECT p.*, u.nombre, u.apellido
             FROM pago_planilla p
             JOIN usuario u ON p.id_usuario = u.id_usuario
@@ -62,9 +67,6 @@ $result = $stmt->get_result();
 
 ?>
 
-$stmt->execute();
-$result = $stmt->get_result();
-?>
 
 <!DOCTYPE html>
 <html lang="es">

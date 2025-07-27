@@ -1,31 +1,26 @@
 <?php
 session_start();
-// Verificar si el usuario está logueado
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: login.php");
     exit();
 }
 include 'template.php';
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- Bootstrap core CSS -->
-    <link href="assets/css/bootstrap.css" rel="stylesheet">
-    <!--external css-->
-    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
-
-    <!-- Custom styles for this template -->
-    <link href="assets/css/style.css" rel="stylesheet">
-    <link href="assets/css/style-responsive.css" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Días Feriados</title>
-    
+
+    <!-- Estilos -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/style-responsive.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+
     <script>
         let editando = false;
         let feriadoId = null;
@@ -40,13 +35,13 @@ include 'template.php';
                 .then(data => {
                     let lista = document.getElementById("listaFeriados");
                     lista.innerHTML = "";
-
                     let feriadosPorMes = {};
 
                     data.forEach(feriado => {
-                        let fecha = new Date(feriado.fecha);
-                        let mes = fecha.toLocaleString("es-ES", { month: "long" }).toUpperCase();
-                        let emoji = feriado.doble_pago == 1 ? "💰 " : ""; 
+                        let fechaOriginal = feriado.fecha;
+                        let fechaLocal = new Date(feriado.fecha + "T00:00:00"); // evitar desfase UTC
+                        let mes = fechaLocal.toLocaleString("es-ES", { month: "long" }).toUpperCase();
+                        let emoji = feriado.doble_pago == 1 ? "💰 " : "";
 
                         if (!feriadosPorMes[mes]) {
                             feriadosPorMes[mes] = [];
@@ -54,8 +49,9 @@ include 'template.php';
                         feriadosPorMes[mes].push({
                             id: feriado.id_fecha,
                             nombre: `${emoji}${feriado.nombre_feriado}`,
-                            fecha: fecha.toLocaleDateString("es-ES"),
-                            tipo: feriado.tipo_feriado
+                            fecha: fechaOriginal,
+                            tipo: feriado.tipo_feriado,
+                            doble_pago: feriado.doble_pago
                         });
                     });
 
@@ -90,19 +86,17 @@ include 'template.php';
                             let acciones = document.createElement("div");
                             acciones.classList.add("mt-3", "flex", "justify-between");
 
-                            let btnEditar = document.createElement("button"); 
-btnEditar.innerText = "Editar";
-btnEditar.style.backgroundColor = "#0B4F6C"; // Color personalizado
-btnEditar.classList.add("text-white", "px-3", "py-1", "rounded");
-btnEditar.onclick = function() { abrirModalEditar(feriado); };
+                            let btnEditar = document.createElement("button");
+                            btnEditar.innerText = "Editar";
+                            btnEditar.style.backgroundColor = "#0B4F6C";
+                            btnEditar.classList.add("text-white", "px-3", "py-1", "rounded");
+                            btnEditar.onclick = function() { abrirModalEditar(feriado); };
 
-
-let btnEliminar = document.createElement("button");
-btnEliminar.innerText = "Eliminar";
-btnEliminar.style.backgroundColor = "#8B0000"; // Rojo oscuro
-btnEliminar.classList.add("text-white", "px-3", "py-1", "rounded");
-btnEliminar.onclick = function() { eliminarFeriado(feriado.id); };
-
+                            let btnEliminar = document.createElement("button");
+                            btnEliminar.innerText = "Eliminar";
+                            btnEliminar.style.backgroundColor = "#8B0000";
+                            btnEliminar.classList.add("text-white", "px-3", "py-1", "rounded");
+                            btnEliminar.onclick = function() { eliminarFeriado(feriado.id); };
 
                             acciones.appendChild(btnEditar);
                             acciones.appendChild(btnEliminar);
@@ -148,11 +142,10 @@ btnEliminar.onclick = function() { eliminarFeriado(feriado.id); };
             feriadoId = feriado.id;
 
             document.getElementById("modalTitulo").innerText = "Editar Feriado";
-            document.getElementById("nombreFeriado").value = feriado.nombre.replace("💰 ", ""); 
+            document.getElementById("nombreFeriado").value = feriado.nombre.replace("💰 ", "");
             document.getElementById("fechaFeriado").value = feriado.fecha;
             document.getElementById("tipoFeriado").value = feriado.tipo;
-            document.getElementById("doblePago").checked = feriado.nombre.includes("💰");
-
+            document.getElementById("doblePago").checked = feriado.doble_pago == 1;
             document.getElementById("modal").classList.remove("hidden");
         }
 
@@ -190,6 +183,7 @@ btnEliminar.onclick = function() { eliminarFeriado(feriado.id); };
             });
         }
     </script>
+
     <style>
         td, div {
             color: black !important;
@@ -198,9 +192,8 @@ btnEliminar.onclick = function() { eliminarFeriado(feriado.id); };
 </head>
 <body class="p-8 bg-gray-200">
     <div class="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-        <h1 class="text-3xl font-bold mb-6 text-center" style="color:#0B4F6C"> Gestión de Días Feriados</h1>
+        <h1 class="text-3xl font-bold mb-6 text-center" style="color:#0B4F6C">Gestión de Días Feriados</h1>
         <button style="background-color: #147964;" class="text-white px-4 py-2 rounded mb-6 w-full" onclick="abrirModal()">Agregar Feriado</button>
-
         <div id="listaFeriados"></div>
     </div>
 
@@ -217,9 +210,8 @@ btnEliminar.onclick = function() { eliminarFeriado(feriado.id); };
             <div class="flex justify-end mt-4">
                 <button onclick="cerrarModal()" class="px-4 py-2 bg-gray-400 rounded mr-2">Cancelar</button>
                 <button onclick="guardarFeriado()" class="px-4 py-2 text-white rounded" style="background-color: #147964;">Guardar</button>
-                </div>
+            </div>
         </div>
     </div>
 </body>
 </html>
-

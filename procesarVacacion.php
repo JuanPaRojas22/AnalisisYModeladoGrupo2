@@ -1,6 +1,8 @@
 <?php
 session_start();
 require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
+require_once __DIR__ . '/notificaciones_util.php'; // Para insertar notificación
+
 // Verifica si se recicbio el id del usuario y la accion a realizar
 if(isset($_GET['id']) && isset($_GET['accion'])){
     $id_vacacion = $_GET['id'];
@@ -52,10 +54,18 @@ mysqli_set_charset($conn, "utf8mb4");
         $conn->close();
 
         $VacacionDAO->aprobarSolicitud($id_vacacion, $diasTomado, $id_usuario);
+        insertarNotificacion($id_usuario, "✅ Tu solicitud de vacaciones fue aprobada.");
+
     }else if($accion == 'rechazar'){
         
 
         $VacacionDAO->rechazarSolicitud($id_vacacion);
+        // Obtener ID del usuario también si no lo has guardado antes
+$id_usuario = $_SESSION['id_usuario'] ?? null;
+if ($id_usuario) {
+    insertarNotificacion($id_usuario, "❌ Tu solicitud de vacaciones fue rechazada.");
+}
+
     }
     
     // Se redirije de nuevo a la pagina de detalle de vacaciones
