@@ -45,17 +45,6 @@ if ($id_departamento == 'all') {
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-</head>
-
 
 <!-- **********************************************************************************************************************************************************
       MAIN CONTENT
@@ -116,10 +105,10 @@ if ($id_departamento == 'all') {
             </div>
 
             <!-- Tarjetas de usuarios -->
-            <div class="row">
+            <div class="row gx-4 gy-4">
                 <?php foreach ($users as $user): ?>
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
-                        <div class="card h-100 shadow-sm border-0 p-3">
+                        <div class="card h-100 shadow-sm border-0">
                             <div class="card-body">
                                 <h5 class="card-title fw-bold">
                                     <?= htmlspecialchars($user['nombre']) . " " . htmlspecialchars($user['apellido']) ?>
