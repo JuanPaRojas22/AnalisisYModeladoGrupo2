@@ -391,7 +391,7 @@ select {
     }
 
     .btn-align {
-    padding-top: 14px;
+    padding-top: 18px;
     padding-bottom: 14px;
 }
 
