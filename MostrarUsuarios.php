@@ -7,7 +7,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit;
 }
 // Verificar si el usuario es administrador (id_rol == 2)
-if ($_SESSION['id_rol'] == 3 or $_SESSION['id_rol'] == 1) { // Verificar si el usuario es un empleado
+if ($_SESSION['id_rol'] == 3 OR $_SESSION['id_rol'] == 1) { // Verificar si el usuario es un empleado
     header("Location: index.php"); // Redirigir a la página de inicio si no es administrador
     exit;
 }
@@ -48,8 +48,8 @@ if ($id_departamento == 'all') {
 <head>
 
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
@@ -65,97 +65,108 @@ if ($id_departamento == 'all') {
 <section id="main-content">
     <section class="wrapper site-min-height">
         <div class="container">
-            <h1 class="text-center mb-5">Listado de Usuarios</h1>
+            <h1>Listado de Usuarios</h1>
 
-            <!-- Botón Registrar Usuario -->
-            <div class="row mb-4 justify-content-center">
-                <div class="col-auto">
-                    <a href="registroEmpleado.php" class="btn btn-success">
-                        Registrar Usuario
-                    </a>
+            <div class="specific-container"
+                style="display: flex; flex-direction: column; gap: 20px; width: 100%; align-items: center;">
+                <div class="row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                     <button onclick="window.location.href='registroEmpleado.php'">
+                                Registrar Usuario
+                     </button>
                 </div>
-            </div>
-
-            <!-- Filtros -->
-            <div class="row justify-content-center mb-4">
-                <!-- Filtro de visualización -->
-                <div class="col-md-6 col-lg-4 mb-2">
-                    <form method="GET" action="MostrarUsuarios.php" class="d-flex gap-2 align-items-center">
-                        <select name="id_departamento" id="departamento_filtro" class="form-select" required>
-                            <option value="all">Seleccione un departamento</option>
-                            <?php
-                            foreach ($departmento as $department) {
-                                $selected = (isset($id_departamento) && $id_departamento == $department['id_departamento']) ? 'selected' : '';
-                                echo "<option value='{$department['id_departamento']}' {$selected}>{$department['Nombre']}</option>";
-                            }
-                            ?>
-                        </select>
-                        <button class="btn btn-primary" type="submit">
-                            <i class="bi bi-funnel-fill"></i>
-                        </button>
+                <!-- Añadido flex-direction: column para apilar los formularios -->
+                <div class="row">
+                    <!-- Formulario 2 con select -->
+                    <form method="GET" action="MostrarUsuarios.php">
+                        <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+                            <select name="id_departamento" id="id_departamento"
+                                style="font-size: 14px; width: 240px; height: 40px;">
+                                <option value="all">Seleccione un departamento</option>
+                                <?php
+                                foreach ($departmento as $department) {
+                                    $selected = (isset($id_departamento) && $id_departamento == $department['id_departamento']) ? 'selected' : '';
+                                    echo "<option value='{$department['id_departamento']}' {$selected}>{$department['Nombre']}</option>";
+                                }
+                                ?>
+                            </select>
+                            <button class="btn" style="font-size: 1.5rem; color: #f1f1f1;">
+                                <i class="bi bi-funnel-fill"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="row">
+                    <!-- Formulario 1 con select -->
+                    <form action="generar_reporte.php" method="GET" style="margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+                            <select class="form-select" name="id_departamento" id="id_departamento"
+                                style="font-size: 14px; width: 240px; height: 40px;" required>
+                                <option>Seleccione un departamento</option>
+                                <?php
+                                foreach ($departmento as $department) {
+                                    $selected = (isset($id_departamento) && $id_departamento == $department['id_departamento']) ? 'selected' : '';
+                                    echo "<option value='{$department['id_departamento']}' {$selected}>{$department['Nombre']}</option>";
+                                }
+                                ?>
+                            </select>
+                            <button class="btn" style="font-size: 2rem; color: #f1f1f1;">
+                                <i class="bi bi-filetype-pdf"></i>
+                            </button>
+                        </div>
                     </form>
                 </div>
 
-                <!-- Generar reporte PDF -->
-                <div class="col-md-6 col-lg-4 mb-2">
-                    <form method="GET" action="generar_reporte.php" class="d-flex gap-2 align-items-center">
-                        <select name="id_departamento" id="departamento_reporte" class="form-select" required>
-                            <option value="">Seleccione un departamento</option>
-                            <?php
-                            foreach ($departmento as $department) {
-                                $selected = (isset($id_departamento) && $id_departamento == $department['id_departamento']) ? 'selected' : '';
-                                echo "<option value='{$department['id_departamento']}' {$selected}>{$department['Nombre']}</option>";
-                            }
-                            ?>
-                        </select>
-                        <button class="btn btn-danger" type="submit">
-                            <i class="bi bi-filetype-pdf"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
 
-            <!-- Tarjetas de usuarios -->
-            <div class="row">
-                <?php foreach ($users as $user): ?>
-                    <div class="col-12 col-sm-6 col-lg-4 mb-4">
-                        <div class="card shadow-lg h-100">
-                            <div class="card-body">
-                                <h5 class="card-title fw-bold">
-                                    <?= htmlspecialchars($user['nombre']) . " " . htmlspecialchars($user['apellido']) ?>
-                                </h5>
-                                <p class="card-text">
-                                    <strong>Departamento:</strong> <?= htmlspecialchars($user['departamento_nombre']) ?><br>
-                                    <strong>Rol:</strong> <?= htmlspecialchars($user['rol_nombre']) ?><br>
-                                    <strong>Ocupación:</strong> <?= htmlspecialchars($user['Nombre_Ocupacion']) ?><br>
-                                    <strong>Nacionalidad:</strong> <?= htmlspecialchars($user['Nombre_Pais']) ?><br>
-                                    <strong>Correo:</strong> <?= htmlspecialchars($user['correo_electronico']) ?><br>
-                                    <strong>Teléfono:</strong> <?= htmlspecialchars($user['numero_telefonico']) ?>
-                                </p>
-                                <div class="d-flex justify-content-center gap-3 mt-3">
-                                    <a href="profileUser.php?id=<?= $user['id_usuario'] ?>"
-                                        class="btn btn-outline-primary btn-sm rounded-pill">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    <a href="detalle.php?id=<?= $user['id_usuario'] ?>"
-                                        class="btn btn-outline-info btn-sm rounded-pill">
-                                        <i class="bi bi-file-earmark-person"></i>
-                                    </a>
-                                    <a href="eliminar.php?id=<?= $user['id_usuario'] ?>"
-                                        class="btn btn-outline-danger btn-sm rounded-pill"
-                                        onclick="return confirm('¿Estás seguro de eliminar este usuario?')">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Contenedor principal con clase row -->
+        <div class="row px-8">
+            <?php foreach ($users as $user): ?>
+                <!-- Columna para cada tarjeta -->
+                <div class="col-12 col-sm-6 col-md-8 col-lg-4 mb-2">
+                    <div class="card shadow-lg border rounded-25" style="background-color: #fdfdfd;">
+                        <div class="card-body">
+                            <h5 class="card-title ">
+                                <?= htmlspecialchars($user['nombre']) . " " . htmlspecialchars($user['apellido']) ?>
+                            </h5>
+                            <p class="card-text mb-2">
+                                <strong>Departamento:</strong> <?= htmlspecialchars($user['departamento_nombre']) ?><br>
+                                <strong>Rol:</strong> <?= htmlspecialchars($user['rol_nombre']) ?><br>
+                                <strong>Ocupación:</strong> <?= htmlspecialchars($user['Nombre_Ocupacion']) ?><br>
+                                <strong>Nacionalidad:</strong> <?= htmlspecialchars($user['Nombre_Pais']) ?><br>
+                                <strong>Correo:</strong> <?= htmlspecialchars($user['correo_electronico']) ?><br>
+                                <strong>Teléfono:</strong> <?= htmlspecialchars($user['numero_telefonico']) ?>
+                            </p>
+                            <!-- Botones dentro del card-body -->
+                            <div class="d-flex justify-content-center gap-4">
+                                <a href="profileUser.php?id=<?= $user['id_usuario'] ?>"
+                                    class="btn btn-outline-primary btn-sm rounded-pill">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a href="detalle.php?id=<?= $user['id_usuario'] ?>"
+                                    class="btn btn-outline-info btn-sm rounded-pill">
+                                    <i class="bi bi-file-earmark-person"></i>
+                                </a>
+                                <a href="eliminar.php?id=<?= $user['id_usuario'] ?>"
+                                    class="btn btn-outline-danger btn-sm rounded-pill"
+                                    onclick="return confirm('¿Estás seguro de eliminar este usuario?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
-                <?php endforeach; ?>
-            </div>
+                </div>
+            <?php endforeach; ?>
         </div>
-    </section>
-</section>
 
+
+    </section>
+
+</section>
 
 
 <script>
@@ -188,8 +199,7 @@ if ($id_departamento == 'all') {
 <style>
     body {
         font-family: 'Ruda', sans-serif;
-        background-color: #f7f7f7;
-        /* Blanco cremoso */
+        background-color: #f7f7f7;  /* Blanco cremoso */
         margin: 0;
         padding: 0;
     }
@@ -197,8 +207,7 @@ if ($id_departamento == 'all') {
     .card-body {
         padding: 27px;
         margin-bottom: 0;
-        background-color: #f7f7f7;
-        /* Blanco cremoso */
+        background-color: #f7f7f7;  /* Blanco cremoso */
 
         /* Eliminar margen inferior */
         padding-bottom: 0;
@@ -238,8 +247,7 @@ if ($id_departamento == 'all') {
     .container {
         display: flex;
         flex-direction: column;
-        background-color: #f7f7f7;
-        /* Blanco cremoso */
+        background-color: #f7f7f7;  /* Blanco cremoso */
 
         justify-content: flex-start;
         /* Alinea hacia la parte superior */
@@ -254,7 +262,7 @@ if ($id_departamento == 'all') {
         display: flex;
         justify-content: center;
         align-items: center;
-
+       
     }
 
     h1 {
@@ -272,25 +280,24 @@ if ($id_departamento == 'all') {
         margin-right: 10%;
         font-weight: bold;
     }
-
-    h5 {
+    h5{
         color: black;
         font-weight: bold;
     }
 
     .btn {
         display: inline-block;
-        background-color: #0B4F6C;
-        color: white;
-        padding: 12px 20px;
-        font-size: 16px;
-        font-weight: bold;
-        text-decoration: none;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        transition: background-color 0.3s;
-        cursor: pointer;
-        border: none;
+                        background-color: #0B4F6C;
+                        color: white;
+                        padding: 12px 20px;
+                        font-size: 16px;
+                        font-weight: bold;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        margin-bottom: 20px;
+                        transition: background-color 0.3s;
+                        cursor: pointer;
+                        border: none;
     }
 
 
@@ -322,8 +329,7 @@ if ($id_departamento == 'all') {
     }
 
     th {
-        background-color: #f7f7f7;
-        /* Blanco cremoso */
+        background-color: #f7f7f7;  /* Blanco cremoso */
         color: #fff;
     }
 
