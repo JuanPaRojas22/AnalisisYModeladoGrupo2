@@ -248,10 +248,9 @@ if ($id_departamento == 'all') {
 
 
     .row {
-        margin-left: -12px;
-        margin-right: -12px;
-        flex-wrap: wrap;
-    }
+    flex-wrap: wrap;
+}
+
 
 
     h1 {
