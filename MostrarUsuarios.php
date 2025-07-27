@@ -72,7 +72,7 @@ if ($id_departamento == 'all') {
                 <!-- Filtro de visualización -->
                 <div class="col-md-4 mb-3">
                     <form method="GET" action="MostrarUsuarios.php" class="d-flex gap-2 align-items-center">
-                        <select name="id_departamento" id="departamento_filtro" class="form-select" required>
+                       <select name="id_departamento" id="departamento_filtro" class="form-select form-select-lg" required>
                             <option value="all">Seleccione un departamento</option>
                             <?php
                             foreach ($departmento as $department) {
@@ -90,7 +90,7 @@ if ($id_departamento == 'all') {
                 <!-- Filtro de reporte -->
                 <div class="col-md-4 mb-3">
                     <form method="GET" action="generar_reporte.php" class="d-flex gap-2 align-items-center">
-                        <select name="id_departamento" id="departamento_reporte" class="form-select" required>
+                        <select name="id_departamento" id="departamento_reporte" class="form-select form-select-lg" required>
                             <option value="">Seleccione un departamento</option>
                             <?php
                             foreach ($departmento as $department) {
