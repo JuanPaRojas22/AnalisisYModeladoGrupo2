@@ -209,18 +209,20 @@ if ($id_departamento == 'all') {
         /* Si tienes una sección card-footer, asegúrate de que no tenga márgenes */
     }
 
-    select {
-        width: 70%;
-        padding: 50;
-        font-size: 16px;
-        border: 2px solid rgb(15, 15, 15);
-        border-radius: 5px;
-        background: #f9f9f9;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: center;
-        color: black;
-    }
+select {
+    width: 100%; /* O usa un valor mayor que 70% si lo mantienes en un grid */
+    height: 50px; /* Aumenta el alto */
+    padding: 12px 16px;
+    font-size: 18px; /* Texto más grande */
+    font-weight: 500;
+    border: 2px solid rgb(15, 15, 15);
+    border-radius: 8px;
+    background: #f9f9f9;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    color: black;
+}
 
     select:hover {
         border-color: #106469;
