@@ -236,18 +236,11 @@ if ($id_departamento == 'all') {
     }
 
     .container {
-        display: flex;
-        flex-direction: column;
-        background-color: #f7f7f7;
-        /* Blanco cremoso */
+    max-width: 100%;
+    padding: 10px;
+    background-color: #f7f7f7;
+}
 
-        justify-content: flex-start;
-        /* Alinea hacia la parte superior */
-        align-items: center;
-        /* Centra los elementos horizontalmente */
-        padding: 10px;
-        max-width: 100%;
-    }
 
 
     .row {
