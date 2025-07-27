@@ -156,6 +156,8 @@ if ($id_departamento == 'all') {
     </section>
 </section>
 
+
+
 <script>
     $(document).ready(function () {
         $.ajax({
