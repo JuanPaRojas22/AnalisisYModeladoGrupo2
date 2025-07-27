@@ -118,7 +118,7 @@ if ($id_departamento == 'all') {
             <!-- Tarjetas de usuarios -->
             <div class="row">
                 <?php foreach ($users as $user): ?>
-                    <div class="col-12 col-sm-6 col-lg-4 mb-4">
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
                         <div class="card shadow-lg h-100">
                             <div class="card-body">
                                 <h5 class="card-title fw-bold">
