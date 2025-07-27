@@ -213,7 +213,7 @@ select {
     width: 100%; /* O usa un valor mayor que 70% si lo mantienes en un grid */
     height: 50px; /* Aumenta el alto */
     padding: 12px 16px;
-    font-size: 18px; /* Texto más grande */
+    font-size: 24px; /* Texto más grande */
     font-weight: 500;
     border: 2px solid rgb(15, 15, 15);
     border-radius: 8px;
