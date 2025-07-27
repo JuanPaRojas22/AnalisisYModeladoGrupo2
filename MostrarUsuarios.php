@@ -133,21 +133,22 @@ if ($id_departamento == 'all') {
                                     <strong>Teléfono:</strong> <?= htmlspecialchars($user['numero_telefonico']) ?>
                                 </p>
                             </div>
-                            <div class="card-footer bg-white d-flex justify-content-center gap-2">
+                            <div class="d-flex justify-content-center gap-2 mt-3">
                                 <a href="profileUser.php?id=<?= $user['id_usuario'] ?>"
-                                    class="btn btn-outline-primary btn-sm rounded-pill">
+                                    class="btn btn-outline-primary btn-sm rounded-pill" title="Editar">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
                                 <a href="detalle.php?id=<?= $user['id_usuario'] ?>"
-                                    class="btn btn-outline-info btn-sm rounded-pill">
+                                    class="btn btn-outline-info btn-sm rounded-pill" title="Ver">
                                     <i class="bi bi-file-earmark-person"></i>
                                 </a>
                                 <a href="eliminar.php?id=<?= $user['id_usuario'] ?>"
-                                    class="btn btn-outline-danger btn-sm rounded-pill"
+                                    class="btn btn-outline-danger btn-sm rounded-pill" title="Eliminar"
                                     onclick="return confirm('¿Estás seguro de eliminar este usuario?')">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </div>
+
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -198,8 +199,8 @@ if ($id_departamento == 'all') {
 
 
     .card {
-    width: 100%;
-}
+        width: 100%;
+    }
 
 
     .card-body {
@@ -244,19 +245,19 @@ if ($id_departamento == 'all') {
     }
 
     .container {
-    max-width: 100%;
-    padding: 10px;
-    background-color: #f7f7f7;
-}
+        max-width: 100%;
+        padding: 10px;
+        background-color: #f7f7f7;
+    }
 
 
 
-.row {
-    flex-wrap: wrap !important;
-    overflow-x: hidden;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
+    .row {
+        flex-wrap: wrap !important;
+        overflow-x: hidden;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
 
     h1 {
         text-align: center;
