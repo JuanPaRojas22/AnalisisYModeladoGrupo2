@@ -239,7 +239,7 @@ if ($id_departamento == 'all') {
         flex-wrap: wrap;
         margin-left: 0;
         margin-right: 0;
-        gap: 30px;
+        gap: 60px;
     }
 
 
