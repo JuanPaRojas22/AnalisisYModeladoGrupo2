@@ -116,7 +116,7 @@ if ($id_departamento == 'all') {
             </div>
 
             <!-- Tarjetas de usuarios -->
-            <div class="row gx-3">
+            <div class="row gx-4 gy -4">
                 <?php foreach ($users as $user): ?>
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
                         <div class="card h-100 shadow-sm border-0 p-3">
@@ -242,14 +242,15 @@ if ($id_departamento == 'all') {
 
     .container {
         max-width: 100%;
-        padding: 10px;
-        background-color: #f7f7f7;
+        padding: 10px 20px;
     }
 
 
     .row {
-    flex-wrap: wrap;
-}
+        flex-wrap: wrap;
+        margin-left: 0;
+        margin-right: 0;
+    }
 
 
 
