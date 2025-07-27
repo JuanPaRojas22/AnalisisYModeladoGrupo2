@@ -127,7 +127,7 @@ if ($id_departamento == 'all') {
         <div class="row px-8">
             <?php foreach ($users as $user): ?>
                 <!-- Columna para cada tarjeta -->
-                <div class="col-12 col-sm-6 col-md-8 col-lg-4 mb-2">
+                <div class="col-12 col-sm-6 col-md-8 col-lg-4 mb-4">
                     <div class="card shadow-lg border rounded-25" style="background-color: #fdfdfd;">
                         <div class="card-body">
                             <h5 class="card-title ">
