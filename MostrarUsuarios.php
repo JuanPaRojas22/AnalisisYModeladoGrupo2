@@ -65,21 +65,21 @@ if ($id_departamento == 'all') {
 <section id="main-content">
     <section class="wrapper site-min-height">
         <div class="container">
-            <h1 class="text-center mb-5">Listado de Usuarios</h1>
+            <h1 class="text-center mb-5 fw-bold">Listado de Usuarios</h1>
 
             <!-- Botón Registrar Usuario -->
-            <div class="row mb-4 justify-content-center">
+            <div class="row justify-content-center mb-4">
                 <div class="col-auto">
-                    <a href="registroEmpleado.php" class="btn btn-success">
+                    <a href="registroEmpleado.php" class="btn btn-primary px-4">
                         Registrar Usuario
                     </a>
                 </div>
             </div>
 
             <!-- Filtros -->
-            <div class="row justify-content-center mb-4">
+            <div class="row justify-content-center mb-5">
                 <!-- Filtro de visualización -->
-                <div class="col-md-6 col-lg-4 mb-2">
+                <div class="col-md-4 mb-3">
                     <form method="GET" action="MostrarUsuarios.php" class="d-flex gap-2 align-items-center">
                         <select name="id_departamento" id="departamento_filtro" class="form-select" required>
                             <option value="all">Seleccione un departamento</option>
@@ -96,8 +96,8 @@ if ($id_departamento == 'all') {
                     </form>
                 </div>
 
-                <!-- Generar reporte PDF -->
-                <div class="col-md-6 col-lg-4 mb-2">
+                <!-- Filtro de reporte -->
+                <div class="col-md-4 mb-3">
                     <form method="GET" action="generar_reporte.php" class="d-flex gap-2 align-items-center">
                         <select name="id_departamento" id="departamento_reporte" class="form-select" required>
                             <option value="">Seleccione un departamento</option>
@@ -119,7 +119,7 @@ if ($id_departamento == 'all') {
             <div class="row">
                 <?php foreach ($users as $user): ?>
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
-                        <div class="card shadow-lg h-100">
+                        <div class="card h-100 shadow-sm border-0">
                             <div class="card-body">
                                 <h5 class="card-title fw-bold">
                                     <?= htmlspecialchars($user['nombre']) . " " . htmlspecialchars($user['apellido']) ?>
@@ -132,21 +132,21 @@ if ($id_departamento == 'all') {
                                     <strong>Correo:</strong> <?= htmlspecialchars($user['correo_electronico']) ?><br>
                                     <strong>Teléfono:</strong> <?= htmlspecialchars($user['numero_telefonico']) ?>
                                 </p>
-                                <div class="d-flex justify-content-center gap-3 mt-3">
-                                    <a href="profileUser.php?id=<?= $user['id_usuario'] ?>"
-                                        class="btn btn-outline-primary btn-sm rounded-pill">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    <a href="detalle.php?id=<?= $user['id_usuario'] ?>"
-                                        class="btn btn-outline-info btn-sm rounded-pill">
-                                        <i class="bi bi-file-earmark-person"></i>
-                                    </a>
-                                    <a href="eliminar.php?id=<?= $user['id_usuario'] ?>"
-                                        class="btn btn-outline-danger btn-sm rounded-pill"
-                                        onclick="return confirm('¿Estás seguro de eliminar este usuario?')">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
+                            </div>
+                            <div class="card-footer bg-white d-flex justify-content-center gap-2">
+                                <a href="profileUser.php?id=<?= $user['id_usuario'] ?>"
+                                    class="btn btn-outline-primary btn-sm rounded-pill">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a href="detalle.php?id=<?= $user['id_usuario'] ?>"
+                                    class="btn btn-outline-info btn-sm rounded-pill">
+                                    <i class="bi bi-file-earmark-person"></i>
+                                </a>
+                                <a href="eliminar.php?id=<?= $user['id_usuario'] ?>"
+                                    class="btn btn-outline-danger btn-sm rounded-pill"
+                                    onclick="return confirm('¿Estás seguro de eliminar este usuario?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -155,6 +155,7 @@ if ($id_departamento == 'all') {
         </div>
     </section>
 </section>
+
 
 
 <script>
