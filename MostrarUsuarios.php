@@ -158,8 +158,6 @@ if ($id_departamento == 'all') {
 
 
 
-
-
 <script>
     $(document).ready(function () {
         $.ajax({
