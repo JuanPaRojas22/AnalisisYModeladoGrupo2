@@ -88,11 +88,6 @@ if (isset($_SESSION['id_usuario'])) {
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     
-    <!--<style>
-         td, div {
-        color: black !important;
-    }
-    -->
 </style>
 
 
@@ -101,7 +96,7 @@ if (isset($_SESSION['id_usuario'])) {
 
 <body>
     <section id="container">
-        <header class="header black-bg">
+        <header>
             <div class="sidebar-toggle-box">
                 <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
             </div>
