@@ -224,6 +224,11 @@ select {
     color: black;
 }
 
+    select option {
+    font-size: 20px;
+    padding: 10px;
+}
+
     select:hover {
         border-color: #106469;
     }
