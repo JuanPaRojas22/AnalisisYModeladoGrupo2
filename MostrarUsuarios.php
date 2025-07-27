@@ -192,7 +192,15 @@ if ($id_departamento == 'all') {
         /* Blanco cremoso */
         margin: 0;
         padding: 0;
+        overflow-x: hidden;
+
     }
+
+
+    .card {
+    width: 100%;
+}
+
 
     .card-body {
         padding: 27px;
@@ -243,12 +251,12 @@ if ($id_departamento == 'all') {
 
 
 
-    .row {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-    }
+.row {
+    flex-wrap: wrap !important;
+    overflow-x: hidden;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
 
     h1 {
         text-align: center;
