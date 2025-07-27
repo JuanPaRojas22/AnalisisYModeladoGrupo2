@@ -191,17 +191,12 @@ if ($id_departamento == 'all') {
     body {
         font-family: 'Ruda', sans-serif;
         background-color: #f7f7f7;
-        /* Blanco cremoso */
         margin: 0;
         padding: 0;
         overflow-x: hidden;
-
     }
 
 
-    .card {
-        width: 100%;
-    }
 
 
     .card-body {
@@ -252,13 +247,12 @@ if ($id_departamento == 'all') {
     }
 
 
-
     .row {
-        flex-wrap: wrap !important;
-        overflow-x: hidden;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
+        margin-left: -12px;
+        margin-right: -12px;
+        flex-wrap: wrap;
     }
+
 
     h1 {
         text-align: center;
