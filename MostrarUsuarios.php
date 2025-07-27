@@ -67,7 +67,7 @@ if ($id_departamento == 'all') {
                 </div>
             </div>
 
-            <!-- Filtros -->
+            <!-- Filtros 
             <div class="row justify-content-center mb-5">
                 <!-- Filtro de visualización -->
                 <div class="col-md-4 mb-3">
@@ -389,6 +389,12 @@ select {
         /* Distribuye el espacio entre los botones */
         width: 100%;
     }
+
+    .btn-align {
+    padding-top: 14px;
+    padding-bottom: 14px;
+}
+
 
     .close-button {
         border: none;
