@@ -58,7 +58,7 @@ while ($row = $result_beneficios->fetch_assoc()) {
 $stmt_beneficios->close();
 ?>
 <head>
-    <title>Deatalle Beneficios</title>
+    <title>Detalles de Beneficios</title>
 </head>
 
 <div class="container mt-5">
