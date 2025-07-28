@@ -2168,18 +2168,17 @@ label {
 }
 
 
-.status-indicator {
+.notification-dot {
     position: absolute;
-    top: 8px;
-    right: 0px;
+    top: 6px;
+    right: 4px;
     width: 10px;
     height: 10px;
     background-color: #28a745; /* verde */
-    border-radius: 50%;
     border: 2px solid white;
+    border-radius: 50%;
     z-index: 10;
 }
-
 
 /*easy pie chart*/
 .easy-pie-chart {

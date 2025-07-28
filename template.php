@@ -147,21 +147,19 @@ if (isset($_SESSION['id_usuario'])) {
 
 
                     <li id="header_profile_bar" class="dropdown position-relative">
-                        <a data-toggle="dropdown" class="dropdown-toggle text-decoration-none" href="#">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <i class="fa fa-user"></i>
-                            <!-- Circulito verde -->
-                            <span class="status-indicator bg-success"></span>
-                            <span class="badge bg-success"></span>
+                            <?php if ($aporte > 0): ?>
+                                <span class="notification-dot"></span>
+                            <?php endif; ?>
                         </a>
                         <ul class="dropdown-menu extended inbox">
                             <div class="notify-arrow notify-arrow-green"></div>
                             <li>
                                 <p class="green">User Profile</p>
                             </li>
-                            <li><a href="profile.php" class="text-decoration-none"><i class="fa fa-cogs"></i> Edit
-                                    Profile</a></li>
-                            <li><a href="logout.php" class="text-decoration-none"><i class="fa fa-sign-out"></i>
-                                    Logout</a></li>
+                            <li><a href="profile.php"><i class="fa fa-cogs"></i> Edit Profile</a></li>
+                            <li><a href="logout.php"><i class="fa fa-sign-out"></i> Logout</a></li>
                         </ul>
                     </li>
 
