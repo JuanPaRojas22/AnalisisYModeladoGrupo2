@@ -190,10 +190,7 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
         </div>
     </section>
 
-    <div class="buttons">
-
-        <a href="tutorial.php" class="btn-hero purchase">Tutorial de la Pagina</a>
-    </div>
+  
 
 </body>
 
