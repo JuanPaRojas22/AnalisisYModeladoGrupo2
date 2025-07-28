@@ -2170,14 +2170,14 @@ label {
 
 .status-indicator {
     position: absolute;
-    top: 10px;   /* Ajustalo según el diseño */
-    left: 30px;  /* Ajustalo según el diseño */
+    top: 8px;
+    right: 0px;
     width: 10px;
     height: 10px;
+    background-color: #28a745; /* verde */
     border-radius: 50%;
     border: 2px solid white;
-    background-color: #28a745 !important;
-    z-index: 1000;
+    z-index: 10;
 }
 
 
