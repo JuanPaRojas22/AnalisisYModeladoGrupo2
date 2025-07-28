@@ -57,7 +57,9 @@ while ($row = $result_beneficios->fetch_assoc()) {
 }
 $stmt_beneficios->close();
 ?>
-
+<head>
+    <title>Deatalle Beneficios</title>
+</head>
 
 <div class="container mt-5">
     <h2 class="text-center mb-4">Beneficios de <?= htmlspecialchars($usuario['nombre']) ?></h2>
