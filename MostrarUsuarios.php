@@ -70,7 +70,7 @@ if ($id_departamento == 'all') {
             <!-- Filtros-->
             <div class="row justify-content-center mb-5">
                 <!-- Filtro de visualización -->
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4 mb-4">
                     <form method="GET" action="MostrarUsuarios.php" class="d-flex gap-2 align-items-center">
                         <select name="id_departamento" id="departamento_filtro" class="form-select form-select-lg"
                             required>
@@ -89,7 +89,7 @@ if ($id_departamento == 'all') {
                 </div>
 
                 <!-- Filtro de reporte -->
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4 mb-4">
                     <form method="GET" action="generar_reporte.php" class="d-flex gap-2 align-items-center">
                         <select name="id_departamento" id="departamento_reporte" class="form-select form-select-lg"
                             required>
