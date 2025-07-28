@@ -228,7 +228,7 @@ if (!isset($_SESSION['id_usuario'])) {
                     },
                     {
                         element: document.querySelector('#preguntas'),
-                        intro: 'Aqui encintras una seccion de las preguntas mas frecuentes'
+                        intro: 'Aqui encontraras una seccion de las preguntas mas frecuentes'
                     },
                     {
                         element: document.querySelector('#notificaciones'),
