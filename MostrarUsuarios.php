@@ -67,46 +67,42 @@ if ($id_departamento == 'all') {
                 </div>
             </div>
 
-            <!-- Filtros-->
-            <div class="row justify-content-center mb-5 ps-5">
-                <!-- Filtro de visualización -->
-                <div class="col-md-4 mb-4">
-                    <form method="GET" action="MostrarUsuarios.php" class="d-flex gap-2 align-items-center">
-                        <select name="id_departamento" id="departamento_filtro" class="form-select form-select-lg"
-                            required>
-                            <option value="all">Seleccione un departamento</option>
-                            <?php
-                            foreach ($departmento as $department) {
-                                $selected = (isset($id_departamento) && $id_departamento == $department['id_departamento']) ? 'selected' : '';
-                                echo "<option value='{$department['id_departamento']}' {$selected}>{$department['Nombre']}</option>";
-                            }
-                            ?>
-                        </select>
-                        <button class="btn btn-primary" type="submit">
-                            <i class="bi bi-funnel-fill"></i>
-                        </button>
-                    </form>
-                </div>
+            <!-- Filtros centrados con espacio entre ellos -->
+            <div class="d-flex justify-content-center gap-5 flex-wrap mb-5">
+                <!-- Filtro visualización -->
+                <form method="GET" action="MostrarUsuarios.php" class="d-flex gap-2 align-items-center"
+                    style="min-width: 300px;">
+                    <select name="id_departamento" id="departamento_filtro" class="form-select form-select-lg" required>
+                        <option value="all">Seleccione un departamento</option>
+                        <?php foreach ($departmento as $department): ?>
+                            <option value="<?= $department['id_departamento'] ?>" <?= (isset($id_departamento) && $id_departamento == $department['id_departamento']) ? 'selected' : '' ?>>
+                                <?= $department['Nombre'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-funnel-fill"></i>
+                    </button>
+                </form>
 
-                <!-- Filtro de reporte -->
-                <div class="col-md-4 mb-4">
-                    <form method="GET" action="generar_reporte.php" class="d-flex gap-2 align-items-center">
-                        <select name="id_departamento" id="departamento_reporte" class="form-select form-select-lg"
-                            required>
-                            <option value="">Seleccione un departamento</option>
-                            <?php
-                            foreach ($departmento as $department) {
-                                $selected = (isset($id_departamento) && $id_departamento == $department['id_departamento']) ? 'selected' : '';
-                                echo "<option value='{$department['id_departamento']}' {$selected}>{$department['Nombre']}</option>";
-                            }
-                            ?>
-                        </select>
-                        <button class="btn btn-danger" type="submit">
-                            <i class="bi bi-filetype-pdf"></i>
-                        </button>
-                    </form>
-                </div>
+                <!-- Filtro reporte -->
+                <form method="GET" action="generar_reporte.php" class="d-flex gap-2 align-items-center"
+                    style="min-width: 300px;">
+                    <select name="id_departamento" id="departamento_reporte" class="form-select form-select-lg"
+                        required>
+                        <option value="">Seleccione un departamento</option>
+                        <?php foreach ($departmento as $department): ?>
+                            <option value="<?= $department['id_departamento'] ?>" <?= (isset($id_departamento) && $id_departamento == $department['id_departamento']) ? 'selected' : '' ?>>
+                                <?= $department['Nombre'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button class="btn btn-danger" type="submit">
+                        <i class="bi bi-filetype-pdf"></i>
+                    </button>
+                </form>
             </div>
+
 
             <!-- Tarjetas de usuarios -->
             <div class="row gx-4 gy-4">
@@ -227,7 +223,7 @@ if ($id_departamento == 'all') {
         transition: all 0.3s ease !important;
         text-align: center;
         color: black;
-        
+
     }
 
     select option {
