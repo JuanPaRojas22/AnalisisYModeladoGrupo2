@@ -49,18 +49,12 @@ $conn->close();
 ?>
 
 <!DOCTYPE html>
-
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>🔔 Mis Notificaciones</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
-    <link href="assets/css/style-responsive.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #f0f2f5;
@@ -118,29 +112,27 @@ $conn->close();
         }
     </style>
 </head>
-
 <body>
 
-    <div class="container text-center">
-        <h2 class="mb-4"><i class="fas fa-bell"></i> Mis Notificaciones</h2>
+<div class="container text-center">
+    <h2 class="mb-4"><i class="fas fa-bell"></i> Mis Notificaciones</h2>
 
-        <?php if (count($notificaciones) > 0): ?>
-            <?php foreach ($notificaciones as $notif): ?>
-                <div class="notificacion <?= $notif['leida'] ? '' : 'unread' ?>">
-                    <div class="text-start">
-                        <i class="fas fa-envelope-open-text"></i>
-                        <?= htmlspecialchars($notif['mensaje']) ?>
-                        <div class="fecha"><?= $notif['fecha'] ?></div>
-                    </div>
+    <?php if (count($notificaciones) > 0): ?>
+        <?php foreach ($notificaciones as $notif): ?>
+            <div class="notificacion <?= $notif['leida'] ? '' : 'unread' ?>">
+                <div class="text-start">
+                    <i class="fas fa-envelope-open-text"></i>
+                    <?= htmlspecialchars($notif['mensaje']) ?>
+                    <div class="fecha"><?= $notif['fecha'] ?></div>
                 </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <div class="alert alert-info">No tenés notificaciones nuevas.</div>
-        <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <div class="alert alert-info">No tenés notificaciones nuevas.</div>
+    <?php endif; ?>
 
-        <a href="index.php" class="btn btn-back">Volver</a>
-    </div>
+    <a href="index.php" class="btn btn-back">Volver</a>
+</div>
 
 </body>
-
 </html>
