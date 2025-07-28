@@ -308,7 +308,7 @@ hr {
 }
 
 .bg-theme {
-	background-color: #68dff0;
+	background-color: #41a041;
 }
 
 ul.top-menu > li > .logout {
@@ -650,7 +650,7 @@ ul.top-menu > li > a:hover, ul.top-menu > li > a:focus {
     border-bottom: 1px solid #EBEBEB !important;
     font-size: 12px;
     list-style: none;
- text-decoration: none;
+    text-decoration: none !important;
 }
 
 .dropdown-menu.extended li a {
