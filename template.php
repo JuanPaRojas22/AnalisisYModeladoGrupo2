@@ -157,21 +157,6 @@ if (isset($_SESSION['id_usuario'])) {
                             <li><a href="logout.php"><i class="fa fa-sign-out"></i> Logout</a></li>
                         </ul>
                     </li>
-                    <li>
-   <li>
-    <a href="tutorial.php" style="
-        color: white;
-        border: 1px solid white;
-        border-radius: 5px;
-        padding: 6px 10px;
-        display: inline-block;
-        font-size: 16px;
-        margin-top: 12px;">
-        <i class="fa fa-magic"></i>
-    </a>
-</li>
-</li>
-
 
 
 
@@ -301,6 +286,12 @@ if (isset($_SESSION['id_usuario'])) {
                                     <?php endif; ?>
                                 </a>
                             </li>
+                            <li>
+    <a href="tutorial.php">
+        <i class="bi bi-question-circle-fill"></i>
+        <span>Tutorial</span>
+    </a>
+</li>
 
                             </a>
 
