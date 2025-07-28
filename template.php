@@ -158,19 +158,18 @@ if (isset($_SESSION['id_usuario'])) {
                         </ul>
                     </li>
                     <li>
-   <a href="tutorial.php" class="btn btn-success" style="
-        padding: 6px 20px;
-        font-size: 14px;
-        font-weight: 600;
-        border-radius: 6px;
-        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
-        margin-top: 12px;
-        margin-left: 10px;
-        display: flex;
-        align-items: center;
-        gap: 6px;">
-        <i class="fa fa-magic"></i> Tutorial
+   <li>
+    <a href="tutorial.php" style="
+        color: white;
+        border: 1px solid white;
+        border-radius: 5px;
+        padding: 6px 10px;
+        display: inline-block;
+        font-size: 16px;
+        margin-top: 12px;">
+        <i class="fa fa-magic"></i>
     </a>
+</li>
 </li>
 
 
