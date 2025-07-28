@@ -121,6 +121,7 @@ if (isset($_GET['id'])) {
 
         .container {
             max-width: 800px;
+            color: black;
             background-color: #f7f7f7;
             /* Blanco cremoso */
             margin: 50px auto;
@@ -168,6 +169,8 @@ if (isset($_GET['id'])) {
 </head>
 
 <body>
+
+
     <div class="container">
 
         <div class="row">

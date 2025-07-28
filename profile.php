@@ -62,12 +62,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $direccion_imagen = $user['direccion_imagen'];
     // Manejo de la imagen
-        if (isset($_FILES['direccion_imagen']) && $_FILES['direccion_imagen']['error'] === UPLOAD_ERR_OK) {
-            // Leer el contenido del archivo y convertirlo en binario
-            $direccion_imagen = file_get_contents($_FILES['direccion_imagen']['tmp_name']);
-        } else {
-            echo "<script>alert('No se subió ningún archivo o ocurrió un error.');</script>";
-        }
+    if (isset($_FILES['direccion_imagen']) && $_FILES['direccion_imagen']['error'] === UPLOAD_ERR_OK) {
+        // Leer el contenido del archivo y convertirlo en binario
+        $direccion_imagen = file_get_contents($_FILES['direccion_imagen']['tmp_name']);
+    } else {
+        echo "<script>alert('No se subió ningún archivo o ocurrió un error.');</script>";
+    }
 
     if (empty($errores)) {
         $UsuarioDAO->updateUser($nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_ocupacion, $id_nacionalidad, $user_id);
@@ -85,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -99,6 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin: 0;
             padding: 0;
         }
+
         .profile-container {
             width: 40%;
             max-width: 2000px;
@@ -109,6 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
             margin-left: 35%;
         }
+
         .header-section {
             background-color: #106469;
             color: white;
@@ -118,11 +121,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 22px;
             font-weight: bold;
         }
+
         .user-img {
             display: flex;
             justify-content: center;
             margin-bottom: 20px;
         }
+
         .user-img img {
             width: 120px;
             height: 120px;
@@ -130,25 +135,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             object-fit: cover;
             border: 3px solid #116B67;
         }
+
         .info-section {
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
             padding: 20px;
         }
+
         .info-column {
             width: 48%;
         }
+
         .info-column p {
             font-size: 18px;
             color: #555;
             margin: 5px 0;
         }
+
         .btn-container {
             display: flex;
             justify-content: center;
             margin-top: 20px;
         }
+
         .btn {
             background-color: #0B4F6C;
             color: white;
@@ -161,12 +171,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
             text-decoration: none;
         }
+
         .btn:hover {
             background-color: darkgray;
         }
     </style>
 </head>
+
 <body>
+    <?php if (isset($_SESSION['mensaje_exito'])): ?>
+        <script>
+            // Usamos alert(), o puedes usar una librería o crear tu propio estilo
+            alert("<?php echo addslashes($_SESSION['mensaje_exito']); ?>");
+        </script>
+        <?php
+        unset($_SESSION['mensaje_exito']);
+    endif;
+    ?>
     <div class="profile-container">
         <div class="header-section">Perfil de Usuario</div>
         <div class="user-img">
@@ -174,7 +195,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="info-section">
             <div class="info-column">
-                <p><strong>Nombre y Apellido:</strong> <?php echo htmlspecialchars($user['nombre'] . ' ' . $user['apellido']); ?></p>
+                <p><strong>Nombre y Apellido:</strong>
+                    <?php echo htmlspecialchars($user['nombre'] . ' ' . $user['apellido']); ?></p>
                 <p><strong>Departamento:</strong> <?php echo htmlspecialchars($user['departamento_nombre']); ?></p>
                 <p><strong>Fecha de nacimiento:</strong> <?php echo htmlspecialchars($user['fecha_nacimiento']); ?></p>
                 <p><strong>Fecha de ingreso:</strong> <?php echo htmlspecialchars($user['fecha_ingreso']); ?></p>
@@ -195,4 +217,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 </body>
+
 </html>

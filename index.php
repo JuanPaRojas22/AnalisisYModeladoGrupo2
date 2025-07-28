@@ -195,16 +195,6 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
         <a href="tutorial.php" class="btn-hero purchase">Tutorial de la Pagina</a>
     </div>
 
-
-    <?php if (isset($_SESSION['mensaje_exito'])): ?>
-        <script>
-            // Usamos alert(), o puedes usar una librería o crear tu propio estilo
-            alert("<?php echo addslashes($_SESSION['mensaje_exito']); ?>");
-        </script>
-        <?php
-        unset($_SESSION['mensaje_exito']);
-    endif;
-    ?>
 </body>
 
 </html>
