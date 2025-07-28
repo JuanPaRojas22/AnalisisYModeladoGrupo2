@@ -45,7 +45,9 @@ if ($id_departamento == 'all') {
 <!DOCTYPE html>
 <html lang="en">
 
-
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
 <!-- **********************************************************************************************************************************************************
       MAIN CONTENT
       *********************************************************************************************************************************************************** -->
@@ -65,12 +67,12 @@ if ($id_departamento == 'all') {
                 </div>
             </div>
 
-            <!-- Filtros -->
+            <!-- Filtros-->
             <div class="row justify-content-center mb-5">
                 <!-- Filtro de visualización -->
                 <div class="col-md-4 mb-3">
                     <form method="GET" action="MostrarUsuarios.php" class="d-flex gap-2 align-items-center">
-                        <select name="id_departamento" id="departamento_filtro" class="form-select" required>
+                       <select name="id_departamento" id="departamento_filtro" class="form-select form-select-lg" required>
                             <option value="all">Seleccione un departamento</option>
                             <?php
                             foreach ($departmento as $department) {
@@ -88,7 +90,7 @@ if ($id_departamento == 'all') {
                 <!-- Filtro de reporte -->
                 <div class="col-md-4 mb-3">
                     <form method="GET" action="generar_reporte.php" class="d-flex gap-2 align-items-center">
-                        <select name="id_departamento" id="departamento_reporte" class="form-select" required>
+                        <select name="id_departamento" id="departamento_reporte" class="form-select form-select-lg" required>
                             <option value="">Seleccione un departamento</option>
                             <?php
                             foreach ($departmento as $department) {
@@ -170,6 +172,7 @@ if ($id_departamento == 'all') {
         });
     });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
 
@@ -206,18 +209,25 @@ if ($id_departamento == 'all') {
         /* Si tienes una sección card-footer, asegúrate de que no tenga márgenes */
     }
 
-    select {
-        width: 70%;
-        padding: 10px;
-        font-size: 16px;
-        border: 2px solid rgb(15, 15, 15);
-        border-radius: 5px;
-        background: #f9f9f9;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: center;
-        color: black;
-    }
+select {
+    width: 100%; /* O usa un valor mayor que 70% si lo mantienes en un grid */
+    height: 50px; /* Aumenta el alto */
+    padding: 12px 16px;
+    font-size: 24px; /* Texto más grande */
+    font-weight: 500;
+    border: 2px solid rgb(15, 15, 15);
+    border-radius: 8px;
+    background: #f9f9f9;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    color: black;
+}
+
+    select option {
+    font-size: 15px;
+    padding: 10px;
+}
 
     select:hover {
         border-color: #106469;
@@ -235,11 +245,6 @@ if ($id_departamento == 'all') {
     }
 
 
-    .row {
-        flex-wrap: wrap;
-        margin-left: 0;
-        margin-right: 0;
-    }
 
 
 
@@ -384,6 +389,12 @@ if ($id_departamento == 'all') {
         /* Distribuye el espacio entre los botones */
         width: 100%;
     }
+
+    .btn-align {
+    padding-top: 18px;
+    padding-bottom: 14px;
+}
+
 
     .close-button {
         border: none;
