@@ -96,7 +96,7 @@ if (isset($_SESSION['id_usuario'])) {
 
 <body>
     <section id="container">
-         <header class="header black-bg">
+         <header class="header">
             <div class="sidebar-toggle-box">
                 <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
             </div>
@@ -143,21 +143,17 @@ if (isset($_SESSION['id_usuario'])) {
                         </a>
                     </li>
 
-
-
-
-                    <li id="header_profile_bar" class="dropdown">
+                    <li id="header_profile_bar" class="dropdown text-decoration-none">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <i class="fa fa-user"></i>
                             <span class="badge bg-theme">1</span>
                         </a>
-                        <ul class="dropdown-menu extended inbox">
-                            <div class="notify-arrow notify-arrow-green"></div>
+                        <ul class="dropdown-menu extended inbox text-decoration-none">
+                            <div class="notify-arrow notify-arrow-green "></div>
                             <li>
                                 <p class="green">User Profile</p>
                             </li>
                             <li><a href="profile.php"><i class="fa fa-cogs"></i> Edit Profile</a></li>
-                            <li><a href="settings.php"><i class="fa fa-cogs"></i> Settings</a></li>
                             <li><a href="logout.php"><i class="fa fa-sign-out"></i> Logout</a></li>
                         </ul>
                     </li>
