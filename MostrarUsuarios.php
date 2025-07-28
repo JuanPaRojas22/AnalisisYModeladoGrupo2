@@ -57,8 +57,8 @@ if ($id_departamento == 'all') {
             <h1 class="text-center mb-5 ml-5 fw-bold">Listado de Usuarios</h1>
 
             <!-- Botón Registrar Usuario -->
-            <div class="row justify-content-center mb-4">
-                <div class="col-auto">
+            <div class="row mb-4">
+                <div class="col text-center">
                     <a href="registroEmpleado.php" class="btn btn-primary px-4">
                         Registrar Usuario
                     </a>
