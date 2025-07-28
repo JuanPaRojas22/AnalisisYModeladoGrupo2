@@ -157,6 +157,12 @@ if (isset($_SESSION['id_usuario'])) {
                             <li><a href="logout.php"><i class="fa fa-sign-out"></i> Logout</a></li>
                         </ul>
                     </li>
+                    <li>
+    <a href="tutorial.php" class="btn btn-sm btn-success" style="margin-top: 12px; margin-left: 10px; padding: 6px 15px; border-radius: 8px; font-weight: bold;">
+        <i class="bi bi-play-circle"></i> Tutorial
+    </a>
+</li>
+
 
 
 
