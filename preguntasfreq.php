@@ -69,7 +69,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
 
 
 <!DOCTYPE html>
-<html lang="es">
 
 <head>
     <meta charset="UTF-8">
