@@ -149,7 +149,7 @@ if (isset($_SESSION['id_usuario'])) {
                     <li id="header_profile_bar" class="dropdown">
                         <a data-toggle="dropdown" class="dropdown-toggle text-decoration-none" href="#">
                             <i class="fa fa-user"></i>
-                            <span class="badge bg-theme">1</span>
+                            <span class="badge bg-theme"></span>
                         </a>
                         <ul class="dropdown-menu extended inbox">
                             <div class="notify-arrow notify-arrow-green"></div>
