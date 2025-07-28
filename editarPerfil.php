@@ -164,7 +164,6 @@ if (isset($_GET['id'])) {
             cursor: pointer;
             border: none;
         }
-
     </style>
 </head>
 
@@ -180,7 +179,8 @@ if (isset($_GET['id'])) {
             </div>
             <div class="col-md-9">
                 <h3>Información del Usuario</h3>
-                <form action="profile.php" method="post" enctype="multipart/form-data">
+                <form action="editarPerfil.php?id=<?php echo $user['id_usuario']; ?>" method="post"
+                    enctype="multipart/form-data">
                     <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($user['id_usuario']); ?>">
                     <div class="row">
                         <div class="col-md-6">
