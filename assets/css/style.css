@@ -540,7 +540,7 @@ header.black-bg {
 }
 
 a.logo {
-    font-size: 20px;
+    font-size: 20px !important;
     color: #ddd;
     float: left;
     margin-top: 15px;
