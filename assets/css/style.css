@@ -545,7 +545,7 @@ a.logo {
     color: #ddd;
     float: left;
     margin-top: 15px;
-    text-transform: uppercase;
+    text-transform: uppercase;!important
 }
 
 a.logo b {
