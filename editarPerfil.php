@@ -60,7 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['direccion_imagen']) && $_FILES['direccion_imagen']['error'] === UPLOAD_ERR_OK) {
         // Leer el contenido del archivo y convertirlo en binario
         $direccion_imagen = file_get_contents($_FILES['direccion_imagen']['tmp_name']);
-    } 
+    } else {
+        echo "<script>alert('No se subió ningún archivo o ocurrió un error.');</script>";
+    }
 
     $resultado = $UsuarioDAO->updateUser($nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_ocupacion, $id_nacionalidad, $user_id);
 
@@ -175,7 +177,7 @@ if (isset($_GET['id'])) {
             </div>
             <div class="col-md-9">
                 <h3>Información del Usuario</h3>
-                <form action="profile.php" method="post" enctype="multipart/form-data">
+                <form action="index.php" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($user['id_usuario']); ?>">
                     <div class="row">
                         <div class="col-md-6">
