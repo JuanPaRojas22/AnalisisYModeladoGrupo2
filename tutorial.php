@@ -124,55 +124,49 @@ if (!isset($_SESSION['id_usuario'])) {
                    
 
                     <li class="mt">
-                        <a id="dashboard" href="index.php">
+                        <a id="reportes" href="index.php">
                             <i class="fa fa-dashboard"></i>
                             <span>Reportes</span>
                         </a>
                     </li>
 
                     <li class="sub-menu">
-                        <a id="ui-elements" href="javascript:;">
+                        <a id="admin" href="javascript:;">
                             <i class="fa fa-desktop"></i>
                             <span>Administración</span>
                         </a>
                     </li>
 
                     <li class="sub-menu">
-                        <a id="components" href="javascript:;">
+                        <a id="bene" href="javascript:;">
                             <i class="fa fa-cogs"></i>
                             <span>Beneficios</span>
                         </a>
                     </li>
 
                     <li class="sub-menu">
-                        <a id="reportes" href="javascript:;">
+                        <a id="vacaciones" href="javascript:;">
                             <i class="fa fa-desktop"></i>
                             <span>Vacaciones</span>
                         </a>
                     </li>
 
                     <li class="sub-menu">
-                        <a id="administracion" href="javascript:;">
+                        <a id="historial" href="javascript:;">
                             <i class="bi bi-person-fill-gear"></i>
                             <span>Historial Salarios</span>
                         </a>
                     </li>
 
-                    <li class="sub-menu">
-                        <a id="beneficios" href="javascript:;">
-                            <i class="bi bi-sun"></i>
-                            <span>Preguntas Frecuentes</span>
-                        </a>
-                    </li>
 
                     <li class="sub-menu">
-                        <a id="vacaciones" href="javascript:;">
+                        <a id="preguntas" href="javascript:;">
                             <i class="bi bi-sun"></i>
                             <span>Preguntas Frecuentes</span>
                         </a>
                     </li>
                      <li class="sub-menu">
-                        <a id="preguntas-frecuentes" href="javascript:;">
+                        <a id="notificaciones" href="javascript:;">
                             <i class="bi bi-sun"></i>
                             <span>Notificaciones</span>
                         </a>
@@ -213,36 +207,32 @@ if (!isset($_SESSION['id_usuario'])) {
             .setOptions({
                 steps: [
                     {
-                        element: document.querySelector('#dashboard'),
+                        element: document.querySelector('#reportes'),
                         intro: 'Esta es la seccion de reportes aqui encontraras los historiales del ins, bac, vacaciones, etc..'
                     },
                     {
-                        element: document.querySelector('#ui-elements'),
-                        intro: 'En los Elementos de UI, puedes configurar la interfaz.'
-                    },
-                    {
-                        element: document.querySelector('#components'),
+                        element: document.querySelector('#admin'),
                         intro: 'Esta es la seccion de administracion, donde se agregan pagos, beneficios y vacaciones.'
                     },
                     {
-                        element: document.querySelector('#reportes'),
+                        element: document.querySelector('#bene'),
                         intro: 'Aqui encontraras tus beneficios activos.'
                     },
                     {
-                        element: document.querySelector('#administracion'),
+                        element: document.querySelector('#vacaciones'),
                         intro: 'Aca puedes solicitar tus vacaciones y ver tu historial.'
                     },
                     {
-                        element: document.querySelector('#beneficios'),
+                        element: document.querySelector('#historial'),
                         intro: 'Aqui tienes un historial de tus pagos y tu salario.'
                     },
                     {
-                        element: document.querySelector('#vacaciones'),
-                        intro: 'Aqui encontraras las preguntas mas frecuentes de los empleados.'
+                        element: document.querySelector('#preguntas'),
+                        intro: 'Aqui encintras una seccion de las preguntas mas frecuentes'
                     },
                     {
-                        element: document.querySelector('#preguntas-frecuentes'),
-                        intro: ' Aqui podras ver las notificaciones de cuando te aceptan o rechazan tu sulicitud de vacaciones.'
+                        element: document.querySelector('#notificaciones'),
+                        intro: 'Aqui podras ver las notificaciones de cuando te aceptan o rechazan tu sulicitud de vacaciones.'
                     }
                 ],
                 showStepNumbers: false,  // Ocultar el número de pasos
