@@ -109,7 +109,7 @@ if (isset($_GET['id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil de Usuario</title>
+    <title>Editar Perfil</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -164,10 +164,6 @@ if (isset($_GET['id'])) {
             border: none;
         }
 
-        td,
-        div {
-            color: black !important;
-        }
     </style>
 </head>
 
@@ -181,7 +177,7 @@ if (isset($_GET['id'])) {
             </div>
             <div class="col-md-9">
                 <h3>Información del Usuario</h3>
-                <form action="index.php" method="post" enctype="multipart/form-data">
+                <form action="profile.php" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($user['id_usuario']); ?>">
                     <div class="row">
                         <div class="col-md-6">
