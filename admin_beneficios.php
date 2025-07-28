@@ -227,11 +227,11 @@ h2 {
 
 .modal-content {
     background-color: white;
-    padding: 20px;
+    padding: 15px;
     border-radius: 10px;
-    width: 90%;
-    max-width: 500px;
-    max-height: 90vh;
+    width: 70%;
+    max-width: 400px;
+    max-height: 85vh;
     overflow-y: auto;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
     color: black;
@@ -239,18 +239,18 @@ h2 {
 }
 
 .modal-title {
-    font-size: 1.2em;
+    font-size: 1.1em;
     font-weight: bold;
     color: #2c3e50;
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .modal-body {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    max-height: 65vh;
+    gap: 10px;
+    max-height: 60vh;
     overflow-y: auto;
 }
 
@@ -258,7 +258,7 @@ h2 {
     position: absolute;
     right: 15px;
     top: 10px;
-    font-size: 1.5em;
+    font-size: 1.4em;
     font-weight: bold;
     cursor: pointer;
     color: #000;
@@ -266,26 +266,27 @@ h2 {
 
 .form-group label {
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
+    font-size: 0.85em;
 }
 
 .form-control {
-    padding: 6px;
-    font-size: 0.9em;
+    padding: 5px;
+    font-size: 0.85em;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 4px;
     width: 100%;
 }
 
 .modal-footer {
     display: flex;
     justify-content: space-between;
-    margin-top: 15px;
+    margin-top: 12px;
 }
 
 .btn {
-    font-size: 0.9em;
-    padding: 8px 15px;
+    font-size: 0.85em;
+    padding: 6px 12px;
     border-radius: 5px;
 }
 
@@ -296,8 +297,8 @@ h2 {
 /* Responsive para móviles */
 @media (max-width: 576px) {
     .modal-content {
-        width: 95%;
-        max-height: 95vh;
+        width: 90%;
+        max-height: 90vh;
     }
 }
 </style>
