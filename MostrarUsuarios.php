@@ -56,7 +56,7 @@ if ($id_departamento == 'all') {
 <section id="main-content">
     <section class="wrapper site-min-height">
         <div class="container">
-            <h1 class="text-center mb-5 ml-5 fw-bold">Listado de Usuarios</h1>
+            <h1 class="text-center mb-5 fw-bold">Listado de Usuarios</h1>
 
             <!-- Botón Registrar Usuario -->
             <div class="row mb-4">
@@ -72,7 +72,8 @@ if ($id_departamento == 'all') {
                 <!-- Filtro de visualización -->
                 <div class="col-md-4 mb-3">
                     <form method="GET" action="MostrarUsuarios.php" class="d-flex gap-2 align-items-center">
-                       <select name="id_departamento" id="departamento_filtro" class="form-select form-select-lg" required>
+                        <select name="id_departamento" id="departamento_filtro" class="form-select form-select-lg"
+                            required>
                             <option value="all">Seleccione un departamento</option>
                             <?php
                             foreach ($departmento as $department) {
@@ -90,7 +91,8 @@ if ($id_departamento == 'all') {
                 <!-- Filtro de reporte -->
                 <div class="col-md-4 mb-3">
                     <form method="GET" action="generar_reporte.php" class="d-flex gap-2 align-items-center">
-                        <select name="id_departamento" id="departamento_reporte" class="form-select form-select-lg" required>
+                        <select name="id_departamento" id="departamento_reporte" class="form-select form-select-lg"
+                            required>
                             <option value="">Seleccione un departamento</option>
                             <?php
                             foreach ($departmento as $department) {
@@ -209,25 +211,28 @@ if ($id_departamento == 'all') {
         /* Si tienes una sección card-footer, asegúrate de que no tenga márgenes */
     }
 
-select {
-    width: 100%; /* O usa un valor mayor que 70% si lo mantienes en un grid */
-    height: 50px; /* Aumenta el alto */
-    padding: 12px 16px;
-    font-size: 24px; /* Texto más grande */
-    font-weight: 500;
-    border: 2px solid rgb(15, 15, 15);
-    border-radius: 8px;
-    background: #f9f9f9;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-    color: black;
-}
+    select {
+        width: 100%;
+        /* O usa un valor mayor que 70% si lo mantienes en un grid */
+        height: 50px;
+        /* Aumenta el alto */
+        padding: 12px 16px;
+        font-size: 24px;
+        /* Texto más grande */
+        font-weight: 500;
+        border: 2px solid rgb(15, 15, 15);
+        border-radius: 8px;
+        background: #f9f9f9;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        color: black;
+    }
 
     select option {
-    font-size: 15px;
-    padding: 10px;
-}
+        font-size: 15px;
+        padding: 10px;
+    }
 
     select:hover {
         border-color: #106469;
@@ -252,7 +257,6 @@ select {
         text-align: center;
         color: #333;
         margin-bottom: 50px;
-        margin-right: 10%;
         font-weight: bold;
     }
 
@@ -391,9 +395,9 @@ select {
     }
 
     .btn-align {
-    padding-top: 18px;
-    padding-bottom: 14px;
-}
+        padding-top: 18px;
+        padding-bottom: 14px;
+    }
 
 
     .close-button {
