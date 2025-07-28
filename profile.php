@@ -1,5 +1,6 @@
 <?php
 session_start();
+ob_start();  // Inicia el búfer de salida
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 include "template.php";
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
@@ -244,3 +245,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </body>
 
 </html>
+
+<?php
+ob_end_flush();
+?>
