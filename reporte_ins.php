@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header("Location: login.php");
@@ -58,10 +58,15 @@ $resultado = $conn->query($sql);
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reporte INS</title>
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Ruda:wght@400;700&display=swap');
 
@@ -111,50 +116,60 @@ $resultado = $conn->query($sql);
             overflow-x: auto;
         }
 
-       /* Bordes dorados solo en las celdas y encabezado */
-       table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    font-size: 12px; /* Reducir el tamaño de la fuente */
-    margin-left: auto; /* Centrar la tabla */
-    margin-right: auto; /* Centrar la tabla */
-}
+        /* Bordes dorados solo en las celdas y encabezado */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 12px;
+            /* Reducir el tamaño de la fuente */
+            margin-left: auto;
+            /* Centrar la tabla */
+            margin-right: auto;
+            /* Centrar la tabla */
+        }
 
-th, td {
-    padding: 8px; /* Reducir el espaciado de las celdas */
-    text-align: center;
-    font-size: 12px; /* Reducir el tamaño de la fuente */
-    color: #555;
-    border-bottom: 1px solid #ddd;
-}
+        th,
+        td {
+            padding: 8px;
+            /* Reducir el espaciado de las celdas */
+            text-align: center;
+            font-size: 12px;
+            /* Reducir el tamaño de la fuente */
+            color: #555;
+            border-bottom: 1px solid #ddd;
+        }
 
-th {
-    background-color: #116B67;
-    color: white;
-}
+        th {
+            background-color: #116B67;
+            color: white;
+        }
 
-tr:hover {
-    background-color: #f7f7f7;
-}
+        tr:hover {
+            background-color: #f7f7f7;
+        }
 
-td {
-    background-color: #f7f7f7;
-}
-/* Solo las esquinas superiores redondeadas */
-th:first-child {
-    border-radius: 8px 0 0 0; /* Redondear la esquina superior izquierda */
-}
+        td {
+            background-color: #f7f7f7;
+        }
 
-th:last-child {
-    border-radius: 0 8px 0 0; /* Redondear la esquina superior derecha */
-}
+        /* Solo las esquinas superiores redondeadas */
+        th:first-child {
+            border-radius: 8px 0 0 0;
+            /* Redondear la esquina superior izquierda */
+        }
+
+        th:last-child {
+            border-radius: 0 8px 0 0;
+            /* Redondear la esquina superior derecha */
+        }
 
 
 
-tr:nth-child(even) td {
-    background-color: #f1f1f1; /* Filas alternas gris claro */
-}
+        tr:nth-child(even) td {
+            background-color: #f1f1f1;
+            /* Filas alternas gris claro */
+        }
 
 
 
@@ -204,93 +219,96 @@ tr:nth-child(even) td {
                 opacity: 0;
                 transform: translateY(-5px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <h1>📋 Reporte INS</h1>
+    <div class="container">
+        <h1>📋 Reporte INS</h1>
 
-    <!-- Botón para exportar el reporte -->
-    <a href="exportar_excel.php" class="btn-export">
-        📥 Descargar Reporte
-    </a>
+        <!-- Botón para exportar el reporte -->
+        <a href="exportar_excel.php" class="btn-export">
+            📥 Descargar Reporte
+        </a>
 
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                <th>Codigo</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>Correo</th>
-                    <th>Teléfono</th>
-                    <th>Salario Base</th>
-                    <th>Salario Neto</th>
-                    <th>Nacionalidad</th>
-                    <th>Ocupación</th>
-                    <th>Departamento</th>
-                    <th>Tipo de Quincena</th>
-                   
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($fila = $resultado->fetch_assoc()) { ?>
-                <tr>
-                <td><?php echo $fila['codigo_INS']; ?></td>
-                    <td><?php echo $fila['nombre']; ?></td>
-                    <td><?php echo $fila['apellido']; ?></td>
-                    <td><?php echo $fila['correo_electronico']; ?></td>
-                    <td><?php echo $fila['numero_telefonico']; ?></td>
-                    <td>₡<?php echo number_format($fila['salario_base'], 2); ?></td>
-                    <td>₡<?php echo number_format($fila['salario_neto'], 2); ?></td>
-                    <td><?php echo $fila['nacionalidad']; ?></td>
-                    <td><?php echo $fila['nombre_ocupacion']; ?></td>
-                    <td><?php echo $fila['departamento']; ?></td>
-                    <td><?php echo $fila['tipo_quincena']; ?></td>
-                    
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Codigo</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                        <th>Salario Base</th>
+                        <th>Salario Neto</th>
+                        <th>Nacionalidad</th>
+                        <th>Ocupación</th>
+                        <th>Departamento</th>
+                        <th>Tipo de Quincena</th>
 
-                    
-                    <td>
-                        <button class="btn-more" onclick="toggleDetails('details-<?php echo $fila['id_usuario']; ?>')">
-                            Ver más
-                        </button>
-                    </td>
-                </tr>
-                <tr class="details" id="details-<?php echo $fila['id_usuario']; ?>">
-                    <td colspan="10">
-                        <p><strong>Fecha Nacimiento:</strong> <?php echo $fila['fecha_nacimiento']; ?></p>
-                        <p><strong>Sexo:</strong> <?php echo $fila['sexo']; ?></p>
-                        <p><strong>Estado Civil:</strong> <?php echo $fila['estado_civil']; ?></p>
-                        <p><strong>Jornada:</strong> <?php echo $fila['jornada']; ?></p>
-                        <p><strong>Horas Trabajadas:</strong> <?php echo $fila['hrs']; ?></p>
-                    </td>
-                </tr>
-                <?php } ?>
-            </tbody>
-        </table>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($fila = $resultado->fetch_assoc()) { ?>
+                        <tr>
+                            <td><?php echo $fila['codigo_INS']; ?></td>
+                            <td><?php echo $fila['nombre']; ?></td>
+                            <td><?php echo $fila['apellido']; ?></td>
+                            <td><?php echo $fila['correo_electronico']; ?></td>
+                            <td><?php echo $fila['numero_telefonico']; ?></td>
+                            <td>₡<?php echo number_format($fila['salario_base'], 2); ?></td>
+                            <td>₡<?php echo number_format($fila['salario_neto'], 2); ?></td>
+                            <td><?php echo $fila['nacionalidad']; ?></td>
+                            <td><?php echo $fila['nombre_ocupacion']; ?></td>
+                            <td><?php echo $fila['departamento']; ?></td>
+                            <td><?php echo $fila['tipo_quincena']; ?></td>
+
+
+
+                            <td>
+                                <button class="btn-more"
+                                    onclick="toggleDetails('details-<?php echo $fila['id_usuario']; ?>')">
+                                    Ver más
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="details" id="details-<?php echo $fila['id_usuario']; ?>">
+                            <td colspan="10">
+                                <p><strong>Fecha Nacimiento:</strong> <?php echo $fila['fecha_nacimiento']; ?></p>
+                                <p><strong>Sexo:</strong> <?php echo $fila['sexo']; ?></p>
+                                <p><strong>Estado Civil:</strong> <?php echo $fila['estado_civil']; ?></p>
+                                <p><strong>Jornada:</strong> <?php echo $fila['jornada']; ?></p>
+                                <p><strong>Horas Trabajadas:</strong> <?php echo $fila['hrs']; ?></p>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 
-<script>
-    function toggleDetails(id) {
-        var element = document.getElementById(id);
-        if (element.classList.contains("show")) {
-            element.classList.remove("show");
-        } else {
-            element.classList.add("show");
+    <script>
+        function toggleDetails(id) {
+            var element = document.getElementById(id);
+            if (element.classList.contains("show")) {
+                element.classList.remove("show");
+            } else {
+                element.classList.add("show");
+            }
         }
-    }
-</script>
+    </script>
 
 </body>
+
 </html>
 
 <?php
