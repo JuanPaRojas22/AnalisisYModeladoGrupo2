@@ -54,7 +54,7 @@ if ($id_departamento == 'all') {
 <section id="main-content">
     <section class="wrapper site-min-height">
         <div class="container">
-            <h1 class="text-center mb-5 fw-bold">Listado de Usuarios</h1>
+            <h1 class="text-center mb-5 ml-5 fw-bold">Listado de Usuarios</h1>
 
             <!-- Botón Registrar Usuario -->
             <div class="row justify-content-center mb-4">
