@@ -112,6 +112,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-left: 35%;
         }
 
+        #mensaje-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            z-index: 9999;
+        }
+
+        #mensaje-toast.mostrar {
+            opacity: 1;
+        }
+
+
         .header-section {
             background-color: #106469;
             color: white;
@@ -209,16 +229,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
     <?php if (isset($_SESSION['mensaje_exito'])): ?>
-    <div id="mensaje-toast"><?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?></div>
-    <script>
-        const toast = document.getElementById('mensaje-toast');
-        toast.classList.add('mostrar');
-        setTimeout(() => {
-            toast.classList.remove('mostrar');
-        }, 3500);
-    </script>
-    <?php unset($_SESSION['mensaje_exito']); ?>
-<?php endif; ?>
+        <div id="mensaje-toast"><?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?></div>
+        <script>
+            const toast = document.getElementById('mensaje-toast');
+            toast.classList.add('mostrar');
+            setTimeout(() => {
+                toast.classList.remove('mostrar');
+            }, 3500);
+        </script>
+        <?php unset($_SESSION['mensaje_exito']); ?>
+    <?php endif; ?>
 
 
 </body>
