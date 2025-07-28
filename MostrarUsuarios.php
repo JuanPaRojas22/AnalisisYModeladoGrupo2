@@ -68,7 +68,7 @@ if ($id_departamento == 'all') {
             </div>
 
             <!-- Filtros-->
-            <div class="row justify-content-center mb-5">
+            <div class="row justify-content-center mb-5 ps-5">
                 <!-- Filtro de visualización -->
                 <div class="col-md-4 mb-4">
                     <form method="GET" action="MostrarUsuarios.php" class="d-flex gap-2 align-items-center">
@@ -224,9 +224,10 @@ if ($id_departamento == 'all') {
         border-radius: 8px;
         background: #f9f9f9;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.3s ease !important;
         text-align: center;
         color: black;
+        
     }
 
     select option {
