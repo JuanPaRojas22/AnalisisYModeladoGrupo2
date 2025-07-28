@@ -61,7 +61,7 @@ if ($id_departamento == 'all') {
             <!-- Botón Registrar Usuario -->
             <div class="row mb-4">
                 <div class="col text-center">
-                    <a href="registroEmpleado.php" class="btn btn-primary px-4">
+                    <a href="registroEmpleado.php" class="btn btn-primary px-4 shadow">
                         Registrar Usuario
                     </a>
                 </div>
