@@ -151,7 +151,7 @@ if (isset($_SESSION['id_usuario'])) {
                             <i class="fa fa-user"></i>
                             <!-- Circulito verde -->
                             <span class="status-indicator bg-success"></span>
-                            <span class="badge bg-theme">1</span>
+                            <span class="badge bg-success">1</span>
                         </a>
                         <ul class="dropdown-menu extended inbox">
                             <div class="notify-arrow notify-arrow-green"></div>

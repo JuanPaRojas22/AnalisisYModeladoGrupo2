@@ -2176,7 +2176,7 @@ label {
     height: 10px;
     border-radius: 50%;
     border: 2px solid white;
-    background-color: #28a745; /* o usa Bootstrap: bg-success */
+    background-color: #28a745 !important;
     z-index: 1000;
 }
 
