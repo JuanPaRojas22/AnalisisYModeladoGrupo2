@@ -79,67 +79,66 @@ include 'template.php';
 </div>
 
 <!-- Modal para Agregar Beneficio -->
+<!-- Modal para Agregar Beneficio -->
 <div id="beneficioModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="cerrarModal()">&times;</span>
-        <h3 id="modalTitle" class="modal-title">Agregar Beneficio</h3>
+  <div class="modal-content">
+    <span class="close" onclick="cerrarModal()">&times;</span>
+    <h3 id="modalTitle" class="modal-title">Agregar Beneficio</h3>
 
-        <form id="beneficioForm">
-    <input type="hidden" id="id_usuario" name="id_usuario">
-    <input type="hidden" name="action" value="add">
+    <form id="beneficioForm">
+      <input type="hidden" id="id_usuario" name="id_usuario">
+      <input type="hidden" name="action" value="add">
 
-    <div class="modal-body">
+      <div class="modal-body">
         <div class="form-group">
-            <label>Razón:</label>
-            <input type="text" id="razon" name="razon" class="form-control" required>
+          <label>Razón:</label>
+          <input type="text" id="razon" name="razon" class="form-control" required>
         </div>
 
         <div class="form-group">
-            <label>Monto:</label>
-            <input type="number" id="monto" name="monto" class="form-control" required>
+          <label>Monto:</label>
+          <input type="number" id="monto" name="monto" class="form-control" required>
         </div>
 
         <div class="form-group">
-            <label>ID MediSmart:</label>
-            <input type="text" id="medismart" name="identificacion_medismart" class="form-control">
+          <label>ID MediSmart:</label>
+          <input type="text" id="medismart" name="identificacion_medismart" class="form-control">
         </div>
 
         <div class="form-group">
-            <label>Valor Total:</label>
-            <input type="number" id="valor_total" name="valor_plan_total" class="form-control">
+          <label>Valor Total:</label>
+          <input type="number" id="valor_total" name="valor_plan_total" class="form-control">
         </div>
 
         <div class="form-group">
-            <label>Aporte Patrono:</label>
-            <input type="number" id="aporte_patrono" name="aporte_patrono" class="form-control">
+          <label>Aporte Patrono:</label>
+          <input type="number" id="aporte_patrono" name="aporte_patrono" class="form-control">
         </div>
 
         <div class="form-group">
-            <label>Beneficiarios:</label>
-            <input type="number" id="beneficiarios" name="beneficiarios" class="form-control">
+          <label>Beneficiarios:</label>
+          <input type="number" id="beneficiarios" name="beneficiarios" class="form-control">
         </div>
-    </div>
+      </div>
 
-    <div class="modal-footer">
-    <button type="submit" class="btn btn-success" style="background-color: #147964; border-color: #147964;">
-    Guardar
-</button>
-
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success" style="background-color: #147964; border-color: #147964;">
+          Guardar
+        </button>
         <button type="button" class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
-    </div>
-</form>
-
-    </div>
+      </div>
+    </form>
+  </div>
 </div>
-
 <!-- Estilos Mejorados -->
 <style>
-    .titulo-beneficios {
-    margin-top: 30px; /* Ajusta el espacio */
+.titulo-beneficios {
+    margin-top: 30px;
     font-size: 2.2em;
     font-weight: bold;
     color: #2c3e50;
 }
+
 .container {
     max-width: 1000px;
     margin: auto;
@@ -153,7 +152,6 @@ h2 {
     margin-bottom: 30px;
 }
 
-/* Estilo para cada usuario */
 .usuario-card {
     background: #ffffff;
     border-radius: 12px;
@@ -169,7 +167,6 @@ h2 {
     box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.15);
 }
 
-/* Nombre del usuario */
 .usuario-nombre {
     font-size: 1.4em;
     font-weight: bold;
@@ -177,13 +174,11 @@ h2 {
     margin-bottom: 10px;
 }
 
-/* Texto dentro del card */
 .usuario-texto {
     font-size: 1.1em;
     color: #555;
 }
 
-/* Botones */
 .usuario-botones {
     display: flex;
     justify-content: center;
@@ -202,22 +197,20 @@ h2 {
     color: #fff;
     background-color: #428bca;
     border-color: #357ebd;
-
 }
 
 .btn-success {
     color: #fff;
     background-color: #5cb85c;
     border-color: #4cae4c;
-
 }
 
-.btn-primary:hover, .btn-success:hover {
+.btn-primary:hover,
+.btn-success:hover {
     opacity: 0.85;
 }
 
-/* Modal */
-/* Modal */
+/* MODAL */
 .modal {
     display: none;
     position: fixed;
@@ -229,30 +222,46 @@ h2 {
     background-color: rgba(0, 0, 0, 0.5);
     align-items: center;
     justify-content: center;
+    overflow-y: auto;
 }
 
 .modal-content {
     background-color: white;
-    padding: 15px;  /* Reducir padding */
+    padding: 20px;
     border-radius: 10px;
-    width: 30%;  /* Reducir el ancho del modal */
-    max-width: 500px;  /* Establecer un tamaño máximo */
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
     color: black;
+    position: relative;
 }
 
 .modal-title {
-    font-size: 1.2em;  /* Reducir el tamaño del título */
+    font-size: 1.2em;
     font-weight: bold;
     color: #2c3e50;
     text-align: center;
-    margin-bottom: 10px;  /* Reducir el margen inferior */
+    margin-bottom: 10px;
 }
 
 .modal-body {
     display: flex;
     flex-direction: column;
-    gap: 8px;  /* Reducir el espacio entre los campos */
+    gap: 12px;
+    max-height: 65vh;
+    overflow-y: auto;
+}
+
+.modal-content .close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+    color: #000;
 }
 
 .form-group label {
@@ -261,8 +270,8 @@ h2 {
 }
 
 .form-control {
-    padding: 6px;  /* Reducir el padding de los inputs */
-    font-size: 0.9em;  /* Reducir el tamaño de la fuente */
+    padding: 6px;
+    font-size: 0.9em;
     border: 1px solid #ccc;
     border-radius: 5px;
     width: 100%;
@@ -275,16 +284,24 @@ h2 {
 }
 
 .btn {
-    font-size: 0.9em;  /* Reducir el tamaño de los botones */
-    padding: 8px 15px;  /* Reducir el padding de los botones */
+    font-size: 0.9em;
+    padding: 8px 15px;
     border-radius: 5px;
 }
 
-/* Botón "Cancelar" */
 .btn-secondary {
     background-color: #95a5a6;
 }
+
+/* Responsive para móviles */
+@media (max-width: 576px) {
+    .modal-content {
+        width: 95%;
+        max-height: 95vh;
+    }
+}
 </style>
+
 <script>
     
 // Asegurar que el modal esté oculto al cargar la página
