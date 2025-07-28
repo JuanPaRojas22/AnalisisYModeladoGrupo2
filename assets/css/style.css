@@ -549,7 +549,7 @@ a.logo {
 }
 
 a.logo b {
-    font-weight: 900;
+    font-weight: 900 !important;
 }
 
 a.logo:hover, a.logo:focus {
@@ -1775,7 +1775,7 @@ PANELS CONFIGURATIONS
 }
 
 .fc-state-default, .fc-state-default .fc-button-inner {
-	background: #f2f2f2;
+	background: #f2f2f2 !important;
 }
 
 .fc-state-active .fc-button-inner {

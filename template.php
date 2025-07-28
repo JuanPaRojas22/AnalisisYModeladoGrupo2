@@ -97,7 +97,7 @@ if (isset($_SESSION['id_usuario'])) {
 <body>
     <section id="container">
          <header class="header black-bg">
-            <div class="sidebar-toggle-box  color: white !important;">
+            <div class="sidebar-toggle-box "  style="color: white !important;">
                 <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
             </div>
             <a href="index.php" class="logo text-decoration-none"><b>Access Perssonel</b></a>
