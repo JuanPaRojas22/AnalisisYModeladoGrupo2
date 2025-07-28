@@ -209,16 +209,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
     <?php if (isset($_SESSION['mensaje_exito'])): ?>
-        <div id="mensaje-toast"><?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?></div>
-        <script>
-            const toast = document.getElementById('mensaje-toast');
-            toast.classList.add('mostrar');
-            setTimeout(() => {
-                toast.classList.remove('mostrar');
-            }, 3000);
-        </script>
-        <?php unset($_SESSION['mensaje_exito']); ?>
-    <?php endif; ?>
+    <div id="mensaje-toast"><?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?></div>
+    <script>
+        const toast = document.getElementById('mensaje-toast');
+        toast.classList.add('mostrar');
+        setTimeout(() => {
+            toast.classList.remove('mostrar');
+        }, 3500);
+    </script>
+    <?php unset($_SESSION['mensaje_exito']); ?>
+<?php endif; ?>
+
 
 </body>
 
