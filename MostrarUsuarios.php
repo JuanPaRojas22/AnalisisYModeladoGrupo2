@@ -212,7 +212,7 @@ if ($id_departamento == 'all') {
     }
 
     select {
-        width: 60%;
+        width: 60% !important;
         /* O usa un valor mayor que 70% si lo mantienes en un grid */
         height: 50px;
         /* Aumenta el alto */
