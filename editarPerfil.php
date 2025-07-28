@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['apellido'] = $apellido;
         $_SESSION['direccion_imagen'] = $direccion_imagen;
         $_SESSION['mensaje_exito'] = "Usuario modificado con éxito✅.";
-        header("Location: index.php?id=" . $user_id);
+        header("Location: profile.php?id=" . $user_id);
         exit;
     } else {
         echo "<p style='color: red;'>$resultado</p>"; // Mostrar el error
