@@ -541,12 +541,12 @@ header.black-bg {
 }
 
 a.logo {
-    font-family: 'Ruda', sans-serif;
+    font-family: 'Ruda', sans-serif !important;
     font-size: 20px !important;
     color: #ddd;
     float: left;
     margin-top: 15px;
-    text-transform: uppercase!important;
+    text-transform: uppercase !important;
 }
 
 a.logo b {
