@@ -193,11 +193,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-left: 250px;
             padding: 60px;
         }
-
-        td,
-        div {
-            color: black !important;
-        }
         
     </style>
 </head>
