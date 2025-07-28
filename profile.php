@@ -179,15 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-    <?php if (isset($_SESSION['mensaje_exito'])): ?>
-        <script>
-            // Usamos alert(), o puedes usar una librería o crear tu propio estilo
-            alert("<?php echo addslashes($_SESSION['mensaje_exito']); ?>");
-        </script>
-        <?php
-        unset($_SESSION['mensaje_exito']);
-    endif;
-    ?>
+
     <div class="profile-container">
         <div class="header-section">Perfil de Usuario</div>
         <div class="user-img">
@@ -216,6 +208,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <a class="btn" href="editarPerfil.php?id=<?php echo $user['id_usuario']; ?>">Editar Información</a>
         </div>
     </div>
+    <?php if (isset($_SESSION['mensaje_exito'])): ?>
+        <div id="mensaje-toast"><?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?></div>
+        <script>
+            const toast = document.getElementById('mensaje-toast');
+            toast.classList.add('mostrar');
+            setTimeout(() => {
+                toast.classList.remove('mostrar');
+            }, 3000);
+        </script>
+        <?php unset($_SESSION['mensaje_exito']); ?>
+    <?php endif; ?>
+
 </body>
 
 </html>

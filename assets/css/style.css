@@ -2167,6 +2167,24 @@ label {
     background: #2A3542;
 }
 
+#mensaje-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    font-weight: bold;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#mensaje-toast.mostrar {
+    opacity: 1;
+}
 
 .session-dot {
     position: absolute;
