@@ -87,8 +87,8 @@ if (isset($_SESSION['id_usuario'])) {
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    
-</style>
+
+    </style>
 
 
     </style>
@@ -96,8 +96,8 @@ if (isset($_SESSION['id_usuario'])) {
 
 <body>
     <section id="container">
-         <header class="header black-bg">
-            <div class="sidebar-toggle-box "  style="color: white !important;">
+        <header class="header black-bg">
+            <div class="sidebar-toggle-box " style="color: white !important;">
                 <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
             </div>
             <a href="index.php" class="logo text-decoration-none"><b>Access Perssonel</b></a>
@@ -146,18 +146,20 @@ if (isset($_SESSION['id_usuario'])) {
 
 
 
-                    <li id="header_profile_bar" class="dropdown" style="text-decoration: none">
-                        <a data-toggle="dropdown" class="dropdown-toggle" style="text-decoration: none"href="#">
-                            <i class="fa fa-user" style="text-decoration: none"></i>
+                    <li id="header_profile_bar" class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle text-decoration-none" href="#">
+                            <i class="fa fa-user"></i>
                             <span class="badge bg-theme">1</span>
                         </a>
-                        <ul class="dropdown-menu extended inbox" style="text-decoration: none">
+                        <ul class="dropdown-menu extended inbox">
                             <div class="notify-arrow notify-arrow-green"></div>
                             <li>
                                 <p class="green">User Profile</p>
                             </li>
-                            <li><a href="profile.php"><i class="fa fa-cogs" style="text-decoration-none"></i> Edit Profile</a></li>
-                            <li><a href="logout.php"><i class="fa fa-sign-out" style="text-decoration-none"></i> Logout</a></li>
+                            <li><a href="profile.php" class="text-decoration-none"><i class="fa fa-cogs"></i> Edit
+                                    Profile</a></li>
+                            <li><a href="logout.php" class="text-decoration-none"><i class="fa fa-sign-out"></i>
+                                    Logout</a></li>
                         </ul>
                     </li>
 
@@ -185,7 +187,7 @@ if (isset($_SESSION['id_usuario'])) {
                                 <h5 class="centered">Bienvenido, <?php echo $_SESSION['nombre']; ?>!</h5>
                             </li>
 
-                           <!-- <li class="mt">
+                            <!-- <li class="mt">
                                 <a class="active" href="index.php">
                                     <i class="fa fa-dashboard"></i>
                                     <span>Dashboard</span>
@@ -193,7 +195,7 @@ if (isset($_SESSION['id_usuario'])) {
                             </li>-->
 
 
-                            
+
 
                             <!--
                             <li class="sub-menu">
@@ -206,27 +208,27 @@ if (isset($_SESSION['id_usuario'])) {
                                     <li><a href="gallery.html">Gallery</a></li>                           
                                 </ul>
                             </li>-->
-                            
+
                             <li class="sub-menu">
-                            <?php if (in_array($id_rol, [1, 2])): ?>
-                                <a href="javascript:;">
-                                    <i class="fa fa-desktop"></i>
-                                    <span>Reportes</span>
-                                </a>
-                                <ul class="sub">
-                                    <li><a href="reporte_ins.php"><i class="bi bi-person-badge-fill"></i>
-                                            INS</a></li>
-                                    <li><a href="reporte_ccss.php"><i class="bi bi-heart-fill"></i>CCSS</a></li>
-                                    <li><a href="reporte_bac.php"><i class="bi bi-credit-card"></i>
-                                            BAC</a></li>
-                                    <li><a href="ver_reporte.php"><i class="bi bi-brightness-low-fill"></i>
-                                            Vacaciones</a></li>
-                                    <li><a href="reporte_hacienda.php"><i class="bi bi-bank"></i>Hacienda</a></li>
-                                    <li><a href="Dias_Feriados.php"><i class="bi bi-calendar3"></i>
-                                    Feriados</a></li>
-                                    <li><a href="historial_salarios.php"><i class="bi bi-calendar3"></i>
-                                    Historial Salarios</a></li>
-                                </ul>
+                                <?php if (in_array($id_rol, [1, 2])): ?>
+                                    <a href="javascript:;">
+                                        <i class="fa fa-desktop"></i>
+                                        <span>Reportes</span>
+                                    </a>
+                                    <ul class="sub">
+                                        <li><a href="reporte_ins.php"><i class="bi bi-person-badge-fill"></i>
+                                                INS</a></li>
+                                        <li><a href="reporte_ccss.php"><i class="bi bi-heart-fill"></i>CCSS</a></li>
+                                        <li><a href="reporte_bac.php"><i class="bi bi-credit-card"></i>
+                                                BAC</a></li>
+                                        <li><a href="ver_reporte.php"><i class="bi bi-brightness-low-fill"></i>
+                                                Vacaciones</a></li>
+                                        <li><a href="reporte_hacienda.php"><i class="bi bi-bank"></i>Hacienda</a></li>
+                                        <li><a href="Dias_Feriados.php"><i class="bi bi-calendar3"></i>
+                                                Feriados</a></li>
+                                        <li><a href="historial_salarios.php"><i class="bi bi-calendar3"></i>
+                                                Historial Salarios</a></li>
+                                    </ul>
                                 <?php endif; ?>
                             </li>
                             <?php if (in_array($id_rol, [1, 2])): ?>
@@ -251,47 +253,51 @@ if (isset($_SESSION['id_usuario'])) {
                                             <a href="vacaciones.php" class="nav-link">
                                                 <i class="bi bi-gear"></i> Vacaciones
                                             </a>
-                                    
+
                                         </li>
-                                <li><a href="registrarAusencia.php"><i class="bi bi-person-dash"></i>Registrar Ausencia</a>
-                                </li>
-                                <li><a href="reporteAusencias.php"><i class="bi bi-bar-chart"></i>Reporte de Ausencias</a>
-                                </li>
-                                <li><a href="reporteAntiguedad.php"><i class="bi bi-clock-history"></i>Reporte de
-                                        Antigüedad</a></li>
-                                <li><a href="registrarBeneficiosAntiguedad.php"><i class="bi bi-gift"></i>Registrar Antigüedad</a></li>
-                            <?php endif; ?>
+                                        <li><a href="registrarAusencia.php"><i class="bi bi-person-dash"></i>Registrar
+                                                Ausencia</a>
+                                        </li>
+                                        <li><a href="reporteAusencias.php"><i class="bi bi-bar-chart"></i>Reporte de
+                                                Ausencias</a>
+                                        </li>
+                                        <li><a href="reporteAntiguedad.php"><i class="bi bi-clock-history"></i>Reporte de
+                                                Antigüedad</a></li>
+                                        <li><a href="registrarBeneficiosAntiguedad.php"><i class="bi bi-gift"></i>Registrar
+                                                Antigüedad</a></li>
+                                    <?php endif; ?>
+
+                                </ul>
+                            <li><a href="beneficios.php"><i class="bi bi-sun"></i><span>Beneficios</span></a></li>
+                            <li>
+                                <a href="SolicitarVacacion.php">
+                                    <i class="bi bi-sun"></i>
+                                    <span>Vacaciones</span>
+                                </a>
+                            </li>
+                            <li><a href="historial_salarios.php"><i class="bi bi-calendar3"></i>
+                                    Historial Salarios</a></li>
+                            <li><a href="preguntasfreq.php"><i class="bi bi-question-octagon-fill"></i>Preguntas
+                                    Frecuentes</a></li>
+                            <li>
+                                <a href="ver_notificaciones.php" style="position: relative;">
+                                    <i class="bi bi-bell-fill"></i> Notificaciones
+                                    <?php if ($notificacion > 0): ?>
+                                        <span class="badge bg-danger" style="position: absolute; top: 0; right: -5px;">
+                                            <?php echo $notificacion; ?>
+                                        </span>
+                                    <?php endif; ?>
+                                </a>
+                            </li>
+
+                            </a>
 
                         </ul>
-                        <li><a href="beneficios.php"><i class="bi bi-sun"></i><span>Beneficios</span></a></li>
-                        <li>
-                            <a href="SolicitarVacacion.php">
-                                <i class="bi bi-sun"></i>
-                                <span>Vacaciones</span>
-                            </a>
                         </li>
-                             <li><a href="historial_salarios.php"><i class="bi bi-calendar3"></i>
-                                    Historial Salarios</a></li>
-                        <li><a href="preguntasfreq.php"><i class="bi bi-question-octagon-fill"></i>Preguntas Frecuentes</a></li>
-<li>
-    <a href="ver_notificaciones.php" style="position: relative;">
-        <i class="bi bi-bell-fill"></i> Notificaciones
-        <?php if ($notificacion > 0): ?>
-            <span class="badge bg-danger" style="position: absolute; top: 0; right: -5px;">
-                <?php echo $notificacion; ?>
-            </span>
-        <?php endif; ?>
-    </a>
-</li>
 
-</a>
+                        <!-- <li><a href="preguntasfreq.php"><i class="bi bi-question-octagon-fill"></i>Preguntas Frecuentes</a></li>-->
 
-                </ul>
-                </li>
-
-                <!-- <li><a href="preguntasfreq.php"><i class="bi bi-question-octagon-fill"></i>Preguntas Frecuentes</a></li>-->
-
-                </li>
+                        </li>
 
 
                 </ul>
@@ -304,7 +310,7 @@ if (isset($_SESSION['id_usuario'])) {
         -->
 
         <!-- Modal -->
-       <!--  <div id="miModal" class="modal">
+        <!--  <div id="miModal" class="modal">
             <div class="modal-contenido">
                 <span class="cerrar" onclick="cerrarModal()">&times;</span>
                 <h2>Haz tu aporte</h2>
@@ -315,7 +321,7 @@ if (isset($_SESSION['id_usuario'])) {
                 </form>
             </div>
         </div>-->
-                    
+
         <!-- Footer -->
         <footer class="site-footer">
             <div class="text-center">2025 - Acces Perssonel</div>
@@ -339,7 +345,7 @@ if (isset($_SESSION['id_usuario'])) {
                 document.getElementById("miModal").style.display = "none";
             }
 
-           // Función para enviar el aporte
+            // Función para enviar el aporte
             function enviarAporte(event) {
                 event.preventDefault();
                 const mensaje = document.getElementById("aporte").value;
