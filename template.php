@@ -143,15 +143,10 @@ if (isset($_SESSION['id_usuario'])) {
                         </a>
                     </li>
 
-
-
-
                     <li id="header_profile_bar" class="dropdown position-relative">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <i class="fa fa-user"></i>
-                            <?php if ($aporte > 0): ?>
-                                <span class="notification-dot"></span>
-                            <?php endif; ?>
+                            <span class="session-dot"></span>
                         </a>
                         <ul class="dropdown-menu extended inbox">
                             <div class="notify-arrow notify-arrow-green"></div>
@@ -162,6 +157,7 @@ if (isset($_SESSION['id_usuario'])) {
                             <li><a href="logout.php"><i class="fa fa-sign-out"></i> Logout</a></li>
                         </ul>
                     </li>
+
 
 
                 </ul>

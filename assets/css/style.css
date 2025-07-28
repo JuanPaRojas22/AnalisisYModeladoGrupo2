@@ -2168,17 +2168,18 @@ label {
 }
 
 
-.notification-dot {
+.session-dot {
     position: absolute;
     top: 6px;
     right: 4px;
     width: 10px;
     height: 10px;
-    background-color: #28a745; /* verde */
-    border: 2px solid white;
+    background-color: #28a745;
+    border: 2px solid white; 
     border-radius: 50%;
     z-index: 10;
 }
+
 
 /*easy pie chart*/
 .easy-pie-chart {

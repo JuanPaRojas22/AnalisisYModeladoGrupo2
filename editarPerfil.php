@@ -60,9 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['direccion_imagen']) && $_FILES['direccion_imagen']['error'] === UPLOAD_ERR_OK) {
         // Leer el contenido del archivo y convertirlo en binario
         $direccion_imagen = file_get_contents($_FILES['direccion_imagen']['tmp_name']);
-    } else {
-        echo "<script>alert('No se subió ningún archivo o ocurrió un error.');</script>";
-    }
+    } 
 
     $resultado = $UsuarioDAO->updateUser($nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_ocupacion, $id_nacionalidad, $user_id);
 
