@@ -2168,6 +2168,19 @@ label {
 }
 
 
+.status-indicator {
+    position: absolute;
+    top: 10px;   /* Ajustalo según el diseño */
+    left: 30px;  /* Ajustalo según el diseño */
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background-color: #28a745; /* o usa Bootstrap: bg-success */
+    z-index: 1000;
+}
+
+
 /*easy pie chart*/
 .easy-pie-chart {
     display: inline-block;

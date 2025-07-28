@@ -146,10 +146,12 @@ if (isset($_SESSION['id_usuario'])) {
 
 
 
-                    <li id="header_profile_bar" class="dropdown">
+                    <li id="header_profile_bar" class="dropdown position-relative">
                         <a data-toggle="dropdown" class="dropdown-toggle text-decoration-none" href="#">
                             <i class="fa fa-user"></i>
-                            <span class="badge bg-theme"></span>
+                            <!-- Circulito verde -->
+                            <span class="status-indicator bg-success"></span>
+                            <span class="badge bg-theme">1</span>
                         </a>
                         <ul class="dropdown-menu extended inbox">
                             <div class="notify-arrow notify-arrow-green"></div>
@@ -162,6 +164,7 @@ if (isset($_SESSION['id_usuario'])) {
                                     Logout</a></li>
                         </ul>
                     </li>
+
 
                 </ul>
 
