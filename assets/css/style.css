@@ -541,6 +541,7 @@ header.black-bg {
 }
 
 a.logo {
+    font-family: 'Ruda', sans-serif;
     font-size: 20px !important;
     color: #ddd;
     float: left;
