@@ -367,9 +367,10 @@ include 'template.php';
             method: "POST",
             body: formData
         })
+            .then(response => response.json()) //
             .then(data => {
                 if (data.success) {
-                    mostrarToast(data.message); // Mostrar mensaje bonito
+                    mostrarToast(data.message); // Mostrar mensaje 
                     cerrarModal();
                     setTimeout(() => {
                         location.reload(); // Recargar después de mostrar el mensaje
