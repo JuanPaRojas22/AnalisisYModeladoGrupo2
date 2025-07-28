@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
 
     <style>
         body {
-
+            font-family: 'Ruda', sans-serif;
             background-color: #f7f7f7;
             margin: 0;
             padding: 0;
