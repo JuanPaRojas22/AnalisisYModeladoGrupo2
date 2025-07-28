@@ -3,6 +3,7 @@ session_start();
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 include "template.php";
 
+
 // Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
@@ -67,7 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['nombre'] = $nombre;
         $_SESSION['apellido'] = $apellido;
         $_SESSION['direccion_imagen'] = $direccion_imagen;
-        echo "<p style='color: green;'>Actualización exitosa.</p>";
+        $_SESSION['mensaje_exito'] = "Usuario modificado con éxito✅.";
+        header("Location: index.php?id=" . $user_id);
+        exit;
     } else {
         echo "<p style='color: red;'>$resultado</p>"; // Mostrar el error
     }
@@ -250,6 +253,16 @@ if (isset($_GET['id'])) {
     </div>
     </div>
     </div>
+    <?php if (isset($_SESSION['mensaje_exito'])): ?>
+        <script>
+            // Usamos alert(), o puedes usar una librería o crear tu propio estilo
+            alert("<?php echo addslashes($_SESSION['mensaje_exito']); ?>");
+        </script>
+        <?php
+        unset($_SESSION['mensaje_exito']);
+    endif;
+    ?>
+
 </body>
 
 </html>
