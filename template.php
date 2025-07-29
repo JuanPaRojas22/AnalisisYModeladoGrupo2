@@ -313,7 +313,7 @@ if (isset($_SESSION['id_usuario'])) {
         -->
 
         <!-- Modal -->
-        <!--  <div id="miModal" class="modal">
+         <div id="miModal" class="modal">
             <div class="modal-contenido">
                 <span class="cerrar" onclick="cerrarModal()">&times;</span>
                 <h2>Haz tu aporte</h2>
@@ -323,7 +323,7 @@ if (isset($_SESSION['id_usuario'])) {
                     <button type="submit" class="enviar">Enviar</button>
                 </form>
             </div>
-        </div>-->
+        </div>
 
         <!-- Footer -->
         <footer class="site-footer">
