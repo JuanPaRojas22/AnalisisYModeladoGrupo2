@@ -122,6 +122,14 @@ body {
       margin: 10px auto !important;
       }
 
+      #enviarAporte {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      
+
 ul li {
     list-style: none;
 }
