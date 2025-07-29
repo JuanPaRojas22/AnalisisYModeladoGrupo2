@@ -317,7 +317,7 @@ if (isset($_SESSION['id_usuario'])) {
             </div>
         </aside>
 
-        <button class="boton-flotante" onclick="abrirModal()">✨ Hacer un aporte</button>
+        <button class="boton-flotante" id="btnAbrirModal">✨ Hacer un aporte</button>
         <!-- Modal aporte -->
         <div id="modalAporteContainer">
             <div class="modal">
@@ -342,73 +342,44 @@ if (isset($_SESSION['id_usuario'])) {
 
 
     <script>
-            console.log("DOM cargado");
-
-            // Función para abrir el modal
-            function abrirModal() {
-                console.log("Modal abierto");
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("btnAbrirModal").addEventListener("click", function () {
                 document.getElementById("modalAporteContainer").style.display = "block";
-            }
+            });
 
-            // Función para cerrar el modal
-            function cerrarModal() {
-                console.log("Modal cerrado");
+            document.querySelector(".cerrar").addEventListener("click", function () {
                 document.getElementById("modalAporteContainer").style.display = "none";
-            }
+            });
 
-            // Función para enviar el aporte
-            function enviarAporte(event) {
-                event.preventDefault();
-                const mensaje = document.getElementById("aporte").value;
-                console.log("Enviando aporte:", mensaje);
+            document.getElementById("enviarAporte").addEventListener("submit", function (e) {
+                e.preventDefault();
+                // mismo código de fetch aquí...
+            });
+        });
 
-                const formData = new FormData();
-                formData.append("aporte", mensaje);
+        // Verificar si los elementos existen antes de agregar los eventos
+        const botonFlotante = document.querySelector(".boton-flotante");
+        const cerrarBoton = document.querySelector(".cerrar");
+        const formulario = document.getElementById("enviarAporte");
 
-                fetch("guardar_aporte.php", {
-                    method: "POST",
-                    body: formData
-                })
-                    .then(res => res.json())
-                    .then(data => {
-                        console.log(data); // para ver qué responde PHP
-                        if (data.success) {
-                            alert("¡Aporte enviado con éxito!");
-                            document.getElementById("aporte").value = "";
-                            cerrarModal(); // Cierra el modal tras enviar
-                        } else {
-                            alert("Error: " + data.message);
-                        }
-                    })
-                    .catch(err => {
-                        alert("Error al enviar el aporte");
-                        console.error(err);
-                    });
-            }
+        if (botonFlotante) {
+            botonFlotante.addEventListener("click", abrirModal);
+        } else {
+            console.error("No se encontró el botón flotante.");
+        }
 
-            // Verificar si los elementos existen antes de agregar los eventos
-            const botonFlotante = document.querySelector(".boton-flotante");
-            const cerrarBoton = document.querySelector(".cerrar");
-            const formulario = document.getElementById("enviarAporte");
+        if (cerrarBoton) {
+            cerrarBoton.addEventListener("click", cerrarModal);
+        } else {
+            console.error("No se encontró el botón de cerrar.");
+        }
 
-            if (botonFlotante) {
-                botonFlotante.addEventListener("click", abrirModal);
-            } else {
-                console.error("No se encontró el botón flotante.");
-            }
+        if (formulario) {
+            formulario.addEventListener("submit", enviarAporte);
+        } else {
+            console.error("No se encontró el formulario.");
+        }
 
-            if (cerrarBoton) {
-                cerrarBoton.addEventListener("click", cerrarModal);
-            } else {
-                console.error("No se encontró el botón de cerrar.");
-            }
-
-            if (formulario) {
-                formulario.addEventListener("submit", enviarAporte);
-            } else {
-                console.error("No se encontró el formulario.");
-            }
-        
 
     </script>
 
