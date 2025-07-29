@@ -320,15 +320,14 @@ if (isset($_SESSION['id_usuario'])) {
         <button class="boton-flotante" onclick="abrirModal()">✨ Hacer un aporte</button>
         <!-- Modal aporte -->
         <div id="modalAporteContainer">
-            <div id="miModal" class="modal">
+            <div class="modal">
                 <div class="modal-contenido">
                     <span class="cerrar" onclick="cerrarModal()">&times;</span>
                     <h2>Haz tu aporte</h2>
                     <form id="enviarAporte">
-                        <div><input type="text" value="<?= $_SESSION['nombre']; ?>" readonly></div>
-                        <div><textarea id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
-                        </div>
-                        <div><button type="submit" class="enviar">Enviar</button></div>
+                        <input type="text" value="<?= $_SESSION['nombre']; ?>" readonly>
+                        <textarea id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
+                        <button type="submit" class="enviar">Enviar</button>
                     </form>
                 </div>
             </div>
