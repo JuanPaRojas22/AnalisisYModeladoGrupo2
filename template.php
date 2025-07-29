@@ -326,26 +326,20 @@ if (isset($_SESSION['id_usuario'])) {
     </section>
 
     <!-- Modal aporte -->
-    <!-- Modal aporte -->
     <div id="modalAporteContainer">
         <div id="miModal" class="modal">
             <div class="modal-contenido">
-                <div id="mensaje-toast-modal"
-                    style="display:none; padding:10px; margin-bottom:15px; border-radius:5px; font-weight:600;"></div>
-
                 <span class="cerrar" onclick="cerrarModal()">&times;</span>
                 <h2>Haz tu aporte</h2>
                 <form id="enviarAporte">
                     <div><input type="text" value="<?= $_SESSION['nombre']; ?>" readonly></div>
-                    <div>
-                        <textarea id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
+                    <div><textarea id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
                     </div>
                     <div><button type="submit" class="enviar">Enviar</button></div>
                 </form>
             </div>
         </div>
     </div>
-
 
 
     <script>
@@ -370,29 +364,29 @@ if (isset($_SESSION['id_usuario'])) {
                 const mensaje = document.getElementById("aporte").value.trim();
 
                 if (mensaje.length === 0) {
-                    mostrarToastModal("Por favor escribe un mensaje antes de enviar.", true);
+                    mostrarToast("Por favor escribe un mensaje antes de enviar.", true);
                     return;
                 }
 
                 const formData = new FormData();
                 formData.append("aporte", mensaje);
 
-                fetch("/guardar_aporte.php", {
+                fetch("guardar_aporte.php", {
                     method: "POST",
                     body: formData
                 })
                     .then(res => res.json())
                     .then(data => {
                         if (data.success) {
-                            mostrarToastModal(data.message); // mensaje verde
+                            mostrarToast(data.message); // mensaje verde
                             document.getElementById("aporte").value = "";
                             cerrarModal();
                         } else {
-                            mostrarToastModal("Error: " + data.message, true); // mensaje rojo
+                            mostrarToast("Error: " + data.message, true); // mensaje rojo
                         }
                     })
                     .catch(err => {
-                        mostrarToastModal("Error al enviar el aporte", true);
+                        mostrarToast("Error al enviar el aporte", true);
                         console.error(err);
                     });
             }
@@ -420,22 +414,6 @@ if (isset($_SESSION['id_usuario'])) {
                 console.error("No se encontró el formulario.");
             }
         });
-
-    </script>
-
-    <script>
-        function mostrarToastModal(mensaje, esError = false) {
-            const toast = document.getElementById("mensaje-toast-modal");
-            toast.textContent = mensaje;
-            toast.className = esError ? "error" : "exito";
-            toast.style.display = "block";
-
-            // Ocultar el mensaje luego de 3 segundos
-            setTimeout(() => {
-                toast.style.display = "none";
-            }, 3000);
-        }
-
 
     </script>
 
