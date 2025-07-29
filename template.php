@@ -321,7 +321,7 @@ if (isset($_SESSION['id_usuario'])) {
 
 
         <!-- Modal aporte -->
-        <div id="modalAporteContainer">
+       
             <!-- Modal aporte -->
             <div id="miModal" class="modal">
                 <div class="modal-contenido">
@@ -334,7 +334,6 @@ if (isset($_SESSION['id_usuario'])) {
                     </form>
                 </div>
             </div>
-        </div>
 
         <!-- Footer -->
         <footer class="site-footer">
