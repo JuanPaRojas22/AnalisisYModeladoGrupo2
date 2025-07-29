@@ -81,7 +81,6 @@ include 'template.php';
 </div>
 
 <!-- Modal para Agregar Beneficio -->
-<!-- Modal para Agregar Beneficio -->
 <div id="beneficioModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="cerrarModal()">&times;</span>
