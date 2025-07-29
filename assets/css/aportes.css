@@ -1,3 +1,5 @@
+/* Archivo: aportes.css */
+
 #modalAporteContainer .modal {
     display: none;
     position: fixed;
@@ -20,16 +22,12 @@
     margin: 10% auto;
     padding: 20px;
     border-radius: 10px;
-    max-width: 30%;
-    max-height: 30%;
-    overflow: auto;
+    max-width: 400px;  /* mejor usar pixeles para consistencia */
+    max-height: 70vh;
+    overflow-y: auto;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     position: relative;
-    text-align: center;
-    font-family: inherit;
-    font-size: inherit;
-    line-height: inherit;
-    color: inherit;
+    text-align: left; /* mejor para texto */
   }
   
   #modalAporteContainer .cerrar {
@@ -47,17 +45,22 @@
   
   #modalAporteContainer #enviarAporte input,
   #modalAporteContainer #enviarAporte textarea {
-    width: 80%;
+    width: 90%;
     padding: 10px;
     margin: 10px auto;
     border: 1px solid #ccc;
     border-radius: 5px;
-    text-align: center;
     color: #000;
     display: block;
     font-family: inherit;
     font-size: 1rem;
     line-height: 1.4;
+    text-align: left; /* para que el texto no esté centrado */
+  }
+  
+  #modalAporteContainer #enviarAporte textarea {
+    resize: vertical;
+    min-height: 100px;
   }
   
   #modalAporteContainer #enviarAporte button.enviar {
@@ -74,6 +77,7 @@
     font-size: 1rem;
     line-height: 1.4;
     transition: background-color 0.3s ease;
+    text-align: center;
   }
   
   #modalAporteContainer #enviarAporte button.enviar:hover {
