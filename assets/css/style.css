@@ -59,7 +59,7 @@ body {
         padding: 20px!important;
         border-radius: 10px!important;
         max-width: 30%!important;
-        max-height: 30%!important;
+        max-height: 80%!important;
         overflow: auto!important;
         box-shadow: 0 5px 15px rgba(0,0,0,0.3)!important;
         position: relative!important;
@@ -114,6 +114,7 @@ body {
       button.enviar:hover {
         background-color: #09354b!important;
       }
+
       #enviarAporte input,
       #enviarAporte textarea,
       #enviarAporte button.enviar {
