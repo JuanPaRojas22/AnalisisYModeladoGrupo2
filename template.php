@@ -146,7 +146,7 @@ if (isset($_SESSION['id_usuario'])) {
                     <li id="header_profile_bar" class="dropdown position-relative">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <i class="fa fa-user"></i>
-                            <span class="session-dot"></span>
+                            <span class="session-dot">.</span>
                         </a>
                         <ul class="dropdown-menu extended inbox">
                             <div class="notify-arrow notify-arrow-green"></div>
@@ -317,7 +317,7 @@ if (isset($_SESSION['id_usuario'])) {
                 <span class="cerrar" onclick="cerrarModal()">&times;</span>
                 <h2>Haz tu aporte</h2>
                 <form id="enviarAporte">
-                    <input type="text" value=" echo $_SESSION['nombre']; ?>" readonly>
+                    <input type="text" value="<?= $_SESSION['nombre']; ?>" readonly>
                     <textarea id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
                     <button type="submit" class="enviar">Enviar</button>
                 </form>
