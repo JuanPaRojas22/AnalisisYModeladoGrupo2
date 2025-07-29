@@ -104,36 +104,52 @@ $stmt_beneficios->close();
 
 <!-- Modal para Editar Beneficio -->
 <div id="beneficioModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="cerrarModal()">&times;</span>
-        <h3 id="modalTitle">Editar Beneficio</h3>
+  <div class="modal-content">
+    <span class="close" onclick="cerrarModal()">&times;</span>
+    <h3 id="modalTitle" class="text-center mb-4">Editar Beneficio</h3>
 
-        <form id="beneficioForm">
-            <input type="hidden" id="id_beneficio" name="id_beneficio">
+    <form id="beneficioForm">
+      <input type="hidden" id="id_beneficio" name="id_beneficio">
 
-            <label>Razón:</label>
-            <input type="text" id="razon" name="razon" required>
+      <div class="modal-grid">
+        <div class="form-group">
+          <label for="razon">Razón:</label>
+          <input type="text" id="razon" name="razon" class="form-control" required>
+        </div>
 
-            <label>Monto:</label>
-            <input type="number" id="monto" name="monto" required>
+        <div class="form-group">
+          <label for="monto">Monto:</label>
+          <input type="number" id="monto" name="monto" class="form-control" required>
+        </div>
 
-            <label>ID MediSmart:</label>
-            <input type="text" id="medismart" name="identificacion_medismart">
+        <div class="form-group">
+          <label for="medismart">ID MediSmart:</label>
+          <input type="text" id="medismart" name="identificacion_medismart" class="form-control">
+        </div>
 
-            <label>Valor Total:</label>
-            <input type="number" id="valor_total" name="valor_plan_total">
+        <div class="form-group">
+          <label for="valor_total">Valor total:</label>
+          <input type="number" id="valor_total" name="valor_plan_total" class="form-control">
+        </div>
 
-            <label>Aporte Patrono:</label>
-            <input type="number" id="aporte_patrono" name="aporte_patrono">
+        <div class="form-group">
+          <label for="aporte_patrono">Aporte Patrono:</label>
+          <input type="number" id="aporte_patrono" name="aporte_patrono" class="form-control">
+        </div>
 
-            <label>Beneficiarios:</label>
-            <input type="number" id="beneficiarios" name="beneficiarios">
+        <div class="form-group">
+          <label for="beneficiarios">Beneficiarios:</label>
+          <input type="number" id="beneficiarios" name="beneficiarios" class="form-control">
+        </div>
+      </div>
 
-            <button type="submit" class="btn btn-success" style="background-color: #147964; border-color: #147964;">
-    Guardar
-</button>
-        </form>
-    </div>
+      <div class="text-center mt-4">
+        <button type="submit" class="btn btn-success px-4 py-2" style="background-color: #147964; border-color: #147964;">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- Scripts para Editar -->
@@ -301,4 +317,29 @@ h2 {
     font-size: 1.5em;
     cursor: pointer;
 }
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px 25px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content input,
+.modal-content select {
+  border-radius: 8px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+  .modal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 </style>
