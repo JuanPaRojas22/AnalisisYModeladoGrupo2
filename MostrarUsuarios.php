@@ -59,18 +59,17 @@ if ($id_departamento == 'all') {
         <div class="container">
             <h1 class="text-center mb-5 fw-bold">Listado de Usuarios</h1>
 
-            <!-- Botón Registrar Usuario -->
-            <div class="row mb-4">
-                <div class="col text-center">
-                    <a href="registroEmpleado.php" class="btn btn-primary px-4 shadow">
-                        Registrar Usuario
-                    </a>
-                </div>
-            </div>
-
             <!-- Filtros centrados con espacio entre ellos -->
             <div class="d-flex justify-content-center gap-4 flex-wrap mb-5 shadow-lg p-4 bg-white rounded">
-            <!-- Filtro visualización -->
+                <!-- Botón Registrar Usuario -->
+                <div class="row mb-4">
+                    <div class="col text-center">
+                        <a href="registroEmpleado.php" class="btn btn-primary px-4 shadow">
+                            Registrar Usuario
+                        </a>
+                    </div>
+                </div>
+                <!-- Filtro visualización -->
                 <form method="GET" action="MostrarUsuarios.php" class="d-flex align-items-end gap-2">
                     <div class="d-flex flex-column">
                         <label for="departamento_filtro" class="form-label fw-bold mb-1">Filtrar por
