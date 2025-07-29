@@ -204,21 +204,6 @@ $result_aportes_usuario = $conn->query($query_aportes_usuario);
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        function mostrarToast(mensaje, error = false) {
-            const toast = document.getElementById("mensaje-toast");
-            toast.innerText = mensaje;
-            toast.style.backgroundColor = error ? "#dc3545" : "#28a745"; // rojo o verde
-            toast.classList.add("mostrar");
-            toast.style.display = "block";
-
-            setTimeout(() => {
-                toast.classList.remove("mostrar");
-                toast.style.display = "none";
-            }, 3000);
-        }
-
-    </script>
 
 </body>
 

@@ -146,7 +146,7 @@ if (isset($_SESSION['id_usuario'])) {
                     </li>
 
                     <li id="header_profile_bar" class="dropdown position-relative">
-                        <a data-toggle="dropdown" class="dropdown-toggle" href="#" style="text-decoration: none;">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#"  style="text-decoration: none;">
                             <i class="fa fa-user"></i>
                             <span class="session-dot"></span>
                         </a>
@@ -361,12 +361,8 @@ if (isset($_SESSION['id_usuario'])) {
             // Función para enviar el aporte
             function enviarAporte(event) {
                 event.preventDefault();
-                const mensaje = document.getElementById("aporte").value.trim();
-
-                if (mensaje.length === 0) {
-                    mostrarToast("Por favor escribe un mensaje antes de enviar.", true);
-                    return;
-                }
+                const mensaje = document.getElementById("aporte").value;
+                console.log("Enviando aporte:", mensaje);
 
                 const formData = new FormData();
                 formData.append("aporte", mensaje);
@@ -377,16 +373,17 @@ if (isset($_SESSION['id_usuario'])) {
                 })
                     .then(res => res.json())
                     .then(data => {
+                        console.log(data); // para ver qué responde PHP
                         if (data.success) {
-                            mostrarToast(data.message); // mensaje verde
+                            alert("¡Aporte enviado con éxito!");
                             document.getElementById("aporte").value = "";
-                            cerrarModal();
+                            cerrarModal(); // Cierra el modal tras enviar
                         } else {
-                            mostrarToast("Error: " + data.message, true); // mensaje rojo
+                            alert("Error: " + data.message);
                         }
                     })
                     .catch(err => {
-                        mostrarToast("Error al enviar el aporte", true);
+                        alert("Error al enviar el aporte");
                         console.error(err);
                     });
             }

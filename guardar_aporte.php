@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
-error_reporting(0);
-ini_set('display_errors', 0);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 session_start();
 
 // Verifica que el usuario esté logueado
@@ -10,7 +10,7 @@ if (!isset($_SESSION['username'])) {
     exit;
 }
 
-$username = $_SESSION['username'];
+$username = $_SESSION['username']; 
 $aporte = $_POST['aporte'] ?? '';
 
 if (empty($aporte)) {
@@ -38,8 +38,7 @@ mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
 // Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
 if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
-    echo json_encode(['success' => false,'message' => 'Error de conexión: ' . mysqli_connect_error()]);
-    exit;
+    die("Error de conexión: " . mysqli_connect_error());
 }
 
 // Establecemos el charset
@@ -62,11 +61,7 @@ $stmtUser->close();
 
 // Insertar en la tabla Aportes
 $stmt = $conn->prepare("INSERT INTO aportes (id_usuario, aporte) VALUES (?, ?)");
-if (!$stmt) {
-    echo json_encode(['success' => false, 'message' => 'Error en preparación de inserción aporte']);
-    exit;
-}
-
+$stmt->bind_param("is", $id_usuario, $aporte);
 
 if ($stmt->execute()) {
     echo json_encode(['success' => true, 'message' => 'Aporte guardado correctamente']);
@@ -76,3 +71,4 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $conn->close();
+?>
