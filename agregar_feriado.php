@@ -22,11 +22,11 @@ mysqli_set_charset($conn, "utf8mb4");
 
 // Obtener datos del formulario
 $nombre = $_POST['nombre_feriado'];
-$fecha = $_POST['fecha']; // Debe venir como 'YYYY-MM-DD'
+$fecha = $_POST['fecha']; // Formato: YYYY-MM-DD
 $tipo = $_POST['tipo_feriado'];
-$doble_pago = isset($_POST['doble_pago']) ? 1 : 0;
+$doble_pago = isset($_POST['doble_pago']) && $_POST['doble_pago'] == '1' ? 1 : 0;
 
-// Convertir fecha a formato correcto por si viene desfasada (opcional)
+// Convertir fecha a formato correcto (opcional)
 $fecha = date('Y-m-d', strtotime($fecha));
 
 // Insertar en la base de datos
