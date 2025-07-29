@@ -381,17 +381,18 @@ if (isset($_SESSION['id_usuario'])) {
                     .then(res => res.json())
                     .then(data => {
                         if (data.success) {
-                            mostrarToastModal(data.message); // mensaje verde
+                            alert("¡Aporte enviado con éxito!");
                             document.getElementById("aporte").value = "";
                             cerrarModal();
                         } else {
-                            mostrarToastModal("Error: " + data.message, true); // mensaje rojo
+                            alert("Error: " + data.message);
                         }
                     })
                     .catch(err => {
-                        mostrarToastModal("Error al enviar el aporte", true);
+                        alert("Error al enviar el aporte");
                         console.error(err);
                     });
+
             }
 
             // Verificar si los elementos existen antes de agregar los eventos
