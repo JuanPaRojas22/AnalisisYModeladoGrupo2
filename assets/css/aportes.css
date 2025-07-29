@@ -23,7 +23,7 @@
 }
 
 /* Contenedor del contenido del modal */
-#modalAporteContainer .modal-contenido {
+#modalAporteContainer .modal-aporte .modal-contenido {
   background-color: #fff !important;
   margin: 10% auto !important;
   padding: 20px !important;
