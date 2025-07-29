@@ -52,7 +52,7 @@ include 'template.php';
         foreach ($feriados as $f) {
             $clases = "bg-gray-100 p-4 rounded-lg shadow-md";
             if ($f['doble_pago']) {
-                $clases .= " bg-yellow-100 border-l-4 border-yellow-500";
+                $clases .=  " bg-yellow-100 border-l-4 border-yellow-500";
             }
 
             echo '<div class="' . $clases . '">';
@@ -61,7 +61,8 @@ include 'template.php';
             echo '<p class="text-sm text-gray-500">🏷️ ' . htmlspecialchars($f['tipo_feriado']) . '</p>';
 
             if ($f['doble_pago']) {
-                echo '<span class="inline-block mt-2 px-2 py-1 text-xs bg-yellow-200 text-yellow-800 rounded">Doble Pago</span>';
+                echo '<span class="inline-block mt-2 px-2 py-1 text-xs bg-green-200 text-green-800 rounded">Doble Pago</span>';
+
             }
 
             echo '</div>';
