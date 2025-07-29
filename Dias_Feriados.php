@@ -77,7 +77,7 @@ include 'template.php';
                             card.classList.add("p-4", "rounded-lg", "shadow-md", "flex", "flex-col", "justify-between");
 
                             if (feriado.doble_pago == 1) {
-                                card.classList.add("bg-yellow-100", "border-l-4", "border-yellow-500");
+                                card.classList.add("bg-green-100", "border-l-4", "border-green-500");
                             } else {
                                 card.classList.add("bg-gray-100");
                             }
@@ -112,7 +112,7 @@ include 'template.php';
 
                             let btnEliminar = document.createElement("button");
                             btnEliminar.innerText = "Eliminar";
-                            btnEliminar.style.backgroundColor = "#8B0000";
+                            btnEliminar.style.backgroundColor = "#931c1cff";
                             btnEliminar.classList.add("text-white", "px-3", "py-1", "rounded");
                             btnEliminar.onclick = function () { eliminarFeriado(feriado.id); };
 
