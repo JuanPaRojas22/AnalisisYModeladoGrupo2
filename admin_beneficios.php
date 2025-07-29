@@ -46,7 +46,7 @@ while ($row = $resultado->fetch_assoc()) {
 
 include 'template.php';
 ?>
-
+<link rel="stylesheet" href="aportes.css" />
 <div class="container mt-5">
     <h2 class="titulo-beneficios text-center">Gestión de Beneficios</h2>
 

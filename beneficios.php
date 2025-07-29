@@ -45,6 +45,7 @@ include 'template.php';
 
 <head>
     <title>Beneficios Medicos</title>
+    <link rel="stylesheet" href="aportes.css" />
 </head>
 
 <!-- Contenedor Principal -->
