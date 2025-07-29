@@ -329,7 +329,9 @@ if (isset($_SESSION['id_usuario'])) {
     <div id="modalAporteContainer">
         <div id="miModal" class="modal">
             <div class="modal-contenido">
-                <div id="mensajeAporte" style="display: none; color: green; margin-top: 10px;"></div>
+                <div id="mensajeAporte"
+                    style="display: none; background-color:rgb(111, 238, 111); color:rgb(236, 247, 239); border: 1px solid #c3e6cb; padding: 10px; border-radius: 4px; margin-top: 10px; font-weight: bold;">
+                </div>
 
                 <span class="cerrar" onclick="cerrarModal()">&times;</span>
                 <h2>Haz tu aporte</h2>
@@ -392,7 +394,9 @@ if (isset($_SESSION['id_usuario'])) {
                             setTimeout(() => {
                                 mensajeDiv.style.display = "none"; // opcional: ocultar después
                                 cerrarModal();
-                            }, 1000);
+                                location.reload();
+
+                            }, 3000);
                         }
                         else {
                             alert("Error: " + data.message);
