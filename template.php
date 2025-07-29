@@ -342,7 +342,6 @@ if (isset($_SESSION['id_usuario'])) {
 
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
             console.log("DOM cargado");
 
             // Función para abrir el modal
@@ -409,7 +408,7 @@ if (isset($_SESSION['id_usuario'])) {
             } else {
                 console.error("No se encontró el formulario.");
             }
-        });
+        
 
     </script>
 
