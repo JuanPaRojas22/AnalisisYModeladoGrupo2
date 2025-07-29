@@ -272,6 +272,13 @@ if (isset($_SESSION['id_usuario'])) {
                                     <span>Vacaciones</span>
                                 </a>
                             </li>
+                            <li>
+    <a href="ver_feriados.php">
+        <i class="bi bi-calendar-event"></i>
+        <span>Feriados</span>
+    </a>
+</li>
+
                             <li><a href="historial_salarios.php"><i class="bi bi-calendar3"></i>
                                     Historial Salarios</a></li>
                             <li><a href="preguntasfreq.php"><i class="bi bi-question-octagon-fill"></i>Preguntas
