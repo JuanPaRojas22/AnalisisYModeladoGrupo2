@@ -1,14 +1,13 @@
-<?php 
+<?php
 session_start();
 include 'template.php';
 
-// Validar sesión iniciada
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: login.php");
     exit;
 }
 
-// Conexión a Azure MySQL con SSL
+// Conexión a Azure
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
 $password = "admin123+";
@@ -26,59 +25,57 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 mysqli_set_charset($conn, "utf8mb4");
 
 // Obtener feriados
-$sql = "SELECT * FROM feriado ORDER BY fecha";
+$sql = "SELECT nombre_feriado, fecha, tipo_feriado, doble_pago FROM dias_feriados ORDER BY fecha ASC";
 $result = $conn->query($sql);
 
-// Agrupar por mes
+// Organizar por mes
 $feriadosPorMes = [];
-while ($row = $result->fetch_assoc()) {
-    $fecha = new DateTime($row['fecha']);
-    $mes = strtoupper($fecha->format("F")); // Ej: JULIO
-    $emoji = $row['doble_pago'] == 1 ? "💰 " : "";
 
-    $feriadosPorMes[$mes][] = [
-        "nombre" => $emoji . $row['nombre_feriado'],
-        "fecha" => $fecha->format("d/m/Y"),
-        "tipo" => $row['tipo_feriado']
-    ];
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $fecha = new DateTime($row['fecha']);
+        $mes = mb_strtoupper($fecha->format('F'), 'UTF-8');
+        $feriadosPorMes[$mes][] = $row;
+    }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Feriados del Sistema</title>
-    <link href="assets/css/bootstrap.css" rel="stylesheet">
-    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        td, div {
-            color: black !important;
-        }
-    </style>
+    <title>Feriados</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="p-8 bg-gray-200">
-    <div class="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-        <h1 class="text-3xl font-bold mb-6 text-center" style="color:#0B4F6C">Feriados del Sistema</h1>
+<body class="bg-light">
+<div class="container py-5">
+    <h1 class="text-center mb-4 text-primary">📅 Feriados Registrados</h1>
 
-        <?php if (count($feriadosPorMes) > 0): ?>
-            <?php foreach ($feriadosPorMes as $mes => $feriados): ?>
-                <div class="bg-white p-4 rounded-lg shadow-md mb-6">
-                    <h2 class="text-2xl font-bold mb-4 uppercase text-gray-700"><?= $mes ?></h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <?php foreach ($feriados as $f): ?>
-                            <div class="bg-gray-100 p-4 rounded-lg shadow-md">
-                                <p class="text-lg font-semibold text-gray-800"><?= $f['nombre'] ?></p>
-                                <p class="text-sm text-gray-600">📅 <?= $f['fecha'] ?></p>
-                                <p class="text-sm text-gray-500">🏷️ <?= $f['tipo'] ?></p>
+    <?php if (!empty($feriadosPorMes)): ?>
+        <?php foreach ($feriadosPorMes as $mes => $feriados): ?>
+            <div class="bg-white rounded shadow-sm p-4 mb-4">
+                <h4 class="text-uppercase text-secondary"><?= $mes ?></h4>
+                <div class="row mt-3">
+                    <?php foreach ($feriados as $feriado): ?>
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <?= $feriado['doble_pago'] ? '💰 ' : '' ?>
+                                        <?= htmlspecialchars($feriado['nombre_feriado']) ?>
+                                    </h5>
+                                    <p class="card-text">📆 <?= htmlspecialchars($feriado['fecha']) ?></p>
+                                    <p class="card-text">🏷️ <?= htmlspecialchars($feriado['tipo_feriado']) ?></p>
+                                </div>
                             </div>
-                        <?php endforeach; ?>
-                    </div>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p class="text-center text-gray-600">No hay feriados registrados.</p>
-        <?php endif; ?>
-    </div>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p class="text-center text-muted">No hay feriados registrados.</p>
+    <?php endif; ?>
+</div>
 </body>
 </html>
