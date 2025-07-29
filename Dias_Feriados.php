@@ -21,11 +21,17 @@ include 'template.php';
     <link href="assets/css/style-responsive.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <style>
+        td, div {
+            color: black !important;
+        }
+    </style>
+
     <script>
         let editando = false;
         let feriadoId = null;
 
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             listarFeriados();
         });
 
@@ -39,16 +45,15 @@ include 'template.php';
 
                     data.forEach(feriado => {
                         let fechaOriginal = feriado.fecha;
-                        let fechaLocal = new Date(feriado.fecha + "T00:00:00"); // evitar desfase UTC
+                        let fechaLocal = new Date(feriado.fecha + "T00:00:00");
                         let mes = fechaLocal.toLocaleString("es-ES", { month: "long" }).toUpperCase();
-                        let emoji = feriado.doble_pago == 1 ? "💰 " : "";
 
                         if (!feriadosPorMes[mes]) {
                             feriadosPorMes[mes] = [];
                         }
                         feriadosPorMes[mes].push({
                             id: feriado.id_fecha,
-                            nombre: `${emoji}${feriado.nombre_feriado}`,
+                            nombre_feriado: feriado.nombre_feriado,
                             fecha: fechaOriginal,
                             tipo: feriado.tipo_feriado,
                             doble_pago: feriado.doble_pago
@@ -73,7 +78,7 @@ include 'template.php';
 
                             let nombre = document.createElement("p");
                             nombre.classList.add("text-lg", "font-semibold", "text-gray-800");
-                            nombre.innerText = feriado.nombre;
+                            nombre.innerText = feriado.doble_pago == 1 ? "💰 " + feriado.nombre_feriado : feriado.nombre_feriado;
 
                             let fecha = document.createElement("p");
                             fecha.classList.add("text-sm", "text-gray-600");
@@ -90,13 +95,13 @@ include 'template.php';
                             btnEditar.innerText = "Editar";
                             btnEditar.style.backgroundColor = "#0B4F6C";
                             btnEditar.classList.add("text-white", "px-3", "py-1", "rounded");
-                            btnEditar.onclick = function() { abrirModalEditar(feriado); };
+                            btnEditar.onclick = function () { abrirModalEditar(feriado); };
 
                             let btnEliminar = document.createElement("button");
                             btnEliminar.innerText = "Eliminar";
                             btnEliminar.style.backgroundColor = "#8B0000";
                             btnEliminar.classList.add("text-white", "px-3", "py-1", "rounded");
-                            btnEliminar.onclick = function() { eliminarFeriado(feriado.id); };
+                            btnEliminar.onclick = function () { eliminarFeriado(feriado.id); };
 
                             acciones.appendChild(btnEditar);
                             acciones.appendChild(btnEliminar);
@@ -128,7 +133,6 @@ include 'template.php';
         function abrirModal() {
             editando = false;
             feriadoId = null;
-
             document.getElementById("modalTitulo").innerText = "Agregar Feriado";
             document.getElementById("nombreFeriado").value = "";
             document.getElementById("fechaFeriado").value = "";
@@ -140,9 +144,8 @@ include 'template.php';
         function abrirModalEditar(feriado) {
             editando = true;
             feriadoId = feriado.id;
-
             document.getElementById("modalTitulo").innerText = "Editar Feriado";
-            document.getElementById("nombreFeriado").value = feriado.nombre.replace("💰 ", "");
+            document.getElementById("nombreFeriado").value = feriado.nombre_feriado;
             document.getElementById("fechaFeriado").value = feriado.fecha;
             document.getElementById("tipoFeriado").value = feriado.tipo;
             document.getElementById("doblePago").checked = feriado.doble_pago == 1;
@@ -183,12 +186,6 @@ include 'template.php';
             });
         }
     </script>
-
-    <style>
-        td, div {
-            color: black !important;
-        }
-    </style>
 </head>
 <body class="p-8 bg-gray-200">
     <div class="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg">
