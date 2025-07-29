@@ -325,8 +325,8 @@ if (isset($_SESSION['id_usuario'])) {
         </footer>
     </section>
 
-    <!-- Modal aporte -->
-    <div id="modalAporteContainer">
+   <!-- Modal aporte -->
+   <div id="modalAporteContainer">
         <div id="miModal" class="modal">
             <div class="modal-contenido">
                 <div id="mensaje-toast-modal"
@@ -376,38 +376,25 @@ if (isset($_SESSION['id_usuario'])) {
                 const formData = new FormData();
                 formData.append("aporte", mensaje);
 
-                fetch("https://accesspersonel-fue0gkhkabeahsgd.canadacentral-01.azurewebsites.net/guardar_aporte.php", {
+                fetch("guardar_aporte.php", {
                     method: "POST",
                     body: formData
                 })
-                    .then(async res => {
-                        const text = await res.text();
-                        if (!res.ok) throw new Error(`HTTP ${res.status}:\n${text}`);
-                        try {
-                            return JSON.parse(text);
-                        } catch {
-                            throw new Error("Respuesta no es JSON válida:\n" + text);
-                        }
-                    })
+                    .then(res => res.json())
                     .then(data => {
-                        console.log(data);
                         if (data.success) {
-                            mostrarToastModal(data.message);  // mensaje verde
+                            mostrarToastModal(data.message); // mensaje verde
                             document.getElementById("aporte").value = "";
-                            // Si quieres que cierre el modal después de mostrar el mensaje, puedes hacerlo aquí con un setTimeout
-                            // setTimeout(() => cerrarModal(), 2000);
+                            cerrarModal();
                         } else {
-                            mostrarToastModal("Error: " + data.message, true);  // mensaje rojo
+                            mostrarToastModal("Error: " + data.message, true); // mensaje rojo
                         }
                     })
                     .catch(err => {
-                        mostrarToastModal("Error al enviar el aporte: " + err.message, true);
-                        console.error("ERROR DETECTADO:", err.message);
+                        mostrarToastModal("Error al enviar el aporte", true);
+                        console.error(err);
                     });
-
             }
-
-
 
             // Verificar si los elementos existen antes de agregar los eventos
             const botonFlotante = document.querySelector(".boton-flotante");
