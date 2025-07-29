@@ -1,21 +1,17 @@
 #modalAporteContainer #enviarAporte {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 10px !important;
+    display: block !important;
+    text-align: center !important;
   }
   
   #modalAporteContainer #enviarAporte input,
-  #modalAporteContainer #enviarAporte textarea {
-    width: 90%;
-    padding: 10px;
-    margin: 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    color: #000;
-    font-family: inherit;
-    font-size: 1rem;
-    text-align: left;
+  #modalAporteContainer #enviarAporte textarea,
+  #modalAporteContainer #enviarAporte button.enviar {
+    display: block !important;
+    clear: both !important; /* esto rompe cualquier float anterior */
+    width: 90% !important;
+    margin: 10px auto !important;
+    float: none !important; /* rompe estilos flotantes de Bootstrap */
+    text-align: left !important;
   }
   
   #modalAporteContainer #enviarAporte textarea {
