@@ -69,8 +69,8 @@ if ($id_departamento == 'all') {
             </div>
 
             <!-- Filtros centrados con espacio entre ellos -->
-            <div class="d-flex justify-content-center gap-4 flex-wrap mb-5">
-                <!-- Filtro visualización -->
+            <div class="d-flex justify-content-center gap-4 flex-wrap mb-5 shadow p-4 bg-white rounded">
+            <!-- Filtro visualización -->
                 <form method="GET" action="MostrarUsuarios.php" class="d-flex align-items-end gap-2">
                     <div class="d-flex flex-column">
                         <label for="departamento_filtro" class="form-label fw-bold mb-1">Filtrar por
