@@ -207,6 +207,7 @@ $nacionalidades = $conn->query("SELECT id_nacionalidad, pais FROM nacionalidades
     }
 
     .container {
+         position: relative;
       max-width: 800px;
       margin: 60px auto;
       background: rgba(255, 255, 255, 0.9);
@@ -241,7 +242,7 @@ $nacionalidades = $conn->query("SELECT id_nacionalidad, pais FROM nacionalidades
 
     .form-control {
       border-radius: 8px;
-      padding: 10px;
+      padding: 5px;
       margin-bottom: 15px;
       border: 1px solid #ccc;
       transition: border 0.3s ease;
@@ -268,6 +269,20 @@ $nacionalidades = $conn->query("SELECT id_nacionalidad, pais FROM nacionalidades
       background-color: #3c56d4;
       cursor: pointer;
     }
+    .back-arrow {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  font-size: 24px;
+  color: #333;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.back-arrow:hover {
+  color: #020202ff;
+}
+
   </style>
 </head>
 
@@ -275,6 +290,9 @@ $nacionalidades = $conn->query("SELECT id_nacionalidad, pais FROM nacionalidades
 
   <div class="container">
     <form action="createUser.php" method="POST" enctype="multipart/form-data">
+        <a href="login.php" class="back-arrow" title="Volver al login">
+  <i class="fa fa-arrow-left"></i>
+</a>
       <h2>Registro</h2>
 
       <div class="form-grid">
