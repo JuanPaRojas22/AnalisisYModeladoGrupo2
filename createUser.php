@@ -249,12 +249,12 @@ $nacionalidades = $conn->query("SELECT id_nacionalidad, pais FROM nacionalidades
     }
 
     .form-control:focus {
-      border-color: #4a6eff;
+      border-color: #0B4F6C;
       box-shadow: 0 0 5px rgba(74, 110, 255, 0.3);
     }
 
     .btn-theme {
-      background-color: #4a6eff;
+      background-color: #0B4F6C;
       border: none;
       color: white;
       padding: 12px;
@@ -266,7 +266,7 @@ $nacionalidades = $conn->query("SELECT id_nacionalidad, pais FROM nacionalidades
     }
 
     .btn-theme:hover {
-      background-color: #3c56d4;
+      background-color: #0B4F6C;
       cursor: pointer;
     }
     .back-arrow {
