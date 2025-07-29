@@ -326,24 +326,26 @@ if (isset($_SESSION['id_usuario'])) {
     </section>
 
     <!-- Modal aporte -->
+    <!-- Modal aporte -->
     <div id="modalAporteContainer">
-        <!-- dentro de .modal-contenido -->
-        <div id="mensaje-toast-modal"
-            style="display:none; padding:10px; margin-bottom:15px; border-radius:5px; font-weight: 600;"></div>
-
         <div id="miModal" class="modal">
             <div class="modal-contenido">
+                <div id="mensaje-toast-modal"
+                    style="display:none; padding:10px; margin-bottom:15px; border-radius:5px; font-weight:600;"></div>
+
                 <span class="cerrar" onclick="cerrarModal()">&times;</span>
                 <h2>Haz tu aporte</h2>
                 <form id="enviarAporte">
                     <div><input type="text" value="<?= $_SESSION['nombre']; ?>" readonly></div>
-                    <div><textarea id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
+                    <div>
+                        <textarea id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
                     </div>
                     <div><button type="submit" class="enviar">Enviar</button></div>
                 </form>
             </div>
         </div>
     </div>
+
 
 
     <script>
