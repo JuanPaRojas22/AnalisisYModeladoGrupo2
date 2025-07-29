@@ -9,7 +9,7 @@
 }
 
 /* Fondo del modal */
-#modalAporteContainer .modal {
+#modalAporteContainer .modal-aporte {
   display: none !important;
   position: fixed !important;
   z-index: 9999 !important;
