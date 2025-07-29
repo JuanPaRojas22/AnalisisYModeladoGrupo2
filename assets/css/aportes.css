@@ -1,88 +1,86 @@
-/* Estilos generales para asegurar que nada del modal herede estilos externos */
-#modalAporteContainer,
+#modalAporteContainer {
+    font-family: 'Arial', sans-serif !important;
+    font-size: 16px !important;
+    color: #000 !important;
+    line-height: 1.5 !important;
+  }
+  
+  #modalAporteContainer .modal {
+    display: none !important;
+    position: fixed !important;
+    z-index: 9999 !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: auto !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    text-align: center !important;
+  }
+  
+  #modalAporteContainer .modal-contenido {
+    background-color: #fff !important;
+    margin: 10% auto !important;
+    padding: 20px !important;
+    border-radius: 10px !important;
+    width: 400px !important;
+    max-width: 95% !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
+    position: relative !important;
+    text-align: center !important;
+  }
+  
+  #modalAporteContainer input,
+  #modalAporteContainer textarea,
+  #modalAporteContainer button {
+    all: unset;
+    font-family: inherit !important;
+    font-size: 1rem !important;
+    box-sizing: border-box !important;
+    display: block !important;
+    width: 90% !important;
+    margin: 10px auto !important;
+    padding: 10px !important;
+    border: 1px solid #ccc !important;
+    border-radius: 5px !important;
+    color: #000 !important;
+  }
+  
+  #modalAporteContainer textarea {
+    resize: vertical !important;
+    min-height: 100px !important;
+  }
+  
+  #modalAporteContainer button.enviar {
+    background-color: #09354b !important;
+    color: white !important;
+    padding: 10px 30px !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: background-color 0.3s ease !important;
+    width: auto !important;
+  }
+  
+  #modalAporteContainer button.enviar:hover {
+    background-color: #0b4563 !important;
+  }
+  
+  #modalAporteContainer .cerrar {
+    position: absolute !important;
+    top: 10px !important;
+    right: 15px !important;
+    color: #aaa !important;
+    font-size: 24px !important;
+    cursor: pointer !important;
+  }
+  
+  #modalAporteContainer .cerrar:hover {
+    color: #000 !important;
+  }
+  
+  #modalAporteContainer,
 #modalAporteContainer * {
-  font-family: 'Arial', sans-serif !important;
+  font-family: Arial, sans-serif !important;
   font-size: 16px !important;
-  color: #000 !important;
-  line-height: 1.5 !important;
-  box-sizing: border-box !important;
-}
-
-/* Fondo del modal */
-#modalAporteContainer .modal-aporte {
-  display: none !important;
-  position: fixed !important;
-  z-index: 9999 !important;
-  left: 0 !important;
-  top: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  overflow: auto !important;
-  background-color: rgba(0, 0, 0, 0.5) !important;
-  text-align: center !important;
-}
-
-/* Contenedor del contenido del modal */
-#modalAporteContainer .modal-aporte .modal-contenido {
-  background-color: #fff !important;
-  margin: 10% auto !important;
-  padding: 20px !important;
-  border-radius: 10px !important;
-  width: 400px !important;
-  max-width: 95% !important;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
-  position: relative !important;
-  text-align: center !important;
-}
-
-/* Input y textarea dentro del formulario */
-#modalAporteContainer input,
-#modalAporteContainer textarea,
-#modalAporteContainer button {
-  all: unset;
-  font-family: inherit !important;
-  font-size: 1rem !important;
-  display: block !important;
-  width: 90% !important;
-  margin: 10px auto !important;
-  padding: 10px !important;
-  border: 1px solid #ccc !important;
-  border-radius: 5px !important;
-  color: #000 !important;
-}
-
-/* Textarea específico */
-#modalAporteContainer textarea {
-  resize: vertical !important;
-  min-height: 100px !important;
-}
-
-/* Botón de envío */
-#modalAporteContainer button.enviar {
-  background-color: #09354b !important;
-  color: white !important;
-  padding: 10px 30px !important;
-  border: none !important;
-  cursor: pointer !important;
-  transition: background-color 0.3s ease !important;
-  width: auto !important;
-}
-
-/* Hover del botón */
-#modalAporteContainer button.enviar:hover {
-  background-color: #0b4563 !important;
-}
-
-/* Botón cerrar */
-#modalAporteContainer .cerrar {
-  position: absolute !important;
-  top: 10px !important;
-  right: 15px !important;
-  color: #aaa !important;
-  font-size: 24px !important;
-  cursor: pointer !important;
-}
-
-#modalAporteContainer .cerrar:hover {
   color: #000 !important;
 }

@@ -317,17 +317,18 @@ if (isset($_SESSION['id_usuario'])) {
             </div>
         </aside>
 
-        <button class="boton-flotante" id="btnAbrirModal">✨ Hacer un aporte</button>
+        <button class="boton-flotante" onclick="abrirModal()">✨ Hacer un aporte</button>
         <!-- Modal aporte -->
         <div id="modalAporteContainer">
-            <div class="modal-aporte">
+            <div id="miModal" class="modal">
                 <div class="modal-contenido">
                     <span class="cerrar" onclick="cerrarModal()">&times;</span>
                     <h2>Haz tu aporte</h2>
                     <form id="enviarAporte">
-                        <input type="text" value="<?= $_SESSION['nombre']; ?>" readonly>
-                        <textarea id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
-                        <button type="submit" class="enviar">Enviar</button>
+                        <div><input type="text" value="<?= $_SESSION['nombre']; ?>" readonly></div>
+                        <div><textarea id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
+                        </div>
+                        <div><button type="submit" class="enviar">Enviar</button></div>
                     </form>
                 </div>
             </div>
@@ -342,62 +343,76 @@ if (isset($_SESSION['id_usuario'])) {
 
 
     <script>
-    // Estas funciones deben estar disponibles globalmente
-    function abrirModal() {
-        document.getElementById("modalAporteContainer").style.display = "block";
-    }
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log("DOM cargado");
 
-    function cerrarModal() {
-        document.getElementById("modalAporteContainer").style.display = "none";
-    }
-
-    function enviarAporte(event) {
-        event.preventDefault();
-        const mensaje = document.getElementById("aporte").value;
-
-        const formData = new FormData();
-        formData.append("aporte", mensaje);
-
-        fetch("guardar_aporte.php", {
-            method: "POST",
-            body: formData
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                alert("¡Aporte enviado con éxito!");
-                document.getElementById("aporte").value = "";
-                cerrarModal();
-            } else {
-                alert("Error: " + data.message);
+            // Función para abrir el modal
+            function abrirModal() {
+                console.log("Modal abierto");
+                document.getElementById("miModal").style.display = "block";
             }
-        })
-        .catch(err => {
-            alert("Error al enviar el aporte");
-            console.error(err);
+
+            // Función para cerrar el modal
+            function cerrarModal() {
+                console.log("Modal cerrado");
+                document.getElementById("miModal").style.display = "none";
+            }
+
+            // Función para enviar el aporte
+            function enviarAporte(event) {
+                event.preventDefault();
+                const mensaje = document.getElementById("aporte").value;
+                console.log("Enviando aporte:", mensaje);
+
+                const formData = new FormData();
+                formData.append("aporte", mensaje);
+
+                fetch("guardar_aporte.php", {
+                    method: "POST",
+                    body: formData
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data); // para ver qué responde PHP
+                        if (data.success) {
+                            alert("¡Aporte enviado con éxito!");
+                            document.getElementById("aporte").value = "";
+                            cerrarModal(); // Cierra el modal tras enviar
+                        } else {
+                            alert("Error: " + data.message);
+                        }
+                    })
+                    .catch(err => {
+                        alert("Error al enviar el aporte");
+                        console.error(err);
+                    });
+            }
+
+            // Verificar si los elementos existen antes de agregar los eventos
+            const botonFlotante = document.querySelector(".boton-flotante");
+            const cerrarBoton = document.querySelector(".cerrar");
+            const formulario = document.getElementById("enviarAporte");
+
+            if (botonFlotante) {
+                botonFlotante.addEventListener("click", abrirModal);
+            } else {
+                console.error("No se encontró el botón flotante.");
+            }
+
+            if (cerrarBoton) {
+                cerrarBoton.addEventListener("click", cerrarModal);
+            } else {
+                console.error("No se encontró el botón de cerrar.");
+            }
+
+            if (formulario) {
+                formulario.addEventListener("submit", enviarAporte);
+            } else {
+                console.error("No se encontró el formulario.");
+            }
         });
-    }
 
-    // Cuando el DOM esté cargado, conectamos los eventos
-    document.addEventListener("DOMContentLoaded", function () {
-        const botonFlotante = document.getElementById("btnAbrirModal");
-        const cerrarBoton = document.querySelector(".cerrar");
-        const formulario = document.getElementById("enviarAporte");
-
-        if (botonFlotante) {
-            botonFlotante.addEventListener("click", abrirModal);
-        }
-
-        if (cerrarBoton) {
-            cerrarBoton.addEventListener("click", cerrarModal);
-        }
-
-        if (formulario) {
-            formulario.addEventListener("submit", enviarAporte);
-        }
-    });
-</script>
-
+    </script>
 
 </body>
 
