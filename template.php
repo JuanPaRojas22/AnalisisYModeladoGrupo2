@@ -287,11 +287,11 @@ if (isset($_SESSION['id_usuario'])) {
                                 </a>
                             </li>
                             <li>
-    <a href="tutorial.php">
-        <i class="bi bi-question-circle-fill"></i>
-        <span>Tutorial</span>
-    </a>
-</li>
+                                <a href="tutorial.php">
+                                    <i class="bi bi-question-circle-fill"></i>
+                                    <span>Tutorial</span>
+                                </a>
+                            </li>
 
                             </a>
 
@@ -308,18 +308,17 @@ if (isset($_SESSION['id_usuario'])) {
             </div>
         </aside>
 
-        <!-- Botón flotante 
         <button class="boton-flotante" onclick="abrirModal()">✨ Hacer un aporte</button>
-        -->
+
 
         <!-- Modal -->
-         <div id="miModal" class="modal">
+        <div id="miModal" class="modal">
             <div class="modal-contenido">
                 <span class="cerrar" onclick="cerrarModal()">&times;</span>
                 <h2>Haz tu aporte</h2>
                 <form id="enviarAporte">
                     <input type="text" value=" echo $_SESSION['nombre']; ?>" readonly>
-                    <textarea  id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
+                    <textarea id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
                     <button type="submit" class="enviar">Enviar</button>
                 </form>
             </div>
