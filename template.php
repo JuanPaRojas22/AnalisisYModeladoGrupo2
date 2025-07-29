@@ -325,8 +325,8 @@ if (isset($_SESSION['id_usuario'])) {
         </footer>
     </section>
 
-    <!-- Modal aporte -->
-    <div id="modalAporteContainer">
+     <!-- Modal aporte -->
+     <div id="modalAporteContainer">
         <div id="miModal" class="modal">
             <div class="modal-contenido">
                 <span class="cerrar" onclick="cerrarModal()">&times;</span>
