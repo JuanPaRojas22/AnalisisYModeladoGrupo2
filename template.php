@@ -418,7 +418,7 @@ if (isset($_SESSION['id_usuario'])) {
                     });
             }
 
-        }
+        
 
             // Verificar si los elementos existen antes de agregar los eventos
             const botonFlotante = document.querySelector(".boton-flotante");
