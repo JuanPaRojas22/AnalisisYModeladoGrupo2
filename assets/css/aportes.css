@@ -26,8 +26,12 @@
   margin: 10% auto;
   padding: 20px;
   border-radius: 10px;
-  width: 600px;
+  width: 50%;
   max-width: 95%;
+  height: auto;
+  min-height: 400px;       /* Más alto visualmente */
+  max-height: 90vh;        /* Nunca más alto que la ventana */
+  overflow-y: auto;        /* Scroll interno si se necesita */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   position: relative;
 }
