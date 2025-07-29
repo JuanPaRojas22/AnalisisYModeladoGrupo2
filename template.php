@@ -82,7 +82,7 @@ if (isset($_SESSION['id_usuario'])) {
     <link href="assets/css/style-responsive.css" rel="stylesheet">
 
     <script src="assets/js/chart-master/Chart.js"></script>
-    <link rel="stylesheet" href="aportes.css" />
+    <link rel="stylesheet" href="assets/css/aportes.css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
