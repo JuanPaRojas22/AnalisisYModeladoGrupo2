@@ -327,6 +327,10 @@ if (isset($_SESSION['id_usuario'])) {
 
     <!-- Modal aporte -->
     <div id="modalAporteContainer">
+        <!-- dentro de .modal-contenido -->
+        <div id="mensaje-toast-modal"
+            style="display:none; padding:10px; margin-bottom:15px; border-radius:5px; font-weight: 600;"></div>
+
         <div id="miModal" class="modal">
             <div class="modal-contenido">
                 <span class="cerrar" onclick="cerrarModal()">&times;</span>
@@ -414,6 +418,22 @@ if (isset($_SESSION['id_usuario'])) {
                 console.error("No se encontró el formulario.");
             }
         });
+
+    </script>
+
+    <script>
+        function mostrarToastModal(mensaje, esError = false) {
+            const toast = document.getElementById("mensaje-toast-modal");
+            toast.textContent = mensaje;
+            toast.className = esError ? "error" : "exito";
+            toast.style.display = "block";
+
+            // Ocultar el mensaje luego de 3 segundos
+            setTimeout(() => {
+                toast.style.display = "none";
+            }, 3000);
+        }
+
 
     </script>
 
