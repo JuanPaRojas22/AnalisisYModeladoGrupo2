@@ -376,7 +376,7 @@ if (isset($_SESSION['id_usuario'])) {
                 const formData = new FormData();
                 formData.append("aporte", mensaje);
 
-                fetch("guardar_aporte.php", {
+                fetch("https://accesspersonel-fue0gkhkabeahsgd.canadacentral-01.azurewebsites.net/guardar_aporte.php", {
                     method: "POST",
                     body: formData
                 })
