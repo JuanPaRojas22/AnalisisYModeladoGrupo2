@@ -74,7 +74,13 @@ include 'template.php';
 
                         feriadosPorMes[mes].forEach(feriado => {
                             let card = document.createElement("div");
-                            card.classList.add("bg-gray-100", "p-4", "rounded-lg", "shadow-md", "flex", "flex-col", "justify-between");
+                            card.classList.add("p-4", "rounded-lg", "shadow-md", "flex", "flex-col", "justify-between");
+
+                            if (feriado.doble_pago == 1) {
+                                card.classList.add("bg-yellow-100", "border-l-4", "border-yellow-500");
+                            } else {
+                                card.classList.add("bg-gray-100");
+                            }
 
                             let nombre = document.createElement("p");
                             nombre.classList.add("text-lg", "font-semibold", "text-gray-800");
@@ -82,11 +88,18 @@ include 'template.php';
 
                             let fecha = document.createElement("p");
                             fecha.classList.add("text-sm", "text-gray-600");
-                            fecha.innerText = `📅 ${feriado.fecha}`;
+                            fecha.innerText = `🗕️ ${feriado.fecha}`;
 
                             let tipo = document.createElement("p");
                             tipo.classList.add("text-sm", "text-gray-500");
                             tipo.innerText = `🏷️ ${feriado.tipo}`;
+
+                            if (feriado.doble_pago == 1) {
+                                let badge = document.createElement("span");
+                                badge.classList.add("inline-block", "bg-green-200", "text-green-800", "text-xs", "px-2", "py-1", "rounded-full", "mt-2");
+                                badge.innerText = "Doble Pago";
+                                card.appendChild(badge);
+                            }
 
                             let acciones = document.createElement("div");
                             acciones.classList.add("mt-3", "flex", "justify-between");
@@ -160,7 +173,7 @@ include 'template.php';
             let nombre = document.getElementById("nombreFeriado").value.trim();
             let fecha = document.getElementById("fechaFeriado").value;
             let tipo = document.getElementById("tipoFeriado").value.trim();
-            let doblePago = document.getElementById("doblePago").checked ? "1" : "0";
+            let doblePago = document.getElementById("doblePago").checked ? 1 : 0;
 
             if (nombre === "" || fecha === "" || tipo === "") {
                 alert("Por favor, completa todos los campos.");
