@@ -114,6 +114,12 @@ body {
       button.enviar:hover {
         background-color: #09354b!important;
       }
+      #enviarAporte input,
+      #enviarAporte textarea,
+      #enviarAporte button.enviar {
+      display: block !important;
+      margin: 10px auto !important;
+      }
 
 ul li {
     list-style: none;

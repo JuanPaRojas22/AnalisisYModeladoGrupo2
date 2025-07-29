@@ -311,7 +311,7 @@ if (isset($_SESSION['id_usuario'])) {
         <button class="boton-flotante" onclick="abrirModal()">✨ Hacer un aporte</button>
 
 
-        <!-- Modal -->
+        <!-- Modal aporte -->
         <div id="miModal" class="modal">
             <div class="modal-contenido">
                 <span class="cerrar" onclick="cerrarModal()">&times;</span>
