@@ -52,7 +52,7 @@ include 'template.php';
         foreach ($feriados as $f) {
             $clases = "bg-gray-100 p-4 rounded-lg shadow-md";
             if ($f['doble_pago']) {
-                $clases .=  " bg-yellow-100 border-l-4 border-yellow-500";
+                $clases .= " bg-green-100 border-l-4 border-green-500";
             }
 
             echo '<div class="' . $clases . '">';
