@@ -78,3 +78,11 @@
 #modalAporteContainer .cerrar:hover {
   color: #000;
 }
+
+
+#modalAporteContainer {
+    font-family: Arial, sans-serif !important;
+    font-size: 16px !important;
+    margin: 0 !important;
+  }
+  
