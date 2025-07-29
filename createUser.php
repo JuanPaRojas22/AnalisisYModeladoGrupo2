@@ -200,21 +200,22 @@ $nacionalidades = $conn->query("SELECT id_nacionalidad, pais FROM nacionalidades
   <!-- Estilos personalizados -->
   <style>
     body {
-      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      padding: 0;
-    }
+  background: url('assets/img/loginbg.jpg') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+}
 
     .container {
-      max-width: 600px;
-      margin: 60px auto;
-      background: #ffffff;
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-    }
-
+  max-width: 600px;
+  margin: 60px auto;
+  background: rgba(255, 255, 255, 0.9); /* transparencia */
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px); /* difuminado sutil */
+}
     h2 {
       text-align: center;
       margin-bottom: 30px;
