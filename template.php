@@ -342,46 +342,62 @@ if (isset($_SESSION['id_usuario'])) {
 
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.getElementById("btnAbrirModal").addEventListener("click", function () {
-                document.getElementById("modalAporteContainer").style.display = "block";
-            });
+    // Estas funciones deben estar disponibles globalmente
+    function abrirModal() {
+        document.getElementById("modalAporteContainer").style.display = "block";
+    }
 
-            document.querySelector(".cerrar").addEventListener("click", function () {
-                document.getElementById("modalAporteContainer").style.display = "none";
-            });
+    function cerrarModal() {
+        document.getElementById("modalAporteContainer").style.display = "none";
+    }
 
-            document.getElementById("enviarAporte").addEventListener("submit", function (e) {
-                e.preventDefault();
-                // mismo código de fetch aquí...
-            });
+    function enviarAporte(event) {
+        event.preventDefault();
+        const mensaje = document.getElementById("aporte").value;
+
+        const formData = new FormData();
+        formData.append("aporte", mensaje);
+
+        fetch("guardar_aporte.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert("¡Aporte enviado con éxito!");
+                document.getElementById("aporte").value = "";
+                cerrarModal();
+            } else {
+                alert("Error: " + data.message);
+            }
+        })
+        .catch(err => {
+            alert("Error al enviar el aporte");
+            console.error(err);
         });
+    }
 
-        // Verificar si los elementos existen antes de agregar los eventos
-        const botonFlotante = document.querySelector(".boton-flotante");
+    // Cuando el DOM esté cargado, conectamos los eventos
+    document.addEventListener("DOMContentLoaded", function () {
+        const botonFlotante = document.getElementById("btnAbrirModal");
         const cerrarBoton = document.querySelector(".cerrar");
         const formulario = document.getElementById("enviarAporte");
 
         if (botonFlotante) {
             botonFlotante.addEventListener("click", abrirModal);
-        } else {
-            console.error("No se encontró el botón flotante.");
         }
 
         if (cerrarBoton) {
             cerrarBoton.addEventListener("click", cerrarModal);
-        } else {
-            console.error("No se encontró el botón de cerrar.");
         }
 
         if (formulario) {
             formulario.addEventListener("submit", enviarAporte);
-        } else {
-            console.error("No se encontró el formulario.");
         }
+    });
+</script>
 
-
-    </script>
 
 </body>
 
