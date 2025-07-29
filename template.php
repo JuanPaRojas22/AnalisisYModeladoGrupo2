@@ -330,7 +330,7 @@ if (isset($_SESSION['id_usuario'])) {
         <div id="miModal" class="modal">
             <div class="modal-contenido">
                 <div id="mensajeAporte"
-                    style="display: none; background-color:rgb(111, 238, 111); color:rgb(236, 247, 239); border: 1px solid #c3e6cb; padding: 10px; border-radius: 4px; margin-top: 10px; font-weight: bold;">
+                    style="display: none; background-color:rgba(131, 199, 125, 0.78); color:rgb(236, 247, 239); border: 1px solid #c3e6cb; padding: 10px; border-radius: 4px; margin-top: 10px; font-weight: bold;">
                 </div>
 
                 <span class="cerrar" onclick="cerrarModal()">&times;</span>
