@@ -186,164 +186,161 @@ $nacionalidades = $conn->query("SELECT id_nacionalidad, pais FROM nacionalidades
 
 
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="Dashboard">
-    <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Usuario</title>
 
-    <title>Crear usuario</title>
+  <!-- Bootstrap -->
+  <link href="assets/css/bootstrap.css" rel="stylesheet">
+  <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap core CSS -->
-    <link href="assets/css/bootstrap.css" rel="stylesheet">
-    <!--external css-->
-    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
-        
-    <!-- Custom styles for this template -->
-    <link href="assets/css/style.css" rel="stylesheet">
-    <link href="assets/css/style-responsive.css" rel="stylesheet">
+  <!-- Estilos personalizados -->
+  <style>
+    body {
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <style>
-        h2, td, div {
-            color: black !important;
-        }
-    
-    </style>
-  </head>
+    .container {
+      max-width: 600px;
+      margin: 60px auto;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
 
-  <body>
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+      font-weight: 600;
+    }
 
-      <!-- **********************************************************************************************************************************************************
-      MAIN CONTENT
-      *********************************************************************************************************************************************************** -->
+    label {
+      font-weight: 500;
+      margin-top: 10px;
+    }
 
-	  <div id="login-page">
-	  	<div class="container">
-	  	
-              <form class="form-login" action="createUser.php" method="POST" enctype="multipart/form-data">
-		        <h2 class="form-login-heading">Registro</h2>
-		        <div class="login-wrap">
+    .form-control {
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      transition: border 0.3s ease;
+    }
 
-	                
-				    <br>
-                    <label for="id_departamento">Departamento:</label>
-                <select id="id_departamento" name="id_departamento" class="form-control">
-                    <?php while ($row = $departamentos->fetch_assoc()) {
-                        echo '<option value="' . $row['id_departamento'] . '">' . $row['Nombre'] . '</option>';
-                    } ?>
-                </select>
+    .form-control:focus {
+      border-color: #4a6eff;
+      box-shadow: 0 0 5px rgba(74, 110, 255, 0.3);
+    }
 
-                <label for="id_ocupacion">Ocupación:</label>
-                <select id="id_ocupacion" name="id_ocupacion" class="form-control">
-                    <?php while ($row = $ocupaciones->fetch_assoc()) {
-                        echo '<option value="' . $row['id_ocupacion'] . '">' . $row['nombre_ocupacion'] . '</option>';
-                    } ?>
-                </select>
+    .btn-theme {
+      background-color: #4a6eff;
+      border: none;
+      color: white;
+      padding: 12px;
+      font-weight: bold;
+      border-radius: 8px;
+      width: 100%;
+      transition: background-color 0.3s ease;
+    }
 
-                <label for="id_nacionalidad">Nacionalidad:</label>
-                <select id="id_nacionalidad" name="id_nacionalidad" class="form-control">
-                    <?php while ($row = $nacionalidades->fetch_assoc()) {
-                        echo '<option value="' . $row['id_nacionalidad'] . '">' . $row['pais'] . '</option>';
-                    } ?>
-                </select>
+    .btn-theme:hover {
+      background-color: #3c56d4;
+      cursor: pointer;
+    }
 
-					<br>
-                    <label for="nombre">Nombre:</label>
-		            <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingrese su nombre" autofocus>
-                    <br>
-                    <label for="apellido">Apellidos:</label>
-		            <input type="text" id="apellido" name="apellido" class="form-control" placeholder="Ingrese sus apellidos" autofocus>
-                    <br>
-                    <label for="fecha_nacimiento">Nacimiento:</label>
-		            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control" placeholder="Ingrese su fecha de nacimiento" autofocus>
-                    <br>
-                    
-                    <br>
-                    <label for="correo_electronico">Correo electronico:</label>
-		            <input type="text" id="correo_electronico" name="correo_electronico" class="form-control" placeholder="Ingrese su correo electronico" autofocus>
-                    <br>
-                    <label for="username">Username:</label>
-		            <input type="text" id="username" name="username" class="form-control" placeholder="Ingrese su nombre su username" autofocus>
-                    <br>
-                    <label for="password">Contraseña:</label>
-		            <input type="password" id="password" name="password" class="form-control" placeholder="Ingrese su contraseña" autofocus>
-                    <br>
-                    <label for="numero_telefonico">Número telefónico:</label>
-		            <input type="text" id="numero_telefonico" name="numero_telefonico" class="form-control" placeholder="Ingrese su numero telefonico" autofocus>
-                    <br>
-                    <label for="direccion_imagen">Foto Perfil:</label>
-		            <input type="file" id="direccion_imagen" name="direccion_imagen" class="form-control" placeholder="Ingrese su foto de perfil" autofocus>
-                    
-                    <br>
-                    <label for="sexo">Sexo:</label>
-                    <select id="sexo" name="sexo" class="form-control">
-                        <option value="">Seleccione sexo</option>
-                        <option value="Masculino">M</option>
-                        <option value="Femenino">F</option>
-                    </select>
-        
-                    <br>
-                    <label for="estado_civil">Estado Civil:</label>
-		            <select id="estado_civil" name="estado_civil" class="form-control">
-                        <option value="">Seleccione estado civil</option>
-                        <option value="Soltero">Soltero</option>
-                        <option value="Casado">Casado</option>
-                        <option value="Divorciado">Divorciado</option>
-                    </select>
-                    <br>
-					
-		            
-		            <button class="btn btn-theme btn-block" type="submit"><i class="fa fa-unlock"></i> REGISTRARTE</button>
-		            <hr>
-		            
-		
-		        </div>
-		
-		          <!-- Modal -->
-		          <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
-		              <div class="modal-dialog">
-		                  <div class="modal-content">
-		                      <div class="modal-header">
-		                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		                          <h4 class="modal-title">Forgot Password ?</h4>
-		                      </div>
-		                      <div class="modal-body">
-		                          <p>Enter your e-mail address below to reset your password.</p>
-		                          <input type="text" name="email" placeholder="Email" autocomplete="off" class="form-control placeholder-no-fix">
-		
-		                      </div>
-		                      <div class="modal-footer">
-		                          <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-		                          <button class="btn btn-theme" type="button">Submit</button>
-		                      </div>
-		                  </div>
-		              </div>
-		          </div>
-		          <!-- modal -->
-		
-		      </form>	  	
-	  	
-	  	</div>
-	  </div>
+    .form-section {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
 
-    <!-- js placed at the end of the document so the pages load faster -->
-    <script src="assets/js/jquery.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
+<body>
 
-    <!--BACKSTRETCH-->
-    <!-- You can use an image of whatever size. This script will stretch to fit in any screen size.-->
-    <script type="text/javascript" src="assets/js/jquery.backstretch.min.js"></script>
-    <script>
-        $.backstretch("assets/img/login-bg.jpg", {speed: 500});
-    </script>
+  <div class="container">
+    <form action="createUser.php" method="POST" enctype="multipart/form-data">
+      <h2>Registro</h2>
 
+      <div class="form-section">
+        <label for="id_departamento">Departamento:</label>
+        <select id="id_departamento" name="id_departamento" class="form-control">
+          <?php while ($row = $departamentos->fetch_assoc()) {
+            echo '<option value="' . $row['id_departamento'] . '">' . $row['Nombre'] . '</option>';
+          } ?>
+        </select>
 
-  </body>
+        <label for="id_ocupacion">Ocupación:</label>
+        <select id="id_ocupacion" name="id_ocupacion" class="form-control">
+          <?php while ($row = $ocupaciones->fetch_assoc()) {
+            echo '<option value="' . $row['id_ocupacion'] . '">' . $row['nombre_ocupacion'] . '</option>';
+          } ?>
+        </select>
+
+        <label for="id_nacionalidad">Nacionalidad:</label>
+        <select id="id_nacionalidad" name="id_nacionalidad" class="form-control">
+          <?php while ($row = $nacionalidades->fetch_assoc()) {
+            echo '<option value="' . $row['id_nacionalidad'] . '">' . $row['pais'] . '</option>';
+          } ?>
+        </select>
+      </div>
+
+      <div class="form-section">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingrese su nombre">
+
+        <label for="apellido">Apellidos:</label>
+        <input type="text" id="apellido" name="apellido" class="form-control" placeholder="Ingrese sus apellidos">
+
+        <label for="fecha_nacimiento">Fecha de nacimiento:</label>
+        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control">
+      </div>
+
+      <div class="form-section">
+        <label for="correo_electronico">Correo electrónico:</label>
+        <input type="email" id="correo_electronico" name="correo_electronico" class="form-control" placeholder="correo@ejemplo.com">
+
+        <label for="username">Nombre de usuario:</label>
+        <input type="text" id="username" name="username" class="form-control" placeholder="Ingrese un nombre de usuario">
+
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" name="password" class="form-control" placeholder="Ingrese su contraseña">
+
+        <label for="numero_telefonico">Número telefónico:</label>
+        <input type="text" id="numero_telefonico" name="numero_telefonico" class="form-control" placeholder="Ej. 8888-8888">
+
+        <label for="direccion_imagen">Foto de perfil:</label>
+        <input type="file" id="direccion_imagen" name="direccion_imagen" class="form-control">
+      </div>
+
+      <div class="form-section">
+        <label for="sexo">Sexo:</label>
+        <select id="sexo" name="sexo" class="form-control">
+          <option value="">Seleccione sexo</option>
+          <option value="Masculino">Masculino</option>
+          <option value="Femenino">Femenino</option>
+        </select>
+
+        <label for="estado_civil">Estado civil:</label>
+        <select id="estado_civil" name="estado_civil" class="form-control">
+          <option value="">Seleccione estado civil</option>
+          <option value="Soltero">Soltero</option>
+          <option value="Casado">Casado</option>
+          <option value="Divorciado">Divorciado</option>
+        </select>
+      </div>
+
+      <button class="btn-theme" type="submit">
+        <i class="fa fa-user-plus"></i> Registrarte
+      </button>
+    </form>
+  </div>
+
+</body>
 </html>
