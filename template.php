@@ -329,6 +329,7 @@ if (isset($_SESSION['id_usuario'])) {
     <div id="modalAporteContainer">
         <div id="miModal" class="modal">
             <div class="modal-contenido">
+                <div id="mensajeAporte" style="display: none; color: green; margin-top: 10px;"></div>
 
                 <span class="cerrar" onclick="cerrarModal()">&times;</span>
                 <h2>Haz tu aporte</h2>
@@ -381,7 +382,8 @@ if (isset($_SESSION['id_usuario'])) {
                     .then(res => res.json())
                     .then(data => {
                         if (data.success) {
-                            alert("¡Aporte enviado con éxito!");
+                            document.getElementById("mensajeAporte").textContent = "¡Aporte enviado con éxito!";
+                            document.getElementById("mensajeAporte").style.display = "block";
                             document.getElementById("aporte").value = "";
                             cerrarModal();
                         } else {
