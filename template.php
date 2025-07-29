@@ -326,8 +326,8 @@ if (isset($_SESSION['id_usuario'])) {
                 <form id="enviarAporte">
                     <input type="text" value="<?= $_SESSION['nombre']; ?>" readonly>
                     <textarea id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
-                    <button type="submit" class="enviar">Enviar</button>
                 </form>
+                <button type="submit" class="enviar">Enviar</button>
             </div>
         </div>
 
