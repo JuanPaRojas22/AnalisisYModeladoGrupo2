@@ -199,7 +199,7 @@ $nacionalidades = $conn->query("SELECT id_nacionalidad, pais FROM nacionalidades
 
   <style>
     body {
-      background: url('assets/img/fondo-registro.png') no-repeat center center fixed;
+      background: url('assets/img/loginbg.jpg') no-repeat center center fixed;
       background-size: cover;
       font-family: 'Poppins', sans-serif;
       margin: 0;
@@ -333,13 +333,15 @@ $nacionalidades = $conn->query("SELECT id_nacionalidad, pais FROM nacionalidades
             <option value="Femenino">Femenino</option>
           </select>
 
-          <label for="estado_civil">Estado civil:</label>
-          <select id="estado_civil" name="estado_civil" class="form-control">
-            <option value="">Seleccione estado civil</option>
-            <option value="Soltero">Soltero</option>
-            <option value="Casado">Casado</option>
-            <option value="Divorciado">Divorciado</option>
-          </select>
+         <div class="form-group mt-3">
+  <label for="estado_civil">Estado civil:</label>
+  <select id="estado_civil" name="estado_civil" class="form-control">
+    <option value="">Seleccione estado civil</option>
+    <option value="Soltero">Soltero</option>
+    <option value="Casado">Casado</option>
+    <option value="Divorciado">Divorciado</option>
+  </select>
+</div>
         </div>
       </div>
 
