@@ -376,9 +376,28 @@ if (isset($_SESSION['id_usuario'])) {
                     method: "POST",
                     body: formData
                 })
-                    .then(res => res.json())
+                    .then(async res => {
+                        const contentType = res.headers.get("content-type");
+                        const text = await res.text();  // Leemos siempre el cuerpo como texto
+
+                        if (!res.ok) {
+                            // Error de red o 500, 404, etc.
+                            throw new Error("Error HTTP " + res.status + ":\n" + text);
+                        }
+
+                        if (!contentType || !contentType.includes("application/json")) {
+                            // No es un JSON válido
+                            throw new Error("Respuesta no es JSON:\n" + text);
+                        }
+
+                        try {
+                            return JSON.parse(text);
+                        } catch (e) {
+                            throw new Error("Error al parsear JSON:\n" + text);
+                        }
+                    })
                     .then(data => {
-                        console.log(data);
+                        console.log("Respuesta recibida:", data);
                         if (data.success) {
                             alert("¡Aporte enviado con éxito!");
                             document.getElementById("aporte").value = "";
@@ -389,8 +408,9 @@ if (isset($_SESSION['id_usuario'])) {
                     })
                     .catch(err => {
                         alert("Error al enviar el aporte");
-                        console.error(err);
+                        console.error("Detalle del error:", err);
                     });
+
             }
 
 
