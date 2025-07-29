@@ -382,11 +382,19 @@ if (isset($_SESSION['id_usuario'])) {
                     .then(res => res.json())
                     .then(data => {
                         if (data.success) {
-                            document.getElementById("mensajeAporte").textContent = "¡Aporte enviado con éxito!";
-                            document.getElementById("mensajeAporte").style.display = "block";
+                            const mensajeDiv = document.getElementById("mensajeAporte");
+                            mensajeDiv.textContent = "¡Aporte enviado con éxito!";
+                            mensajeDiv.style.display = "block";
+
                             document.getElementById("aporte").value = "";
-                            cerrarModal();
-                        } else {
+
+                            // Esperar 1 segundo antes de cerrar el modal para que el usuario vea el mensaje
+                            setTimeout(() => {
+                                mensajeDiv.style.display = "none"; // opcional: ocultar después
+                                cerrarModal();
+                            }, 1000);
+                        }
+                        else {
                             alert("Error: " + data.message);
                         }
                     })
