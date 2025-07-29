@@ -325,12 +325,10 @@ if (isset($_SESSION['id_usuario'])) {
         </footer>
     </section>
 
-   <!-- Modal aporte -->
-   <div id="modalAporteContainer">
+    <!-- Modal aporte -->
+    <div id="modalAporteContainer">
         <div id="miModal" class="modal">
             <div class="modal-contenido">
-                <div id="mensaje-toast-modal"
-                    style="display:none; padding:10px; margin-bottom:15px; border-radius:5px; font-weight:600;"></div>
 
                 <span class="cerrar" onclick="cerrarModal()">&times;</span>
                 <h2>Haz tu aporte</h2>
@@ -422,21 +420,7 @@ if (isset($_SESSION['id_usuario'])) {
 
     </script>
 
-    <script>
-        function mostrarToastModal(mensaje, esError = false) {
-            const toast = document.getElementById("mensaje-toast-modal");
-            toast.textContent = mensaje;
-            toast.className = esError ? "error" : "exito";
-            toast.style.display = "block";
 
-            // Ocultar el mensaje luego de 3 segundos
-            setTimeout(() => {
-                toast.style.display = "none";
-            }, 3000);
-        }
-
-
-    </script>
 </body>
 
 
