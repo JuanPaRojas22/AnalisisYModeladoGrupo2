@@ -10,7 +10,7 @@ if (!isset($_SESSION['username'])) {
     exit;
 }
 
-$username = $_SESSION['username']; 
+$username = $_SESSION['username'];
 $aporte = $_POST['aporte'] ?? '';
 
 if (empty($aporte)) {
@@ -38,7 +38,8 @@ mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
 // Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
 if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
-    die("Error de conexión: " . mysqli_connect_error());
+    echo json_encode(['success' => false,'message' => 'Error de conexión: ' . mysqli_connect_error()]);
+    exit;
 }
 
 // Establecemos el charset
