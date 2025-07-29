@@ -348,13 +348,13 @@ if (isset($_SESSION['id_usuario'])) {
             // Función para abrir el modal
             function abrirModal() {
                 console.log("Modal abierto");
-                document.getElementById("miModal").style.display = "block";
+                document.getElementById("modalAporteContainer").style.display = "block";
             }
 
             // Función para cerrar el modal
             function cerrarModal() {
                 console.log("Modal cerrado");
-                document.getElementById("miModal").style.display = "none";
+                document.getElementById("modalAporteContainer").style.display = "none";
             }
 
             // Función para enviar el aporte
