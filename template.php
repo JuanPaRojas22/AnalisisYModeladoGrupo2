@@ -370,7 +370,7 @@ if (isset($_SESSION['id_usuario'])) {
                 const mensaje = document.getElementById("aporte").value.trim();
 
                 if (mensaje.length === 0) {
-                    mostrarToast("Por favor escribe un mensaje antes de enviar.", true);
+                    mostrarToastModal("Por favor escribe un mensaje antes de enviar.", true);
                     return;
                 }
 
@@ -384,15 +384,15 @@ if (isset($_SESSION['id_usuario'])) {
                     .then(res => res.json())
                     .then(data => {
                         if (data.success) {
-                            mostrarToast(data.message); // mensaje verde
+                            mostrarToastModal(data.message); // mensaje verde
                             document.getElementById("aporte").value = "";
                             cerrarModal();
                         } else {
-                            mostrarToast("Error: " + data.message, true); // mensaje rojo
+                            mostrarToastModal("Error: " + data.message, true); // mensaje rojo
                         }
                     })
                     .catch(err => {
-                        mostrarToast("Error al enviar el aporte", true);
+                        mostrarToastModal("Error al enviar el aporte", true);
                         console.error(err);
                     });
             }

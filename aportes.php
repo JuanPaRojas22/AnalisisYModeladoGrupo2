@@ -199,9 +199,7 @@ $result_aportes_usuario = $conn->query($query_aportes_usuario);
         </div>
 
     </div>
-    <div id="mensaje-toast"
-        style="display: none; position: fixed; top: 20px; right: 20px; padding: 15px 25px; color: white; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 9999;">
-    </div>
+
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
