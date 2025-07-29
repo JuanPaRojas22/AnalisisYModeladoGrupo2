@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+error_reporting(0);
+ini_set('display_errors', 0);
 session_start();
 
 // Verifica que el usuario esté logueado
@@ -62,7 +62,11 @@ $stmtUser->close();
 
 // Insertar en la tabla Aportes
 $stmt = $conn->prepare("INSERT INTO aportes (id_usuario, aporte) VALUES (?, ?)");
-$stmt->bind_param("is", $id_usuario, $aporte);
+if (!$stmt) {
+    echo json_encode(['success' => false, 'message' => 'Error en preparación de inserción aporte']);
+    exit;
+}
+
 
 if ($stmt->execute()) {
     echo json_encode(['success' => true, 'message' => 'Aporte guardado correctamente']);
@@ -72,4 +76,3 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $conn->close();
-?>
