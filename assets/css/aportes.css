@@ -4,7 +4,7 @@
   box-sizing: border-box !important;
   font-family: Arial, sans-serif !important;
   font-size: 16px !important;
-  color: white !important;
+  color: #000 !important;
   line-height: 1.5 !important;
   direction: ltr;
 }
@@ -34,8 +34,8 @@
 }
 
 #modalAporteContainer input,
-#modalAporteContainer textarea,
-#modalAporteContainer button {
+#modalAporteContainer textarea 
+{
   display: block;
   width: 90%;
   margin: 10px auto;
@@ -54,7 +54,7 @@
 
 #modalAporteContainer button.enviar {
   background-color: #09354b;
-  color: white;
+  color: rgb(255, 255, 255);
   padding: 10px 30px;
   border: none;
   cursor: pointer;
