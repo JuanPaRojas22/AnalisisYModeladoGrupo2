@@ -380,8 +380,30 @@ if (isset($_SESSION['id_usuario'])) {
                     method: "POST",
                     body: formData
                 })
-                    .then(res => res.json())
+                    .then(async res => {
+                        const contentType = res.headers.get("content-type");
+                        const text = await res.text(); // leer respuesta como texto siempre
+                        console.log("Respuesta cruda:", text); // 👈 ver lo que devuelve PHP
+
+                        if (!res.ok) {
+                            // error de red (404, 500, etc.)
+                            throw new Error(`HTTP ${res.status}:\n${text}`);
+                        }
+
+                        if (!contentType || !contentType.includes("application/json")) {
+                            // contenido no es JSON válido
+                            throw new Error("La respuesta no es JSON válida:\n" + text);
+                        }
+
+                        try {
+                            return JSON.parse(text);
+                        } catch (e) {
+                            throw new Error("Error al parsear JSON:\n" + text);
+                        }
+                    })
                     .then(data => {
+                        console.log("Respuesta parseada:", data);
+
                         if (data.success) {
                             mostrarToastModal(data.message); // mensaje verde
                             document.getElementById("aporte").value = "";
@@ -392,32 +414,34 @@ if (isset($_SESSION['id_usuario'])) {
                     })
                     .catch(err => {
                         mostrarToastModal("Error al enviar el aporte", true);
-                        console.error(err);
+                        console.error("ERROR DETECTADO:", err.message);
                     });
             }
 
+        }
+
             // Verificar si los elementos existen antes de agregar los eventos
             const botonFlotante = document.querySelector(".boton-flotante");
-            const cerrarBoton = document.querySelector(".cerrar");
-            const formulario = document.getElementById("enviarAporte");
+        const cerrarBoton = document.querySelector(".cerrar");
+        const formulario = document.getElementById("enviarAporte");
 
-            if (botonFlotante) {
-                botonFlotante.addEventListener("click", abrirModal);
-            } else {
-                console.error("No se encontró el botón flotante.");
-            }
+        if (botonFlotante) {
+            botonFlotante.addEventListener("click", abrirModal);
+        } else {
+            console.error("No se encontró el botón flotante.");
+        }
 
-            if (cerrarBoton) {
-                cerrarBoton.addEventListener("click", cerrarModal);
-            } else {
-                console.error("No se encontró el botón de cerrar.");
-            }
+        if (cerrarBoton) {
+            cerrarBoton.addEventListener("click", cerrarModal);
+        } else {
+            console.error("No se encontró el botón de cerrar.");
+        }
 
-            if (formulario) {
-                formulario.addEventListener("submit", enviarAporte);
-            } else {
-                console.error("No se encontró el formulario.");
-            }
+        if (formulario) {
+            formulario.addEventListener("submit", enviarAporte);
+        } else {
+            console.error("No se encontró el formulario.");
+        }
         });
 
     </script>
