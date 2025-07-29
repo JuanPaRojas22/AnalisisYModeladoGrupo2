@@ -146,7 +146,7 @@ if (isset($_SESSION['id_usuario'])) {
                     </li>
 
                     <li id="header_profile_bar" class="dropdown position-relative">
-                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#"  style="text-decoration: none;">
                             <i class="fa fa-user"></i>
                             <span class="session-dot"></span>
                         </a>

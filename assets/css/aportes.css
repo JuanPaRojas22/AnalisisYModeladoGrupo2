@@ -22,7 +22,7 @@
 }
 
 #modalAporteContainer .modal-contenido {
-  background-color: #fff;
+  background-color: #fff!important;
   margin: 10% auto;
   padding: 20px;
   border-radius: 10px;
