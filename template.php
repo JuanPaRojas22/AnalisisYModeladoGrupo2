@@ -329,17 +329,22 @@ if (isset($_SESSION['id_usuario'])) {
     <div id="modalAporteContainer">
         <div id="miModal" class="modal">
             <div class="modal-contenido">
+                <div id="mensaje-toast-modal"
+                    style="display:none; padding:10px; margin-bottom:15px; border-radius:5px; font-weight:600;"></div>
+
                 <span class="cerrar" onclick="cerrarModal()">&times;</span>
                 <h2>Haz tu aporte</h2>
                 <form id="enviarAporte">
                     <div><input type="text" value="<?= $_SESSION['nombre']; ?>" readonly></div>
-                    <div><textarea id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
+                    <div>
+                        <textarea id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
                     </div>
                     <div><button type="submit" class="enviar">Enviar</button></div>
                 </form>
             </div>
         </div>
     </div>
+
 
 
     <script>
@@ -362,10 +367,9 @@ if (isset($_SESSION['id_usuario'])) {
             function enviarAporte(event) {
                 event.preventDefault();
                 const mensaje = document.getElementById("aporte").value.trim();
-                console.log("Valor del textarea:", mensaje);
 
-                if (!mensaje) {
-                    alert("Por favor escribe un aporte antes de enviar.");
+                if (mensaje.length === 0) {
+                    mostrarToastModal("Por favor escribe un mensaje antes de enviar.", true);
                     return;
                 }
 
@@ -376,43 +380,21 @@ if (isset($_SESSION['id_usuario'])) {
                     method: "POST",
                     body: formData
                 })
-                    .then(async res => {
-                        const contentType = res.headers.get("content-type");
-                        const text = await res.text();  // Leemos siempre el cuerpo como texto
-
-                        if (!res.ok) {
-                            // Error de red o 500, 404, etc.
-                            throw new Error("Error HTTP " + res.status + ":\n" + text);
-                        }
-
-                        if (!contentType || !contentType.includes("application/json")) {
-                            // No es un JSON válido
-                            throw new Error("Respuesta no es JSON:\n" + text);
-                        }
-
-                        try {
-                            return JSON.parse(text);
-                        } catch (e) {
-                            throw new Error("Error al parsear JSON:\n" + text);
-                        }
-                    })
+                    .then(res => res.json())
                     .then(data => {
-                        console.log("Respuesta recibida:", data);
                         if (data.success) {
-                            alert("¡Aporte enviado con éxito!");
+                            mostrarToastModal(data.message); // mensaje verde
                             document.getElementById("aporte").value = "";
                             cerrarModal();
                         } else {
-                            alert("Error: " + data.message);
+                            mostrarToastModal("Error: " + data.message, true); // mensaje rojo
                         }
                     })
                     .catch(err => {
-                        alert("Error al enviar el aporte");
-                        console.error("Detalle del error:", err);
+                        mostrarToastModal("Error al enviar el aporte", true);
+                        console.error(err);
                     });
-
             }
-
 
             // Verificar si los elementos existen antes de agregar los eventos
             const botonFlotante = document.querySelector(".boton-flotante");
@@ -440,6 +422,21 @@ if (isset($_SESSION['id_usuario'])) {
 
     </script>
 
+    <script>
+        function mostrarToastModal(mensaje, esError = false) {
+            const toast = document.getElementById("mensaje-toast-modal");
+            toast.textContent = mensaje;
+            toast.className = esError ? "error" : "exito";
+            toast.style.display = "block";
+
+            // Ocultar el mensaje luego de 3 segundos
+            setTimeout(() => {
+                toast.style.display = "none";
+            }, 3000);
+        }
+
+
+    </script>
 </body>
 
 

@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+error_reporting(0);
+ini_set('display_errors', 0);
 session_start();
 
 // Verifica que el usuario esté logueado
@@ -10,7 +10,7 @@ if (!isset($_SESSION['username'])) {
     exit;
 }
 
-$username = $_SESSION['username']; 
+$username = $_SESSION['username'];
 $aporte = $_POST['aporte'] ?? '';
 
 if (empty($aporte)) {
@@ -25,28 +25,28 @@ $password = "admin123+";
 $dbname = "gestionEmpleados";
 $port = 3306;
 
+// Ruta al certificado CA para validar SSL
+$ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
+
 // Inicializamos mysqli
 $conn = mysqli_init();
 
-// Configuramos SSL (si es necesario)
+// Configuramos SSL
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
 mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
+
 // Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
 if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
-    echo json_encode(['success' => false, 'message' => 'Error de conexión: ' . mysqli_connect_error()]);
+    echo json_encode(['success' => false,'message' => 'Error de conexión: ' . mysqli_connect_error()]);
     exit;
 }
 
 // Establecemos el charset
-$conn->set_charset("utf8mb4");
+mysqli_set_charset($conn, "utf8mb4");
 
 // Obtener id_usuario desde username
 $stmtUser = $conn->prepare("SELECT id_usuario FROM usuario WHERE username = ?");
-if (!$stmtUser) {
-    echo json_encode(['success' => false, 'message' => 'Error en consulta: ' . $conn->error]);
-    exit;
-}
 $stmtUser->bind_param("s", $username);
 $stmtUser->execute();
 $resultUser = $stmtUser->get_result();
@@ -63,17 +63,16 @@ $stmtUser->close();
 // Insertar en la tabla Aportes
 $stmt = $conn->prepare("INSERT INTO aportes (id_usuario, aporte) VALUES (?, ?)");
 if (!$stmt) {
-    echo json_encode(['success' => false, 'message' => 'Error en inserción: ' . $conn->error]);
+    echo json_encode(['success' => false, 'message' => 'Error en preparación de inserción aporte']);
     exit;
 }
-$stmt->bind_param("is", $id_usuario, $aporte);
+
 
 if ($stmt->execute()) {
     echo json_encode(['success' => true, 'message' => 'Aporte guardado correctamente']);
 } else {
-    echo json_encode(['success' => false, 'message' => 'Error al guardar: ' . $stmt->error]);
+    echo json_encode(['success' => false, 'message' => 'Error al guardar']);
 }
 
 $stmt->close();
 $conn->close();
-?>
