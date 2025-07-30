@@ -67,6 +67,7 @@ if (isset($_SESSION['id_usuario'])) {
 
 
 
+
     <!-- Bootstrap core CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -81,6 +82,7 @@ if (isset($_SESSION['id_usuario'])) {
     <link href="assets/css/style-responsive.css" rel="stylesheet">
 
     <script src="assets/js/chart-master/Chart.js"></script>
+    <link rel="stylesheet" href="assets/css/aportes.css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -144,7 +146,7 @@ if (isset($_SESSION['id_usuario'])) {
                     </li>
 
                     <li id="header_profile_bar" class="dropdown position-relative">
-                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#" style="text-decoration: none;">
                             <i class="fa fa-user"></i>
                             <span class="session-dot"></span>
                         </a>
@@ -273,11 +275,11 @@ if (isset($_SESSION['id_usuario'])) {
                                 </a>
                             </li>
                             <li>
-    <a href="ver_feriados.php">
-        <i class="bi bi-calendar-event"></i>
-        <span>Feriados</span>
-    </a>
-</li>
+                                <a href="ver_feriados.php">
+                                    <i class="bi bi-calendar-event"></i>
+                                    <span>Feriados</span>
+                                </a>
+                            </li>
 
                             <li><a href="historial_salarios.php"><i class="bi bi-calendar3"></i>
                                     Historial Salarios</a></li>
@@ -294,11 +296,11 @@ if (isset($_SESSION['id_usuario'])) {
                                 </a>
                             </li>
                             <li>
-    <a href="tutorial.php">
-        <i class="bi bi-question-circle-fill"></i>
-        <span>Tutorial</span>
-    </a>
-</li>
+                                <a href="tutorial.php">
+                                    <i class="bi bi-question-circle-fill"></i>
+                                    <span>Tutorial</span>
+                                </a>
+                            </li>
 
                             </a>
 
@@ -315,28 +317,35 @@ if (isset($_SESSION['id_usuario'])) {
             </div>
         </aside>
 
-        <!-- Botón flotante 
         <button class="boton-flotante" onclick="abrirModal()">✨ Hacer un aporte</button>
-        -->
-
-        <!-- Modal -->
-        <!--  <div id="miModal" class="modal">
-            <div class="modal-contenido">
-                <span class="cerrar" onclick="cerrarModal()">&times;</span>
-                <h2>Haz tu aporte</h2>
-                <form id="enviarAporte">
-                    <input type="text" value=" echo $_SESSION['nombre']; ?>" readonly>
-                    <textarea  id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
-                    <button type="submit" class="enviar">Enviar</button>
-                </form>
-            </div>
-        </div>-->
 
         <!-- Footer -->
         <footer class="site-footer">
             <div class="text-center">2025 - Acces Perssonel</div>
         </footer>
     </section>
+
+    <!-- Modal aporte -->
+    <div id="modalAporteContainer">
+        <div id="miModal" class="modal">
+            <div class="modal-contenido">
+                <div id="mensajeAporte"
+                    style="display: none; background-color:rgba(131, 199, 125, 0.78); color:rgb(236, 247, 239); border: 1px solid #c3e6cb; padding: 10px; border-radius: 4px; margin-top: 10px; font-weight: bold;">
+                </div>
+
+                <span class="cerrar" onclick="cerrarModal()">&times;</span>
+                <h2>Haz tu aporte</h2>
+                <form id="enviarAporte">
+                    <div><input type="text" value="<?= $_SESSION['nombre']; ?>" readonly></div>
+                    <div>
+                        <textarea id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
+                    </div>
+                    <div><button type="submit" class="enviar">Enviar</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
 
     <script>
@@ -358,8 +367,12 @@ if (isset($_SESSION['id_usuario'])) {
             // Función para enviar el aporte
             function enviarAporte(event) {
                 event.preventDefault();
-                const mensaje = document.getElementById("aporte").value;
-                console.log("Enviando aporte:", mensaje);
+                const mensaje = document.getElementById("aporte").value.trim();
+
+                if (mensaje.length === 0) {
+                    mostrarToastModal("Por favor escribe un mensaje antes de enviar.", true);
+                    return;
+                }
 
                 const formData = new FormData();
                 formData.append("aporte", mensaje);
@@ -370,12 +383,22 @@ if (isset($_SESSION['id_usuario'])) {
                 })
                     .then(res => res.json())
                     .then(data => {
-                        console.log(data); // para ver qué responde PHP
                         if (data.success) {
-                            alert("¡Aporte enviado con éxito!");
+                            const mensajeDiv = document.getElementById("mensajeAporte");
+                            mensajeDiv.textContent = "¡Aporte enviado con éxito!";
+                            mensajeDiv.style.display = "block";
+
                             document.getElementById("aporte").value = "";
-                            cerrarModal(); // Cierra el modal tras enviar
-                        } else {
+
+                            // Esperar 1 segundo antes de cerrar el modal para que el usuario vea el mensaje
+                            setTimeout(() => {
+                                mensajeDiv.style.display = "none"; // opcional: ocultar después
+                                cerrarModal();
+                                location.reload();
+
+                            }, 3000);
+                        }
+                        else {
                             alert("Error: " + data.message);
                         }
                     })
@@ -383,6 +406,7 @@ if (isset($_SESSION['id_usuario'])) {
                         alert("Error al enviar el aporte");
                         console.error(err);
                     });
+
             }
 
             // Verificar si los elementos existen antes de agregar los eventos
@@ -410,6 +434,7 @@ if (isset($_SESSION['id_usuario'])) {
         });
 
     </script>
+
 
 </body>
 

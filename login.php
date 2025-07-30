@@ -221,57 +221,60 @@ if ($_SESSION['bloqueado_hasta'] !== null && time() < $_SESSION['bloqueado_hasta
                 <br>
                 <input type="password" name="password" class="form-control" placeholder="Password">
 
-                 <!-- Enlace para recuperar contraseña -->
-               <div style="margin-top: 10px; text-align: center;">
-    <a href="forgot_password.php" style="color: white; font-weight: bold; display: inline-block; width: 100%;">
-        ¿Olvidaste tu contraseña?
-    </a>
-                <!-- <label class="checkbox">
+                <!-- Enlace para recuperar contraseña -->
+                <div style="margin-top: 10px; text-align: center;">
+
+                    <!-- <label class="checkbox">
                         <span class="pull-right">
                             <a data-toggle="modal" href="login.php#myModal"> Forgot Password?</a>
                         </span>
                     </label> -->
-                <br>
-                <button class="btn btn-theme btn-block" type="submit"><i class="fa fa-lock"></i> ENTRAR</button>
-                <?php if ($error_message): ?>
-                    <p style="color: red;"><?php echo htmlspecialchars($error_message); ?></p>
-                <?php endif; ?>
-                <hr>
+                    <br>
+                    <button class="btn btn-theme btn-block" type="submit"><i class="fa fa-lock"></i> ENTRAR</button>
+                    <?php if ($error_message): ?>
+                        <p style="color: red;"><?php echo htmlspecialchars($error_message); ?></p>
+                    <?php endif; ?>
+                    <hr>
 
 
-                <div class="registration" style="font-weight: bold;">
-                    ¿No tienes cuenta?<br />
-                    <a class="" href="createUser.php" style="font-weight: bold;">
-                        Registrate aquí
-                    </a>
-                </div>
+                    <div class="registration" style="font-weight: bold;">
+                        ¿No tienes cuenta?<br />
+                        <a class="" href="createUser.php" style="font-weight: bold;">
+                            Registrate aquí
+                        </a>
+
+                        <a href="forgot_password.php"
+                            style="color: white; font-weight: bold; display: inline-block; width: 100%;">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                    </div>
         </form>
     </div>
 
-<!-- Modal -->
-<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Forgot Password ?</h4>
-            </div>
-            <div class="modal-body">
-                <p>Enter your e-mail address below to reset your password.</p>
-                <input type="text" name="email" placeholder="Email" autocomplete="off"
-                    class="form-control placeholder-no-fix">
+    <!-- Modal -->
+    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Forgot Password ?</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Enter your e-mail address below to reset your password.</p>
+                    <input type="text" name="email" placeholder="Email" autocomplete="off"
+                        class="form-control placeholder-no-fix">
 
-            </div>
-            <div class="modal-footer">
-                <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                <button class="btn btn-theme" type="button">Submit</button>
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                    <button class="btn btn-theme" type="button">Submit</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<!-- modal -->
+    <!-- modal -->
 
-</form>
+    </form>
 
 </div>
 </div>

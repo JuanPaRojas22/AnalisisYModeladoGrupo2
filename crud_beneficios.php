@@ -1,5 +1,7 @@
 <?php
 session_start();
+header('Content-Type: application/json'); 
+
 // Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";

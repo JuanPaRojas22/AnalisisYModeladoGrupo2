@@ -47,6 +47,7 @@ $result_aportes_usuario = $conn->query($query_aportes_usuario);
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,7 +60,7 @@ $result_aportes_usuario = $conn->query($query_aportes_usuario);
     <link href="assets/css/style-responsive.css" rel="stylesheet">
 
     <style>
-       body {
+        body {
             font-family: 'Ruda', sans-serif;
             background-color: #f7f7f7;
             margin: 0;
@@ -73,19 +74,23 @@ $result_aportes_usuario = $conn->query($query_aportes_usuario);
         }
 
         .accordion-button {
-            background-color: #147964; /* Pine green */
+            background-color: #147964;
+            /* Pine green */
             color: white;
             border: none;
             border-radius: 8px;
         }
 
         .accordion-button:not(.collapsed) {
-            background-color: #147964; /* Pine Green */
-            color: white;  /* Text color for the opened state */
+            background-color: #147964;
+            /* Pine Green */
+            color: white;
+            /* Text color for the opened state */
         }
 
         .accordion-button:not(.collapsed) .accordion-icon {
-            color: #000000;  /* Black color for the arrow when opened */
+            color: #000000;
+            /* Black color for the arrow when opened */
         }
 
         .accordion-item {
@@ -102,7 +107,8 @@ $result_aportes_usuario = $conn->query($query_aportes_usuario);
         }
 
         .btn-primary {
-            background-color: #147964; /* Pine green */
+            background-color: #147964;
+            /* Pine green */
             border-color: #147964;
             font-size: 16px;
             padding: 10px 20px;
@@ -110,7 +116,8 @@ $result_aportes_usuario = $conn->query($query_aportes_usuario);
         }
 
         .btn-primary:hover {
-            background-color: #116B57; /* Slightly darker for hover */
+            background-color: #116B57;
+            /* Slightly darker for hover */
         }
 
         .form-container {
@@ -146,50 +153,60 @@ $result_aportes_usuario = $conn->query($query_aportes_usuario);
         h3 {
             font-size: 32px;
             font-weight: bold;
-            color: #116B57; /* Midnight Green for titles */
+            color: #116B57;
+            /* Midnight Green for titles */
         }
 
         .preguntas-titulo {
             font-size: 28px;
             font-weight: bold;
-            color: #137266; /* Pine Green */
+            color: #137266;
+            /* Pine Green */
         }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <h3>Aportes de los Usuarios</h3>
+    <div class="container">
+        <h3>Aportes de los Usuarios</h3>
 
-    <div class="accordion" id="faqAccordion">
-        <?php if ($result_aportes_usuario->num_rows > 0): ?>
-            <?php $i = 0; ?>
-            <?php while ($row = $result_aportes_usuario->fetch_assoc()): ?>
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="heading<?php echo $i; ?>">
-                        <button class="accordion-button <?php echo ($i === 0) ? '' : 'collapsed'; ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?php echo $i; ?>" aria-expanded="true" aria-controls="collapse<?php echo $i; ?>">
-                        <?php echo $row['nombre'] . ' ' . $row['apellido']; ?>
-                        </button>
-                    </h2>
-                    <div id="collapse<?php echo $i; ?>" class="accordion-collapse collapse <?php echo ($i === 0) ? 'show' : ''; ?>" aria-labelledby="heading<?php echo $i; ?>" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            <?php echo $row['aporte']; ?> <!-- Aquí puedes agregar el contenido del aporte -->
+        <div class="accordion" id="faqAccordion">
+            <?php if ($result_aportes_usuario->num_rows > 0): ?>
+                <?php $i = 0; ?>
+                <?php while ($row = $result_aportes_usuario->fetch_assoc()): ?>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading<?php echo $i; ?>">
+                            <button class="accordion-button <?php echo ($i === 0) ? '' : 'collapsed'; ?>" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapse<?php echo $i; ?>" aria-expanded="true"
+                                aria-controls="collapse<?php echo $i; ?>">
+                                <?php echo $row['nombre'] . ' ' . $row['apellido']; ?>
+                            </button>
+                        </h2>
+                        <div id="collapse<?php echo $i; ?>"
+                            class="accordion-collapse collapse <?php echo ($i === 0) ? 'show' : ''; ?>"
+                            aria-labelledby="heading<?php echo $i; ?>" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                <?php echo $row['aporte']; ?> <!-- Aquí puedes agregar el contenido del aporte -->
+                            </div>
                         </div>
                     </div>
-                </div>
-                <?php $i++; ?>
-            <?php endwhile; ?>
-        <?php else: ?>
-            <p>No hay Aportes disponibles.</p>
-        <?php endif; ?>
+                    <?php $i++; ?>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <p>No hay Aportes disponibles.</p>
+            <?php endif; ?>
+        </div>
+
     </div>
 
-</div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 
 </body>
+
 </html>
 
 <?php

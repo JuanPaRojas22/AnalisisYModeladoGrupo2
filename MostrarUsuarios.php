@@ -47,6 +47,8 @@ if ($id_departamento == 'all') {
 
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="aportes.css" />
+    <title>Mostrar Usuarios</title>
 </head>
 <!-- **********************************************************************************************************************************************************
       MAIN CONTENT
@@ -67,37 +69,43 @@ if ($id_departamento == 'all') {
                 </div>
             </div>
 
-            <!-- Filtros centrados con espacio entre ellos -->
-            <div class="d-flex justify-content-center gap-5 flex-wrap mb-5">
-                <!-- Filtro visualización -->
-                <form method="GET" action="MostrarUsuarios.php" class="d-flex gap-2 align-items-center"
-                    style="min-width: 300px;">
-                    <select name="id_departamento" id="departamento_filtro" class="form-select form-select-lg" required>
-                        <option value="all">Seleccione un departamento</option>
-                        <?php foreach ($departmento as $department): ?>
-                            <option value="<?= $department['id_departamento'] ?>" <?= (isset($id_departamento) && $id_departamento == $department['id_departamento']) ? 'selected' : '' ?>>
-                                <?= $department['Nombre'] ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                    <button class="btn btn-primary" type="submit">
+            <!-- Filtros-->
+            <div class="d-flex justify-content-center gap-4 flex-wrap mb-5 p-4 ">
+            <!-- Filtro visualización -->
+                <form method="GET" action="MostrarUsuarios.php" class="d-flex align-items-end gap-2">
+                    <div class="d-flex flex-column">
+                        <label for="departamento_filtro" class="form-label fw-bold mb-1">Filtrar por
+                            Departamento</label>
+                        <select name="id_departamento" id="departamento_filtro" class="form-select"
+                            style="min-width: 250px;" required>
+                            <option value="all">Seleccione un departamento</option>
+                            <?php foreach ($departmento as $department): ?>
+                                <option value="<?= $department['id_departamento'] ?>" <?= (isset($id_departamento) && $id_departamento == $department['id_departamento']) ? 'selected' : '' ?>>
+                                    <?= $department['Nombre'] ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary mb-3" type="submit">
                         <i class="bi bi-funnel-fill"></i>
                     </button>
                 </form>
 
                 <!-- Filtro reporte -->
-                <form method="GET" action="generar_reporte.php" class="d-flex gap-2 align-items-center"
-                    style="min-width: 300px;">
-                    <select name="id_departamento" id="departamento_reporte" class="form-select form-select-lg"
-                        required>
-                        <option value="">Seleccione un departamento</option>
-                        <?php foreach ($departmento as $department): ?>
-                            <option value="<?= $department['id_departamento'] ?>" <?= (isset($id_departamento) && $id_departamento == $department['id_departamento']) ? 'selected' : '' ?>>
-                                <?= $department['Nombre'] ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                    <button class="btn btn-danger" type="submit">
+                <form method="GET" action="generar_reporte.php" class="d-flex align-items-end gap-2">
+                    <div class="d-flex flex-column">
+                        <label for="departamento_reporte" class="form-label fw-bold mb-1">Generar Reporte</label>
+                        <select name="id_departamento" id="departamento_reporte" class="form-select"
+                            style="min-width: 250px;" required>
+                            <option value="">Seleccione un departamento</option>
+                            <?php foreach ($departmento as $department): ?>
+                                <option value="<?= $department['id_departamento'] ?>" <?= (isset($id_departamento) && $id_departamento == $department['id_departamento']) ? 'selected' : '' ?>>
+                                    <?= $department['Nombre'] ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <button class="btn btn-danger mb-3" type="submit">
                         <i class="bi bi-filetype-pdf"></i>
                     </button>
                 </form>
