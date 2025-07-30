@@ -596,7 +596,7 @@ mysqli_set_charset($conn, "utf8mb4");
                     <div class="container">
                         <h1>Mis Vacaciones</h1>
 
-                        <!-- Botones para Solicitar Vacación y Medio Día -->
+                        <!-- Botones para Solicitar Vacación y en donde si el usuario gusta, poder escoger una vacacion de medio dia. --> 
                         <div class="row"
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                             <!--
@@ -604,7 +604,6 @@ mysqli_set_charset($conn, "utf8mb4");
                                 Solicitar Vacacion
                             </button>
                             -->
-
                             <button onclick="window.location.href='SolicitarVacacionFormulario.php'">
                                 Solicitar Medio Día
                             </button>
@@ -614,30 +613,24 @@ mysqli_set_charset($conn, "utf8mb4");
                                 <strong>Días Restantes:</strong> <?php echo $diasRestantes; ?>
                             </div>
                         </div>
-
-
+                        
                         <!-- Fechas inicio y fin con botón PDF y buscador -->
                         <div class="row-fechas-pdf d-flex align-items-center gap-2 flex-wrap">
                             <label for="fecha_inicio">Fecha Inicio:</label>
                             <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" required
                                 style="flex: 1; width: 200px;">
-
                             <label for="fecha_fin">Fecha Fin:</label>
                             <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" required
                                 style="flex: 1; width: 200px;">
-
-                            <form action="generar_reporteVacaciones.php" method="GET"
-                                style="display: inline-block; width: auto;">
-                                <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($id_usuario ?? '') ?>">
-                                <input type="hidden" name="id_departamento" value="<?= htmlspecialchars($id_departamento ?? '') ?>">
-
+                            <form id="formulario_pdf" action="generar_reporteVacaciones.php" method="GET" style="display: inline-block; width: auto;">
+                                <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($id_usuario) ?>">
+                                <input type="hidden" name="id_departamento" value="<?= htmlspecialchars($id_departamento) ?>">
+                                <input type="hidden" id="fecha_inicio_hidden" name="fecha_inicio">
+                                <input type="hidden" id="fecha_fin_hidden" name="fecha_fin">
                                 <button type="submit" class="btn btn-success">Descargar PDF</button>
-
                             </form>
-
                         </div>
-
-
+                        
                         <!-- Buscador colocado a la derecha -->
                         <div class="mb-3" style="margin-left: 30%;">
                             <input type="date" id="buscarFecha" class="form-control" style="width: 400px;" />
@@ -899,6 +892,14 @@ mysqli_set_charset($conn, "utf8mb4");
                             }
                         });
                     });
+
+                document.getElementById("formulario_pdf").addEventListener("submit", function (e) {
+                const fechaInicio = document.getElementById("fecha_inicio").value;
+                const fechaFin = document.getElementById("fecha_fin").value;
+
+                document.getElementById("fecha_inicio_hidden").value = fechaInicio;
+                document.getElementById("fecha_fin_hidden").value = fechaFin;
+                });
                 
 
 
