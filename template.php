@@ -241,7 +241,12 @@ if (isset($_SESSION['id_usuario'])) {
                                     <ul class="sub">
                                         <li><a href="VerPlanilla.php"><i
                                                     class="bi bi-journal-bookmark"></i><span>Planilla</span></a></li>
-                                        <li><a href="admin_beneficios.php"><i class="bi bi-gift"></i>Beneficios</a></li>
+                                      
+
+                                         <?php if ($_SESSION['id_rol'] == 2): ?>
+                                            <li><a href="admin_beneficios.php"><i
+                                                        class="bi bi-gift"></i><span>Beneficios</span></a></li>
+                                        <?php endif; ?>
 
                                         <?php if ($_SESSION['id_rol'] == 2): ?>
                                             <li><a href="MostrarUsuarios.php"><i
