@@ -588,6 +588,46 @@ mysqli_set_charset($conn, "utf8mb4");
 .nav-tabs {
     border-bottom: 1px solid #ddd;
 }
+.acciones-botones {
+                            display: flex;
+                            gap: 5px;
+                            align-items: center; /* 🔧 Esto alinea verticalmente todo */
+                        }
+
+                        .acciones-botones form,
+                        .acciones-botones button {
+                            margin: 0;
+                            padding: 0;
+                        }
+
+                        .acciones-botones form button,
+                        .acciones-botones > button {
+                            font-size: 14px !important;
+                            padding: 6px 10px !important;
+                            border-radius: 4px;
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            height: 38px;
+                            width: 38px;
+                        }
+
+                        .acciones-botones button i,
+                        .acciones-botones form button i {
+                            font-size: 16px;
+                        }
+
+                        .btn-warning-disabled {
+                            background-color: #6c757d;
+                            color: white;
+                            border: none;
+                            transition: background-color 0.2s ease;
+                        }
+
+                        .btn-warning-disabled:hover {
+                            background-color: #5a6268;
+                        }
+
 
                     </style>
                 </head>
@@ -605,7 +645,7 @@ mysqli_set_charset($conn, "utf8mb4");
                             </button>
                             -->
                             <button onclick="window.location.href='SolicitarVacacionFormulario.php'">
-                                Solicitar Medio Día
+                                Solicitar Vacacion
                             </button>
 
                             <div
@@ -784,33 +824,46 @@ mysqli_set_charset($conn, "utf8mb4");
                                         }
 
                                         if ($filtro !== 'modificadas') {
-                                            echo "<td>
-                                                <div class='d-flex flex-column gap-2'>  
-                                                    <a class='btn btn-primary' style='font-size: 2.5rem;' href='detalleVacacionSolicitada.php?id=" . $row['id_vacacion'] . "' >
-                                                        <i class='bi bi-file-earmark-person'></i> 
-                                                    </a>";
-                                        } else{
-                                            echo "<td>
-                                    <a class='btn btn-success' style='font-size: 2.5rem;' href='detalleEditarVacacionUsuario.php?id=" . $row['id_registro'] . "' >
-                                        <i class='bi bi-file-earmark-person'></i> 
-                                    </a>
-                                </td>";
-                                        }
+    echo "<td><div class='acciones-botones'>";
 
-                                        
+    // Botón Detalle
+    echo '<form action="detalleVacacionSolicitada.php" method="POST">
+            <input type="hidden" name="id" value="' . htmlspecialchars($row['id_vacacion']) . '">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-file-earmark-person"></i>
+            </button>
+          </form>';
 
-                                        if ($filtro !== 'modificadas') {
-                                            $puedeEditar = $VacacionDAO->puedeEditarVacacion($row['id_vacacion']);
-                                            if ($puedeEditar) {
-                                                echo "<a class='btn btn-success' style='font-size: 2.5rem;' href='SolicitarEdicionVacacion.php?id=" . $row['id_vacacion'] . "' >
-                                                        <i class='bi bi-pencil-square'></i> 
-                                                    </a>";
-                                            } else {
-                                                echo "<button class='btn btn-secondary' style='font-size: 2.5rem;' onclick='alert(\"No se puede editar esta vacación. Deben faltar al menos 8 días para su inicio.\")'>
-                                                        <i class='bi bi-pencil-square'></i> 
-                                                    </button>";
-                                            }
-                                        }
+    // Botón Editar
+    $puedeEditar = $VacacionDAO->puedeEditarVacacion($row['id_vacacion']);
+    if ($puedeEditar) {
+        echo '<form action="SolicitarEdicionVacacion.php" method="POST">
+                <input type="hidden" name="id" value="' . htmlspecialchars($row['id_vacacion']) . '">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+              </form>';
+    } else {
+        // Mismo tamaño y diseño, pero gris-azulado con alerta
+        echo '<button class="btn-warning-disabled" onclick="alert(\'No se puede editar esta vacación. Deben faltar al menos 8 días para su inicio.\')">
+                <i class="bi bi-pencil-square"></i>
+              </button>';
+    }
+
+    echo "</div></td>";
+} else {
+    echo "<td><div class='acciones-botones'>";
+
+    // Botón Detalle para modificadas
+    echo '<form action="detalleEditarVacacionUsuario.php" method="POST">
+            <input type="hidden" name="id" value="' . htmlspecialchars($row['id_registro']) . '">
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-file-earmark-person"></i>
+            </button>
+          </form>';
+
+    echo "</div></td>";
+}
 
                                         echo "</div></td>";
                                         echo "</tr>";

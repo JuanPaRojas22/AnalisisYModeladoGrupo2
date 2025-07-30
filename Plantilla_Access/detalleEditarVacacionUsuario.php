@@ -13,8 +13,9 @@ $UsuarioDAO = new UsuarioDAOSImpl();
 $Historial_Solicitud_Modificacion_VacacionesDAO = new Historial_Solicitud_Modificacion_VacacionesDAOSImpl();
 
 // Verifica si el parámetro 'id' está presente en la URL
-if (isset($_GET['id'])) {
-    $id_historial_solicitud_modificacion = $_GET['id'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
+    $id_historial_solicitud_modificacion = (int) $_POST['id'];
+
 
     // Obtiene el id del usuario de la vacacion actual
     $id_usuario = $Historial_Solicitud_Modificacion_VacacionesDAO->getUserByIdHistorialSolicitudModificacion($id_historial_solicitud_modificacion);
@@ -73,16 +74,11 @@ if (isset($_GET['id'])) {
 
 <section id="main-content">
         <section class="wrapper site-min-height">
-            <!-- Botón para generar el PDF -->
-
-
             <div class="container">
                 <h1>Solicitud de Modificación de Vacaciones</h1>
                 <div class="btn-container-wrapper">
-                    <form method="get" action="SolicitarVacacion.php" accept-charset="UTF-8">
-                        <input type="hidden" name="id_usuario" value="<?php echo $user['id_usuario']; ?>">
-                        <button type="submit" class="btn-container"><i class="bi bi-arrow-return-left"></i></button>
-                    </form>
+                    <a href="SolicitarVacacion.php" class="btn-container"><i class="bi bi-arrow-return-left"></i></a>
+                    
                 </div>
                 <div class="user-img">
                     <?php if (!empty($user['direccion_imagen'])): ?>

@@ -30,10 +30,10 @@ if (isset($_GET['id'])) {
         echo "Usuario no encontrado.";
         exit;
     }
-} else {
-    echo "ID de usuario no proporcionado.";
-    exit;
-}
+    } else {
+        echo "ID de usuario no proporcionado.";
+        exit;
+    }
 
 ?>
 

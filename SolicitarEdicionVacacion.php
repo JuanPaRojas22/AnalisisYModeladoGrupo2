@@ -23,10 +23,10 @@ $rangosFechas = array_map(function ($row) {
 
 //var_dump($_SESSION);
 // Por si el id viene en la URL, guardarlo en sesión
-if (isset($_GET['id'])) {
-    $_SESSION['id_vacacion'] = $_GET['id'];
-
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
+    $_SESSION['id_vacacion'] = $_POST['id'];
 }
+
 
 // Se Verifica que id_vacacion esté disponible en sesión
 if (!isset($_SESSION['id_vacacion'])) {

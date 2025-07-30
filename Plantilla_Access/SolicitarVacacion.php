@@ -10,6 +10,7 @@ require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
 require_once __DIR__ . '/Impl/historialVacacionesDAOSImpl.php';
 require_once __DIR__ . '/Impl/Historial_Solicitud_Modificacion_VacacionesDAOSImpl.php';
 include 'conexion.php';
+
 include "template.php";
 
 // Obtener el ID del departamento del usuario desde la sesión
@@ -578,6 +579,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         .nav-tabs {
                             border-bottom: 1px solid #ddd;
                         }
+                        .acciones-botones {
+                            display: flex;
+                            gap: 5px;
+                            align-items: center; /* 🔧 Esto alinea verticalmente todo */
+                        }
+
+                        .acciones-botones form,
+                        .acciones-botones button {
+                            margin: 0;
+                            padding: 0;
+                        }
+
+                        .acciones-botones form button,
+                        .acciones-botones > button {
+                            font-size: 14px !important;
+                            padding: 6px 10px !important;
+                            border-radius: 4px;
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            height: 38px;
+                            width: 38px;
+                        }
+
+                        .acciones-botones button i,
+                        .acciones-botones form button i {
+                            font-size: 16px;
+                        }
+
+                        .btn-warning-disabled {
+                            background-color: #6c757d;
+                            color: white;
+                            border: none;
+                            transition: background-color 0.2s ease;
+                        }
+
+                        .btn-warning-disabled:hover {
+                            background-color: #5a6268;
+                        }
 
                     </style>
                 </head>
@@ -586,7 +626,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="container">
                         <h1>Mis Vacaciones</h1>
 
-                        <!-- Botones para Solicitar Vacación y Medio Día -->
+                        <!-- Botones para Solicitar Vacación y en donde si el usuario gusta, poder escoger una vacacion de medio dia. -->
                         <div class="row"
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                             <!--
@@ -595,7 +635,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </button>
                             -->
                             <button onclick="window.location.href='SolicitarVacacionFormulario.php'">
-                                Solicitar Medio Día
+                                Solicitar Vacacion
                             </button>
 
                             <div
@@ -615,24 +655,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" required
                                 style="flex: 1; width: 200px;">
 
-                            <form action="generar_reporteVacaciones.php" method="GET"
-                                style="display: inline-block; width: auto;">
+                            <form id="formulario_pdf" action="generar_reporteVacaciones.php" method="GET" style="display: inline-block; width: auto;">
                                 <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($id_usuario) ?>">
-                                <input type="hidden" name="id_departamento"
-                                    value="<?= htmlspecialchars($id_departamento) ?>">
+                                <input type="hidden" name="id_departamento" value="<?= htmlspecialchars($id_departamento) ?>">
+                                <input type="hidden" id="fecha_inicio_hidden" name="fecha_inicio">
+                                <input type="hidden" id="fecha_fin_hidden" name="fecha_fin">
                                 <button type="submit" class="btn btn-success">Descargar PDF</button>
-
                             </form>
 
                         </div>
-
 
                         <!-- Buscador colocado a la derecha -->
                         <div class="mb-3" style="margin-left: 30%;">
                             <input type="date" id="buscarFecha" class="form-control" style="width: 400px;" />
                         </div>
-
-
 
                     </div>
                     <div id="id01" class="modal">
@@ -780,33 +816,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         }
 
                                         if ($filtro !== 'modificadas') {
-                                            echo "<td>
-                                                <div class='d-flex flex-column gap-2'>  
-                                                    <a class='btn btn-primary' style='font-size: 2.5rem;' href='detalleVacacionSolicitada.php?id=" . $row['id_vacacion'] . "' >
-                                                        <i class='bi bi-file-earmark-person'></i> 
-                                                    </a>";
-                                        } else{
-                                            echo "<td>
-                                    <a class='btn btn-success' style='font-size: 2.5rem;' href='detalleEditarVacacionUsuario.php?id=" . $row['id_registro'] . "' >
-                                        <i class='bi bi-file-earmark-person'></i> 
-                                    </a>
-                                </td>";
-                                        }
+    echo "<td><div class='acciones-botones'>";
+
+    // Botón Detalle
+    echo '<form action="detalleVacacionSolicitada.php" method="POST">
+            <input type="hidden" name="id" value="' . htmlspecialchars($row['id_vacacion']) . '">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-file-earmark-person"></i>
+            </button>
+          </form>';
+
+    // Botón Editar
+    $puedeEditar = $VacacionDAO->puedeEditarVacacion($row['id_vacacion']);
+    if ($puedeEditar) {
+        echo '<form action="SolicitarEdicionVacacion.php" method="POST">
+                <input type="hidden" name="id" value="' . htmlspecialchars($row['id_vacacion']) . '">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+              </form>';
+    } else {
+        // Mismo tamaño y diseño, pero gris-azulado con alerta
+        echo '<button class="btn-warning-disabled" onclick="alert(\'No se puede editar esta vacación. Deben faltar al menos 8 días para su inicio.\')">
+                <i class="bi bi-pencil-square"></i>
+              </button>';
+    }
+
+    echo "</div></td>";
+} else {
+    echo "<td><div class='acciones-botones'>";
+
+    // Botón Detalle para modificadas
+    echo '<form action="detalleEditarVacacionUsuario.php" method="POST">
+            <input type="hidden" name="id" value="' . htmlspecialchars($row['id_registro']) . '">
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-file-earmark-person"></i>
+            </button>
+          </form>';
+
+    echo "</div></td>";
+}
+
 
                                         
-
-                                        if ($filtro !== 'modificadas') {
-                                            $puedeEditar = $VacacionDAO->puedeEditarVacacion($row['id_vacacion']);
-                                            if ($puedeEditar) {
-                                                echo "<a class='btn btn-success' style='font-size: 2.5rem;' href='SolicitarEdicionVacacion.php?id=" . $row['id_vacacion'] . "' >
-                                                        <i class='bi bi-pencil-square'></i> 
-                                                    </a>";
-                                            } else {
-                                                echo "<button class='btn btn-secondary' style='font-size: 2.5rem;' onclick='alert(\"No se puede editar esta vacación. Deben faltar al menos 8 días para su inicio.\")'>
-                                                        <i class='bi bi-pencil-square'></i> 
-                                                    </button>";
-                                            }
-                                        }
 
                                         echo "</div></td>";
                                         echo "</tr>";
@@ -889,6 +941,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         });
                     });
                 
+                document.getElementById("formulario_pdf").addEventListener("submit", function (e) {
+                const fechaInicio = document.getElementById("fecha_inicio").value;
+                const fechaFin = document.getElementById("fecha_fin").value;
+
+                document.getElementById("fecha_inicio_hidden").value = fechaInicio;
+                document.getElementById("fecha_fin_hidden").value = fechaFin;
+                });
 
 
             </script>

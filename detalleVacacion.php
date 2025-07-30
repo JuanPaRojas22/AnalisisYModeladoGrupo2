@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
 include "template.php";
