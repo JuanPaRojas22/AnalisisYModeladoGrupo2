@@ -209,7 +209,7 @@ if (isset($_SESSION['id_usuario'])) {
                             </li>-->
 
                             <li class="sub-menu">
-                                <?php if (in_array($id_rol, [1, 2])): ?>
+                                <?php if (in_array($id_rol, [2])): ?>
                                     <a href="javascript:;">
                                         <i class="fa fa-desktop"></i>
                                         <span>Reportes</span>
