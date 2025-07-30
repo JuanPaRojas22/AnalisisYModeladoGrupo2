@@ -262,11 +262,20 @@ if (isset($_SESSION['id_usuario'])) {
                                         <li><a href="registrarAusencia.php"><i class="bi bi-person-dash"></i>Registrar
                                                 Ausencia</a>
                                         </li>
-                                        <li><a href="reporteAusencias.php"><i class="bi bi-bar-chart"></i>Reporte de
-                                                Ausencias</a>
-                                        </li>
-                                        <li><a href="reporteAntiguedad.php"><i class="bi bi-clock-history"></i>Reporte de
-                                                Antigüedad</a></li>
+
+                                           <?php if ($_SESSION['id_rol'] == 2): ?>
+                                            <li><a href="reporteAusencias.php"><i
+                                                        class="bi bi-bar-chart"></i><span>Reporte de
+                                                Ausencias</span></a></li>
+                                        <?php endif; ?>
+
+                                        <?php if ($_SESSION['id_rol'] == 2): ?>
+                                            <li><a href="reporteAntiguedad.php"><i
+                                                        class="bi bi-clock-history"></i><span>Reporte de
+                                                Antigüedad</span></a></li>
+                                        <?php endif; ?>
+
+
                                         <li><a href="registrarBeneficiosAntiguedad.php"><i class="bi bi-gift"></i>Registrar
                                                 Antigüedad</a></li>
                                     <?php endif; ?>
