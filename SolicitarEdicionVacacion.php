@@ -44,7 +44,8 @@ if (!$id_usuario) {
 }
 
 // Logica para crear una vacacion utilizando el metodo de IngresarVacacion 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' 
+    && isset($_POST['fecha_inicio'], $_POST['fecha_fin'], $_POST['dias_solicitados'], $_POST['razon_modificacion'])) {
     // Capturar datos del formulario
     $id_vacacion = $vacacion_id;
     $fecha_solicitud = date('Y-m-d');
