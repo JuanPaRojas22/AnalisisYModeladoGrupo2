@@ -351,9 +351,12 @@ $userDepartment = $userDepartmentData ? $userDepartmentData['id_departamento'] :
                                 <td>" . $row['DiasRestantes'] . "</td>
                                 <td>" . $row['estado'] . "</td>
                                 <td>
-                                    <a class='btn btn-success' style='font-size: 2.5rem;' href='detalleEditarVacacion.php?id=" . $row['id_historial_solicitud_modificacion'] . "' >
-                                        <i class='bi bi-file-earmark-person'></i> 
-                                    </a>
+                                    <form action='detalleEditarVacacion.php' method='post'>
+                                        <input type='hidden' name='id' value='" . $row['id_historial_solicitud_modificacion'] . "'>
+                                        <button type='submit' class='btn btn-success' style='font-size: 2.5rem;'>
+                                            <i class='bi bi-file-earmark-person'></i>
+                                        </button>
+                                    </form>
                                 </td>
                               </tr>";
                                     }
