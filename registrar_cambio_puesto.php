@@ -201,7 +201,7 @@ include 'template.php';
                     $stmt1->execute();
 
                     // 2. Obtener bonos del usuario
-                    $sqlBonos = "SELECT SUM(monto) AS total_bonos FROM bonos_usuario WHERE id_usuario = ?";
+                    $sqlBonos = "SELECT SUM(monto_total) AS total_bonos FROM bonos WHERE id_usuario = ?";
                     $stmtBonos = $conn->prepare($sqlBonos);
                     $stmtBonos->bind_param("i", $id_usuario);
                     $stmtBonos->execute();
@@ -210,7 +210,7 @@ include 'template.php';
 
                     // 3. Obtener deducciones del usuario
         
-                    $sqlDeducciones = "SELECT SUM(monto) AS total_deducciones FROM deducciones_usuario WHERE id_usuario = ?";
+                    $sqlDeducciones = "SELECT SUM(monto) AS total_deducciones FROM deducciones WHERE id_usuario = ?";
                     $stmtDeducciones = $conn->prepare($sqlDeducciones);
                     $stmtDeducciones->bind_param("i", $id_usuario);
                     $stmtDeducciones->execute();
