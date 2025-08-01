@@ -200,28 +200,23 @@ include 'template.php';
                     $stmt1->bind_param("iidss", $id_usuario, $nuevo_puesto, $sueldo_nuevo, $motivo, $fecha_cambio);
                     $stmt1->execute();
 
-                    // 2. Obtener bonos del usuario
-                    $sqlBonos = "SELECT SUM(monto_total) AS total_bonos FROM bonos WHERE id_usuario = ?";
-                    $stmtBonos = $conn->prepare($sqlBonos);
-                    $stmtBonos->bind_param("i", $id_usuario);
-                    $stmtBonos->execute();
-                    $resultBonos = $stmtBonos->get_result()->fetch_assoc();
-                    $bonos = $resultBonos['total_bonos'] ?? 0;
-
-                    // 3. Obtener deducciones del usuario
+                    // 2. Eliminar bonos actuales para este usuario
+                    $sqlDelBonos = "DELETE FROM bonos WHERE id_usuario = ?";
+                    $stmtDelBonos = $conn->prepare($sqlDelBonos);
+                    $stmtDelBonos->bind_param("i", $id_usuario);
+                    $stmtDelBonos->execute();
         
-                    $sqlDeducciones = "SELECT SUM(monto_quincenal) AS total_deducciones FROM deducciones WHERE id_usuario = ?";
-                    $stmtDeducciones = $conn->prepare($sqlDeducciones);
-                    $stmtDeducciones->bind_param("i", $id_usuario);
-                    $stmtDeducciones->execute();
-                    $resultDeducciones = $stmtDeducciones->get_result()->fetch_assoc();
-                    $deducciones = $resultDeducciones['total_deducciones'] ?? 0;
+                    // 3. Eliminar deducciones actuales para este usuario
+                    $sqlDelDeducciones = "DELETE FROM deducciones WHERE id_usuario = ?";
+                    $stmtDelDeducciones = $conn->prepare($sqlDelDeducciones);
+                    $stmtDelDeducciones->bind_param("i", $id_usuario);
+                    $stmtDelDeducciones->execute();
 
                     $salario_neto = $sueldo_nuevo + $bonos - $deducciones;
                     // 4. Actualizar la tabla planilla con el nuevo sueldo, puesto y salario neto
-                    $sql2 = "UPDATE planilla SET salario_base = ?, salario_neto = ? WHERE id_usuario = ?";
+                    $sql2 = "UPDATE planilla SET salario_base = ? WHERE id_usuario = ?";
                     $stmt2 = $conn->prepare($sql2);
-                    $stmt2->bind_param("ddi", $sueldo_nuevo, $salario_neto, $id_usuario);
+                    $stmt2->bind_param("di", $sueldo_nuevo,  $id_usuario);
                     $stmt2->execute();
                     $conn->commit();
                     $mensaje = "Cambio de puesto registrado con éxito.";
