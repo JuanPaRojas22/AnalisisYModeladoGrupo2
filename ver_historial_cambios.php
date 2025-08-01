@@ -184,7 +184,7 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
                         hc.sueldo_nuevo
                     FROM Historial_Cargos hc
                     JOIN Usuario u ON hc.id_usuario = u.id_usuario
-                    JOIN historial_salarios u ON hs.id_usuario = u.id_usuario
+                    JOIN historial_salarios hs ON hs.id_usuario = u.id_usuario
                     ORDER BY hc.fecha_cambio DESC";
 
             $result = $conn->query($sql);
