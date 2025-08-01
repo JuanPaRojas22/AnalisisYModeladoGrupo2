@@ -186,7 +186,7 @@ include 'template.php';
             $sueldo_nuevo = floatval($_POST['sueldo_nuevo']);
             $motivo = $_POST['motivo'];
             $sueldo_anterior = floatval($_POST['sueldo_anterior']); //salario anterior 
-
+        
             $fecha_cambio = $_POST['fecha_cambio'];
 
             if ($sueldo_nuevo <= 0) {
@@ -194,6 +194,15 @@ include 'template.php';
             } else {
                 $conn->begin_transaction();
                 try {
+
+                    $sqlNombrePuesto = "SELECT nombre_ocupacion FROM ocupaciones WHERE id_ocupacion = ?";
+                    $stmtNombre = $conn->prepare($sqlNombrePuesto);
+                    $stmtNombre->bind_param("i", $nuevo_puesto);
+                    $stmtNombre->execute();
+                    $resultNombre = $stmtNombre->get_result();
+                    $rowNombre = $resultNombre->fetch_assoc();
+                    $nombre_nuevo_puesto = $rowNombre['nombre_ocupacion'];
+
                     // Insertar en historial_cargos
                     $sql1 = "INSERT INTO historial_cargos (
                             id_usuario, nuevo_puesto, sueldo_anterior ,sueldo_nuevo, motivo, fecha_cambio, fechacreacion, usuariocreacion
@@ -207,7 +216,7 @@ include 'template.php';
                     $stmtDelBonos = $conn->prepare($sqlDelBonos);
                     $stmtDelBonos->bind_param("i", $id_usuario);
                     $stmtDelBonos->execute();
-        
+
                     // 3. Eliminar deducciones actuales para este usuario
                     $sqlDelDeducciones = "DELETE FROM deducciones WHERE id_usuario = ?";
                     $stmtDelDeducciones = $conn->prepare($sqlDelDeducciones);
@@ -218,7 +227,7 @@ include 'template.php';
                     // 4. Actualizar la tabla planilla con el nuevo sueldo, puesto y salario neto
                     $sql2 = "UPDATE planilla SET salario_base = ? WHERE id_usuario = ?";
                     $stmt2 = $conn->prepare($sql2);
-                    $stmt2->bind_param("di", $sueldo_nuevo,  $id_usuario);
+                    $stmt2->bind_param("di", $sueldo_nuevo, $id_usuario);
                     $stmt2->execute();
                     $conn->commit();
                     $mensaje = "Cambio de puesto registrado con éxito.";
