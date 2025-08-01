@@ -199,7 +199,7 @@ include 'template.php';
                             id_usuario, nuevo_puesto, sueldo_anterior ,sueldo_nuevo, motivo, fecha_cambio, fechacreacion, usuariocreacion
                          ) VALUES (?, ?,?, ?, ?, ?, CURDATE(), 'usuario_logueado')";
                     $stmt1 = $conn->prepare($sql1);
-                    $stmt1->bind_param("iiddss", $id_usuario, $nuevo_puesto, $sueldo_anterior, $sueldo_nuevo, $motivo, $fecha_cambio);
+                    $stmt1->bind_param("isddss", $id_usuario, $nuevo_puesto, $sueldo_anterior, $sueldo_nuevo, $motivo, $fecha_cambio);
                     $stmt1->execute();
 
                     // 2. Eliminar bonos actuales para este usuario
