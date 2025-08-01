@@ -185,7 +185,7 @@ include 'template.php';
             $nuevo_puesto = intval($_POST['nuevo_puesto']); // id_ocupacion
             $sueldo_nuevo = floatval($_POST['sueldo_nuevo']);
             $motivo = $_POST['motivo'];
-            $sueldo_anterior = $_POST['sueldo_anterior']; //salario anterior 
+            $sueldo_anterior = floatval($_POST['sueldo_anterior']); //salario anterior 
 
             $fecha_cambio = $_POST['fecha_cambio'];
 
