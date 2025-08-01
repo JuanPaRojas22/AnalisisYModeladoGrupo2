@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Verifica si el usuario está autenticado
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
