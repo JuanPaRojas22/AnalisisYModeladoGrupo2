@@ -197,7 +197,7 @@ include 'template.php';
                     // Insertar en historial_cargos
                     $sql1 = "INSERT INTO historial_cargos (
                             id_usuario, nuevo_puesto, sueldo_anterior ,sueldo_nuevo, motivo, fecha_cambio, fechacreacion, usuariocreacion
-                         ) VALUES (?, ?, ?, ?, ?, CURDATE(), 'usuario_logueado')";
+                         ) VALUES (?, ?,?, ?, ?, ?, CURDATE(), 'usuario_logueado')";
                     $stmt1 = $conn->prepare($sql1);
                     $stmt1->bind_param("ididss", $id_usuario,$sueldo_anterior, $nuevo_puesto, $sueldo_nuevo, $motivo, $fecha_cambio);
                     $stmt1->execute();
