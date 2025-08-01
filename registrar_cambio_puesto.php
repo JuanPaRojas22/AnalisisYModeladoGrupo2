@@ -210,7 +210,7 @@ include 'template.php';
 
                     // 3. Obtener deducciones del usuario
         
-                    $sqlDeducciones = "SELECT SUM(monto) AS total_deducciones FROM deducciones WHERE id_usuario = ?";
+                    $sqlDeducciones = "SELECT SUM(monto_quincenal) AS total_deducciones FROM deducciones WHERE id_usuario = ?";
                     $stmtDeducciones = $conn->prepare($sqlDeducciones);
                     $stmtDeducciones->bind_param("i", $id_usuario);
                     $stmtDeducciones->execute();
