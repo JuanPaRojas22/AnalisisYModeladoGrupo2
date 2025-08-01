@@ -140,7 +140,7 @@ include 'template.php';
 
 <body>
     <div class="container">
-        <a class='btn' href="ver_historial_cambios.php" >Historial de Cambios</a>
+        <a class='btn' href="ver_historial_cambios.php">Historial de Cambios</a>
 
         <h1>Registrar Cambio de Puesto</h1>
 
@@ -200,7 +200,29 @@ include 'template.php';
                     $stmt1->bind_param("iidss", $id_usuario, $nuevo_puesto, $sueldo_nuevo, $motivo, $fecha_cambio);
                     $stmt1->execute();
 
+                    // 2. Obtener bonos del usuario
+                    $sqlBonos = "SELECT SUM(monto) AS total_bonos FROM bonos_usuario WHERE id_usuario = ?";
+                    $stmtBonos = $conn->prepare($sqlBonos);
+                    $stmtBonos->bind_param("i", $id_usuario);
+                    $stmtBonos->execute();
+                    $resultBonos = $stmtBonos->get_result()->fetch_assoc();
+                    $bonos = $resultBonos['total_bonos'] ?? 0;
 
+                    // 3. Obtener deducciones del usuario
+        
+                    $sqlDeducciones = "SELECT SUM(monto) AS total_deducciones FROM deducciones_usuario WHERE id_usuario = ?";
+                    $stmtDeducciones = $conn->prepare($sqlDeducciones);
+                    $stmtDeducciones->bind_param("i", $id_usuario);
+                    $stmtDeducciones->execute();
+                    $resultDeducciones = $stmtDeducciones->get_result()->fetch_assoc();
+                    $deducciones = $resultDeducciones['total_deducciones'] ?? 0;
+
+                    $salario_neto = $sueldo_nuevo + $bonos - $deducciones;
+                    // 4. Actualizar la tabla planilla con el nuevo sueldo, puesto y salario neto
+                    $sql2 = "UPDATE planilla SET salario_base = ?, id_ocupacion = ?, salario_neto = ? WHERE id_usuario = ?";
+                    $stmt2 = $conn->prepare($sql2);
+                    $stmt2->bind_param("didi", $sueldo_nuevo, $nuevo_puesto, $salario_neto, $id_usuario);
+                    $stmt2->execute();
                     $conn->commit();
                     $mensaje = "Cambio de puesto registrado con éxito.";
                 } catch (mysqli_sql_exception $e) {
