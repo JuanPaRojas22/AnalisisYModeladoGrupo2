@@ -205,10 +205,11 @@ include 'template.php';
 
                     // Insertar en historial_cargos
                     $sql1 = "INSERT INTO historial_cargos (
-                            id_usuario, nuevo_puesto, sueldo_anterior ,sueldo_nuevo, motivo, fecha_cambio, fechacreacion, usuariocreacion
-                         ) VALUES (?, ?,?, ?, ?, ?, CURDATE(), 'usuario_logueado')";
+                        id_usuario, nuevo_puesto, sueldo_anterior ,sueldo_nuevo, motivo, fecha_cambio, fechacreacion, usuariocreacion
+                    ) VALUES (?, ?, ?, ?, ?, ?, CURDATE(), 'usuario_logueado')";
                     $stmt1 = $conn->prepare($sql1);
-                    $stmt1->bind_param("isddss", $id_usuario, $nuevo_puesto, $sueldo_anterior, $sueldo_nuevo, $motivo, $fecha_cambio);
+                    $stmt1->bind_param("issddss", $id_usuario, $nombre_nuevo_puesto, $sueldo_anterior, $sueldo_nuevo, $motivo, $fecha_cambio);
+
                     $stmt1->execute();
 
                     // 2. Eliminar bonos actuales para este usuario
