@@ -185,6 +185,8 @@ include 'template.php';
             $nuevo_puesto = intval($_POST['nuevo_puesto']); // id_ocupacion
             $sueldo_nuevo = floatval($_POST['sueldo_nuevo']);
             $motivo = $_POST['motivo'];
+            $sueldo_anterior = $_POST['sueldo_anterior']; //salario anterior 
+
             $fecha_cambio = $_POST['fecha_cambio'];
 
             if ($sueldo_nuevo <= 0) {
@@ -194,10 +196,10 @@ include 'template.php';
                 try {
                     // Insertar en historial_cargos
                     $sql1 = "INSERT INTO historial_cargos (
-                            id_usuario, nuevo_puesto, sueldo_nuevo, motivo, fecha_cambio, fechacreacion, usuariocreacion
+                            id_usuario, nuevo_puesto, sueldo_anterior ,sueldo_nuevo, motivo, fecha_cambio, fechacreacion, usuariocreacion
                          ) VALUES (?, ?, ?, ?, ?, CURDATE(), 'usuario_logueado')";
                     $stmt1 = $conn->prepare($sql1);
-                    $stmt1->bind_param("iidss", $id_usuario, $nuevo_puesto, $sueldo_nuevo, $motivo, $fecha_cambio);
+                    $stmt1->bind_param("iidss", $id_usuario,$sueldo_anterior, $nuevo_puesto, $sueldo_nuevo, $motivo, $fecha_cambio);
                     $stmt1->execute();
 
                     // 2. Eliminar bonos actuales para este usuario
