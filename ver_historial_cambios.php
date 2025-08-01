@@ -181,10 +181,10 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
                         hc.fecha_cambio, 
                         hc.motivo, 
                         hc.fechacreacion, 
-                        hc.sueldo_nuevo
+                        hc.sueldo_nuevo,
+                        hc.sueldo_anterior
                     FROM Historial_Cargos hc
                     JOIN Usuario u ON hc.id_usuario = u.id_usuario
-                    JOIN historial_salarios hs ON hs.id_usuario = u.id_usuario
                     ORDER BY hc.fecha_cambio DESC";
 
             $result = $conn->query($sql);
@@ -213,6 +213,7 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
                             <th>Fecha de Cambio</th>
                             <th>Motivo</th>
                             <th>Fecha de Creación</th>
+                            <th>Sueldo Anterior</th>
                             <th>Sueldo Nuevo</th>
                         </tr>
                     </thead>
@@ -227,6 +228,7 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
                                     <td>{$row['fecha_cambio']}</td>
                                     <td>{$row['motivo']}</td>
                                     <td>{$row['fechacreacion']}</td>
+                                    <td>₡" . number_format($row['sueldo_anterior'], 2) . "</td>
                                     <td>₡" . number_format($row['sueldo_nuevo'], 2) . "</td>
                                 </tr>";
                             }
