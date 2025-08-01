@@ -219,9 +219,9 @@ include 'template.php';
 
                     $salario_neto = $sueldo_nuevo + $bonos - $deducciones;
                     // 4. Actualizar la tabla planilla con el nuevo sueldo, puesto y salario neto
-                    $sql2 = "UPDATE planilla SET salario_base = ?, id_ocupacion = ?, salario_neto = ? WHERE id_usuario = ?";
+                    $sql2 = "UPDATE planilla SET salario_base = ?, salario_neto = ? WHERE id_usuario = ?";
                     $stmt2 = $conn->prepare($sql2);
-                    $stmt2->bind_param("didi", $sueldo_nuevo, $nuevo_puesto, $salario_neto, $id_usuario);
+                    $stmt2->bind_param("ddi", $sueldo_nuevo, $salario_neto, $id_usuario);
                     $stmt2->execute();
                     $conn->commit();
                     $mensaje = "Cambio de puesto registrado con éxito.";
