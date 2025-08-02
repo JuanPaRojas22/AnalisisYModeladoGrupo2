@@ -85,7 +85,7 @@ require 'template.php';
 
             <div class="container">
                 <a href="VerPlanilla.php" class="button"><i class="bi bi-arrow-return-left"></i></a>
-                <h1 class="text-center" style="margin-left: 10%; color: black;" >Calcular Horas Extras</h1>
+                <h1 class="text-center" style="margin-left: 10%; color: black;">Calcular Horas Extras</h1>
 
                 <!-- Formulario con un botón para calcular horas extras -->
                 <form class='form' method="post" enctype="multipart/form-data">
@@ -133,7 +133,7 @@ require 'template.php';
         margin-right: 10%;
         font-weight: bold;
         color: black !important;
-        
+
     }
 
     h3 {
@@ -478,13 +478,21 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
                             $stmt->close();
                         }
 
+
                         // Actualizar salario neto
                         $nuevo_salario_neto = $salario_neto + $monto_total;
                         $query_update = "UPDATE planilla SET salario_neto = ? WHERE id_usuario = ?";
                         $stmt = $conn->prepare($query_update);
                         $stmt->bind_param("di", $nuevo_salario_neto, $id_usuario);
-                        if (!$stmt->execute()) {
-                            // Manejo de errores
+
+                        if ($stmt->execute()) {
+                            if ($stmt->affected_rows > 0) {
+                                echo "✅ Salario neto actualizado para ID usuario: $id_usuario (Nuevo neto: ₡$nuevo_salario_neto)<br>";
+                            } else {
+                                echo "⚠️ No se actualizó el salario neto. Ya podría estar actualizado o hubo un error lógico.<br>";
+                            }
+                        } else {
+                            echo "❌ Error al ejecutar el UPDATE: " . $stmt->error . "<br>";
                         }
                         $stmt->close();
                     }

@@ -37,7 +37,7 @@ if (!isset($_SESSION['id_usuario'])) {
     header("Location: login.php");
     exit;
 }
-$rol = $_SESSION['rol'];
+$rol = $_SESSION['id_rol'];
 $id_usuario = $_SESSION['id_usuario'];
 $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
 
