@@ -223,6 +223,12 @@ include 'template.php';
                     $stmtDelDeducciones->bind_param("i", $id_usuario);
                     $stmtDelDeducciones->execute();
 
+                    //4. Cambio de Puesto usuario
+                    $sqlusaurio = "UPDATE usuario SET id_ocupacion WHERE id_usuario = ?";
+                    $stmtDelusaurio = $conn->prepare($sqlusaurio);
+                    $stmt3->bind_param("ii", $nuevo_puesto, $id_usuario);
+                    $stmtDelusaurio->execute();
+
                     $salario_neto = $sueldo_nuevo + $bonos - $deducciones;
                     // 4. Actualizar la tabla planilla con el nuevo sueldo, puesto y salario neto
                     $sql2 = "UPDATE planilla SET salario_base = ? WHERE id_usuario = ?";
