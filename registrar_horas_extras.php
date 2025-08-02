@@ -481,34 +481,31 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
 
 
                         // Actualizar salario neto
+
                         $nuevo_salario_neto = $salario_neto + $monto_total;
                         $query_update = "UPDATE planilla SET salario_neto = ? WHERE id_usuario = ?";
                         $stmt = $conn->prepare($query_update);
-                        $stmt->bind_param("di", $nuevo_salario_neto, $id_usuario);
                         echo "Usuario: $nombre_empleado (ID: $id_usuario)<br>";
                         echo "Salario neto actual: $salario_neto<br>";
                         echo "Monto total a sumar: $monto_total<br>";
                         echo "Nuevo salario neto: $nuevo_salario_neto<br>";
+                        if ($stmt === false) {
+                            die("❌ Error al preparar el UPDATE: " . $conn->error);
+                        }
+                        $stmt->bind_param("di", $nuevo_salario_neto, $id_usuario);
                         if ($stmt->execute()) {
-                            if ($stmt->affected_rows > 0) {
-                                echo "✅ Salario neto actualizado para ID usuario: $id_usuario (Nuevo neto: ₡$nuevo_salario_neto)<br>";
-                            } else {
-                                echo "⚠️ No se actualizó el salario neto. Ya podría estar actualizado o hubo un error lógico.<br>";
-                            }
+                            echo "✅ UPDATE ejecutado para ID usuario: $id_usuario. Salario neto actualizado a ₡$nuevo_salario_neto<br>";
                         } else {
                             echo "❌ Error al ejecutar el UPDATE: " . $stmt->error . "<br>";
-                        }
-                        $stmt->close();
-                    }
-                } else {
-                    echo "Empleado '$nombre_empleado' no encontrado o no pertenece a tu departamento.<br>";
-                }
-            }
-        }
-        $rowStart += $maxRows; // Moverse al siguiente bloque
-    }
-
-    //echo "Horas extras procesadas correctamente.";
+                        } // Fin if ($monto_total > 0)
+                    } // Fin if ($stmt->fetch())
+                    $stmt->close();
+                } // Fin if (!empty($nombre_empleado))
+            } // Fin foreach ($fila as $i => $row)
+        $rowStart += $maxRows; // Dentro de while
+    } // Fin while ($rowStart <= $highestRow)
+} // Fin if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0)
+    echo "Horas extras procesadas correctamente.";
 
 }
 ?>
