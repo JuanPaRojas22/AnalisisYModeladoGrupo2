@@ -29,7 +29,7 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 // Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
 session_start();
-require 'template.php';
+
 
 ?>
 
