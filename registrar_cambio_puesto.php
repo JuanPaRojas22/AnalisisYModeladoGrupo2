@@ -224,7 +224,7 @@ include 'template.php';
                     $stmtDelDeducciones->execute();
 
                     //4. Cambio de Puesto usuario
-                    $sqlusaurio = "UPDATE usuario SET id_ocupacion WHERE id_usuario = ?";
+                    $sqlusaurio = "UPDATE usuario SET id_ocupacion = ? WHERE id_usuario = ?";
                     $stmtDelusaurio = $conn->prepare($sqlusaurio);
                     $stmt3->bind_param("ii", $nuevo_puesto, $id_usuario);
                     $stmtDelusaurio->execute();
