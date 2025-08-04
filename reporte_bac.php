@@ -59,7 +59,7 @@ $sql = "
 $resultado = $conn->query($sql);
 
 if (!$resultado) {
-    die("❌ Error en la consulta SQL: " . $conn->error);
+    die(" Error en la consulta SQL: " . $conn->error);
 }
 
 
@@ -228,7 +228,7 @@ tr:nth-child(even) td {
                     <th>Ocupación</th>
                     <th>Departamento</th>
                     <th>Tipo de Quincena</th>
-                    <th>Acciones</th>
+                    
                 </tr>
             </thead>
             <tbody>
@@ -245,11 +245,7 @@ tr:nth-child(even) td {
                     <td><?php echo $fila['nombre_ocupacion']; ?></td>
                     <td><?php echo $fila['departamento']; ?></td>
                     <td><?php echo $fila['tipo_quincena']; ?></td>
-                    <td>
-                        <button class="btn-more" onclick="toggleDetails('details-<?php echo $fila['id_usuario']; ?>')">
-                            Ver más
-                        </button>
-                    </td>
+                    
                 </tr>
                 <tr class="details" id="details-<?php echo $fila['id_usuario']; ?>">
                     <td colspan="12">

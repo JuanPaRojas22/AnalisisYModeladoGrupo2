@@ -218,7 +218,7 @@ tr:nth-child(even) td {
                     <th>Departamento</th>
                     <th>Tipo de Quincena</th>
                    
-                    <th>Acciones</th>
+                    
                 </tr>
             </thead>
             <tbody>
@@ -238,11 +238,7 @@ tr:nth-child(even) td {
                     
 
                     
-                    <td>
-                        <button class="btn-more" onclick="toggleDetails('details-<?php echo $fila['id_usuario']; ?>')">
-                            Ver más
-                        </button>
-                    </td>
+                    
                 </tr>
                 <tr class="details" id="details-<?php echo $fila['id_usuario']; ?>">
                     <td colspan="10">
