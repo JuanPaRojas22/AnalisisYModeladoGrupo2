@@ -356,7 +356,7 @@ class VacacionDAOSImpl implements VacacionDAO
         }
 
         // Se comprueba que los días totales de las fechas solicitadas no sean mayores o menores a la cantidad de días solicitados
-        if ($dias_solicitados != $diasTomado) {
+        if (!($diasTomado == $dias_solicitados || $diasTomado == $dias_solicitados - 0.5)) {
             $errores[] = "La cantidad de días solicitados no coincide con las fechas ingresadas";
         }
 
