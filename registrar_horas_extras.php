@@ -400,7 +400,8 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
                         $stmt->close();
         
                         $salario_quincenal = round($salario_base / 2, 2);
-                        $tarifa_hora = round($salario_quincenal / 8, 2);
+                        $tarifa_hora = round(($salario_base / 30) / 8, 2); // Salario mensual-diario-hora
+
         
                         $monto_hora_extra = round($horas_extra * $tarifa_hora, 2);
                         $monto_hora_extra_domingo = round($horas_extra_domingo * $tarifa_hora * 2, 2);
