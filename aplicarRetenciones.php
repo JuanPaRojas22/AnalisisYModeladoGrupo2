@@ -82,33 +82,23 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
             ];
             $salario_neto_quincenal = ($retenciones_mensuales['salario_base'] / 2) - $retenciones_quincenales['total_retenciones'];
 
-            // Verificar si existe planilla para usuario
+            // Verificar si existe planilla para el usuario
             $query_check = "SELECT id_planilla FROM Planilla WHERE id_usuario = ?";
             $stmt_check = $conn->prepare($query_check);
             $stmt_check->bind_param("i", $id_usuario);
             $stmt_check->execute();
             $result_check = $stmt_check->get_result();
 
-            if ($result_check->num_rows > 0) {
-              // UPDATE solo neto y retenciones
-              $row_check = $result_check->fetch_assoc();
-              $id_planilla = $row_check['id_planilla'];
-
-              $query = "UPDATE Planilla 
-                SET retenciones = ?, salario_neto = ?, fechamodificacion = CURDATE() 
-                WHERE id_planilla = ?";
+            if ($result_check->num_rows == 0) {
+              // Insertar solo salario_base si no existe planilla (el trigger actualizará el resto)
+              $query = "INSERT INTO Planilla (id_usuario, salario_base, fechacreacion) 
+            VALUES (?, ?, CURDATE())";
               $stmt = $conn->prepare($query);
-              $stmt->bind_param("ddi", $retenciones_quincenales['total_retenciones'], $salario_neto_quincenal, $id_planilla);
+              $stmt->bind_param("id", $id_usuario, $retenciones_quincenales['salario_base']);
               $stmt->execute();
-            } else {
-              // No existe planilla → INSERT con salario_base, retenciones y salario_neto
-              $query = "INSERT INTO Planilla (id_usuario, salario_base, retenciones, salario_neto, fechacreacion) 
-                VALUES (?, ?, ?, ?, CURDATE())";
-              $stmt = $conn->prepare($query);
-              $stmt->bind_param("iddd", $id_usuario, $retenciones_quincenales['salario_base'], $retenciones_quincenales['total_retenciones'], $salario_neto_quincenal);
-              $stmt->execute();
-              $id_planilla = $stmt->insert_id;
             }
+
+
 
             // Insertar deducciones en la tabla deducciones (igual que antes)
             $query_deduccion = "INSERT INTO deducciones 
@@ -234,7 +224,8 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
             font-size: 12px;
             line-height: 2;
             text-align: center;
-            white-space: normal; /* Permite que el texto haga salto de línea */
+            white-space: normal;
+            /* Permite que el texto haga salto de línea */
 
           }
         </style>
@@ -245,7 +236,7 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
               <div class="card" style="border-radius: 15px; padding: 30px; box-shadow: 0 4px 10px rgb(255, 255, 255);">
                 <div class="card-body">
                   <h2 class="text-center mb-4">Aplicar Deducción Salarial</h2>
-                  <a href="AgregarDeduccionesextra.php" class="btn" >Agregar Deducción Extra</a>
+                  <a href="AgregarDeduccionesextra.php" class="btn">Agregar Deducción Extra</a>
                   <form action="" method="POST" class="form-horizontal">
                     <!-- Select Employee -->
                     <div class="form-group">

@@ -447,21 +447,6 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
                                 $stmt_insert->close();
                             }
         
-                            // ✅ ACTUALIZAR SALARIO NETO
-                            $nuevo_salario_neto = $salario_neto + $monto_total;
-                            $query_update = "UPDATE planilla SET salario_neto = ? WHERE id_usuario = ?";
-                            $stmt_update = $conn->prepare($query_update);
-                            if ($stmt_update === false) {
-                                echo "❌ Error al preparar el UPDATE: " . $conn->error;
-                            } else {
-                                $stmt_update->bind_param("di", $nuevo_salario_neto, $id_usuario);
-                                if ($stmt_update->execute()) {
-                                    echo "✅ Salario neto actualizado para $nombre_empleado (ID: $id_usuario): ₡$nuevo_salario_neto<br>";
-                                } else {
-                                    echo "❌ Error al ejecutar el UPDATE: " . $stmt_update->error . "<br>";
-                                }
-                                $stmt_update->close();
-                            }
                         }
                     } else {
                         echo "⚠️ No se encontró empleado: $nombre_empleado<br>";
