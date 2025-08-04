@@ -1,5 +1,7 @@
 <?php
 ob_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 // Conexión a la base de datos
 // Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
@@ -27,7 +29,7 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 // Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
 session_start();
-require 'template.php';
+
 
 ?>
 
@@ -85,7 +87,7 @@ require 'template.php';
 
             <div class="container">
                 <a href="VerPlanilla.php" class="button"><i class="bi bi-arrow-return-left"></i></a>
-                <h1 class="text-center" style="margin-left: 10%; color: black;" >Calcular Horas Extras</h1>
+                <h1 class="text-center" style="margin-left: 10%; color: black;">Calcular Horas Extras</h1>
 
                 <!-- Formulario con un botón para calcular horas extras -->
                 <form class='form' method="post" enctype="multipart/form-data">
@@ -114,6 +116,7 @@ require 'template.php';
         background-color: #f7f7f7;
         margin: 0;
         padding: 0;
+        color: black;
     }
 
     .container {
@@ -133,7 +136,7 @@ require 'template.php';
         margin-right: 10%;
         font-weight: bold;
         color: black !important;
-        
+
     }
 
     h3 {
@@ -371,134 +374,109 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
         $fila = $hoja->rangeToArray('C' . $rowStart . ':I' . min($rowStart + $maxRows - 1, $highestRow), null, true, false);
 
         foreach ($fila as $i => $row) {
-            // Verificar si la fila contiene el encabezado "Nombre Completo" o si está vacía
-            if (empty($row[0]) || strtolower($row[0]) == 'nombre completo') {
-                continue; // Saltar fila si está vacía o contiene el encabezado
-            }
-
-            // Extraer los datos de las 3 columnas necesarias
-            $nombre_empleado = trim($row[0]); // Nombre Completo
-            // Imprime la celda (columna) y la fila actual
-            $celda_actual = 'G' . $rowStart; // 'G' es la columna de Horas Extras
-            //echo "Leyendo celda: " . $celda_actual . "<br>"; // Imprimir la celda
-            //echo "Valor crudo de la celda: " . $hoja->getCell($celda_actual)->getValue() . "<br>"; // Mostrar valor antes de convertir
-
-            // Extraer el valor de la celda correspondiente
-            $horas_extra = $hoja->getCell($celda_actual)->getValue();
-
-            // Verificar el tipo de valor antes de convertir
-            //echo "Tipo de valor antes de convertir: " . gettype($horas_extra) . "<br>";
-            //echo "Valor crudo de horas extra: " . $horas_extra . "<br>"; // Ver el valor antes de convertir
-
-            // Convertir el valor, reemplazando la coma por punto
-            $horas_extra = floatval(str_replace(',', '.', $horas_extra));
-            //echo "Horas Extra (convertido): " . $horas_extra . "<br>"; // Ver el valor después de convertir
-
-
-            $horas_extra_domingo = floatval(str_replace(',', '.', $row[5])); // H
-            $horas_extra_feriado = floatval(str_replace(',', '.', $row[6])); // I
-
-            // Verificar si el nombre del empleado no está vacío
+            if (empty($row[0]) || strtolower($row[0]) == 'nombre completo') continue;
+        
+            $nombre_empleado = trim($row[0]);
+            $horas_extra = floatval(str_replace(',', '.', $hoja->getCell('G' . $rowStart)->getValue()));
+            $horas_extra_domingo = floatval(str_replace(',', '.', $row[5]));
+            $horas_extra_feriado = floatval(str_replace(',', '.', $row[6]));
+        
             if (!empty($nombre_empleado)) {
-                // Dividir el nombre completo en nombre y apellido
-                $nombre_partes = explode(' ', $nombre_empleado); // Dividir por espacio
-                $nombre = $nombre_partes[0]; // El primer nombre
-                $apellido = implode(' ', array_slice($nombre_partes, 1)); // El resto es el apellido
-
-                // Buscar empleado en la base de datos por nombre y departamento
+                $nombre_partes = explode(' ', $nombre_empleado);
+                $nombre = $nombre_partes[0];
+                $apellido = implode(' ', array_slice($nombre_partes, 1));
+        
                 $query_emp = "SELECT planilla.id_usuario, planilla.id_planilla, planilla.salario_base, planilla.salario_neto 
-                FROM planilla 
-                INNER JOIN usuario ON planilla.id_usuario = usuario.id_usuario
-                WHERE usuario.nombre LIKE ? AND usuario.apellido LIKE ? AND usuario.id_departamento = ?";
-
+                              FROM planilla 
+                              INNER JOIN usuario ON planilla.id_usuario = usuario.id_usuario
+                              WHERE usuario.nombre LIKE ? AND usuario.apellido LIKE ? AND usuario.id_departamento = ?";
+        
                 $stmt = $conn->prepare($query_emp);
                 $stmt->bind_param("ssi", $nombre, $apellido, $departamento_admin);
-
-                if (!$stmt->execute()) {
-                    //echo "Error al ejecutar la consulta de empleado: " . $stmt->error . "<br>";
-                    //echo "ID del empleado encontrado: $id_usuario <br>";
-
-                }
-                $stmt->bind_result($id_usuario, $id_planilla, $salario_base, $salario_neto);
-
-                if ($stmt->fetch()) {
-                    $stmt->close();
-
-                    $salario_quincenal = round($salario_base / 2, 2);
-                    $tarifa_hora = round($salario_quincenal / 8, 2);
-
-                    // Mostrar valores de las horas extras y monto calculado para depuración
-                    //echo "Empleado: $nombre_empleado, Horas Extras: $horas_extra, Domingo: $horas_extra_domingo, Feriado: $horas_extra_feriado <br>";
-
-                    // Procesar horas extras (tanto normales como domingos y feriados)
-                    $monto_hora_extra = round($horas_extra * $tarifa_hora, 2);
-                    $monto_hora_extra_domingo = round($horas_extra_domingo * $tarifa_hora * 2, 2);
-                    $monto_hora_extra_feriado = round($horas_extra_feriado * $tarifa_hora * 4, 2);
-
-                    // Insertar horas extras (sumar las tres montos)
-                    $monto_total = $monto_hora_extra + $monto_hora_extra_domingo + $monto_hora_extra_feriado;
-
-                    // Validar que el monto total no sea 0
-                    if ($monto_total > 0) {
-                        $usuario_creacion = $_SESSION['usuario'] ?? 'Sistema';
-
-                        // Inserción para las horas extras normales
-                        if ($horas_extra > 0) {
-                            $query_insert = "INSERT INTO horas_extra (id_usuario, fecha, horas, monto_pago, tipo) 
-                         VALUES (?, NOW(), ?, ?, 'Horas Extra')";
-                            $stmt = $conn->prepare($query_insert);
-                            $stmt->bind_param("idd", $id_usuario, $horas_extra, $monto_hora_extra);
-                            if (!$stmt->execute()) {
-                                // Manejo de errores
+        
+                if ($stmt->execute()) {
+                    $stmt->bind_result($id_usuario, $id_planilla, $salario_base, $salario_neto);
+                    if ($stmt->fetch()) {
+                        $stmt->close();
+        
+                        $salario_quincenal = round($salario_base / 2, 2);
+                        $tarifa_hora = round($salario_quincenal / 8, 2);
+        
+                        $monto_hora_extra = round($horas_extra * $tarifa_hora, 2);
+                        $monto_hora_extra_domingo = round($horas_extra_domingo * $tarifa_hora * 2, 2);
+                        $monto_hora_extra_feriado = round($horas_extra_feriado * $tarifa_hora * 4, 2);
+                        $monto_total = $monto_hora_extra + $monto_hora_extra_domingo + $monto_hora_extra_feriado;
+        
+                        if ($monto_total > 0) {
+                            $usuario_creacion = $_SESSION['usuario'] ?? 'Sistema';
+        
+                            // INSERTAR HORAS EXTRA NORMALES
+                            if ($horas_extra > 0) {
+                                $query_insert = "INSERT INTO horas_extra (id_usuario, fecha, horas, monto_pago, tipo) 
+                                                 VALUES (?, NOW(), ?, ?, 'Horas Extra')";
+                                $stmt_insert = $conn->prepare($query_insert);
+                                $stmt_insert->bind_param("idd", $id_usuario, $horas_extra, $monto_hora_extra);
+                                if (!$stmt_insert->execute()) {
+                                    echo "❌ Error al insertar horas extra: " . $stmt_insert->error . "<br>";
+                                }
+                                $stmt_insert->close();
                             }
-                            $stmt->close();
-                        }
-
-                        // Inserción para las horas extras de domingo
-                        if ($horas_extra_domingo > 0) {
-                            $query_insert = "INSERT INTO horas_extra (id_usuario, fecha, horas, monto_pago, tipo) 
-                         VALUES (?, NOW(), ?, ?, 'Horas Extra Domingo')";
-                            $stmt = $conn->prepare($query_insert);
-                            $stmt->bind_param("idd", $id_usuario, $horas_extra_domingo, $monto_hora_extra_domingo);
-                            if (!$stmt->execute()) {
-                                // Manejo de errores
+        
+                            // DOMINGO
+                            if ($horas_extra_domingo > 0) {
+                                $query_insert = "INSERT INTO horas_extra (id_usuario, fecha, horas, monto_pago, tipo) 
+                                                 VALUES (?, NOW(), ?, ?, 'Horas Extra Domingo')";
+                                $stmt_insert = $conn->prepare($query_insert);
+                                $stmt_insert->bind_param("idd", $id_usuario, $horas_extra_domingo, $monto_hora_extra_domingo);
+                                if (!$stmt_insert->execute()) {
+                                    echo "❌ Error al insertar horas extra domingo: " . $stmt_insert->error . "<br>";
+                                }
+                                $stmt_insert->close();
                             }
-                            $stmt->close();
-                        }
-
-                        // Inserción para las horas extras de feriado
-                        if ($horas_extra_feriado > 0) {
-                            $query_insert = "INSERT INTO horas_extra (id_usuario, fecha, horas, monto_pago, tipo) 
-                         VALUES (?, NOW(), ?, ?, 'Horas Extra Feriado')";
-                            $stmt = $conn->prepare($query_insert);
-                            $stmt->bind_param("idd", $id_usuario, $horas_extra_feriado, $monto_hora_extra_feriado);
-                            if (!$stmt->execute()) {
-                                // Manejo de errores
+        
+                            // FERIADO
+                            if ($horas_extra_feriado > 0) {
+                                $query_insert = "INSERT INTO horas_extra (id_usuario, fecha, horas, monto_pago, tipo) 
+                                                 VALUES (?, NOW(), ?, ?, 'Horas Extra Feriado')";
+                                $stmt_insert = $conn->prepare($query_insert);
+                                $stmt_insert->bind_param("idd", $id_usuario, $horas_extra_feriado, $monto_hora_extra_feriado);
+                                if (!$stmt_insert->execute()) {
+                                    echo "❌ Error al insertar horas extra feriado: " . $stmt_insert->error . "<br>";
+                                }
+                                $stmt_insert->close();
                             }
-                            $stmt->close();
+        
+                            // ✅ ACTUALIZAR SALARIO NETO
+                            $nuevo_salario_neto = $salario_neto + $monto_total;
+                            $query_update = "UPDATE planilla SET salario_neto = ? WHERE id_usuario = ?";
+                            $stmt_update = $conn->prepare($query_update);
+                            if ($stmt_update === false) {
+                                echo "❌ Error al preparar el UPDATE: " . $conn->error;
+                            } else {
+                                $stmt_update->bind_param("di", $nuevo_salario_neto, $id_usuario);
+                                if ($stmt_update->execute()) {
+                                    echo "✅ Salario neto actualizado para $nombre_empleado (ID: $id_usuario): ₡$nuevo_salario_neto<br>";
+                                } else {
+                                    echo "❌ Error al ejecutar el UPDATE: " . $stmt_update->error . "<br>";
+                                }
+                                $stmt_update->close();
+                            }
                         }
-
-                        // Actualizar salario neto
-                        $nuevo_salario_neto = $salario_neto + $monto_total;
-                        $query_update = "UPDATE planilla SET salario_neto = ? WHERE id_usuario = ?";
-                        $stmt = $conn->prepare($query_update);
-                        $stmt->bind_param("di", $nuevo_salario_neto, $id_usuario);
-                        if (!$stmt->execute()) {
-                            // Manejo de errores
-                        }
+                    } else {
+                        echo "⚠️ No se encontró empleado: $nombre_empleado<br>";
                         $stmt->close();
                     }
                 } else {
-                    // echo "Empleado '$nombre_empleado' no encontrado o no pertenece a tu departamento.<br>";
+                    echo "❌ Error al buscar empleado: " . $stmt->error . "<br>";
                 }
             }
         }
-        $rowStart += $maxRows; // Moverse al siguiente bloque
-    }
+        // Fin foreach ($fila as $i => $row)
+        $rowStart += $maxRows; // Dentro de while
+    } // Fin while ($rowStart <= $highestRow)
+} // Fin if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0)
+    echo "Horas extras procesadas correctamente.";
 
-    //echo "Horas extras procesadas correctamente.";
-
-}
 ?>
 
 

@@ -140,7 +140,7 @@ include 'template.php';
 
 <body>
     <div class="container">
-        <a class='btn' href="ver_historial_cambios.php" >Historial de Cambios</a>
+        <a class='btn' href="ver_historial_cambios.php">Historial de Cambios</a>
 
         <h1>Registrar Cambio de Puesto</h1>
 
@@ -185,6 +185,8 @@ include 'template.php';
             $nuevo_puesto = intval($_POST['nuevo_puesto']); // id_ocupacion
             $sueldo_nuevo = floatval($_POST['sueldo_nuevo']);
             $motivo = $_POST['motivo'];
+            $sueldo_anterior = floatval($_POST['sueldo_anterior']); //salario anterior 
+        
             $fecha_cambio = $_POST['fecha_cambio'];
 
             if ($sueldo_nuevo <= 0) {
@@ -192,15 +194,47 @@ include 'template.php';
             } else {
                 $conn->begin_transaction();
                 try {
+
+                    $sqlNombrePuesto = "SELECT nombre_ocupacion FROM ocupaciones WHERE id_ocupacion = ?";
+                    $stmtNombre = $conn->prepare($sqlNombrePuesto);
+                    $stmtNombre->bind_param("i", $nuevo_puesto);
+                    $stmtNombre->execute();
+                    $resultNombre = $stmtNombre->get_result();
+                    $rowNombre = $resultNombre->fetch_assoc();
+                    $nombre_nuevo_puesto = $rowNombre['nombre_ocupacion'];
+
                     // Insertar en historial_cargos
                     $sql1 = "INSERT INTO historial_cargos (
-                            id_usuario, nuevo_puesto, sueldo_nuevo, motivo, fecha_cambio, fechacreacion, usuariocreacion
-                         ) VALUES (?, ?, ?, ?, ?, CURDATE(), 'usuario_logueado')";
+                            id_usuario, nuevo_puesto, sueldo_anterior ,sueldo_nuevo, motivo, fecha_cambio, fechacreacion, usuariocreacion
+                         ) VALUES (?, ?,?, ?, ?, ?, CURDATE(), 'usuario_logueado')";
                     $stmt1 = $conn->prepare($sql1);
-                    $stmt1->bind_param("iidss", $id_usuario, $nuevo_puesto, $sueldo_nuevo, $motivo, $fecha_cambio);
+                    $stmt1->bind_param("isddss", $id_usuario, $nuevo_puesto, $sueldo_anterior, $sueldo_nuevo, $motivo, $fecha_cambio);
                     $stmt1->execute();
 
+                    // 2. Eliminar bonos actuales para este usuario
+                    $sqlDelBonos = "DELETE FROM bonos WHERE id_usuario = ?";
+                    $stmtDelBonos = $conn->prepare($sqlDelBonos);
+                    $stmtDelBonos->bind_param("i", $id_usuario);
+                    $stmtDelBonos->execute();
 
+                    // 3. Eliminar deducciones actuales para este usuario
+                    $sqlDelDeducciones = "DELETE FROM deducciones WHERE id_usuario = ?";
+                    $stmtDelDeducciones = $conn->prepare($sqlDelDeducciones);
+                    $stmtDelDeducciones->bind_param("i", $id_usuario);
+                    $stmtDelDeducciones->execute();
+
+                    //4. Cambio de Puesto usuario
+                    $sqlusaurio = "UPDATE usuario SET id_ocupacion = ? WHERE id_usuario = ?";
+                    $stmtDelusaurio = $conn->prepare($sqlusaurio);
+                    $stmtDelusaurio->bind_param("ii", $nuevo_puesto, $id_usuario);
+                    $stmtDelusaurio->execute();
+
+                    $salario_neto = $sueldo_nuevo + $bonos - $deducciones;
+                    // 4. Actualizar la tabla planilla con el nuevo sueldo, puesto y salario neto
+                    $sql2 = "UPDATE planilla SET salario_base = ? WHERE id_usuario = ?";
+                    $stmt2 = $conn->prepare($sql2);
+                    $stmt2->bind_param("di", $sueldo_nuevo, $id_usuario);
+                    $stmt2->execute();
                     $conn->commit();
                     $mensaje = "Cambio de puesto registrado con éxito.";
                 } catch (mysqli_sql_exception $e) {

@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
 include "template.php";
@@ -13,8 +12,8 @@ include "template.php";
 $UsuarioDAO = new UsuarioDAOSImpl();
 $VacacionDAO = new VacacionDAOSImpl(); 
 // Verifica si el parámetro 'id' está presente en la URL
-if (isset($_GET['id'])) {
-    $id_vacacion = $_GET['id'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
+    $id_vacacion = (int) $_POST['id'];
     // Obtiene el id del usuario de la vacacion actual
     $id_usuario = $VacacionDAO->getUserByIdVacacion($id_vacacion);
 
@@ -81,18 +80,19 @@ if (isset($_GET['id'])) {
             <div class="container">
                 <h1>Solicitud de Vacación</h1>
                 <div class="btn-container-wrapper">
-                    <form method="get" action="vacaciones.php" accept-charset="UTF-8">
-                        <input type="hidden" name="id_usuario" value="<?php echo $user['id_usuario']; ?>">
+
+                    <form method="post" action="vacaciones.php">
                         <button type="submit" class="btn-container"><i class="bi bi-arrow-return-left"></i></button>
                     </form>
+
                     <div>
                     
                     <a href="procesarVacacion.php?id=<?php echo $id_vacacion; ?>&accion=aprobar" class="btn-aprove" style="background-color: #137266; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
-    <i class="bi bi-check-circle-fill"></i>
-</a>
-<a href="procesarVacacion.php?id=<?php echo $id_vacacion; ?>&accion=rechazar" class="btn-decline" style="background-color: #C64A4A; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
-    <i class="bi bi-x-square-fill"></i>
-</a>
+                        <i class="bi bi-check-circle-fill"></i>
+                    </a>
+                    <a href="procesarVacacion.php?id=<?php echo $id_vacacion; ?>&accion=rechazar" class="btn-decline" style="background-color: #C64A4A; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
+                        <i class="bi bi-x-square-fill"></i>
+                    </a>
             
                 </div>
 

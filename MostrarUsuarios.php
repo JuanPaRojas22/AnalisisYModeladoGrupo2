@@ -7,7 +7,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit;
 }
 // Verificar si el usuario es administrador (id_rol == 2)
-if ($_SESSION['id_rol'] == 3 OR $_SESSION['id_rol'] == 1) { // Verificar si el usuario es un empleado
+if ($_SESSION['id_rol'] == 3 or $_SESSION['id_rol'] == 1) { // Verificar si el usuario es un empleado
     header("Location: index.php"); // Redirigir a la página de inicio si no es administrador
     exit;
 }
@@ -46,17 +46,10 @@ if ($id_departamento == 'all') {
 <html lang="en">
 
 <head>
-
-
-  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="aportes.css" />
+    <title>Mostrar Usuarios</title>
 </head>
-
-
 <!-- **********************************************************************************************************************************************************
       MAIN CONTENT
       *********************************************************************************************************************************************************** -->
@@ -65,108 +58,103 @@ if ($id_departamento == 'all') {
 <section id="main-content">
     <section class="wrapper site-min-height">
         <div class="container">
-            <h1>Listado de Usuarios</h1>
+            <h1 class="text-center mb-5 fw-bold">Listado de Usuarios</h1>
 
-            <div class="specific-container"
-                style="display: flex; flex-direction: column; gap: 20px; width: 100%; align-items: center;">
-                <div class="row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                     <button onclick="window.location.href='registroEmpleado.php'">
-                                Registrar Usuario
-                     </button>
+            <!-- Botón Registrar Usuario -->
+            <div class="row mb-4">
+                <div class="col text-center">
+                    <a href="registroEmpleado.php" class="btn btn-primary px-4 shadow">
+                        Registrar Usuario
+                    </a>
                 </div>
-                <!-- Añadido flex-direction: column para apilar los formularios -->
-                <div class="row">
-                    <!-- Formulario 2 con select -->
-                    <form method="GET" action="MostrarUsuarios.php">
-                        <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-                            <select name="id_departamento" id="id_departamento"
-                                style="font-size: 14px; width: 240px; height: 40px;">
-                                <option value="all">Seleccione un departamento</option>
-                                <?php
-                                foreach ($departmento as $department) {
-                                    $selected = (isset($id_departamento) && $id_departamento == $department['id_departamento']) ? 'selected' : '';
-                                    echo "<option value='{$department['id_departamento']}' {$selected}>{$department['Nombre']}</option>";
-                                }
-                                ?>
-                            </select>
-                            <button class="btn" style="font-size: 1.5rem; color: #f1f1f1;">
-                                <i class="bi bi-funnel-fill"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <div class="row">
-                    <!-- Formulario 1 con select -->
-                    <form action="generar_reporte.php" method="GET" style="margin-bottom: 20px;">
-                        <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-                            <select class="form-select" name="id_departamento" id="id_departamento"
-                                style="font-size: 14px; width: 240px; height: 40px;" required>
-                                <option>Seleccione un departamento</option>
-                                <?php
-                                foreach ($departmento as $department) {
-                                    $selected = (isset($id_departamento) && $id_departamento == $department['id_departamento']) ? 'selected' : '';
-                                    echo "<option value='{$department['id_departamento']}' {$selected}>{$department['Nombre']}</option>";
-                                }
-                                ?>
-                            </select>
-                            <button class="btn" style="font-size: 2rem; color: #f1f1f1;">
-                                <i class="bi bi-filetype-pdf"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-
             </div>
-        </div>
+
+            <!-- Filtros-->
+            <div class="d-flex justify-content-center gap-4 flex-wrap mb-5 p-4 ">
+            <!-- Filtro visualización -->
+                <form method="GET" action="MostrarUsuarios.php" class="d-flex align-items-end gap-2">
+                    <div class="d-flex flex-column">
+                        <label for="departamento_filtro" class="form-label fw-bold mb-1">Filtrar por
+                            Departamento</label>
+                        <select name="id_departamento" id="departamento_filtro" class="form-select"
+                            style="min-width: 250px;" required>
+                            <option value="all">Seleccione un departamento</option>
+                            <?php foreach ($departmento as $department): ?>
+                                <option value="<?= $department['id_departamento'] ?>" <?= (isset($id_departamento) && $id_departamento == $department['id_departamento']) ? 'selected' : '' ?>>
+                                    <?= $department['Nombre'] ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary mb-3" type="submit">
+                        <i class="bi bi-funnel-fill"></i>
+                    </button>
+                </form>
+
+                <!-- Filtro reporte -->
+                <form method="GET" action="generar_reporte.php" class="d-flex align-items-end gap-2">
+                    <div class="d-flex flex-column">
+                        <label for="departamento_reporte" class="form-label fw-bold mb-1">Generar Reporte</label>
+                        <select name="id_departamento" id="departamento_reporte" class="form-select"
+                            style="min-width: 250px;" required>
+                            <option value="">Seleccione un departamento</option>
+                            <?php foreach ($departmento as $department): ?>
+                                <option value="<?= $department['id_departamento'] ?>" <?= (isset($id_departamento) && $id_departamento == $department['id_departamento']) ? 'selected' : '' ?>>
+                                    <?= $department['Nombre'] ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <button class="btn btn-danger mb-3" type="submit">
+                        <i class="bi bi-filetype-pdf"></i>
+                    </button>
+                </form>
+            </div>
 
 
+            <!-- Tarjetas de usuarios -->
+            <div class="row gx-4 gy-4">
+                <?php foreach ($users as $user): ?>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">
+                                    <?= htmlspecialchars($user['nombre']) . " " . htmlspecialchars($user['apellido']) ?>
+                                </h5>
+                                <p class="card-text">
+                                    <strong>Departamento:</strong> <?= htmlspecialchars($user['departamento_nombre']) ?><br>
+                                    <strong>Rol:</strong> <?= htmlspecialchars($user['rol_nombre']) ?><br>
+                                    <strong>Ocupación:</strong> <?= htmlspecialchars($user['Nombre_Ocupacion']) ?><br>
+                                    <strong>Nacionalidad:</strong> <?= htmlspecialchars($user['Nombre_Pais']) ?><br>
+                                    <strong>Correo:</strong> <?= htmlspecialchars($user['correo_electronico']) ?><br>
+                                    <strong>Teléfono:</strong> <?= htmlspecialchars($user['numero_telefonico']) ?>
+                                </p>
 
-
-        <!-- Contenedor principal con clase row -->
-        <div class="row px-8">
-            <?php foreach ($users as $user): ?>
-                <!-- Columna para cada tarjeta -->
-                <div class="col-12 col-sm-6 col-md-8 col-lg-4 mb-2">
-                    <div class="card shadow-lg border rounded-25" style="background-color: #fdfdfd;">
-                        <div class="card-body">
-                            <h5 class="card-title ">
-                                <?= htmlspecialchars($user['nombre']) . " " . htmlspecialchars($user['apellido']) ?>
-                            </h5>
-                            <p class="card-text mb-2">
-                                <strong>Departamento:</strong> <?= htmlspecialchars($user['departamento_nombre']) ?><br>
-                                <strong>Rol:</strong> <?= htmlspecialchars($user['rol_nombre']) ?><br>
-                                <strong>Ocupación:</strong> <?= htmlspecialchars($user['Nombre_Ocupacion']) ?><br>
-                                <strong>Nacionalidad:</strong> <?= htmlspecialchars($user['Nombre_Pais']) ?><br>
-                                <strong>Correo:</strong> <?= htmlspecialchars($user['correo_electronico']) ?><br>
-                                <strong>Teléfono:</strong> <?= htmlspecialchars($user['numero_telefonico']) ?>
-                            </p>
-                            <!-- Botones dentro del card-body -->
-                            <div class="d-flex justify-content-center gap-4">
-                                <a href="profileUser.php?id=<?= $user['id_usuario'] ?>"
-                                    class="btn btn-outline-primary btn-sm rounded-pill">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-                                <a href="detalle.php?id=<?= $user['id_usuario'] ?>"
-                                    class="btn btn-outline-info btn-sm rounded-pill">
-                                    <i class="bi bi-file-earmark-person"></i>
-                                </a>
-                                <a href="eliminar.php?id=<?= $user['id_usuario'] ?>"
-                                    class="btn btn-outline-danger btn-sm rounded-pill"
-                                    onclick="return confirm('¿Estás seguro de eliminar este usuario?')">
-                                    <i class="bi bi-trash"></i>
-                                </a>
+                                <div class="d-flex justify-content-center gap-2 mt-3">
+                                    <a href="profileUser.php?id=<?= $user['id_usuario'] ?>"
+                                        class="btn btn-outline-primary btn-sm rounded-pill" title="Editar">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a href="detalle.php?id=<?= $user['id_usuario'] ?>"
+                                        class="btn btn-outline-info btn-sm rounded-pill" title="Ver">
+                                        <i class="bi bi-file-earmark-person"></i>
+                                    </a>
+                                    <a href="eliminar.php?id=<?= $user['id_usuario'] ?>"
+                                        class="btn btn-outline-danger btn-sm rounded-pill" title="Eliminar"
+                                        onclick="return confirm('¿Estás seguro de eliminar este usuario?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
                             </div>
+
                         </div>
                     </div>
-                </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
         </div>
-
-
     </section>
-
 </section>
+
 
 
 <script>
@@ -190,6 +178,7 @@ if ($id_departamento == 'all') {
         });
     });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
 
@@ -199,15 +188,20 @@ if ($id_departamento == 'all') {
 <style>
     body {
         font-family: 'Ruda', sans-serif;
-        background-color: #f7f7f7;  /* Blanco cremoso */
+        background-color: #f7f7f7;
         margin: 0;
         padding: 0;
+        overflow-x: hidden;
     }
+
+
+
 
     .card-body {
         padding: 27px;
         margin-bottom: 0;
-        background-color: #f7f7f7;  /* Blanco cremoso */
+        background-color: #f7f7f7;
+        /* Blanco cremoso */
 
         /* Eliminar margen inferior */
         padding-bottom: 0;
@@ -222,16 +216,27 @@ if ($id_departamento == 'all') {
     }
 
     select {
-        width: 70%;
-        padding: 10px;
-        font-size: 16px;
+        width: 60% !important;
+        /* O usa un valor mayor que 70% si lo mantienes en un grid */
+        height: 50px;
+        /* Aumenta el alto */
+        padding: 12px 16px;
+        font-size: 24px;
+        /* Texto más grande */
+        font-weight: 500;
         border: 2px solid rgb(15, 15, 15);
-        border-radius: 5px;
+        border-radius: 8px;
         background: #f9f9f9;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.3s ease !important;
         text-align: center;
         color: black;
+
+    }
+
+    select option {
+        font-size: 15px;
+        padding: 10px;
     }
 
     select:hover {
@@ -245,31 +250,18 @@ if ($id_departamento == 'all') {
     }
 
     .container {
-        display: flex;
-        flex-direction: column;
-        background-color: #f7f7f7;  /* Blanco cremoso */
-
-        justify-content: flex-start;
-        /* Alinea hacia la parte superior */
-        align-items: center;
-        /* Centra los elementos horizontalmente */
-        padding: 10px;
         max-width: 100%;
+        padding: 10px 20px;
     }
 
 
-    .row {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-       
-    }
+
+
 
     h1 {
         text-align: center;
         color: #333;
         margin-bottom: 50px;
-        margin-right: 10%;
         font-weight: bold;
     }
 
@@ -280,24 +272,25 @@ if ($id_departamento == 'all') {
         margin-right: 10%;
         font-weight: bold;
     }
-    h5{
+
+    h5 {
         color: black;
         font-weight: bold;
     }
 
     .btn {
         display: inline-block;
-                        background-color: #0B4F6C;
-                        color: white;
-                        padding: 12px 20px;
-                        font-size: 16px;
-                        font-weight: bold;
-                        text-decoration: none;
-                        border-radius: 5px;
-                        margin-bottom: 20px;
-                        transition: background-color 0.3s;
-                        cursor: pointer;
-                        border: none;
+        background-color: #0B4F6C;
+        color: white;
+        padding: 12px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        transition: background-color 0.3s;
+        cursor: pointer;
+        border: none;
     }
 
 
@@ -329,7 +322,8 @@ if ($id_departamento == 'all') {
     }
 
     th {
-        background-color: #f7f7f7;  /* Blanco cremoso */
+        background-color: #f7f7f7;
+        /* Blanco cremoso */
         color: #fff;
     }
 
@@ -404,6 +398,12 @@ if ($id_departamento == 'all') {
         /* Distribuye el espacio entre los botones */
         width: 100%;
     }
+
+    .btn-align {
+        padding-top: 18px;
+        padding-bottom: 14px;
+    }
+
 
     .close-button {
         border: none;

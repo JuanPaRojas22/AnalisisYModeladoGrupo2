@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../Interfaces/UsuarioDAO.php';
 require_once __DIR__ . '/../Models/usuario.php';
+require 'conexion.php';
 
 class UsuarioDAOSImpl implements UsuarioDAO
 {

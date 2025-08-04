@@ -1,109 +1,89 @@
 <?php
-// Se hace la conexión a la base de datos
-// Parámetros de conexión
+session_start();
+$error_message = "";
+
+// Conexión a la base de datos
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
 $password = "admin123+";
 $dbname = "gestionEmpleados";
 $port = 3306;
-
-// Ruta al certificado CA para validar SSL
 $ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
 
-// Inicializamos mysqli
 $conn = mysqli_init();
-
-// Configuramos SSL
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
 mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
-
-// Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
 if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
     die("Error de conexión: " . mysqli_connect_error());
 }
 
-// Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
 
-//echo "Conectado correctamente con SSL.";
-
-
-// Inicializar sesión y variables de error
-session_start();
-$error_message = "";
-
-// Inicializar variables de intentos y bloqueo si no existen
+// Inicializar bloqueo por intentos fallidos
 if (!isset($_SESSION['intentos_fallidos'])) {
     $_SESSION['intentos_fallidos'] = 0;
     $_SESSION['bloqueado_hasta'] = null;
 }
 
-// Verificar si hay un bloqueo activo
+// Verifica si está bloqueado
 if ($_SESSION['bloqueado_hasta'] !== null && time() < $_SESSION['bloqueado_hasta']) {
     $tiempoRestante = $_SESSION['bloqueado_hasta'] - time();
     $minutos = floor($tiempoRestante / 60);
     $segundos = $tiempoRestante % 60;
     $error_message = "Cuenta bloqueada. Intente nuevamente en $minutos minutos y $segundos segundos.";
 } else {
-    // Si el método de solicitud es POST
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = $_POST['username'] ?? '';
         $password = $_POST['password'] ?? '';
 
         if (!empty($username) && !empty($password)) {
-            $sql = "SELECT * FROM USUARIO WHERE username = ?";
+            // Solo traemos los campos necesarios
+            $sql = "SELECT id_usuario, username, nombre, id_rol, id_departamento, password FROM USUARIO WHERE username = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param('s', $username);
             $stmt->execute();
             $result = $stmt->get_result();
 
-            if ($_SESSION['bloqueado_hasta'] !== null && time() < $_SESSION['bloqueado_hasta']) {
-    $tiempoRestante = $_SESSION['bloqueado_hasta'] - time();
-    $minutos = floor($tiempoRestante / 60);
-    $segundos = $tiempoRestante % 60;
-    $error_message = "Cuenta bloqueada. Intente nuevamente en $minutos minutos y $segundos segundos.";
-} else {
-    // Proceso de login
-    if ($result->num_rows > 0) {
-        $usuario = $result->fetch_assoc();
-        if (isset($usuario['password']) && password_verify($password, $usuario['password'])) {
-            // Resetea los intentos fallidos si el login es exitoso
-            $reset_sql = "UPDATE USUARIO SET intentos_fallidos = 0, bloqueado_hasta = NULL WHERE username = ?";
-            $reset_stmt = $conn->prepare($reset_sql);
-            $reset_stmt->bind_param('s', $username);
-            $reset_stmt->execute();
+            if ($result->num_rows > 0) {
+                $usuario = $result->fetch_assoc();
 
-            // Login correcto: asigna datos y redirige
-            $_SESSION['id_usuario'] = $usuario['id_usuario'];
-            $_SESSION['username'] = $usuario['username'];
-            $_SESSION['nombre'] = $usuario['nombre'];
-            $_SESSION['id_rol'] = $usuario['id_rol'];
-            $_SESSION['logged_in'] = true;
+                if (password_verify($password, $usuario['password'])) {
+                    // Login exitoso: reinicia intentos y guarda en sesión
+                    $reset_sql = "UPDATE USUARIO SET intentos_fallidos = 0, bloqueado_hasta = NULL WHERE username = ?";
+                    $reset_stmt = $conn->prepare($reset_sql);
+                    $reset_stmt->bind_param('s', $username);
+                    $reset_stmt->execute();
 
-            header("Location: index.php?login=success&username=" . urlencode($usuario['nombre']));
-            exit();
-        } else {
-            $_SESSION['intentos_fallidos']++;
+                    // Guardar datos de sesión
+                    $_SESSION['id_usuario'] = $usuario['id_usuario'];
+                    $_SESSION['username'] = $usuario['username'];
+                    $_SESSION['nombre'] = $usuario['nombre'];
+                    $_SESSION['id_rol'] = $usuario['id_rol'];
+                    $_SESSION['id_departamento'] = $usuario['id_departamento']; // 👈 IMPORTANTE
+                    $_SESSION['logged_in'] = true;
 
-            if ($_SESSION['intentos_fallidos'] >= 5) {
-                $_SESSION['bloqueado_hasta'] = time() + (5 * 60); // bloquea por 5 minutos
-                $error_message = "Cuenta bloqueada por demasiados intentos. Intente más tarde.";
+                    header("Location: index.php");
+                    exit();
+                } else {
+                    $_SESSION['intentos_fallidos']++;
+                    if ($_SESSION['intentos_fallidos'] >= 5) {
+                        $_SESSION['bloqueado_hasta'] = time() + (5 * 60);
+                        $error_message = "Cuenta bloqueada por demasiados intentos. Intente más tarde.";
+                    } else {
+                        $error_message = "Contraseña incorrecta. Intento {$_SESSION['intentos_fallidos']} de 5.";
+                    }
+                }
             } else {
-                $error_message = "Contraseña incorrecta. Intento {$_SESSION['intentos_fallidos']} de 5.";
+                $error_message = "Usuario no encontrado.";
             }
-        }
-    } else {
-        $error_message = "Usuario no encontrado.";
-    }
-}
-
         } else {
             $error_message = "Por favor, completa todos los campos.";
         }
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -241,57 +221,60 @@ if ($_SESSION['bloqueado_hasta'] !== null && time() < $_SESSION['bloqueado_hasta
                 <br>
                 <input type="password" name="password" class="form-control" placeholder="Password">
 
-                 <!-- Enlace para recuperar contraseña -->
-               <div style="margin-top: 10px; text-align: center;">
-    <a href="forgot_password.php" style="color: white; font-weight: bold; display: inline-block; width: 100%;">
-        ¿Olvidaste tu contraseña?
-    </a>
-                <!-- <label class="checkbox">
+                <!-- Enlace para recuperar contraseña -->
+                <div style="margin-top: 10px; text-align: center;">
+
+                    <!-- <label class="checkbox">
                         <span class="pull-right">
                             <a data-toggle="modal" href="login.php#myModal"> Forgot Password?</a>
                         </span>
                     </label> -->
-                <br>
-                <button class="btn btn-theme btn-block" type="submit"><i class="fa fa-lock"></i> ENTRAR</button>
-                <?php if ($error_message): ?>
-                    <p style="color: red;"><?php echo htmlspecialchars($error_message); ?></p>
-                <?php endif; ?>
-                <hr>
+                    <br>
+                    <button class="btn btn-theme btn-block" type="submit"><i class="fa fa-lock"></i> ENTRAR</button>
+                    <?php if ($error_message): ?>
+                        <p style="color: red;"><?php echo htmlspecialchars($error_message); ?></p>
+                    <?php endif; ?>
+                    <hr>
 
 
-                <div class="registration" style="font-weight: bold;">
-                    ¿No tienes cuenta?<br />
-                    <a class="" href="createUser.php" style="font-weight: bold;">
-                        Registrate aquí
-                    </a>
-                </div>
+                    <div class="registration" style="font-weight: bold;">
+                        ¿No tienes cuenta?<br />
+                        <a class="" href="createUser.php" style="font-weight: bold;">
+                            Registrate aquí
+                        </a>
+
+                        <a href="forgot_password.php"
+                            style="color: white; font-weight: bold; display: inline-block; width: 100%;">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                    </div>
         </form>
     </div>
 
-<!-- Modal -->
-<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Forgot Password ?</h4>
-            </div>
-            <div class="modal-body">
-                <p>Enter your e-mail address below to reset your password.</p>
-                <input type="text" name="email" placeholder="Email" autocomplete="off"
-                    class="form-control placeholder-no-fix">
+    <!-- Modal -->
+    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Forgot Password ?</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Enter your e-mail address below to reset your password.</p>
+                    <input type="text" name="email" placeholder="Email" autocomplete="off"
+                        class="form-control placeholder-no-fix">
 
-            </div>
-            <div class="modal-footer">
-                <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                <button class="btn btn-theme" type="button">Submit</button>
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                    <button class="btn btn-theme" type="button">Submit</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<!-- modal -->
+    <!-- modal -->
 
-</form>
+    </form>
 
 </div>
 </div>

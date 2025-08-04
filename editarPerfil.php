@@ -1,7 +1,9 @@
 <?php
+ob_start();  // Inicia el búfer de salida
 session_start();
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 include "template.php";
+
 
 // Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
@@ -56,24 +58,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $direccion_imagen = $user['direccion_imagen'];
-    // Manejo de la imagen
+
     if (isset($_FILES['direccion_imagen']) && $_FILES['direccion_imagen']['error'] === UPLOAD_ERR_OK) {
-        // Leer el contenido del archivo y convertirlo en binario
         $direccion_imagen = file_get_contents($_FILES['direccion_imagen']['tmp_name']);
-    } else {
-        echo "<script>alert('No se subió ningún archivo o ocurrió un error.');</script>";
     }
 
     $resultado = $UsuarioDAO->updateUser($nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_ocupacion, $id_nacionalidad, $user_id);
 
-if ($resultado === true) {
-    $_SESSION['nombre'] = $nombre;
-    $_SESSION['apellido'] = $apellido;
-    $_SESSION['direccion_imagen'] = $direccion_imagen;
-    echo "<p style='color: green;'>Actualización exitosa.</p>";
-} else {
-    echo "<p style='color: red;'>$resultado</p>"; // Mostrar el error
-}
+    if ($resultado === true) {
+        $_SESSION['nombre'] = $nombre;
+        $_SESSION['apellido'] = $apellido;
+        $_SESSION['direccion_imagen'] = $direccion_imagen;
+        $_SESSION['mensaje_exito'] = "Usuario modificado con éxito✅.";
+        header("Location: profile.php?");
+        exit;
+    } else {
+        echo "<p style='color: red;'>$resultado</p>"; // Mostrar el error
+    }
 
 }
 // Verifica si el parámetro 'id' está presente en la URL
@@ -109,18 +110,21 @@ if (isset($_GET['id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil de Usuario</title>
+    <title>Editar Perfil</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f7f7f7;  /* Blanco cremoso */
+            background-color: #f7f7f7;
+            /* Blanco cremoso */
             margin: 0;
             padding: 0;
         }
 
         .container {
             max-width: 800px;
-            background-color: #f7f7f7;  /* Blanco cremoso */
+            color: black;
+            background-color: #f7f7f7;
+            /* Blanco cremoso */
             margin: 50px auto;
             background: white;
             padding: 20px;
@@ -161,23 +165,23 @@ if (isset($_GET['id'])) {
             cursor: pointer;
             border: none;
         }
-        td, div {
-            color: black !important;
-        }
     </style>
 </head>
 
 <body>
+
+
     <div class="container">
 
         <div class="row">
             <div class="col-md-3 text-center">
                 <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" class="img-fluid">
-                
+
             </div>
             <div class="col-md-9">
                 <h3>Información del Usuario</h3>
-                <form action="profile.php" method="post" enctype="multipart/form-data">
+                <form action="editarPerfil.php?id=<?php echo $user['id_usuario']; ?>" method="post"
+                    enctype="multipart/form-data">
                     <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($user['id_usuario']); ?>">
                     <div class="row">
                         <div class="col-md-6">
@@ -249,6 +253,12 @@ if (isset($_GET['id'])) {
     </div>
     </div>
     </div>
+
+
 </body>
 
 </html>
+
+<?php
+ob_end_flush();
+?>

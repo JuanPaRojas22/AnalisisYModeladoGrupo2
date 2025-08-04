@@ -2,11 +2,11 @@
 require_once __DIR__ . '/../conexion.php';
 require_once __DIR__ . '/../Interfaces/UsuarioDAO.php';
 require_once __DIR__ . '/../Models/usuario.php';
-
+$conn = obtenerConexion();
+    
 class UsuarioDAOSImpl implements UsuarioDAO
 {
-    private mysqli $conn;
-
+    private $conn;
     public function __construct()
     {
         // Obtengo la conexión ya configurada en conexion.php

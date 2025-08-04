@@ -19,7 +19,7 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="Dashboard">
-    <title>Creative Design</title>
+    <title>Home</title>
 
 
 
@@ -190,13 +190,7 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
         </div>
     </section>
 
-    <div class="buttons">
-
-        <a href="tutorial.php" class="btn-hero purchase">Tutorial de la Pagina</a>
-    </div>
-
-    <!-- Bootstrap JS -->
-
+  
 
 </body>
 

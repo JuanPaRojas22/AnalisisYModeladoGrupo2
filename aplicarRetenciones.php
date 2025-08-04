@@ -219,14 +219,23 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
             background-color: #147964;
           }
 
-          a.btn {
-            background-color: #0B4F6C;
+          .btn {
+            background-color: #147964;
             /* Blue */
             color: white;
           }
 
-          a.btn:hover {
-            background-color: #0B4F6C;
+          .btn:hover {
+            background-color: #147964;
+          }
+
+          .btn-pequeno {
+            padding: 4px 6px;
+            font-size: 12px;
+            line-height: 2;
+            text-align: center;
+            white-space: normal; /* Permite que el texto haga salto de línea */
+
           }
         </style>
 
@@ -235,7 +244,8 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
             <div class="container-fluid">
               <div class="card" style="border-radius: 15px; padding: 30px; box-shadow: 0 4px 10px rgb(255, 255, 255);">
                 <div class="card-body">
-                  <h2 class="text-center mb-4">Aplicar Retencion Salarial</h2>
+                  <h2 class="text-center mb-4">Aplicar Deducción Salarial</h2>
+                  <a href="AgregarDeduccionesextra.php" class="btn" >Agregar Deducción Extra</a>
                   <form action="" method="POST" class="form-horizontal">
                     <!-- Select Employee -->
                     <div class="form-group">
@@ -259,17 +269,14 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
                       <input type="text" id="salario_actual" name="salario_actual" class="form-control" readonly>
                       <input type="hidden" id="salario_base" name="salario_base">
                       <input type="hidden" id="id_planilla" name="id_planilla">
-
-
-
                     </div>
 
 
 
                     <!-- Buttons -->
                     <div class="form-group text-center">
-                      <button type="submit" class="btn btn-success">Aplicar Retención</button>
-                      <a href="VerPlanilla.php" class="btn btn-info">Volver</a>
+                      <button type="submit" class="btn btn-success">Aplicar Deducción</button>
+                      <a href="VerPlanilla.php" class="btn">Volver</a>
                     </div>
                   </form>
                 </div>

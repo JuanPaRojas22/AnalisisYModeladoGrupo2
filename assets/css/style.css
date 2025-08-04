@@ -38,83 +38,6 @@ body {
   }
 
 
-      /* Fondo del modal de aportes */
-      .modal {
-        display: none; /* Oculto por defecto */
-        position: fixed;
-        z-index: 999;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0,0,0,0.5);
-        text-align: center;
-      }
-  
-      /* Contenido del modal */
-      .modal-contenido {
-        background-color: #fff;
-        margin: 10% auto;
-        padding: 20px;
-        border-radius: 10px;
-        max-width: 30%;
-        max-height: 30%;
-        overflow: auto;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        position: relative;
-        color: #000;
-        text-align: center;
-
-      }
-  
-      /* Botón para cerrar */
-      .cerrar {
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        color: #aaa;
-        font-size: 24px;
-        cursor: pointer;
-      }
-  
-      .cerrar:hover {
-        color: #000;
-      }
-  
-      /* Estilos del formulario */
-      input, textarea {
-        width: 50%;
-        padding: 10px;
-        margin: 8px 0px;
-        border: 1px solid;
-        border-radius: 5px;
-        text-align: center;
-        color: #000;
-      }
-      .custom-input{
-        width: 50%;
-        padding: 10px;
-        margin: 8px 25%;
-        border: 1px solid;
-        border-radius: 5px;
-        text-align: center;
-        color: #000;
-      }
-  
-      button.enviar {
-        background-color: #09354b;
-        color: white;
-        border: none;
-        padding: 10px;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-  
-      button.enviar:hover {
-        background-color: #09354b;
-      }
-
 ul li {
     list-style: none;
 }
@@ -308,7 +231,7 @@ hr {
 }
 
 .bg-theme {
-	background-color: #68dff0;
+	background-color: #41a041;
 }
 
 ul.top-menu > li > .logout {
@@ -358,6 +281,7 @@ ul.top-menu > li > .logout {
 
 /*LEFT NAVIGATION ICON*/
 .dcjq-icon {
+    color: white !important;
     height:17px;
     width:17px;
     display:inline-block;
@@ -517,6 +441,8 @@ ul.sidebar-menu li a.active i {
     left: 0;
     right: 0;
     z-index: 1002;
+    text-decoration: none;
+	
 }
 
 header.black-bg {
@@ -538,15 +464,16 @@ header.black-bg {
 }
 
 a.logo {
-    font-size: 20px;
+    font-family: 'Ruda', sans-serif !important;
+    font-size: 20px !important;
     color: #ddd;
     float: left;
     margin-top: 15px;
-    text-transform: uppercase;
+    text-transform: uppercase !important;
 }
 
 a.logo b {
-    font-weight: 900;
+    font-weight: 900 !important;
 }
 
 a.logo:hover, a.logo:focus {
@@ -646,6 +573,7 @@ ul.top-menu > li > a:hover, ul.top-menu > li > a:focus {
     border-bottom: 1px solid #EBEBEB !important;
     font-size: 12px;
     list-style: none;
+    text-decoration: none !important;
 }
 
 .dropdown-menu.extended li a {
@@ -856,6 +784,7 @@ ul.top-menu > li > a:hover, ul.top-menu > li > a:focus {
     cursor: pointer;
     display: inline-block;
     font-size: 20px;
+    color: white !important;
 }
 
 
@@ -1771,7 +1700,7 @@ PANELS CONFIGURATIONS
 }
 
 .fc-state-default, .fc-state-default .fc-button-inner {
-	background: #f2f2f2;
+	background: #f2f2f2 !important;
 }
 
 .fc-state-active .fc-button-inner {
@@ -2159,6 +2088,37 @@ label {
 
 .badge.bg-inverse {
     background: #2A3542;
+}
+
+#mensaje-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    font-weight: bold;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#mensaje-toast.mostrar {
+    opacity: 1;
+}
+
+.session-dot {
+    position: absolute;
+    top: 6px;
+    right: 4px;
+    width: 10px;
+    height: 10px;
+    background-color: #28a745;
+    border: 2px solid white; 
+    border-radius: 50%;
+    z-index: 10;
 }
 
 

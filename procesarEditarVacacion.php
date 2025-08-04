@@ -2,43 +2,34 @@
 session_start();
 require_once __DIR__ . '/conexion.php';
 require_once __DIR__ . '/Impl/Historial_Solicitud_Modificacion_VacacionesDAOSImpl.php';
-require_once __DIR__ . '/mailer.php'; //  PHPMailer para enviar correos
+require_once __DIR__ . '/notificaciones_util.php';
 
-// Verifica si se recicbio el id del usuario y la accion a realizar
-if(isset($_GET['id']) && isset($_GET['accion'])){
+if (isset($_GET['id']) && isset($_GET['accion'])) {
     $id_historial_solicitud_modificacion = $_GET['id'];
-    // $id_usuario = $_GET['id'];
-    // Función para obtener el id_vacacion basado en el id_usuario
-    // *****************************************************************************************
+    $accion = $_GET['accion'];
+    error_log("🚨 Acción recibida: $accion para solicitud: $id_historial_solicitud_modificacion");
 
-    // Funcion para obtener el id_usuario basado en el id_historial_solicitud_modificacion
     function obtenerIdUsuarioPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion) {
-// Parámetros de conexión
-$host = "accespersoneldb.mysql.database.azure.com";
-$user = "adminUser";
-$password = "admin123+";
-$dbname = "gestionEmpleados";
-$port = 3306;
+        error_log("🔎 Obteniendo ID de usuario para historial: $id_historial_solicitud_modificacion");
 
-// Ruta al certificado CA para validar SSL
-$ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
+        $host = "accespersoneldb.mysql.database.azure.com";
+        $user = "adminUser";
+        $password = "admin123+";
+        $dbname = "gestionEmpleados";
+        $port = 3306;
+        $ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
 
-// Inicializamos mysqli
-$conn = mysqli_init();
+        $conn = mysqli_init();
+        mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
+        mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
-// Configuramos SSL
-mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
-mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
+        if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
+            error_log("❌ Error de conexión");
+            die("Error de conexión: " . mysqli_connect_error());
+        }
 
+        mysqli_set_charset($conn, "utf8mb4");
 
-// Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
-if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
-    die("Error de conexión: " . mysqli_connect_error());
-}
-
-// Establecemos el charset
-mysqli_set_charset($conn, "utf8mb4");
-        
         $sql = "SELECT id_usuario FROM historial_solicitud_modificacion_vacaciones WHERE id_historial_solicitud_modificacion = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $id_historial_solicitud_modificacion);
@@ -47,33 +38,13 @@ mysqli_set_charset($conn, "utf8mb4");
         $stmt->fetch();
         $stmt->close();
         $conn->close();
+
+        error_log("✅ ID usuario obtenido: $id_usuario");
         return $id_usuario;
     }
-    // Función para obtener el correo del usuario basado en su ID
-    function obtenerCorreoUsuario($id_usuario) {
-        $conexion = obtenerConexion();
-        if ($conexion->connect_error) {
-            die("Conexión fallida: " . $conexion->connect_error);
-        }
-        $sql = "SELECT correo_electronico FROM usuario WHERE id_usuario = ?";
 
-        $stmt = $conexion->prepare($sql);
-        $stmt->bind_param("i", $id_usuario);
-        $stmt->execute();
-        $stmt->bind_result($correo);
-        $stmt->fetch();
-        $stmt->close();
-        $conexion->close();
-        return $correo;
-    }
-
-
-    // Funcion para obtener el id_vacacion basado en el id_historial_solicitud_modificacion
     function obtenerIdVacacionPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion) {
         $conexion = obtenerConexion();
-        if ($conexion->connect_error) {
-            die("Conexión fallida: " . $conexion->connect_error);
-        }
         $sql = "SELECT id_vacacion FROM historial_solicitud_modificacion_vacaciones WHERE id_historial_solicitud_modificacion = ?";
         $stmt = $conexion->prepare($sql);
         $stmt->bind_param("i", $id_historial_solicitud_modificacion);
@@ -82,197 +53,94 @@ mysqli_set_charset($conn, "utf8mb4");
         $stmt->fetch();
         $stmt->close();
         $conexion->close();
+        error_log("📌 ID vacación obtenida: $id_vacacion");
         return $id_vacacion;
     }
 
-    // Función para obtener nuevos datos basado en el id_historial_solicitud_modificacion
     function obtenerDatosNuevosPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion) {
         $conexion = obtenerConexion();
-        
-        $sql = "SELECT HSMV.fecha_inicio AS NuevaFechaInicio, HSMV.fecha_fin AS NuevaFechaFin, 
-                HSMV.dias_solicitados AS NuevosDiasSolicitados, HSMV.razon_modificacion
-                FROM Historial_Solicitud_Modificacion_Vacaciones HSMV
-                WHERE HSMV.id_historial_solicitud_modificacion = ?";
-        //consulta
+        $sql = "SELECT fecha_inicio AS NuevaFechaInicio, fecha_fin AS NuevaFechaFin, dias_solicitados AS NuevosDiasSolicitados, razon_modificacion FROM Historial_Solicitud_Modificacion_Vacaciones WHERE id_historial_solicitud_modificacion = ?";
         $stmt = $conexion->prepare($sql);
-
-        // Enlaza el parámetro (i = entero)
         $stmt->bind_param("i", $id_historial_solicitud_modificacion);
-
-        // Ejecuta la consulta
         $stmt->execute();
-
-        // Obtiene el resultado
         $result = $stmt->get_result();
-
-        // Verifica si se encontró el usuario
-        if ($result->num_rows > 0) {
-            // Recupera los datos del usuario
-            $user = $result->fetch_assoc();
-
-            // Devuelve el usuario
-            return $user;
-        } else {
-            // Si no se encuentra el usuario
-            return null;
-        }
-    
+        $datos = ($result->num_rows > 0) ? $result->fetch_assoc() : null;
+        error_log("📅 Datos de la solicitud obtenidos: " . json_encode($datos));
+        return $datos;
     }
 
-    // Obtener el id_usuario en base al id_historial_solicitud_modificacion
-    $id_usuario = obtenerIdUsuarioPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion);
-
-     // obtener el correo de usuario
-     $correo_usuario = obtenerCorreoUsuario($id_usuario); // Obtener el correo del usuario
-
-
-    // Obtener el atributo id_vacacion en base al id_historial_solicitud_modificacion del usuario solicitado
-    $id_vacacion_usuario_solicitado = obtenerIdVacacionPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion);
-
-    // Obtiene los nuevos datos de la solicitud de modificacion de vacaciones
-    $Historial_Solicitud_Modificacion_Vacaciones = obtenerDatosNuevosPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion);
-
-
-    // Obtiene la razon de modificacion de vacaciones
-    $razon_modificacion = htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['razon_modificacion']);
-    
-    // Obtiene los nuevos dias solicitados
-    $NuevosDiasSolicitados = htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevosDiasSolicitados']);;
-    // Obtiene la nueva fecha de inicio
-    $NuevaFechaInicio = htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevaFechaInicio']);
-    // Obtiene la nueva fecha de fin
-    $NuevaFechaFin = htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevaFechaFin']);
-    // Obtiene la observacion del administrador actual
-    // SE TIENE QUEE CAMBIAR PARA QUE EN UN PHP EL ADMINISTRADOR PUEDA REGISTRAR
-    $Observacion_Administrador_Actual = "Solicitud aceptada";
-
-    // Función para obtener el id_vacacion basado en el id_usuario
     function obtenerIdHistorialPorUsuario($id_usuario) {
         $conexion = obtenerConexion();
-        if ($conexion->connect_error) {
-            die("Conexión fallida: " . $conexion->connect_error);
-        }
         $sql = "SELECT id_historial FROM vacacion WHERE id_usuario = ?";
         $stmt = $conexion->prepare($sql);
         $stmt->bind_param("i", $id_usuario);
         $stmt->execute();
-        $stmt->bind_result($id_vacacion);
+        $stmt->bind_result($id_historial);
         $stmt->fetch();
         $stmt->close();
         $conexion->close();
-        return $id_vacacion;
+        error_log("📘 ID historial del usuario: $id_historial");
+        return $id_historial;
     }
 
-    // Obtiene el id del historial del usuario solicitado
-    $Id_historial_usuario_solicitado = obtenerIdHistorialPorUsuario($id_usuario);
+    // Obtener datos clave
+    $id_usuario = obtenerIdUsuarioPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion);
+    $id_vacacion_usuario = obtenerIdVacacionPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion);
+    $datos = obtenerDatosNuevosPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion);
+    $id_historial_usuario = obtenerIdHistorialPorUsuario($id_usuario);
 
-    
+    if (!$datos) {
+        error_log("⚠️ No se encontraron datos nuevos para el historial ID $id_historial_solicitud_modificacion");
+        die("Error al obtener datos de modificación");
+    }
 
-$accion = $_GET['accion'];
-$Historial_Solicitud_ModificacionDAO = new Historial_Solicitud_Modificacion_VacacionesDAOSImpl();
+    $razon_modificacion = htmlspecialchars($datos['razon_modificacion']);
+    $nuevosDias = htmlspecialchars($datos['NuevosDiasSolicitados']);
+    $nuevaInicio = htmlspecialchars($datos['NuevaFechaInicio']);
+    $nuevaFin = htmlspecialchars($datos['NuevaFechaFin']);
+    $observacion = "Solicitud aceptada";
 
-// 📌 Obtener el ID del usuario
-$id_usuario = obtenerIdUsuarioPorHistorialSolicitudModificacion($id_historial_solicitud_modificacion);
+    $DAO = new Historial_Solicitud_Modificacion_VacacionesDAOSImpl();
 
-// 📌 Obtener el correo real del usuario desde la base de datos
-$correo_usuario = obtenerCorreoUsuario($id_usuario);  
+    if ($accion === 'aprobar') {
+        error_log("🟢 Aprobando solicitud...");
 
-// 📌 Estilos CSS separados
-$css = "
-    <style>
-        .container {
-            width: 80%;
-            margin: auto;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-            text-align: center;
+        $DAO->aprobarSolicitudModificacionVacaciones(
+            $id_historial_solicitud_modificacion,
+            $id_vacacion_usuario,
+            $id_usuario,
+            $razon_modificacion,
+            $nuevosDias,
+            $nuevaInicio,
+            $observacion,
+            $id_historial_usuario,
+            $nuevaFin
+        );
+
+        if ($id_usuario && is_numeric($id_usuario)) {
+            insertarNotificacion($id_usuario, "✅ Tu solicitud  de vacaciones fue aprobada. 🎉");
+            error_log("📨 Notificación enviada (APROBADA) al usuario $id_usuario");
+        } else {
+            error_log("⚠️ ID de usuario inválido al insertar notificación (APROBADA)");
         }
-        .header {
-            color: white;
-            padding: 15px;
-            font-size: 22px;
-            font-weight: bold;
-            border-radius: 8px 8px 0 0;
+
+    } elseif ($accion === 'rechazar') {
+        error_log("🔴 Rechazando solicitud...");
+
+        $DAO->rechazarSolicitudModificacionVacaciones($id_historial_solicitud_modificacion);
+
+        if ($id_usuario && is_numeric($id_usuario)) {
+            insertarNotificacion($id_usuario, "❌ Tu solicitud  de vacaciones fue rechazada. Consultá con tu supervisor. 📞");
+            error_log("📨 Notificación enviada (RECHAZADA) al usuario $id_usuario");
+        } else {
+            error_log("⚠️ ID de usuario inválido al insertar notificación (RECHAZADA)");
         }
-        .content {
-            margin: 20px;
-            font-size: 18px;
-            color: #333;
-        }
-        .footer {
-            font-size: 14px;
-            color: #777;
-            margin-top: 20px;
-        }
-    </style>
-";
+    }
 
-if ($accion == 'aprobar') {
-    $Historial_Solicitud_ModificacionDAO->aprobarSolicitudModificacionVacaciones(
-        $id_historial_solicitud_modificacion, $id_vacacion_usuario_solicitado, 
-        $id_usuario, $razon_modificacion, $NuevosDiasSolicitados, 
-        $NuevaFechaInicio, $Observacion_Administrador_Actual, 
-        $Id_historial_usuario_solicitado, $NuevaFechaFin
-    );
-
-    // 📌 Mensaje con HTML para la aprobación
-    $asunto = "✅ Solicitud de Vacaciones Aprobada";
-    $mensaje = "
-        <html>
-        <head>
-            $css
-        </head>
-        <body>
-            <div class='container'>
-                <div class='header' style='background-color: #4CAF50;'>Solicitud Aprobada</div>
-                <div class='content'>
-                    <p>🎉 Hola, tu solicitud de modificación de vacaciones ha sido <b>aprobada</b>.</p>
-                    <p>Disfruta de tu descanso. 🌴</p>
-                </div>
-                <div class='footer'>Este es un mensaje automático de Gestión de Vacaciones</div>
-            </div>
-        </body>
-        </html>
-    ";
-
-    enviarCorreo($correo_usuario, $asunto, $mensaje);
-
-} else if ($accion == 'rechazar') {
-    $Historial_Solicitud_ModificacionDAO->rechazarSolicitudModificacionVacaciones($id_historial_solicitud_modificacion);
-
-
-    // 📌 Mensaje con HTML para el rechazo
-    $asunto = "❌ Solicitud de Vacaciones Rechazada";
-    $mensaje = "
-        <html>
-        <head>
-            $css
-        </head>
-        <body>
-            <div class='container'>
-                <div class='header' style='background-color: #d9534f;'>Solicitud Rechazada</div>
-                <div class='content'>
-                    <p>⚠️ Hola, lamentamos informarte que tu solicitud de modificación de vacaciones ha sido <b>rechazada</b>.</p>
-                    <p>Si tienes dudas, por favor contacta con tu supervisor. 📞</p>
-                </div>
-                <div class='footer'>Este es un mensaje automático de Gestión de Vacaciones</div>
-            </div>
-        </body>
-        </html>
-    ";
-
-    enviarCorreo($correo_usuario, $asunto, $mensaje);
-}
-
-    
-    // Se redirije de nuevo a la pagina de detalle de vacaciones
     header('Location: EditarVacaciones.php');
     exit();
-} else {
-    echo "Parametros incorrectos";
-}
 
-?>
+} else {
+    error_log("⛔ Parámetros GET faltantes o inválidos");
+    echo "Parámetros incorrectos";
+}

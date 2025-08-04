@@ -2,8 +2,14 @@
 ob_start(); // Inicia el búfer de salida para evitar que se envíen cabeceras prematuramente
 session_start();
 require 'template.php';
-require 'conexion.php';
 
+// Conexión a la base de datos
+// Parámetros de conexión
+$host = "accespersoneldb.mysql.database.azure.com";
+$user = "adminUser";
+$password = "admin123+";
+$dbname = "gestionEmpleados";
+$port = 3306;
 
 
 

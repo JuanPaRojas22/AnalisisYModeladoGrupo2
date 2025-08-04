@@ -456,7 +456,7 @@ class VacacionDAOSImpl implements VacacionDAO
     $stmtVacaciones = $function_conn->prepare(
         "SELECT fecha_inicio, fecha_fin
         FROM vacacion
-        WHERE id_usuario = ? AND (id_estado_vacacion = 1 OR id_estado_vacacion = 2)"
+        WHERE id_usuario = ? AND (id_estado_vacacion = 1 OR id_estado_vacacion = 2 OR id_estado_vacacion = 4)"
     );
     $stmtVacaciones->bind_param("i", $id_usuario);
     $stmtVacaciones->execute();
@@ -523,7 +523,7 @@ class VacacionDAOSImpl implements VacacionDAO
     }
 
     public function contarVacacionesPorEstado($id_usuario, $estados) {
-        global $conn;
+       $conn = $this->conn;
         $placeholders = implode(',', array_fill(0, count($estados), '?'));
         $types = str_repeat('i', count($estados) + 1);
         $params = array_merge([$id_usuario], $estados);
@@ -534,10 +534,6 @@ class VacacionDAOSImpl implements VacacionDAO
         $result = $stmt->get_result()->fetch_assoc();
         return $result['total'] ?? 0;
     }
-
-
-
-
 
 }   
 
