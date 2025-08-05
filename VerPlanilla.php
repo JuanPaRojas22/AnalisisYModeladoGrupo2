@@ -9,6 +9,9 @@ if (!isset($_SESSION['id_usuario'])) {
     exit();
 }
 
+    $rol_usuario = $_SESSION['id_rol'] ?? null;
+    $id_usuario = $_SESSION['id_usuario'];
+
 
 
 
@@ -81,16 +84,23 @@ mysqli_set_charset($conn, "utf8mb4");
         LEFT JOIN bonos b ON p.id_usuario = b.id_usuario
         LEFT JOIN ocupaciones o ON o.id_ocupacion = u.id_ocupacion
         LEFT JOIN empleado_tipo_empleado ete ON p.id_usuario = ete.id_empleado
-        LEFT JOIN tipo_empleado te ON ete.id_tipo_empleado = te.id_tipo_empleado
-        GROUP BY 
-            u.nombre, 
-            u.apellido, 
-            u.correo_electronico, 
-            u.id_ocupacion,
-            p.total_deducciones,
-            p.salario_base,
-            p.salario_neto
-        ORDER BY u.nombre DESC";
+        LEFT JOIN tipo_empleado te ON ete.id_tipo_empleado = te.id_tipo_empleado";
+        if ($rol_usuario == 3) {
+    $sql .= " WHERE u.id_usuario = " . intval($id_usuario);
+}
+  
+        
+     $sql .= "
+    GROUP BY 
+        u.nombre, 
+        u.apellido, 
+        u.correo_electronico, 
+        u.id_ocupacion,
+        p.total_deducciones,
+        p.salario_base,
+        p.salario_neto
+    ORDER BY u.nombre DESC
+";
 
             /*
 
@@ -296,7 +306,7 @@ mysqli_set_charset($conn, "utf8mb4");
             <body>
                 <div class="container">
                     <h1>Listado de Planilla</h1>
-
+                <?php if ($rol_usuario != 3): ?>
                     <div class="button-container">
                         <!-- Botón para abrir el primer modal (3 botones) -->
                         <button class="btn" onclick="abrirModal('modal1')">
@@ -324,6 +334,8 @@ mysqli_set_charset($conn, "utf8mb4");
                     </div>
                     <input type="text" id="searchInput" class="custom-input" onkeyup="searchTable()"
                         placeholder="Buscar Empleado...">
+                <?php endif; ?>
+
 
 
                     <!-- Modal 1 con 3 botones -->
