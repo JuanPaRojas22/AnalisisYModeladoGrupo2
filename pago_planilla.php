@@ -16,7 +16,7 @@ if (isset($_POST['ejecutar_pago'])) {
     $fecha_pago = date("Y-m-d");
 
     // Consultar todos los usuarios en la tabla planilla
-    $query_usuarios = "SELECT id_usuario, salario_base, total_deducciones FROM planilla";
+    $query_usuarios = "SELECT id_usuario, salario_base, total_deducciones, salario_neto FROM planilla";
     $result_usuarios = $conn->query($query_usuarios);
 
     // Verificar si la consulta devuelve resultados
