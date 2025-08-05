@@ -55,7 +55,7 @@ if (isset($_POST['filtrar'])) {
 
     // Construir la consulta SQL con los filtros seleccionados
     $query = "SELECT u.nombre, d.Nombre, SUM(he.horas) AS total_horas_extras, SUM(he.monto_pago) AS monto_pago
-    FROM historial_horas_extra he
+    FROM historial_horas_extras he
     JOIN usuario u ON he.id_usuario = u.id_usuario
     JOIN departamento d ON u.id_departamento = d.id_departamento
     WHERE 1";  // Esto asegura que siempre haya una condición base
