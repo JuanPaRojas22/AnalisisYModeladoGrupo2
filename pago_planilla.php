@@ -113,7 +113,7 @@ if (isset($_POST['ejecutar_pago'])) {
             if ($stmt_insert->execute()) {
                 $pagos_realizados++;
 
-                // ✅ 1. Copiar todas las horas extras al historial
+                // 1. Copiar todas las horas extras al historial
                 $stmt_copiar_horas = $conn->prepare("
                     INSERT INTO historial_horas_extras (id_usuario, fecha_hora, tipo_hora, monto_pago, fecha_pago)
                     SELECT id_usuario, fecha_hora, tipo_hora, monto_pago, NOW()
@@ -123,11 +123,26 @@ if (isset($_POST['ejecutar_pago'])) {
                 $stmt_copiar_horas->execute();
                 $stmt_copiar_horas->close();
 
-                // ✅ 2. Borrar las horas extras (esto activa el TRIGGER que actualiza salario_neto)
+                // 2. Borrar las horas extras (esto activa el trigger que actualiza salario_neto)
                 $stmt_borrar_horas = $conn->prepare("DELETE FROM horas_extra WHERE id_usuario = ?");
                 $stmt_borrar_horas->bind_param("i", $id_usuario);
                 $stmt_borrar_horas->execute();
                 $stmt_borrar_horas->close();
+
+                // 3. Consultar salario_neto actualizado después del trigger
+                $salario_neto_actualizado = 0;
+                $stmt_salario = $conn->prepare("SELECT salario_neto FROM planilla WHERE id_usuario = ?");
+                $stmt_salario->bind_param("i", $id_usuario);
+                $stmt_salario->execute();
+                $stmt_salario->bind_result($salario_neto_actualizado);
+                $stmt_salario->fetch();
+                $stmt_salario->close();
+
+                // 4. Actualizar el pago_planilla con el salario_neto actualizado
+                $stmt_actualizar = $conn->prepare("UPDATE pago_planilla SET salario_neto = ? WHERE id_usuario = ? AND tipo_quincena = ? AND MONTH(fecha_pago) = MONTH(CURDATE()) AND YEAR(fecha_pago) = YEAR(CURDATE())");
+                $stmt_actualizar->bind_param("dis", $salario_neto_actualizado, $id_usuario, $tipo_quincena);
+                $stmt_actualizar->execute();
+                $stmt_actualizar->close();
             }
         }
         if ($pagos_realizados > 0) {
