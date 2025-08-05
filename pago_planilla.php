@@ -115,8 +115,8 @@ if (isset($_POST['ejecutar_pago'])) {
 
                 // 1. Copiar todas las horas extras al historial
                 $stmt_copiar_horas = $conn->prepare("
-                    INSERT INTO historial_horas_extras (id_usuario, fecha, tipo_hora, monto_pago, fecha_pago)
-                    SELECT id_usuario, fecha, tipo_hora, monto_pago, NOW()
+                    INSERT INTO historial_horas_extras (id_usuario, fecha, horas, monto_pago, fecha_pago)
+                    SELECT id_usuario, fecha, horas, monto_pago, NOW()
                     FROM horas_extra
                     WHERE id_usuario = ?");
                 $stmt_copiar_horas->bind_param("i", $id_usuario);
