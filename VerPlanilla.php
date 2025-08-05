@@ -398,6 +398,25 @@ $result = $stmt->get_result();
                             }
                             ?>
                         </tbody>
+                         <!-- Paginación -->
+    <?php if ($total_pages > 1): ?>
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-end" style="width: 80%; margin: auto; padding-right: 20px;">
+                <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?page=<?= $page - 1 ?>">Anterior</a>
+                </li>
+                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                        <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                    </li>
+                <?php endfor; ?>
+                <li class="page-item <?= $page >= $total_pages ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?page=<?= $page + 1 ?>">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+    <?php endif; ?>
+
 
                     </table>
 
@@ -432,24 +451,6 @@ $result = $stmt->get_result();
         </script>
 </body>
 
- <!-- Paginación -->
-    <?php if ($total_pages > 1): ?>
-        <nav aria-label="Page navigation" class="mt-4">
-            <ul class="pagination justify-content-end" style="width: 80%; margin: auto; padding-right: 20px;">
-                <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
-                    <a class="page-link" href="?page=<?= $page - 1 ?>">Anterior</a>
-                </li>
-                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                        <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
-                    </li>
-                <?php endfor; ?>
-                <li class="page-item <?= $page >= $total_pages ? 'disabled' : '' ?>">
-                    <a class="page-link" href="?page=<?= $page + 1 ?>">Siguiente</a>
-                </li>
-            </ul>
-        </nav>
-    <?php endif; ?>
 
 </html>
 
