@@ -90,7 +90,8 @@ if (isset($_POST['ejecutar_pago'])) {
             $stmt_insert->bind_param("iiddddds", $id_planilla, $id_usuario, $salario_base, $total_deducciones, $total_bonos, $pago_horas_extras, $salario_neto, $tipo_quincena);
 
             if ($stmt_insert->execute()) {
-                
+                $mensaje = "Los pagos fueron ejecutados correctamente.";
+
 
                 if ($pago_horas_extras > 0) {
                     // Copiar horas extras a historial
@@ -113,7 +114,6 @@ if (isset($_POST['ejecutar_pago'])) {
 
             $stmt_insert->close(); // Cerrar la declaración de insert
         }
-        $mensaje = "Los pagos fueron ejecutados correctamente.";
 
     } else {
         $mensaje = "No se encontraron registros en la tabla planilla.";
