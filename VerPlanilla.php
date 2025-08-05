@@ -1,82 +1,69 @@
 <?php
-ob_start(); // Inicia el búfer de salida para evitar que se envíen cabeceras prematuramente
-
 session_start();
 require "template.php";
-// Verificar si el usuario está logueado
+
+// Verificar sesión
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: login.php");
     exit();
 }
 
-    $rol_usuario = $_SESSION['id_rol'] ?? null;
-    $id_usuario = $_SESSION['id_usuario'];
-    $id_departamento = $_SESSION['id_departamento'] ?? null;
-?>
+$rol_usuario = $_SESSION['id_rol'] ?? null;
+$id_usuario = $_SESSION['id_usuario'];
+$id_departamento = $_SESSION['id_departamento'] ?? null;
 
+// Parámetros de paginación
+$items_per_page = 10;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($page < 1) $page = 1;
+$offset = ($page - 1) * $items_per_page;
 
-<!DOCTYPE html>
-<html lang="en">
+// Conexión (igual que antes)...
 
-
-
-<body>
-
-    <!-- **********************************************************************************************************************************************************
-      MAIN CONTENT
-      *********************************************************************************************************************************************************** -->
-    <!--main content start-->
-    <section id="main-content">
-        <section class="wrapper site-min-height">
-
-            <!-- /MAIN CONTENT -->
-            <?php
-            // Verificar si el usuario está logueado
-            // Conexión a la base de datos
-// Parámetros de conexión
-$host = "accespersoneldb.mysql.database.azure.com";
-$user = "adminUser";
-$password = "admin123+";
-$dbname = "gestionEmpleados";
-$port = 3306;
-
-// Ruta al certificado CA para validar SSL
-$ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
-
-// Inicializamos mysqli
-$conn = mysqli_init();
-
-// Configuramos SSL
-mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
-mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
-
-
-// Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
-if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
-    die("Error de conexión: " . mysqli_connect_error());
-}
-
-// Establecemos el charset
-mysqli_set_charset($conn, "utf8mb4");
-
-$id_departamento = null;
-
-if ($rol_usuario == 2) {
-    $stmt = $conn->prepare("SELECT id_departamento FROM Usuario WHERE id_usuario = ?");
-    $stmt->bind_param("i", $id_usuario);
-    $stmt->execute();
-    $result_depto = $stmt->get_result();
-    if ($row = $result_depto->fetch_assoc()) {
+// Obtener id_departamento para rol 2 (si no lo tienes ya)
+if ($rol_usuario == 2 && $id_departamento === null) {
+    $stmt_depto = $conn->prepare("SELECT id_departamento FROM Usuario WHERE id_usuario = ?");
+    $stmt_depto->bind_param("i", $id_usuario);
+    $stmt_depto->execute();
+    $res_depto = $stmt_depto->get_result();
+    if ($row = $res_depto->fetch_assoc()) {
         $id_departamento = $row['id_departamento'];
     }
-    $stmt->close();
+    $stmt_depto->close();
 }
 
-//echo "Conectado correctamente con SSL.";
+// Consulta para contar total registros
+$sql_count = "SELECT COUNT(DISTINCT u.id_usuario) AS total FROM Usuario u ";
+$where = "";
+$params = [];
+$types = "";
 
+if ($rol_usuario == 3) {
+    $where = " WHERE u.id_usuario = ?";
+    $params[] = $id_usuario;
+    $types .= "i";
+} elseif ($rol_usuario == 2 && $id_departamento !== null) {
+    $where = " WHERE u.id_departamento = ?";
+    $params[] = $id_departamento;
+    $types .= "i";
+}
 
-          // Consulta base completa (prepara con placeholders si aplica filtro)
-$sql = "SELECT 
+$sql_count .= $where;
+$stmt_count = $conn->prepare($sql_count);
+if (!$stmt_count) {
+    die("Error en count: " . $conn->error);
+}
+if (count($params) > 0) {
+    $stmt_count->bind_param($types, ...$params);
+}
+$stmt_count->execute();
+$res_count = $stmt_count->get_result();
+$total_rows = $res_count->fetch_assoc()['total'];
+$total_pages = ceil($total_rows / $items_per_page);
+$stmt_count->close();
+
+// Consulta principal
+$sql_base = "SELECT 
     u.nombre,
     u.apellido,
     u.correo_electronico,
@@ -94,15 +81,9 @@ LEFT JOIN deducciones d ON p.id_usuario = d.id_usuario
 LEFT JOIN bonos b ON p.id_usuario = b.id_usuario
 LEFT JOIN ocupaciones o ON o.id_ocupacion = u.id_ocupacion
 LEFT JOIN empleado_tipo_empleado ete ON p.id_usuario = ete.id_empleado
-LEFT JOIN tipo_empleado te ON ete.id_tipo_empleado = te.id_tipo_empleado";
+LEFT JOIN tipo_empleado te ON ete.id_tipo_empleado = te.id_tipo_empleado ";
 
-if ($rol_usuario == 3) {
-    $sql .= " WHERE u.id_usuario = ?";
-} elseif ($rol_usuario == 2 && $id_departamento !== null) {
-    $sql .= " WHERE u.id_departamento = ?";
-}
-
-$sql .= " GROUP BY 
+$sql = $sql_base . $where . " GROUP BY 
     u.id_usuario, 
     u.nombre, 
     u.apellido, 
@@ -112,42 +93,19 @@ $sql .= " GROUP BY
     p.salario_base,
     p.salario_neto
 ORDER BY u.nombre DESC
-LIMIT ? OFFSET ?";
+LIMIT $items_per_page OFFSET $offset";
 
-if ($rol_usuario == 3 || ($rol_usuario == 2 && $id_departamento !== null)) {
-    $stmt = $conn->prepare($sql);
-    if ($rol_usuario == 3) {
-        $stmt->bind_param("iii", $id_usuario, $items_per_page, $offset);
-    } else {
-        $stmt->bind_param("iii", $id_departamento, $items_per_page, $offset);
-    }
-    $stmt->execute();
-    $result = $stmt->get_result();
-} else {
-    // Sin filtro, sin parámetros, solo paginar
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $items_per_page, $offset);
-    $stmt->execute();
-    $result = $stmt->get_result();
+$stmt = $conn->prepare($sql);
+if (!$stmt) {
+    die("Error en prepare: " . $conn->error);
+}
+if (count($params) > 0) {
+    $stmt->bind_param($types, ...$params);
 }
 
-            /*
-
-            - Se agregó la relación con empleado_tipo_empleado (LEFT JOIN empleado_tipo_empleado ete ON p.id_usuario = ete.id_empleado), para obtener las clasificaciones de los empleados.
-
-            - Se agregó la relación con tipo_empleado (LEFT JOIN tipo_empleado te ON ete.id_tipo_empleado = te.id_tipo_empleado), para obtener la descripción de cada clasificación.
-
-            - Uso de GROUP_CONCAT(DISTINCT te.descripcion SEPARATOR ', '):
-
-            - Une todas las clasificaciones en una sola columna, separadas por comas.
-
-            - Si un empleado no tiene clasificación, muestra 'Sin clasificación'.
-            
-            */
-
-            $result = $conn->query($sql);
-
-            ?>
+$stmt->execute();
+$result = $stmt->get_result();
+?>
 
             <html lang="es">
 
@@ -474,25 +432,24 @@ if ($rol_usuario == 3 || ($rol_usuario == 2 && $id_departamento !== null)) {
         </script>
 </body>
 
-<?php if ($total_pages > 1): ?>
-    <nav aria-label="Page navigation" class="mt-4">
-        <ul class="pagination justify-content-end" style="width: 80%; margin: auto; padding-right: 20px;">
-            <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
-                <a class="page-link" href="?page=<?= $page - 1 ?>">Anterior</a>
-            </li>
-            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                    <a class="page-link" href="?page=<?= $i ?>">
-                        <?= $i ?>
-                    </a>
+ <!-- Paginación -->
+    <?php if ($total_pages > 1): ?>
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-end" style="width: 80%; margin: auto; padding-right: 20px;">
+                <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?page=<?= $page - 1 ?>">Anterior</a>
                 </li>
-            <?php endfor; ?>
-            <li class="page-item <?= $page >= $total_pages ? 'disabled' : '' ?>">
-                <a class="page-link" href="?page=<?= $page + 1 ?>">Siguiente</a>
-            </li>
-        </ul>
-    </nav>
-<?php endif; ?>
+                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                        <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                    </li>
+                <?php endfor; ?>
+                <li class="page-item <?= $page >= $total_pages ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?page=<?= $page + 1 ?>">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+    <?php endif; ?>
 
 </html>
 
