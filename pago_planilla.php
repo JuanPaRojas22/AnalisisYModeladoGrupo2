@@ -69,8 +69,12 @@ if (isset($_POST['ejecutar_pago'])) {
                 $total_deducciones = 0;
             }
 
+            if ($pago_horas_extras === null) {
+                $pago_horas_extras = 0;
+            }
+
             // Calcular el salario neto
-            $salario_neto = $salario_base/2 - $total_deducciones + $total_bonos + $pago_horas_extras;
+            $salario_neto = $salario_base / 2 - $total_deducciones + $total_bonos + $pago_horas_extras;
 
             // Obtener el día del mes de la fecha de pago
             $dia_del_mes = date("d", strtotime($fecha_pago));
@@ -82,29 +86,46 @@ if (isset($_POST['ejecutar_pago'])) {
                 $tipo_quincena = 'Segunda Quincena';
             }
 
-            // Insertar los datos en la tabla pago_planilla
+            // INSERT en tabla pago_planilla
             $query_insert = "INSERT INTO pago_planilla (id_planilla, id_usuario, salario_base, total_deducciones, total_bonos, pago_horas_extras, salario_neto, tipo_quincena, fecha_pago) 
                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
             $stmt_insert = $conn->prepare($query_insert);
             $stmt_insert->bind_param("iiddddds", $id_planilla, $id_usuario, $salario_base, $total_deducciones, $total_bonos, $pago_horas_extras, $salario_neto, $tipo_quincena);
 
+            // Definir consultas adicionales
+            $query_historial = "INSERT INTO historial_pagos (id_usuario, fecha_pago, tipo_quincena, salario_base, total_deducciones, total_bonos, pago_horas_extras, salario_neto, observaciones)
+                                VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?)";
+            $observaciones = 'Pago procesado automáticamente';
+
+            $query_borrar_horas = "DELETE FROM horas_extra WHERE id_usuario = ?";
+
             if ($stmt_insert->execute()) {
+                // Guardar en historial
+                $stmt_historial = $conn->prepare($query_historial);
+                $stmt_historial->bind_param("issddddds", $id_usuario, $tipo_quincena, $salario_base, $total_deducciones, $total_bonos, $pago_horas_extras, $salario_neto, $observaciones);
+                $stmt_historial->execute();
+                $stmt_historial->close();
+
+                // Eliminar horas extras ya pagadas
+                $stmt_borrar = $conn->prepare($query_borrar_horas);
+                $stmt_borrar->bind_param("i", $id_usuario);
+                $stmt_borrar->execute();
+                $stmt_borrar->close();
+
                 $mensaje = "Los pagos fueron ejecutados correctamente.";
             } else {
                 $mensaje = "Ya se realizaron los pagos para esta Quincena.";
             }
 
-            $stmt_insert->close(); // Cerrar la declaración de insert
+            $stmt_insert->close();
         }
     } else {
         $mensaje = "No se encontraron registros en la tabla planilla.";
     }
 
-    // Cerrar la conexión
     $conn->close();
 
-    // Devolver el mensaje en formato JSON
     echo json_encode(['mensaje' => $mensaje]);
 }
 ?>
