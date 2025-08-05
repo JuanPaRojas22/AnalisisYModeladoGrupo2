@@ -389,18 +389,19 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
         foreach ($fila as $i => $row) {
             if (empty($row[0]) || strtolower($row[0]) == 'nombre completo')
                 continue;
-
-            $nombre_empleado = strtolower(trim(preg_replace('/\s+/', ' ', $row[0])));
+            $nombre_empleado_raw = $row[0] ?? '';
+            $nombre_empleado = strtolower(trim(preg_replace('/\s+/', ' ', $nombre_empleado_raw)));
             $horas_extra = floatval(str_replace(',', '.', $hoja->getCell('G' . $rowStart)->getValue()));
-            $horas_extra_domingo = floatval(str_replace(',', '.', $row[5]));
-            $horas_extra_feriado = floatval(str_replace(',', '.', $row[6]));
+            $horas_extra_domingo = isset($row[5]) ? floatval(str_replace(',', '.', $row[5])) : 0;
+            $horas_extra_feriado = isset($row[6]) ? floatval(str_replace(',', '.', $row[6])) : 0;
+
 
             if (!empty($nombre_empleado)) {
                 $query_emp = "SELECT planilla.id_usuario, planilla.id_planilla, planilla.salario_base, planilla.salario_neto 
-                FROM planilla 
-                INNER JOIN usuario ON planilla.id_usuario = usuario.id_usuario
-                WHERE TRIM(LOWER(CONCAT(usuario.nombre, ' ', usuario.apellido))) = ? 
-                AND usuario.id_departamento = ?";
+              FROM planilla 
+              INNER JOIN usuario ON planilla.id_usuario = usuario.id_usuario
+              WHERE LOWER(CONCAT(TRIM(usuario.nombre), ' ', TRIM(usuario.apellido))) = LOWER(?)";
+
                 $stmt = $conn->prepare($query_emp);
                 $stmt->bind_param("si", $nombre_empleado, $departamento_admin);
 
