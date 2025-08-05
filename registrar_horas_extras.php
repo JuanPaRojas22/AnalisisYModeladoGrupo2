@@ -375,43 +375,41 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
         $fila = $hoja->rangeToArray('C' . $rowStart . ':I' . min($rowStart + $maxRows - 1, $highestRow), null, true, false);
 
         foreach ($fila as $i => $row) {
-            if (empty($row[0]) || strtolower($row[0]) == 'nombre completo') continue;
-        
+            if (empty($row[0]) || strtolower($row[0]) == 'nombre completo')
+                continue;
+
             $nombre_empleado = trim($row[0]);
             $horas_extra = floatval(str_replace(',', '.', $hoja->getCell('G' . $rowStart)->getValue()));
             $horas_extra_domingo = floatval(str_replace(',', '.', $row[5]));
             $horas_extra_feriado = floatval(str_replace(',', '.', $row[6]));
-        
+
             if (!empty($nombre_empleado)) {
-                $nombre_partes = explode(' ', $nombre_empleado);
-                $nombre = $nombre_partes[0];
-                $apellido = implode(' ', array_slice($nombre_partes, 1));
-        
+
                 $query_emp = "SELECT planilla.id_usuario, planilla.id_planilla, planilla.salario_base, planilla.salario_neto 
-                              FROM planilla 
-                              INNER JOIN usuario ON planilla.id_usuario = usuario.id_usuario
-                              WHERE usuario.nombre LIKE ? AND usuario.apellido LIKE ? AND usuario.id_departamento = ?";
-        
+                FROM planilla 
+                INNER JOIN usuario ON planilla.id_usuario = usuario.id_usuario
+                WHERE LOWER(CONCAT(usuario.nombre, ' ', usuario.apellido)) = LOWER(?) 
+                  AND usuario.id_departamento = ?";
+
                 $stmt = $conn->prepare($query_emp);
-                $stmt->bind_param("ssi", $nombre, $apellido, $departamento_admin);
-        
+                $stmt->bind_param("si", $nombre_empleado, $departamento_admin);
                 if ($stmt->execute()) {
                     $stmt->bind_result($id_usuario, $id_planilla, $salario_base, $salario_neto);
                     if ($stmt->fetch()) {
                         $stmt->close();
-        
+
                         $salario_quincenal = round($salario_base / 2, 2);
                         $tarifa_hora = round(($salario_base / 30) / 8, 2); // Salario mensual-diario-hora
 
-        
+
                         $monto_hora_extra = round($horas_extra * $tarifa_hora, 2);
                         $monto_hora_extra_domingo = round($horas_extra_domingo * $tarifa_hora * 2, 2);
                         $monto_hora_extra_feriado = round($horas_extra_feriado * $tarifa_hora * 4, 2);
                         $monto_total = $monto_hora_extra + $monto_hora_extra_domingo + $monto_hora_extra_feriado;
-        
+
                         if ($monto_total > 0) {
                             $usuario_creacion = $_SESSION['usuario'] ?? 'Sistema';
-        
+
                             // INSERTAR HORAS EXTRA NORMALES
                             if ($horas_extra > 0) {
                                 $query_insert = "INSERT INTO horas_extra (id_usuario, fecha, horas, monto_pago, tipo) 
@@ -423,7 +421,7 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
                                 }
                                 $stmt_insert->close();
                             }
-        
+
                             // DOMINGO
                             if ($horas_extra_domingo > 0) {
                                 $query_insert = "INSERT INTO horas_extra (id_usuario, fecha, horas, monto_pago, tipo) 
@@ -435,7 +433,7 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
                                 }
                                 $stmt_insert->close();
                             }
-        
+
                             // FERIADO
                             if ($horas_extra_feriado > 0) {
                                 $query_insert = "INSERT INTO horas_extra (id_usuario, fecha, horas, monto_pago, tipo) 
@@ -447,7 +445,7 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
                                 }
                                 $stmt_insert->close();
                             }
-        
+
                         }
                     } else {
                         echo "⚠️ No se encontró empleado: $nombre_empleado<br>";
@@ -462,7 +460,7 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
         $rowStart += $maxRows; // Dentro de while
     } // Fin while ($rowStart <= $highestRow)
 } // Fin if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0)
-    echo "Horas extras procesadas correctamente.";
+echo "Horas extras procesadas correctamente.";
 
 ?>
 
