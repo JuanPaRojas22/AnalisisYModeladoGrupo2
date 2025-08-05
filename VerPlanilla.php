@@ -125,7 +125,7 @@ $result = $stmt->get_result();
 
                     .container {
                         
-                        width: 65%;
+                        width: 75%;
                         /* Aumentar el tamaño del contenedor */
                         margin: 50px auto;
                         /* Centrar el contenedor */
