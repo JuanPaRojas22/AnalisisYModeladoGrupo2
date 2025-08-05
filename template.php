@@ -243,9 +243,9 @@ if (isset($_SESSION['id_usuario'])) {
                                     <ul class="sub">
                                         <li><a href="VerPlanilla.php"><i
                                                     class="bi bi-journal-bookmark"></i><span>Planilla</span></a></li>
-                                      
 
-                                         <?php if ($_SESSION['id_rol'] == 2): ?>
+
+                                        <?php if ($_SESSION['id_rol'] == 2): ?>
                                             <li><a href="admin_beneficios.php"><i
                                                         class="bi bi-gift"></i><span>Beneficios</span></a></li>
                                         <?php endif; ?>
@@ -265,22 +265,30 @@ if (isset($_SESSION['id_usuario'])) {
                                                 Ausencia</a>
                                         </li>
 
-                                           <?php if ($_SESSION['id_rol'] == 2): ?>
-                                            <li><a href="reporteAusencias.php"><i
-                                                        class="bi bi-bar-chart"></i><span>Reporte de
-                                                Ausencias</span></a></li>
+                                        <?php if ($_SESSION['id_rol'] == 2): ?>
+                                            <li><a href="reporteAusencias.php"><i class="bi bi-bar-chart"></i><span>Reporte de
+                                                        Ausencias</span></a></li>
                                         <?php endif; ?>
 
                                         <?php if ($_SESSION['id_rol'] == 2): ?>
-                                            <li><a href="reporteAntiguedad.php"><i
-                                                        class="bi bi-clock-history"></i><span>Reporte de
-                                                Antigüedad</span></a></li>
+                                            <li><a href="reporteAntiguedad.php"><i class="bi bi-clock-history"></i><span>Reporte
+                                                        de
+                                                        Antigüedad</span></a></li>
                                         <?php endif; ?>
 
 
                                         <li><a href="registrarBeneficiosAntiguedad.php"><i class="bi bi-gift"></i>Registrar
                                                 Antigüedad</a></li>
+                                    <?php elseif ($id_rol == 3): ?>
+                                        <!-- Mostrar solo Planilla para rol 3 -->
+                                        <li>
+                                            <a href="VerPlanilla.php">
+                                                <i class="bi bi-journal-bookmark"></i>
+                                                <span>Mi Información</span>
+                                            </a>
+                                        </li>
                                     <?php endif; ?>
+
 
                                 </ul>
                             <li><a href="beneficios.php"><i class="bi bi-sun"></i><span>Beneficios</span></a></li>
