@@ -369,6 +369,18 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
     $rowStart = 3; // A partir de la fila 3 (salta encabezado)
 // Obtener la última fila
     $highestRow = $hoja->getHighestRow();
+    echo "<br><strong>🔍 Usuarios en el departamento:</strong><br>";
+
+    $query_debug = "SELECT LOWER(CONCAT(TRIM(nombre), ' ', TRIM(apellido))) AS nombre_completo FROM usuario WHERE id_departamento = ?";
+    $stmt_debug = $conn->prepare($query_debug);
+    $stmt_debug->bind_param("i", $departamento_admin);
+    $stmt_debug->execute();
+    $stmt_debug->bind_result($nombre_debug);
+
+    while ($stmt_debug->fetch()) {
+        echo "➡️ [$nombre_debug]<br>";
+    }
+    $stmt_debug->close();
 
     while ($rowStart <= $highestRow) {
         // Leer un bloque de filas
