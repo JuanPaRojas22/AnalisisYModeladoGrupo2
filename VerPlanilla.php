@@ -397,26 +397,29 @@ $result = $stmt->get_result();
                                 echo "<tr><td colspan='9' class='no-records'>No se encontraron registros.</td></tr>";
                             }
                             ?>
-                         <!-- Paginación -->
-    <?php if ($total_pages > 1): ?>
-        <nav aria-label="Page navigation" class="mt-4">
-            <ul class="pagination justify-content-end" style="width: 80%; margin: auto; padding-right: 20px;">
-                <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                       
+                        </tbody>
+                    </table>
+                      <!-- Paginación -->
+                    <?php if ($total_pages > 1): ?>
+    <div align="right">
+        <nav aria-label="Page navigation">
+            <ul class="pagination" style="display: inline-block; padding-left: 0; margin-bottom: 0;">
+                <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>" style="display: inline; margin-right: 5px;">
                     <a class="page-link" href="?page=<?= $page - 1 ?>">Anterior</a>
                 </li>
                 <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                    <li class="page-item <?= $i == $page ? 'active' : '' ?>" style="display: inline; margin-right: 5px;">
                         <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
                     </li>
                 <?php endfor; ?>
-                <li class="page-item <?= $page >= $total_pages ? 'disabled' : '' ?>">
+                <li class="page-item <?= $page >= $total_pages ? 'disabled' : '' ?>" style="display: inline;">
                     <a class="page-link" href="?page=<?= $page + 1 ?>">Siguiente</a>
                 </li>
             </ul>
         </nav>
-    <?php endif; ?>
-                        </tbody>
-                    </table>
+    </div>
+<?php endif; ?>
 
 
                 </div>
