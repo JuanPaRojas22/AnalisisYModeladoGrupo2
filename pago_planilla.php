@@ -113,16 +113,17 @@ if (isset($_POST['ejecutar_pago'])) {
             if ($stmt_insert->execute()) {
                 $pagos_realizados++;
 
-
-                // Copiar todas las horas extras a historial (aunque sea 0)
+                // ✅ 1. Copiar todas las horas extras al historial
                 $stmt_copiar_horas = $conn->prepare("
-                     INSERT INTO historial_horas_extras (id_usuario, fecha_hora, tipo_hora, monto_pago, fecha_pago)
-                    SELECT id_usuario, fecha_hora, tipo_hora, monto_pago, NOW() FROM horas_extra WHERE id_usuario = ?");
+                    INSERT INTO historial_horas_extras (id_usuario, fecha_hora, tipo_hora, monto_pago, fecha_pago)
+                    SELECT id_usuario, fecha_hora, tipo_hora, monto_pago, NOW()
+                    FROM horas_extra
+                    WHERE id_usuario = ?");
                 $stmt_copiar_horas->bind_param("i", $id_usuario);
                 $stmt_copiar_horas->execute();
                 $stmt_copiar_horas->close();
 
-                // Borrar horas extras originales (aunque sean 0)
+                // ✅ 2. Borrar las horas extras (esto activa el TRIGGER que actualiza salario_neto)
                 $stmt_borrar_horas = $conn->prepare("DELETE FROM horas_extra WHERE id_usuario = ?");
                 $stmt_borrar_horas->bind_param("i", $id_usuario);
                 $stmt_borrar_horas->execute();
