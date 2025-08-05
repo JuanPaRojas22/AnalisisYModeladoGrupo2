@@ -21,6 +21,7 @@ if (isset($_POST['ejecutar_pago'])) {
 
     // Verificar si la consulta devuelve resultados
     if ($result_usuarios->num_rows > 0) {
+        $pagos_realizados = 0;
         // Recorrer cada usuario
         while ($row = $result_usuarios->fetch_assoc()) {
             $id_usuario = $row['id_usuario'];
@@ -105,8 +106,7 @@ if (isset($_POST['ejecutar_pago'])) {
             $stmt_insert->bind_param("iiddddds", $id_planilla, $id_usuario, $salario_base, $total_deducciones, $total_bonos, $pago_horas_extras, $salario_neto, $tipo_quincena);
 
             if ($stmt_insert->execute()) {
-                $mensaje = "Los pagos fueron ejecutados correctamente.";
-
+                $pagos_realizados++;
 
                 if ($pago_horas_extras > 0) {
                     // Copiar horas extras a historial
@@ -123,11 +123,11 @@ if (isset($_POST['ejecutar_pago'])) {
                     $stmt_borrar_horas->execute();
                     $stmt_borrar_horas->close();
                 }
+            } if ($pagos_realizados > 0) {
+                $mensaje = "Los pagos fueron ejecutados correctamente.";
             } else {
                 $mensaje = "Ya se realizaron los pagos para esta Quincena.";
             }
-
-            $stmt_insert->close(); // Cerrar la declaración de insert
         }
 
     } else {
