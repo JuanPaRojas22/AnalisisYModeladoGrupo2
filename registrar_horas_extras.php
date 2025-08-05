@@ -384,15 +384,14 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
             $horas_extra_feriado = floatval(str_replace(',', '.', $row[6]));
 
             if (!empty($nombre_empleado)) {
-
                 $query_emp = "SELECT planilla.id_usuario, planilla.id_planilla, planilla.salario_base, planilla.salario_neto 
                 FROM planilla 
                 INNER JOIN usuario ON planilla.id_usuario = usuario.id_usuario
                 WHERE LOWER(CONCAT(usuario.nombre, ' ', usuario.apellido)) = LOWER(?) 
-                  AND usuario.id_departamento = ?";
-
+                AND usuario.id_departamento = ?";
                 $stmt = $conn->prepare($query_emp);
                 $stmt->bind_param("si", $nombre_empleado, $departamento_admin);
+
                 if ($stmt->execute()) {
                     $stmt->bind_result($id_usuario, $id_planilla, $salario_base, $salario_neto);
                     if ($stmt->fetch()) {
