@@ -82,6 +82,21 @@ if (isset($_POST['ejecutar_pago'])) {
                 $tipo_quincena = 'Segunda Quincena';
             }
 
+            // Verificar si ya existe un pago para esta quincena y usuario
+            $query_existente = "SELECT 1 FROM pago_planilla WHERE id_usuario = ? AND tipo_quincena = ? AND MONTH(fecha_pago) = MONTH(CURDATE()) AND YEAR(fecha_pago) = YEAR(CURDATE())";
+            $stmt_existente = $conn->prepare($query_existente);
+            $stmt_existente->bind_param("is", $id_usuario, $tipo_quincena);
+            $stmt_existente->execute();
+            $stmt_existente->store_result();
+
+            if ($stmt_existente->num_rows > 0) {
+                // Ya existe un pago para esta quincena
+                $stmt_existente->close();
+                continue; // Saltar este usuario y seguir con los demás
+            }
+
+            $stmt_existente->close();
+
             // Insertar los datos en la tabla pago_planilla
             $query_insert = "INSERT INTO pago_planilla (id_planilla, id_usuario, salario_base, total_deducciones, total_bonos, pago_horas_extras, salario_neto, tipo_quincena, fecha_pago) 
                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
