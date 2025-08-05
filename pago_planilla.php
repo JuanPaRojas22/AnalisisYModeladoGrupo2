@@ -70,7 +70,7 @@ if (isset($_POST['ejecutar_pago'])) {
             }
 
             // Calcular el salario neto
-            $salario_neto = $salario_base/2 - $total_deducciones + $total_bonos + $pago_horas_extras;
+            $salario_neto = $row['salario_neto'];
 
             // Obtener el día del mes de la fecha de pago
             $dia_del_mes = date("d", strtotime($fecha_pago));
@@ -90,20 +90,31 @@ if (isset($_POST['ejecutar_pago'])) {
             $stmt_insert->bind_param("iiddddds", $id_planilla, $id_usuario, $salario_base, $total_deducciones, $total_bonos, $pago_horas_extras, $salario_neto, $tipo_quincena);
 
             if ($stmt_insert->execute()) {
-                $mensaje = "Los pagos fueron ejecutados correctamente.";
-            
-                // Eliminar las horas extras ya pagadas de ese usuario
-                $stmt_borrar_horas = $conn->prepare("DELETE FROM horas_extra WHERE id_usuario = ?");
-                $stmt_borrar_horas->bind_param("i", $id_usuario);
-                $stmt_borrar_horas->execute();
-                $stmt_borrar_horas->close();
-            
+                
+
+                if ($pago_horas_extras > 0) {
+                    // Copiar horas extras a historial
+                    $stmt_copiar_horas = $conn->prepare("
+                        INSERT INTO historial_horas_extras (id_usuario, fecha_hora, tipo_hora, monto_pago, fecha_pago)
+                        SELECT id_usuario, fecha_hora, tipo_hora, monto_pago, NOW() FROM horas_extra WHERE id_usuario = ?");
+                    $stmt_copiar_horas->bind_param("i", $id_usuario);
+                    $stmt_copiar_horas->execute();
+                    $stmt_copiar_horas->close();
+
+                    // Borrar horas extras originales
+                    $stmt_borrar_horas = $conn->prepare("DELETE FROM horas_extra WHERE id_usuario = ?");
+                    $stmt_borrar_horas->bind_param("i", $id_usuario);
+                    $stmt_borrar_horas->execute();
+                    $stmt_borrar_horas->close();
+                }
             } else {
                 $mensaje = "Ya se realizaron los pagos para esta Quincena.";
             }
 
             $stmt_insert->close(); // Cerrar la declaración de insert
         }
+        $mensaje = "Los pagos fueron ejecutados correctamente.";
+
     } else {
         $mensaje = "No se encontraron registros en la tabla planilla.";
     }
