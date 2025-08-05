@@ -75,47 +75,61 @@ if ($rol_usuario == 2) {
 //echo "Conectado correctamente con SSL.";
 
 
-            // Consulta para obtener el historial de cambios
-            $sql = "SELECT 
-            u.nombre,
-            u.apellido,
-            u.correo_electronico,
-            u.id_ocupacion,
-            MAX(o.nombre_ocupacion) AS nombre_ocupacion,
-            p.total_deducciones,
-            p.salario_base, 
-            p.salario_neto, 
-            COALESCE(GROUP_CONCAT(DISTINCT CONCAT('- ', d.razon) SEPARATOR '\n'), 'Sin deducciones') AS nombre_deduccion,
-            COALESCE(GROUP_CONCAT(DISTINCT CONCAT('- ', b.razon) SEPARATOR '\n'), 'Sin bonos') AS nombre_bono,
-            COALESCE(GROUP_CONCAT(DISTINCT te.descripcion SEPARATOR ', '), 'Sin clasificación') AS clasificaciones
-        FROM planilla p
-        JOIN Usuario u ON p.id_usuario = u.id_usuario
-        LEFT JOIN deducciones d ON p.id_usuario = d.id_usuario  
-        LEFT JOIN bonos b ON p.id_usuario = b.id_usuario
-        LEFT JOIN ocupaciones o ON o.id_ocupacion = u.id_ocupacion
-        LEFT JOIN empleado_tipo_empleado ete ON p.id_usuario = ete.id_empleado
-        LEFT JOIN tipo_empleado te ON ete.id_tipo_empleado = te.id_tipo_empleado";
-// Filtrado según rol
+          // Consulta base completa (prepara con placeholders si aplica filtro)
+$sql = "SELECT 
+    u.nombre,
+    u.apellido,
+    u.correo_electronico,
+    u.id_ocupacion,
+    MAX(o.nombre_ocupacion) AS nombre_ocupacion,
+    p.total_deducciones,
+    p.salario_base, 
+    p.salario_neto, 
+    COALESCE(GROUP_CONCAT(DISTINCT CONCAT('- ', d.razon) SEPARATOR '\n'), 'Sin deducciones') AS nombre_deduccion,
+    COALESCE(GROUP_CONCAT(DISTINCT CONCAT('- ', b.razon) SEPARATOR '\n'), 'Sin bonos') AS nombre_bono,
+    COALESCE(GROUP_CONCAT(DISTINCT te.descripcion SEPARATOR ', '), 'Sin clasificación') AS clasificaciones
+FROM planilla p
+JOIN Usuario u ON p.id_usuario = u.id_usuario
+LEFT JOIN deducciones d ON p.id_usuario = d.id_usuario  
+LEFT JOIN bonos b ON p.id_usuario = b.id_usuario
+LEFT JOIN ocupaciones o ON o.id_ocupacion = u.id_ocupacion
+LEFT JOIN empleado_tipo_empleado ete ON p.id_usuario = ete.id_empleado
+LEFT JOIN tipo_empleado te ON ete.id_tipo_empleado = te.id_tipo_empleado";
+
 if ($rol_usuario == 3) {
-    // Solo mostrar info del usuario logueado
-    $sql .= " WHERE u.id_usuario = " . intval($id_usuario);
+    $sql .= " WHERE u.id_usuario = ?";
 } elseif ($rol_usuario == 2 && $id_departamento !== null) {
-    // Mostrar solo usuarios del mismo departamento
-    $sql .= " WHERE u.id_departamento = " . intval($id_departamento);
+    $sql .= " WHERE u.id_departamento = ?";
 }
 
-        
-     $sql .= "
-    GROUP BY 
-        u.nombre, 
-        u.apellido, 
-        u.correo_electronico, 
-        u.id_ocupacion,
-        p.total_deducciones,
-        p.salario_base,
-        p.salario_neto
-    ORDER BY u.nombre DESC
-";
+$sql .= " GROUP BY 
+    u.id_usuario, 
+    u.nombre, 
+    u.apellido, 
+    u.correo_electronico, 
+    u.id_ocupacion,
+    p.total_deducciones,
+    p.salario_base,
+    p.salario_neto
+ORDER BY u.nombre DESC
+LIMIT ? OFFSET ?";
+
+if ($rol_usuario == 3 || ($rol_usuario == 2 && $id_departamento !== null)) {
+    $stmt = $conn->prepare($sql);
+    if ($rol_usuario == 3) {
+        $stmt->bind_param("iii", $id_usuario, $items_per_page, $offset);
+    } else {
+        $stmt->bind_param("iii", $id_departamento, $items_per_page, $offset);
+    }
+    $stmt->execute();
+    $result = $stmt->get_result();
+} else {
+    // Sin filtro, sin parámetros, solo paginar
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $items_per_page, $offset);
+    $stmt->execute();
+    $result = $stmt->get_result();
+}
 
             /*
 
