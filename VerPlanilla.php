@@ -14,7 +14,6 @@ if (!isset($_SESSION['id_usuario'])) {
 
 
 
-
 ?>
 
 
@@ -62,6 +61,19 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 // Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
 
+$id_departamento = null;
+
+if ($rol_usuario == 2) {
+    $stmt = $conn->prepare("SELECT id_departamento FROM Usuario WHERE id_usuario = ?");
+    $stmt->bind_param("i", $id_usuario);
+    $stmt->execute();
+    $result_depto = $stmt->get_result();
+    if ($row = $result_depto->fetch_assoc()) {
+        $id_departamento = $row['id_departamento'];
+    }
+    $stmt->close();
+}
+
 //echo "Conectado correctamente con SSL.";
 
 
@@ -85,8 +97,10 @@ mysqli_set_charset($conn, "utf8mb4");
         LEFT JOIN ocupaciones o ON o.id_ocupacion = u.id_ocupacion
         LEFT JOIN empleado_tipo_empleado ete ON p.id_usuario = ete.id_empleado
         LEFT JOIN tipo_empleado te ON ete.id_tipo_empleado = te.id_tipo_empleado";
-        if ($rol_usuario == 3) {
+if ($rol_usuario == 3) {
     $sql .= " WHERE u.id_usuario = " . intval($id_usuario);
+} elseif ($rol_usuario == 2 && $id_departamento !== null) {
+    $sql .= " WHERE u.id_departamento = " . intval($id_departamento);
 }
   
         
