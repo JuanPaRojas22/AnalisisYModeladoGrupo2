@@ -41,12 +41,22 @@ $rol = $_SESSION['id_rol'];
 $id_usuario = $_SESSION['id_usuario'];
 $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
 
+// Si es admin normal, obtenemos su departamento
+if ($rol == 1) {
+    $res_dep = mysqli_query($conn, "SELECT id_departamento FROM usuario WHERE id_usuario = '$id_usuario'");
+    $dep_row = mysqli_fetch_assoc($res_dep);
+    $mi_departamento = $dep_row['id_departamento'];
+}
+
+
 // Incluir la plantilla
 include 'template.php';
 // Verificar si se han enviado los filtros
 if (isset($_POST['filtrar'])) {
     $usuario = $_POST['usuario'];
     $departamento = $_POST['departamento'];
+
+
 
 
     // Mostrar valores de los filtros (para depuración)
@@ -62,16 +72,23 @@ if (isset($_POST['filtrar'])) {
 
     // Si es un usuario normal, solo puede ver sus propias horas
     // Si el usuario es normal (rol = 3), forzar filtro por su ID
-    if ($rol == 3) {
-        $query .= " AND u.id_usuario = '$id_usuario'";
-    } else {
-        // Admin o master: aplicar filtros si vienen
+    if ($rol == 2) {
+        // Admin master: acceso completo
         if (!empty($usuario)) {
             $query .= " AND u.id_usuario = '$usuario'";
         }
         if (!empty($departamento)) {
             $query .= " AND d.id_departamento = '$departamento'";
         }
+    } elseif ($rol == 1) {
+        // Admin normal: solo su departamento
+        $query .= " AND d.id_departamento = '$mi_departamento'";
+        if (!empty($usuario)) {
+            $query .= " AND u.id_usuario = '$usuario'";
+        }
+    } else {
+        // Usuario común: solo su información
+        $query .= " AND u.id_usuario = '$id_usuario'";
     }
 
 
