@@ -11,6 +11,8 @@ if (!isset($_SESSION['id_usuario'])) {
 
     $rol_usuario = $_SESSION['id_rol'] ?? null;
     $id_usuario = $_SESSION['id_usuario'];
+    $id_departamento = $_SESSION['id_departamento'] ?? null;
+
 
 
 
@@ -97,12 +99,15 @@ if ($rol_usuario == 2) {
         LEFT JOIN ocupaciones o ON o.id_ocupacion = u.id_ocupacion
         LEFT JOIN empleado_tipo_empleado ete ON p.id_usuario = ete.id_empleado
         LEFT JOIN tipo_empleado te ON ete.id_tipo_empleado = te.id_tipo_empleado";
+// Filtrado según rol
 if ($rol_usuario == 3) {
+    // Solo mostrar info del usuario logueado
     $sql .= " WHERE u.id_usuario = " . intval($id_usuario);
 } elseif ($rol_usuario == 2 && $id_departamento !== null) {
+    // Mostrar solo usuarios del mismo departamento
     $sql .= " WHERE u.id_departamento = " . intval($id_departamento);
 }
-  
+
         
      $sql .= "
     GROUP BY 
