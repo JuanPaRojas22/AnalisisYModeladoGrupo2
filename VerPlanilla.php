@@ -12,10 +12,6 @@ if (!isset($_SESSION['id_usuario'])) {
     $rol_usuario = $_SESSION['id_rol'] ?? null;
     $id_usuario = $_SESSION['id_usuario'];
     $id_departamento = $_SESSION['id_departamento'] ?? null;
-
-
-
-
 ?>
 
 
