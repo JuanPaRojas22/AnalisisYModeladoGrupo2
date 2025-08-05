@@ -91,6 +91,13 @@ if (isset($_POST['ejecutar_pago'])) {
 
             if ($stmt_insert->execute()) {
                 $mensaje = "Los pagos fueron ejecutados correctamente.";
+            
+                // Eliminar las horas extras ya pagadas de ese usuario
+                $stmt_borrar_horas = $conn->prepare("DELETE FROM horas_extra WHERE id_usuario = ?");
+                $stmt_borrar_horas->bind_param("i", $id_usuario);
+                $stmt_borrar_horas->execute();
+                $stmt_borrar_horas->close();
+            
             } else {
                 $mensaje = "Ya se realizaron los pagos para esta Quincena.";
             }
