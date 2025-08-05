@@ -42,7 +42,7 @@ if ($rol_usuario == 3) {
     $where = " WHERE u.id_usuario = ?";
     $params[] = $id_usuario;
     $types .= "i";
-} elseif ($rol_usuario == 2 && $id_departamento !== null) {
+} elseif ($rol_usuario == 1 && $id_departamento !== null) {
     $where = " WHERE u.id_departamento = ?";
     $params[] = $id_departamento;
     $types .= "i";
@@ -397,7 +397,6 @@ $result = $stmt->get_result();
                                 echo "<tr><td colspan='9' class='no-records'>No se encontraron registros.</td></tr>";
                             }
                             ?>
-                        </tbody>
                          <!-- Paginación -->
     <?php if ($total_pages > 1): ?>
         <nav aria-label="Page navigation" class="mt-4">
@@ -416,8 +415,7 @@ $result = $stmt->get_result();
             </ul>
         </nav>
     <?php endif; ?>
-
-
+                        </tbody>
                     </table>
 
 
