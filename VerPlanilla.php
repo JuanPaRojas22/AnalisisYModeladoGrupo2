@@ -124,6 +124,7 @@ $result = $stmt->get_result();
                     }
 
                     .container {
+                        margin-left: 260px;
                         width: 90%;
                         /* Aumentar el tamaño del contenedor */
                         margin: 50px auto;
