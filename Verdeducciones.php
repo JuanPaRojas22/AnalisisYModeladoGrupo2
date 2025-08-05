@@ -68,7 +68,7 @@ require 'template.php';
             d.concepto, 
             d.lugar, 
             d.deuda_total, 
-            d.monto_mensual
+            d.monto_mensual,
             d.aportes, 
             d.saldo_pendiente, 
             d.saldo_pendiente_dolares, 
