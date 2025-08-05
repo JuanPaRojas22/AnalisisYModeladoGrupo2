@@ -63,7 +63,7 @@ if (isset($_POST['filtrar'])) {
     // Si es un usuario normal, solo puede ver sus propias horas
     // Si el usuario es normal (rol = 3), forzar filtro por su ID
     if ($rol == 3) {
-        $query .= " AND u.id_usuario = '$id_usuario_sesion'";
+        $query .= " AND u.id_usuario = '$id_usuario'";
     } else {
         // Admin o master: aplicar filtros si vienen
         if (!empty($usuario)) {
