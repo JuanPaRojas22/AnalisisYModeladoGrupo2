@@ -68,6 +68,7 @@ require 'template.php';
             d.concepto, 
             d.lugar, 
             d.deuda_total, 
+            d.monto_mensual
             d.aportes, 
             d.saldo_pendiente, 
             d.saldo_pendiente_dolares, 
@@ -280,7 +281,7 @@ require 'template.php';
                         <th>Deudor</th>
                         <th>Concepto</th>
                         <th>Lugar</th>
-                        <th>Deuda Total</th>
+                        <th>Monto Mensual</th>
                         <th>Aportes</th>
                         <th>Saldo Pendiente</th>
                         <th>Saldo Pendiente (USD)</th>
@@ -298,7 +299,7 @@ require 'template.php';
                             echo "<td>" . $row_deduccion['deudor'] . "</td>";
                             echo "<td>" . $row_deduccion['concepto'] . "</td>";
                             echo "<td>" . $row_deduccion['lugar'] . "</td>";
-                            echo "<td>" . $row_deduccion['deuda_total'] . "</td>";
+                            echo "<td>" . $row_deduccion['monto_mensual'] . "</td>";
                             echo "<td>" . $row_deduccion['aportes'] . "</td>";
                             echo "<td>" . $row_deduccion['saldo_pendiente'] . "</td>";
                             echo "<td>" . $row_deduccion['saldo_pendiente_dolares'] . "</td>";
