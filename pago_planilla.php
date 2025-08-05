@@ -101,33 +101,38 @@ if (isset($_POST['ejecutar_pago'])) {
             // Insertar los datos en la tabla pago_planilla
             $query_insert = "INSERT INTO pago_planilla (id_planilla, id_usuario, salario_base, total_deducciones, total_bonos, pago_horas_extras, salario_neto, tipo_quincena, fecha_pago) 
                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
-
             $stmt_insert = $conn->prepare($query_insert);
+            if ($pago_horas_extras === null) {
+                $pago_horas_extras = 0;
+            }
+
             $stmt_insert->bind_param("iiddddds", $id_planilla, $id_usuario, $salario_base, $total_deducciones, $total_bonos, $pago_horas_extras, $salario_neto, $tipo_quincena);
+
+
 
             if ($stmt_insert->execute()) {
                 $pagos_realizados++;
 
-                if ($pago_horas_extras > 0) {
-                    // Copiar horas extras a historial
-                    $stmt_copiar_horas = $conn->prepare("
-                        INSERT INTO historial_horas_extras (id_usuario, fecha_hora, tipo_hora, monto_pago, fecha_pago)
-                        SELECT id_usuario, fecha_hora, tipo_hora, monto_pago, NOW() FROM horas_extra WHERE id_usuario = ?");
-                    $stmt_copiar_horas->bind_param("i", $id_usuario);
-                    $stmt_copiar_horas->execute();
-                    $stmt_copiar_horas->close();
 
-                    // Borrar horas extras originales
-                    $stmt_borrar_horas = $conn->prepare("DELETE FROM horas_extra WHERE id_usuario = ?");
-                    $stmt_borrar_horas->bind_param("i", $id_usuario);
-                    $stmt_borrar_horas->execute();
-                    $stmt_borrar_horas->close();
-                }
-            } if ($pagos_realizados > 0) {
-                $mensaje = "Los pagos fueron ejecutados correctamente.";
-            } else {
-                $mensaje = "Ya se realizaron los pagos para esta Quincena.";
+                // Copiar todas las horas extras a historial (aunque sea 0)
+                $stmt_copiar_horas = $conn->prepare("
+                     INSERT INTO historial_horas_extras (id_usuario, fecha_hora, tipo_hora, monto_pago, fecha_pago)
+                    SELECT id_usuario, fecha_hora, tipo_hora, monto_pago, NOW() FROM horas_extra WHERE id_usuario = ?");
+                $stmt_copiar_horas->bind_param("i", $id_usuario);
+                $stmt_copiar_horas->execute();
+                $stmt_copiar_horas->close();
+
+                // Borrar horas extras originales (aunque sean 0)
+                $stmt_borrar_horas = $conn->prepare("DELETE FROM horas_extra WHERE id_usuario = ?");
+                $stmt_borrar_horas->bind_param("i", $id_usuario);
+                $stmt_borrar_horas->execute();
+                $stmt_borrar_horas->close();
             }
+        }
+        if ($pagos_realizados > 0) {
+            $mensaje = "Los pagos fueron ejecutados correctamente.";
+        } else {
+            $mensaje = "Ya se realizaron los pagos para esta Quincena.";
         }
 
     } else {
