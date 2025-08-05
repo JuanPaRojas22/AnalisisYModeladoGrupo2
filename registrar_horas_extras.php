@@ -1,7 +1,7 @@
 <?php
 ob_start();
-//error_reporting(E_ALL);
-//ini_set('display_errors', 1);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 // Conexión a la base de datos
 // Parámetros de conexión
 require "template.php";
@@ -378,7 +378,7 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
             if (empty($row[0]) || strtolower($row[0]) == 'nombre completo')
                 continue;
 
-            $nombre_empleado = trim($row[0]);
+            $nombre_empleado = strtolower(trim(preg_replace('/\s+/', ' ', $row[0])));
             $horas_extra = floatval(str_replace(',', '.', $hoja->getCell('G' . $rowStart)->getValue()));
             $horas_extra_domingo = floatval(str_replace(',', '.', $row[5]));
             $horas_extra_feriado = floatval(str_replace(',', '.', $row[6]));
@@ -387,7 +387,7 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
                 $query_emp = "SELECT planilla.id_usuario, planilla.id_planilla, planilla.salario_base, planilla.salario_neto 
                 FROM planilla 
                 INNER JOIN usuario ON planilla.id_usuario = usuario.id_usuario
-                WHERE LOWER(CONCAT(usuario.nombre, ' ', usuario.apellido)) = LOWER(?) 
+                WHERE TRIM(LOWER(CONCAT(usuario.nombre, ' ', usuario.apellido))) = ? 
                 AND usuario.id_departamento = ?";
                 $stmt = $conn->prepare($query_emp);
                 $stmt->bind_param("si", $nombre_empleado, $departamento_admin);
@@ -460,6 +460,8 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
     } // Fin while ($rowStart <= $highestRow)
 } // Fin if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0)
 echo "Horas extras procesadas correctamente.";
+echo "📄 Comparando con nombre: [$nombre_empleado]<br>";
+
 
 ?>
 
