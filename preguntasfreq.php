@@ -65,6 +65,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
 
     $result_faq = $conn->query($query_faq);
 }
+
+// Procesar respuesta a una FAQ existente
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['responder_faq'])) {
+    $id_faq = $_POST['id_faq'];
+    $respuesta = $_POST['respuesta_faq'];
+
+    $query = "UPDATE preguntasfrecuentes SET respuesta = ?, respondida = 1 WHERE id_faq = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("si", $respuesta, $id_faq);
+    $stmt->execute();
+    $stmt->close();
+
+    // Actualizar resultados
+    $result_faq = $conn->query($query_faq);
+}
+
+
+
 ?>
 
 
@@ -173,13 +191,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
             color: black;
         }
 
-.modal-contenido {
-    width: 60%;
-    max-width: 700px;
-    background-color: white;
-    border-radius: 8px;
-    padding: 20px;
-}
+        .modal-contenido {
+            width: 60%;
+            max-width: 700px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+        }
 
         h3 {
             font-size: 32px;
@@ -188,12 +206,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
             /* Midnight Green for titles */
         }
 
-.preguntas-titulo {
-    font-size: 28px;
-    font-weight: bold;
-    color: #137266; /* Pine Green */
-}
-</style>
+        .preguntas-titulo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #137266;
+            /* Pine Green */
+        }
+    </style>
 </head>
 
 <body>
@@ -217,7 +236,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
                             class="accordion-collapse collapse <?php echo ($i === 0) ? 'show' : ''; ?>"
                             aria-labelledby="heading<?php echo $i; ?>" data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
-                                <?php echo $row['respuesta']; ?>
+                                <?php if (!empty($row['respuesta'])): ?>
+                                    <?= nl2br(htmlspecialchars($row['respuesta'])); ?>
+                                <?php else: ?>
+                                    <form method="POST">
+                                        <input type="hidden" name="id_faq" value="<?= $row['id_faq']; ?>">
+                                        <div class="mb-2">
+                                            <label for="respuesta_faq" class="form-label">Agregar Respuesta:</label>
+                                            <textarea name="respuesta_faq" class="form-control" required></textarea>
+                                        </div>
+                                        <button type="submit" name="responder_faq" class="btn btn-success btn-sm">Enviar
+                                            Respuesta</button>
+                                    </form>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -227,7 +258,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
                 <p>No hay preguntas frecuentes disponibles.</p>
             <?php endif; ?>
             <!-- Botón para abrir el modal de agregar FAQ -->
-            <button id="openFaqModalBtn" class="btn btn-primary mt-3" style="background-color: #09354b;">Agregar Pregunta</button>
+            <button id="openFaqModalBtn" class="btn btn-primary mt-3" style="background-color: #09354b;">Agregar
+                Pregunta</button>
 
             <!-- Modal para agregar FAQ -->
             <div id="faqModal" class="modal">
