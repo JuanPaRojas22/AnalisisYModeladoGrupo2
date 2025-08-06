@@ -306,12 +306,13 @@ $result = $stmt->get_result();
                             <i class="bi bi-cash-stack"></i> Ejecutar Pagos
                         </button>
 
-
+                        <?php endif; ?>
 
                         <!-- Botón para abrir el segundo modal (resto de los botones) -->
                         <button class="btn" onclick="abrirModal('modal2')">
                             <i class="bi bi-journal-medical"></i>
                         </button>
+                        
 
                         <?php if (isset($mensaje)): ?>
                             <div class="alert alert-success mt-3">
@@ -322,7 +323,7 @@ $result = $stmt->get_result();
                     </div>
                     <input type="text" id="searchInput" class="custom-input" onkeyup="searchTable()"
                         placeholder="Buscar Empleado...">
-                <?php endif; ?>
+               
 
 
 
