@@ -55,8 +55,18 @@ if ($rol == 1) {
 include 'template.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $_SESSION['filtro_usuario'] = $_POST['usuario'] ?? '';
-    $_SESSION['filtro_departamento'] = $_POST['departamento'] ?? '';
+    if (isset($_POST['filtrar'])) {
+        // Solo guarda en sesión si el botón Filtrar fue presionado
+        $_SESSION['filtro_usuario'] = $_POST['usuario'] ?? '';
+        $_SESSION['filtro_departamento'] = $_POST['departamento'] ?? '';
+    }
+
+    // Si la paginación se usó, y no se envió el filtro, NO lo sobrescribas
+    $usuario = $_POST['usuario'] ?? ($_SESSION['filtro_usuario'] ?? '');
+    $departamento = $_POST['departamento'] ?? ($_SESSION['filtro_departamento'] ?? '');
+} else {
+    $usuario = $_SESSION['filtro_usuario'] ?? '';
+    $departamento = $_SESSION['filtro_departamento'] ?? '';
 }
 
 $usuario = $_SESSION['filtro_usuario'] ?? '';
