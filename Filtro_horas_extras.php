@@ -189,7 +189,7 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
             </form>
         <?php endif; ?>
 
-        <?php if ($rol_usuario == 3): ?>
+        <?php if (in_array($rol, [1, 2, 3]) && !empty($data)): ?>
 
             <div style="text-align: center;">
                 <?php if (!empty($data)): ?>
