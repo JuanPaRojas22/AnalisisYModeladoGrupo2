@@ -69,8 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $departamento = $_SESSION['filtro_departamento'] ?? '';
 }
 
-$usuario = $_SESSION['filtro_usuario'] ?? '';
-$departamento = $_SESSION['filtro_departamento'] ?? '';
+error_log("POST usuario: " . ($_POST['usuario'] ?? 'NULO'));
+error_log("POST departamento: " . ($_POST['departamento'] ?? 'NULO'));
 
 $registros_por_pagina = 8;
 $pagina_actual = isset($_POST['pagina']) ? (int) $_POST['pagina'] : 1;
