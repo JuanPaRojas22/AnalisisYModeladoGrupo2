@@ -241,20 +241,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['responder_faq'])) {
                             class="accordion-collapse collapse <?php echo ($i === 0) ? 'show' : ''; ?>"
                             aria-labelledby="heading<?php echo $i; ?>" data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
-                                <?php if ($row['respondida'] == 1): ?>
-                                    <?= nl2br(htmlspecialchars($row['respuesta'])); ?>
-                                <?php else: ?>
-                                    <form method="POST">
-                                        <input type="hidden" name="id_faq" value="<?= $row['id_faq']; ?>">
-                                        <div class="mb-2">
-                                            <label for="respuesta_faq" class="form-label">Agregar Respuesta:</label>
-                                            <textarea id="respuesta_faq" name="respuesta_faq" class="form-control"
-                                                required></textarea>
-                                        </div>
-                                        <button type="submit" name="responder_faq" class="btn btn-success btn-sm">Enviar
-                                            Respuesta</button>
-                                    </form>
-                                <?php endif; ?>
+                                <form method="POST">
+                                    <input type="hidden" name="id_faq" value="<?= $row['id_faq']; ?>">
+                                    <div class="mb-2">
+                                        <label for="respuesta_faq" class="form-label">Agregar Respuesta:</label>
+                                        <textarea id="respuesta_faq" name="respuesta_faq" class="form-control"
+                                            required></textarea>
+                                    </div>
+                                    <button type="submit" name="responder_faq" class="btn btn-success btn-sm">Enviar
+                                        Respuesta</button>
+                                </form>
                             </div>
 
                         </div>
