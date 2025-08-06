@@ -106,6 +106,6 @@ $pdf->SetY(-50);
 $pdf->SetFont('Arial', 'I', 8);
 $pdf->Cell(0, 10, 'Generado por Sistema de Reportes - Acces Personnel', 0, 0, 'C');
 
-$pdf->Output('d', 'reporte_horas_extras.pdf');
+$pdf->Output('I', 'reporte_horas_extras.pdf');
 exit;
 ?>
