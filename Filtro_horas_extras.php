@@ -179,34 +179,35 @@ if ($result && mysqli_num_rows($result) > 0) {
 
 
     <!-- Mostrar los resultados -->
-    <table>
-        <thead>
-            <tr>
-                <th>Empleado</th>
-                <th>Departamento</th>
-                <th>Total Horas Extras</th>
-                <th>Monto</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            // Mostrar los resultados de las horas extras
-            if (isset($data) && $data !== null) {
-                foreach ($data as $row) {
-                    echo "<tr>
+    <!-- Mostrar los resultados -->
+    <div style="overflow-x:auto; margin: 0 auto; width: 100%;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Empleado</th>
+                    <th>Departamento</th>
+                    <th>Total Horas Extras</th>
+                    <th>Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                if (isset($data) && $data !== null) {
+                    foreach ($data as $row) {
+                        echo "<tr>
                             <td>" . $row['nombre'] . "</td>
                             <td>" . $row['Nombre'] . "</td>
                             <td>" . number_format($row['total_horas_extras'], 2) . "</td>
                             <td>" . number_format($row['monto_pago'], 2) . "</td>
                         </tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='4' class='no-records'>No se encontraron registros de horas extras.</td></tr>";
                 }
-            } else {
-                echo "<tr><td colspan='4' class='no-records'>No se encontraron registros de horas extras.</td></tr>";
-            }
-            ?>
-        </tbody>
-    </table>
-
+                ?>
+            </tbody>
+        </table>
+    </div>
     </div>
     <?php if ($rol == 2): ?>
         <script>
