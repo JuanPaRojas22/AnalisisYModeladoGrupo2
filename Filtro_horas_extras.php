@@ -5,6 +5,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header("Location: login.php");
     exit;
 }
+
 //Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
@@ -52,10 +53,17 @@ if ($rol == 1) {
 // Incluir la plantilla
 include 'template.php';
 
-// Inicializar filtros vacíos o con valores por defecto
-$usuario = $_POST['usuario'] ?? '';
-$departamento = $_POST['departamento'] ?? '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $_SESSION['filtro_usuario'] = $_POST['usuario'] ?? '';
+    $_SESSION['filtro_departamento'] = $_POST['departamento'] ?? '';
+}
 
+$usuario = $_SESSION['filtro_usuario'] ?? '';
+$departamento = $_SESSION['filtro_departamento'] ?? '';
+
+$registros_por_pagina = 10;
+$pagina_actual = isset($_POST['pagina']) ? (int) $_POST['pagina'] : 1;
+$offset = ($pagina_actual - 1) * $registros_por_pagina;
 
 
 
@@ -92,6 +100,9 @@ if ($rol == 2) {
 
 
 $query .= " GROUP BY u.id_usuario, u.nombre, d.Nombre";
+$query_total = $query; // Guardamos esta sin LIMIT para contar total
+
+$query .= " LIMIT $registros_por_pagina OFFSET $offset";
 
 // Muestra la consulta SQL generada para depuración
 //echo "<pre>" . $query . "</pre>";
@@ -100,14 +111,10 @@ $query .= " GROUP BY u.id_usuario, u.nombre, d.Nombre";
 $result = mysqli_query($conn, $query);
 
 // Verificar si hay resultados
-if ($result && mysqli_num_rows($result) > 0) {
-    $data = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $data[] = $row;
-    }
-} else {
-    $data = null;
-}
+$result_total = mysqli_query($conn, $query_total);
+$total_registros = mysqli_num_rows($result_total);
+$total_paginas = ceil($total_registros / $registros_por_pagina);
+
 
 ?>
 
@@ -208,6 +215,16 @@ if ($result && mysqli_num_rows($result) > 0) {
                 }
                 ?>
             </tbody>
+            <?php if ($total_paginas > 1): ?>
+                <div style="text-align:center; margin-top: 20px;">
+                    <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
+                        <a href="?pagina=<?php echo $i; ?>"
+                            class="btn <?php echo ($i == $pagina_actual) ? 'btn-secondary' : ''; ?>">
+                            <?php echo $i; ?>
+                        </a>
+                    <?php endfor; ?>
+                </div>
+            <?php endif; ?>
         </table>
     </div>
     <?php if ($rol == 2): ?>
