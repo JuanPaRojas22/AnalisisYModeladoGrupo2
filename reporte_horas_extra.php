@@ -5,6 +5,9 @@ ini_set('display_errors', 1);
 
 require 'fpdf/fpdf.php';  // Para exportar a PDF
 
+ob_start();
+
+
 // Si viene POST y trae datos_json, usar esos datos
 $data = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['datos_json'])) {
@@ -58,6 +61,8 @@ foreach ($data as $row) {
 $pdf->SetY(-50);
 $pdf->SetFont('Arial', 'I', 8);
 $pdf->Cell(0, 10, 'Generado por Sistema de Reportes - Acces Personnel', 0, 0, 'C');
+
+ob_end_clean();
 
 $pdf->Output('I', 'reporte_horas_extras.pdf');
 exit;
