@@ -149,8 +149,7 @@ if (isset($_SESSION['id_usuario'])) {
 
                     <li id="header_profile_bar" class="dropdown position-relative">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#" style="text-decoration: none;">
-                            <i class="fa fa-user"></i>
-                            <span class="session-dot"></span>
+      
                         </a>
                         <ul class="dropdown-menu extended inbox">
                             <div class="notify-arrow notify-arrow-green"></div>
