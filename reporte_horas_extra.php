@@ -30,6 +30,13 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 // Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
 session_start();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $_SESSION['filtro_usuario'] = $_POST['usuario'] ?? '';
+    $_SESSION['filtro_departamento'] = $_POST['departamento'] ?? '';
+}
+
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
