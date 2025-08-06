@@ -189,16 +189,21 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
             </form>
         <?php endif; ?>
 
-        <?php if (!empty($data)): ?>
-            <form action="reporte_horas_extra.php" method="post">
-                <input type="hidden" name="usuario" value="<?php echo $usuario; ?>">
-                <input type="hidden" name="departamento" value="<?php echo $departamento; ?>">
-                <button class="btn" type="submit" name="exportar_pdf">
-                    <i class="bi bi-file-earmark-arrow-down-fill"></i> Exportar PDF
-                </button>
+        <?php if ($rol_usuario == 3): ?>
 
-            <?php endif; ?>
-        </form>
+            <div style="text-align: center;">
+                <?php if (!empty($data)): ?>
+                    <form action="reporte_horas_extra.php" method="post">
+                        <input type="hidden" name="usuario" value="<?php echo $usuario; ?>">
+                        <input type="hidden" name="departamento" value="<?php echo $departamento; ?>">
+                        <button class="btn" type="submit" name="exportar_pdf">
+                            <i class="bi bi-file-earmark-arrow-down-fill"></i> Exportar PDF
+                        </button>
+
+                    <?php endif; ?>
+                </form>
+            </div>
+        <?php endif; ?>
 
 
 
