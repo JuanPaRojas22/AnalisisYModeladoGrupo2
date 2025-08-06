@@ -218,21 +218,21 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
                 }
                 ?>
             </tbody>
-            <?php if ($total_paginas > 1): ?>
-                <div style="text-align:center; margin-top: 20px;">
-                    <form method="post" action="Filtro_horas_extras.php" style="display:inline-block;">
-                        <input type="hidden" name="usuario" value="<?php echo htmlspecialchars($usuario); ?>">
-                        <input type="hidden" name="departamento" value="<?php echo htmlspecialchars($departamento); ?>">
-                        <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
-                            <button type="submit" name="pagina" value="<?php echo $i; ?>"
-                                class="btn <?php echo ($i == $pagina_actual) ? 'btn-secondary' : ''; ?>" style="margin:0 3px;">
-                                <?php echo $i; ?>
-                            </button>
-                        <?php endfor; ?>
-                    </form>
-                </div>
-            <?php endif; ?>
         </table>
+        <?php if ($total_paginas > 1): ?>
+            <div style="text-align:center; margin-top: 20px;">
+                <form method="post" action="Filtro_horas_extras.php" style="display:inline-block;">
+                    <input type="hidden" name="usuario" value="<?php echo htmlspecialchars($usuario); ?>">
+                    <input type="hidden" name="departamento" value="<?php echo htmlspecialchars($departamento); ?>">
+                    <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
+                        <button type="submit" name="pagina" value="<?php echo $i; ?>"
+                            class="btn <?php echo ($i == $pagina_actual) ? 'btn-secondary' : ''; ?>" style="margin:0 3px;">
+                            <?php echo $i; ?>
+                        </button>
+                    <?php endfor; ?>
+                </form>
+            </div>
+        <?php endif; ?>
     </div>
     <?php if ($rol == 2): ?>
         <script>
