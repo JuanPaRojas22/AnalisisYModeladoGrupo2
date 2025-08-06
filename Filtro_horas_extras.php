@@ -51,66 +51,64 @@ if ($rol == 1) {
 
 // Incluir la plantilla
 include 'template.php';
-// Verificar si se han enviado los filtros
-if (isset($_POST['filtrar'])) {
-    $usuario = $_POST['usuario'];
-    $departamento = $_POST['departamento'];
+
+// Inicializar filtros vacíos o con valores por defecto
+$usuario = $_POST['usuario'] ?? '';
+$departamento = $_POST['departamento'] ?? '';
 
 
 
 
-    // Mostrar valores de los filtros (para depuración)
-    //var_dump($usuario);
-    //var_dump($departamento);
+// Mostrar valores de los filtros (para depuración)
+//var_dump($usuario);
+//var_dump($departamento);
 
-    // Construir la consulta SQL con los filtros seleccionados
-    $query = "SELECT u.nombre, d.Nombre, SUM(he.horas) AS total_horas_extras, SUM(he.monto_pago) AS monto_pago
+// Construir la consulta SQL con los filtros seleccionados
+$query = "SELECT u.nombre, d.Nombre, SUM(he.horas) AS total_horas_extras, SUM(he.monto_pago) AS monto_pago
     FROM historial_horas_extras he
     JOIN usuario u ON he.id_usuario = u.id_usuario
     JOIN departamento d ON u.id_departamento = d.id_departamento
     WHERE 1";  // Esto asegura que siempre haya una condición base
 
-    // Si es un usuario normal, solo puede ver sus propias horas
-    // Si el usuario es normal (rol = 3), forzar filtro por su ID
-    if ($rol == 2) {
-        // Admin master: acceso completo
-        if (!empty($usuario)) {
-            $query .= " AND u.id_usuario = '$usuario'";
-        }
-        if (!empty($departamento)) {
-            $query .= " AND d.id_departamento = '$departamento'";
-        }
-    } elseif ($rol == 1) {
-        // Admin normal: solo su departamento
-        $query .= " AND d.id_departamento = '$mi_departamento'";
-        if (!empty($usuario)) {
-            $query .= " AND u.id_usuario = '$usuario'";
-        }
-    } else {
-        // Usuario común: solo su información
-        $query .= " AND u.id_usuario = '$id_usuario'";
+// Si el usuario es normal (rol = 3), forzar filtro por su ID
+if ($rol == 2) {
+    // Admin master: acceso completo
+    if (!empty($usuario)) {
+        $query .= " AND u.id_usuario = '$usuario'";
     }
+    if (!empty($departamento)) {
+        $query .= " AND d.id_departamento = '$departamento'";
+    }
+} elseif ($rol == 1) {
+    // Admin normal: solo su departamento
+    $query .= " AND d.id_departamento = '$mi_departamento'";
+    if (!empty($usuario)) {
+        $query .= " AND u.id_usuario = '$usuario'";
+    }
+} else {
+    // Usuario común: solo su información
+    $query .= " AND u.id_usuario = '$id_usuario'";
+}
 
 
-    $query .= " GROUP BY u.id_usuario, u.nombre, d.Nombre";
+$query .= " GROUP BY u.id_usuario, u.nombre, d.Nombre";
 
-    // Muestra la consulta SQL generada para depuración
+// Muestra la consulta SQL generada para depuración
 //echo "<pre>" . $query . "</pre>";
 
-    // Ejecutar la consulta
-    $result = mysqli_query($conn, $query);
+// Ejecutar la consulta
+$result = mysqli_query($conn, $query);
 
-    // Verificar si hay resultados
-    if ($result && mysqli_num_rows($result) > 0) {
-        $data = [];
-        while ($row = mysqli_fetch_assoc($result)) {
-            $data[] = $row;
-        }
-    } else {
-        $data = null;
+// Verificar si hay resultados
+if ($result && mysqli_num_rows($result) > 0) {
+    $data = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $data[] = $row;
     }
-
+} else {
+    $data = null;
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -132,18 +130,17 @@ if (isset($_POST['filtrar'])) {
 <body>
     <div class="container">
         <h1>Filtrar Horas Extras</h1>
-        <?php if ($rol != 3): ?>
-            <!-- Formulario de filtros -->
+        <?php if ($rol == 2): ?>
             <form action="Filtro_horas_extras.php" method="post" class="filter-form">
                 <label for="usuario">Usuario:</label>
                 <select name="usuario" id="usuario">
                     <option value="">Selecciona un Usuario</option>
                     <?php
-                    // Aquí se llenan los usuarios desde la base de datos
                     $query = "SELECT id_usuario, nombre FROM usuario";
                     $result = mysqli_query($conn, $query);
                     while ($row = mysqli_fetch_assoc($result)) {
-                        echo "<option value='" . $row['id_usuario'] . "'>" . $row['nombre'] . "</option>";
+                        $selected = ($usuario == $row['id_usuario']) ? 'selected' : '';
+                        echo "<option value='{$row['id_usuario']}' $selected>{$row['nombre']}</option>";
                     }
                     ?>
                 </select>
@@ -152,25 +149,22 @@ if (isset($_POST['filtrar'])) {
                 <select name="departamento" id="departamento">
                     <option value="">Selecciona un Departamento</option>
                     <?php
-                    // Aquí se llenan los departamentos desde la base de datos
                     $query = "SELECT id_departamento, Nombre FROM departamento";
                     $result = mysqli_query($conn, $query);
                     while ($row = mysqli_fetch_assoc($result)) {
-                        echo "<option value='" . $row['id_departamento'] . "'>" . $row['Nombre'] . "</option>";
+                        $selected = ($departamento == $row['id_departamento']) ? 'selected' : '';
+                        echo "<option value='{$row['id_departamento']}' $selected>{$row['Nombre']}</option>";
                     }
                     ?>
                 </select>
 
                 <div class="button-group">
-                    <!-- Botón Filtrar -->
-                    <a href="VerPlanilla.php" class="btn btn-secondary">
-                        <i></i> Devolver
-                    </a>
-                    <button class="btn" type="submit" name="filtrar" id="btnFiltrar">
-                        <i class="bi bi-funnel"></i> Filtrar
-                    </button>
+                    <a href="VerPlanilla.php" class="btn btn-secondary">Devolver</a>
+                    <button class="btn" type="submit" name="filtrar" id="btnFiltrar">Filtrar</button>
+                </div>
             </form>
         <?php endif; ?>
+
 
         <?php if (!empty($data)): ?>
             <form action="reporte_horas_extra.php" method="post">
@@ -214,6 +208,7 @@ if (isset($_POST['filtrar'])) {
     </table>
 
     </div>
+    <?php if ($rol == 2): ?>
     <script>
         document.getElementById('btnFiltrar').addEventListener('click', function (e) {
             const usuario = document.getElementById('usuario').value;
@@ -225,6 +220,8 @@ if (isset($_POST['filtrar'])) {
             }
         });
     </script>
+    <?php endif; ?>
+
 </body>
 
 </html>
