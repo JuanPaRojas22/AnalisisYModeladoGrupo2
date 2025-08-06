@@ -39,6 +39,16 @@ if ($id_departamento == 'all') {
     $users = $UsuarioDAO->getAllUsers();
 }
 
+$usuarios_por_pagina = 12;
+$pagina_actual = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
+$total_usuarios = count($users_all);
+$total_paginas = ceil($total_usuarios / $usuarios_por_pagina);
+
+// Calcula qué parte del array mostrar
+$offset = ($pagina_actual - 1) * $usuarios_por_pagina;
+$users = array_slice($users_all, $offset, $usuarios_por_pagina);
+
+
 ?>
 
 
@@ -71,7 +81,7 @@ if ($id_departamento == 'all') {
 
             <!-- Filtros-->
             <div class="d-flex justify-content-center gap-4 flex-wrap mb-5 p-4 ">
-            <!-- Filtro visualización -->
+                <!-- Filtro visualización -->
                 <form method="GET" action="MostrarUsuarios.php" class="d-flex align-items-end gap-2">
                     <div class="d-flex flex-column">
                         <label for="departamento_filtro" class="form-label fw-bold mb-1">Filtrar por
@@ -150,6 +160,21 @@ if ($id_departamento == 'all') {
                         </div>
                     </div>
                 <?php endforeach; ?>
+
+                <?php if ($total_paginas > 1): ?>
+                    <nav>
+                        <ul class="pagination justify-content-center mt-4">
+                            <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
+                                <li class="page-item <?= ($i == $pagina_actual) ? 'active' : '' ?>">
+                                    <a class="page-link"
+                                        href="?pagina=<?= $i ?>&id_departamento=<?= urlencode($id_departamento) ?>">
+                                        <?= $i ?>
+                                    </a>
+                                </li>
+                            <?php endfor; ?>
+                        </ul>
+                    </nav>
+                <?php endif; ?>
             </div>
         </div>
     </section>
