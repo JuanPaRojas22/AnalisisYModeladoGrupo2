@@ -223,7 +223,7 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
 
     <!-- Mostrar los resultados -->
     <div style="overflow-x:auto; margin: 0 auto; width: 100%;">
-        <table>
+        <table id="tablaHoras">
             <thead>
                 <tr>
                     <th>Empleado</th>
@@ -283,23 +283,26 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
         document.getElementById('formPDF').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            // Aquí obtienes los datos de la tabla (ejemplo con jQuery o JS puro)
             let data = [];
-            // Suponiendo que tu tabla tiene id="tablaHoras"
             const rows = document.querySelectorAll('#tablaHoras tbody tr');
             rows.forEach(row => {
                 const cells = row.querySelectorAll('td');
-                data.push({
-                    nombre: cells[0].innerText.trim(),
-                    departamento: cells[1].innerText.trim(),
-                    horas_extras: cells[2].innerText.trim(),
-                    monto_pago: cells[3].innerText.trim(),
-                });
+                if (cells.length === 4) { // para evitar filas vacías o errores
+                    data.push({
+                        nombre: cells[0].innerText.trim(),
+                        departamento: cells[1].innerText.trim(),
+                        horas_extras: cells[2].innerText.trim(),
+                        monto_pago: cells[3].innerText.trim(),
+                    });
+                }
             });
 
             document.getElementById('datos_json').value = JSON.stringify(data);
-            this.submit();
+
+            // Ahora sí envía el formulario sin prevenir el submit
+            e.target.submit();
         });
+
 
     </script>
 
