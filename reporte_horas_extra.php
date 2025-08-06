@@ -46,6 +46,7 @@ $query = "SELECT u.nombre, u.apellido, d.Nombre AS departamento,
           JOIN usuario u ON he.id_usuario = u.id_usuario
           JOIN departamento d ON u.id_departamento = d.id_departamento
           WHERE 1";
+          /*
 if ($usuario !== '') {
     $usuario = mysqli_real_escape_string($conn, $usuario);
     $query .= " AND u.id_usuario = '$usuario'";
@@ -53,7 +54,7 @@ if ($usuario !== '') {
 if ($departamento !== '') {
     $departamento = mysqli_real_escape_string($conn, $departamento);
     $query .= " AND d.id_departamento = '$departamento'";
-}
+}*/
 
 
 $query .= " GROUP BY u.id_usuario, u.nombre, u.apellido, d.Nombre";
