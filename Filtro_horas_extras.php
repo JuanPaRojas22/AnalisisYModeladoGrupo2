@@ -104,17 +104,15 @@ $query_total = $query; // Guardamos esta sin LIMIT para contar total
 
 $query .= " LIMIT $registros_por_pagina OFFSET $offset";
 
-// Muestra la consulta SQL generada para depuración
-//echo "<pre>" . $query . "</pre>";
+// Ejecutar la consulta y obtener resultados
+$result = mysqli_query($conn, $query);
 
-// Ejecutar la consulta
 $data = [];
 if ($result) {
     while ($row = mysqli_fetch_assoc($result)) {
         $data[] = $row;
     }
 }
-
 // Verificar si hay resultados
 $result_total = mysqli_query($conn, $query_total);
 $total_registros = mysqli_num_rows($result_total);
