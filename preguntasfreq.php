@@ -211,7 +211,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['responder_faq'])) {
             height: 100vh;
             background-color: rgba(0, 0, 0, 0.5);
             /* fondo semi-transparente */
-            display: flex;
             justify-content: center;
             /* centra horizontal */
             align-items: center;
