@@ -200,6 +200,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['responder_faq'])) {
             padding: 20px;
         }
 
+        #faqModal {
+            display: none;
+            /* ya tienes esto en JS */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            /* ocupa toda la pantalla */
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* fondo semi-transparente */
+            display: flex;
+            justify-content: center;
+            /* centra horizontal */
+            align-items: center;
+            /* centra vertical */
+            z-index: 1050;
+            /* para estar arriba */
+        }
+
+
         h3 {
             font-size: 32px;
             font-weight: bold;
