@@ -209,17 +209,17 @@ if ($result && mysqli_num_rows($result) > 0) {
 
     </div>
     <?php if ($rol == 2): ?>
-    <script>
-        document.getElementById('btnFiltrar').addEventListener('click', function (e) {
-            const usuario = document.getElementById('usuario').value;
-            const departamento = document.getElementById('departamento').value;
+        <script>
+            document.getElementById('btnFiltrar').addEventListener('click', function (e) {
+                const usuario = document.getElementById('usuario').value;
+                const departamento = document.getElementById('departamento').value;
 
-            if (!usuario && !departamento) {
-                e.preventDefault(); // Detiene el envío del formulario
-                alert('Debe seleccionar un usuario o un departamento para filtrar.');
-            }
-        });
-    </script>
+                if (!usuario && !departamento) {
+                    e.preventDefault(); // Detiene el envío del formulario
+                    alert('Debe seleccionar un usuario o un departamento para filtrar.');
+                }
+            });
+        </script>
     <?php endif; ?>
 
 </body>
@@ -271,6 +271,7 @@ if ($result && mysqli_num_rows($result) > 0) {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
         margin-left: auto;
         margin-right: auto;
+        max-width: 900px
     }
 
 
@@ -340,6 +341,12 @@ if ($result && mysqli_num_rows($result) > 0) {
 
     th,
     td {
+        max-width: 150px;
+        /* limita ancho máximo de columna */
+        word-wrap: break-word;
+        /* quiebra palabras largas */
+        white-space: normal;
+        /* permite salto de línea */
         padding: 12px;
         text-align: center;
         font-size: 16px;
