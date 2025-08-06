@@ -13,11 +13,11 @@ if (isset($_POST['ejecutar_pago'])) {
     $rol_usuario = $_SESSION['id_rol'];
 
     // Obtener usuarios que serán procesados según el rol
-    if ($rol_usuario == 1) {
+    if ($rol_usuario == 2) {
         // Admin Master: procesa todos los usuarios
         $query_usuarios = "SELECT id_usuario, salario_base, total_deducciones, salario_neto FROM planilla";
         $result_usuarios = $conn->query($query_usuarios);
-    } elseif ($rol_usuario == 3) {
+    } elseif ($rol_usuario == 1) {
         // Jefe de departamento: filtrar por su mismo departamento
         $query_departamento = "SELECT id_departamento FROM usuario WHERE id_usuario = ?";
         $stmt_dep = $conn->prepare($query_departamento);
