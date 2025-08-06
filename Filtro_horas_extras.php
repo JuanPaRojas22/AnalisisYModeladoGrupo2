@@ -205,15 +205,11 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
             <div style="text-align: center;">
                 <?php if (!empty($data)): ?>
 
-                    <form action="reporte_horas_extra.php" method="post">
-                        <input type="hidden" name="usuario"
-                            value="<?php echo htmlspecialchars($_SESSION['filtro_usuario'] ?? ''); ?>">
-                        <input type="hidden" name="departamento"
-                            value="<?php echo htmlspecialchars($_SESSION['filtro_departamento'] ?? ''); ?>">
-                        <button class="btn" type="submit" name="exportar_pdf">
-                            <i class="bi bi-file-earmark-arrow-down-fill"></i> Exportar PDF
-                        </button>
+                    <form id="formPDF" action="reporte_horas_extra.php" method="post">
+                        <input type="hidden" name="datos_json" id="datos_json" value="">
+                        <button type="submit">Exportar PDF</button>
                     </form>
+
                 <?php endif; ?>
             </div>
         <?php endif; ?>
@@ -281,6 +277,31 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
             });
         </script>
     <?php endif; ?>
+
+
+    <script>
+        document.getElementById('formPDF').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Aquí obtienes los datos de la tabla (ejemplo con jQuery o JS puro)
+            let data = [];
+            // Suponiendo que tu tabla tiene id="tablaHoras"
+            const rows = document.querySelectorAll('#tablaHoras tbody tr');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                data.push({
+                    nombre: cells[0].innerText.trim(),
+                    departamento: cells[1].innerText.trim(),
+                    horas_extras: cells[2].innerText.trim(),
+                    monto_pago: cells[3].innerText.trim(),
+                });
+            });
+
+            document.getElementById('datos_json').value = JSON.stringify(data);
+            this.submit();
+        });
+
+    </script>
 
 </body>
 
