@@ -179,7 +179,6 @@ if ($result && mysqli_num_rows($result) > 0) {
 
 
     <!-- Mostrar los resultados -->
-    <!-- Mostrar los resultados -->
     <div style="overflow-x:auto; margin: 0 auto; width: 100%;">
         <table>
             <thead>
@@ -207,7 +206,6 @@ if ($result && mysqli_num_rows($result) > 0) {
                 ?>
             </tbody>
         </table>
-    </div>
     </div>
     <?php if ($rol == 2): ?>
         <script>
@@ -331,13 +329,14 @@ if ($result && mysqli_num_rows($result) > 0) {
     }
 
     table {
-        width: 75%;
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
         border-collapse: collapse;
         margin-top: 20px;
         border-radius: 8px;
         overflow: hidden;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-
     }
 
     th,
