@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $usuario = $_SESSION['filtro_usuario'] ?? '';
 $departamento = $_SESSION['filtro_departamento'] ?? '';
 
-$registros_por_pagina = 10;
+$registros_por_pagina = 1;
 $pagina_actual = isset($_POST['pagina']) ? (int) $_POST['pagina'] : 1;
 $offset = ($pagina_actual - 1) * $registros_por_pagina;
 
