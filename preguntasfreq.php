@@ -248,7 +248,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['responder_faq'])) {
                                         <input type="hidden" name="id_faq" value="<?= $row['id_faq']; ?>">
                                         <div class="mb-2">
                                             <label for="respuesta_faq" class="form-label">Agregar Respuesta:</label>
-                                            <textarea name="respuesta_faq" class="form-control" required></textarea>
+                                            <textarea id="respuesta_faq" name="respuesta_faq" class="form-control"
+                                                required></textarea>
                                         </div>
                                         <button type="submit" name="responder_faq" class="btn btn-success btn-sm">Enviar
                                             Respuesta</button>
