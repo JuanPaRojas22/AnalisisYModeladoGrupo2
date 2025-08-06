@@ -28,7 +28,7 @@ if ($id_departamento === 'all') {
 }
 
 // 👉 Paginación
-$usuarios_por_pagina = 12;
+$usuarios_por_pagina = 8;
 $pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 $total_usuarios = count($users_all);
 $total_paginas = ceil($total_usuarios / $usuarios_por_pagina);
