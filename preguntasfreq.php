@@ -29,7 +29,7 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 mysqli_set_charset($conn, "utf8mb4");
 
 // Obtener preguntas frecuentes (últimas 5)
-$query_faq = "SELECT * FROM preguntasfrecuentes ORDER BY fecha_creacion DESC LIMIT 5";
+$query_faq = "SELECT id_faq, pregunta, respuesta, respondida FROM preguntasfrecuentes ORDER BY fecha_creacion DESC LIMIT 5";
 $result_faq = $conn->query($query_faq);
 
 // Obtener preguntas de los usuarios
@@ -230,13 +230,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['responder_faq'])) {
                                 data-bs-toggle="collapse" data-bs-target="#collapse<?php echo $i; ?>" aria-expanded="true"
                                 aria-controls="collapse<?php echo $i; ?>">
                                 <?php echo $row['pregunta']; ?>
+                                <?php if (!empty($row['respuesta'])): ?>
+                                    <span class="badge bg-success ms-2">Respondida ✅</span>
+                                <?php else: ?>
+                                    <span class="badge bg-danger ms-2">Sin responder ❌</span>
+                                <?php endif; ?>
                             </button>
                         </h2>
                         <div id="collapse<?php echo $i; ?>"
                             class="accordion-collapse collapse <?php echo ($i === 0) ? 'show' : ''; ?>"
                             aria-labelledby="heading<?php echo $i; ?>" data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
-                                <?php if (!empty($row['respuesta'])): ?>
+                                <?php if ($row['respondida'] == 1): ?>
                                     <?= nl2br(htmlspecialchars($row['respuesta'])); ?>
                                 <?php else: ?>
                                     <form method="POST">
@@ -250,6 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['responder_faq'])) {
                                     </form>
                                 <?php endif; ?>
                             </div>
+
                         </div>
                     </div>
                     <?php $i++; ?>
