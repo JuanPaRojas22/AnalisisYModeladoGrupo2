@@ -9,8 +9,8 @@ require 'fpdf/fpdf.php';  // Para exportar a PDF
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['filtro_usuario'] = $_POST['usuario'] ?? '';
     $_SESSION['filtro_departamento'] = $_POST['departamento'] ?? '';
-    
-    // DEBUG
+
+    // Debug
     error_log("Filtro usuario guardado en sesión: " . $_SESSION['filtro_usuario']);
     error_log("Filtro departamento guardado en sesión: " . $_SESSION['filtro_departamento']);
 }
@@ -56,7 +56,7 @@ if ($departamento !== '') {
 }
 
 
-$query .= " GROUP BY u.nombre, u.apellido, d.Nombre";
+$query .= "GROUP BY u.id_usuario, u.nombre, u.apellido, d.Nombre";
 
 $result = mysqli_query($conn, $query);
 
