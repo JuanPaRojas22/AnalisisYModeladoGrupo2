@@ -207,7 +207,7 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
 
                     <form id="formPDF" action="reporte_horas_extra.php" method="post">
                         <input type="hidden" name="datos_json" id="datos_json" value="">
-                        <button type="submit">Exportar PDF</button>
+                        <button type="submit" class="btn">Exportar PDF</button>
                     </form>
 
                 <?php endif; ?>
