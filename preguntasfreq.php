@@ -52,9 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_usuario'])) {
 }
 
 // Procesar el formulario de agregar pregunta frecuente
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && isset($_POST['respuesta_faq'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['form_type']) && $_POST['form_type'] == 'add_faq') {
     $pregunta_faq = $_POST['pregunta_faq'];
-    $respuesta_faq = $_POST['respuesta_faq'];
+    $respuesta_faq = ''; // o NULL
     $fecha_creacion = date('Y-m-d');
 
     $query = "INSERT INTO preguntasfrecuentes (pregunta, respuesta, fecha_creacion) VALUES (?, ?, ?)";
@@ -267,24 +267,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['responder_faq'])) {
             <button id="openFaqModalBtn" class="btn btn-primary mt-3" style="background-color: #09354b;">Agregar
                 Pregunta</button>
 
+
             <!-- Modal para agregar FAQ -->
             <div id="faqModal" class="modal">
                 <div class="modal-contenido">
                     <span class="close" id="closeFaqModalBtn">&times;</span>
                     <h2>Agregar Pregunta Frecuente</h2>
                     <form method="POST">
+                        <input type="hidden" name="form_type" value="add_faq">
                         <div class="mb-3">
                             <label for="pregunta_faq" class="form-label">Pregunta:</label>
                             <textarea name="pregunta_faq" id="pregunta_faq" class="form-control" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="respuesta_faq" class="form-label">Respuesta:</label>
-                            <textarea name="respuesta_faq" id="respuesta_faq" class="form-control" required></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Guardar</button>
                     </form>
                 </div>
             </div>
+
 
 
         </div>
