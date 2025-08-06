@@ -129,7 +129,7 @@ if ($result && mysqli_num_rows($result) > 0) {
 
 <body>
     <div class="container">
-        <h1>Filtrar Horas Extras</h1>
+        <h1>Listado Horas Extras</h1>
         <?php if ($rol == 2): ?>
             <form action="Filtro_horas_extras.php" method="post" class="filter-form">
                 <label for="usuario">Usuario:</label>
