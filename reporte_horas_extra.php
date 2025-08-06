@@ -56,7 +56,8 @@ if ($departamento !== '') {
 }
 
 
-$query .= "GROUP BY u.id_usuario, u.nombre, u.apellido, d.Nombre";
+$query .= " GROUP BY u.id_usuario, u.nombre, u.apellido, d.Nombre";
+
 
 $result = mysqli_query($conn, $query);
 
