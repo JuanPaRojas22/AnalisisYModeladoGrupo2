@@ -9,6 +9,10 @@ require 'fpdf/fpdf.php';  // Para exportar a PDF
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['filtro_usuario'] = $_POST['usuario'] ?? '';
     $_SESSION['filtro_departamento'] = $_POST['departamento'] ?? '';
+    
+    // DEBUG
+    error_log("Filtro usuario guardado en sesión: " . $_SESSION['filtro_usuario']);
+    error_log("Filtro departamento guardado en sesión: " . $_SESSION['filtro_departamento']);
 }
 
 // Recuperar filtros desde sesión (no desde POST)
@@ -42,7 +46,6 @@ $query = "SELECT u.nombre, u.apellido, d.Nombre AS departamento,
           JOIN usuario u ON he.id_usuario = u.id_usuario
           JOIN departamento d ON u.id_departamento = d.id_departamento
           WHERE 1";
-/*
 if ($usuario !== '') {
     $usuario = mysqli_real_escape_string($conn, $usuario);
     $query .= " AND u.id_usuario = '$usuario'";
@@ -51,7 +54,7 @@ if ($departamento !== '') {
     $departamento = mysqli_real_escape_string($conn, $departamento);
     $query .= " AND d.id_departamento = '$departamento'";
 }
-    */
+
 
 $query .= " GROUP BY u.nombre, u.apellido, d.Nombre";
 
