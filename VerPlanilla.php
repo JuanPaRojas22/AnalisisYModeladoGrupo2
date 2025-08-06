@@ -129,6 +129,7 @@ $result = $stmt->get_result();
                         /* Aumentar el tamaño del contenedor */
                         margin: 50px auto;
                         /* Centrar el contenedor */
+                        
                         padding: 20px;
                         background-color: #fff;
                         border-radius: 12px;

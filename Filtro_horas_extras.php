@@ -329,7 +329,7 @@ if ($result && mysqli_num_rows($result) > 0) {
     }
 
     table {
-        width: 100%;
+        width: 75%;
         border-collapse: collapse;
         margin-top: 20px;
         border-radius: 8px;
