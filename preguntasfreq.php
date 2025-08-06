@@ -329,7 +329,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['responder_faq'])) {
     const closeFaqBtn = document.getElementById('closeFaqModalBtn');
 
     openFaqBtn.addEventListener('click', () => {
-        faqModal.style.display = 'block';
+        faqModal.style.display = 'flex';
     });
 
     closeFaqBtn.addEventListener('click', () => {
