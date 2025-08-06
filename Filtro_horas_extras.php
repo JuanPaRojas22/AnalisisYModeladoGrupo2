@@ -196,18 +196,19 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
 
             <div style="text-align: center;">
                 <?php if (!empty($data)): ?>
-                    
+
                     <form action="reporte_horas_extra.php" method="post">
                         <input type="hidden" name="usuario" value="<?php echo htmlspecialchars($usuario); ?>">
                         <input type="hidden" name="departamento" value="<?php echo htmlspecialchars($departamento); ?>">
                         <button class="btn" type="submit" name="exportar_pdf">
                             <i class="bi bi-file-earmark-arrow-down-fill"></i> Exportar PDF
                         </button>
-                        
 
-                    <?php endif; ?>
-                    
-                </form>
+
+
+
+                    </form>
+                <?php endif; ?>
             </div>
         <?php endif; ?>
 
