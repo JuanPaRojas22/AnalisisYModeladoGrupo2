@@ -192,6 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['responder_faq'])) {
         }
 
         .modal-contenido {
+            color: #000000;
             width: 60%;
             max-width: 700px;
             background-color: white;
@@ -312,6 +313,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['responder_faq'])) {
         }
     });
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 <?php
 // Cerrar la conexión a la base de datos
 $conn->close();
