@@ -19,6 +19,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $usuario = $_SESSION['filtro_usuario'] ?? '';
 $departamento = $_SESSION['filtro_departamento'] ?? '';
 
+// Loggear filtros para depuración
+error_log("Valores filtros en reporte:");
+error_log("Usuario: " . var_export($usuario, true));
+error_log("Departamento: " . var_export($departamento, true));
+
+
 // DEBUG para verificar filtros (comenta cuando esté listo)
 // echo "<pre>"; print_r(['usuario'=>$usuario,'departamento'=>$departamento]); echo "</pre>"; exit;
 
@@ -59,6 +65,7 @@ if ($departamento !== '') {
 
 $query .= " GROUP BY u.id_usuario, u.nombre, u.apellido, d.Nombre";
 
+error_log("Consulta SQL: " . $query);
 
 $result = mysqli_query($conn, $query);
 
