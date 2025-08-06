@@ -140,26 +140,41 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
 <body>
     <div class="container">
         <h1>Listado Horas Extras</h1>
-        <?php if ($rol == 2): ?>
+        <?php if ($rol == 2 || $rol == 1): ?>
             <form action="Filtro_horas_extras.php" method="post" class="filter-form">
                 <label for="usuario">Usuario:</label>
                 <select name="usuario" id="usuario">
                     <option value="">Selecciona un Usuario</option>
                     <?php
-                    $query = "SELECT id_usuario, nombre FROM usuario";
-                    $result = mysqli_query($conn, $query);
-                    while ($row = mysqli_fetch_assoc($result)) {
+                    if ($rol == 2) {
+                        // Admin master ve todos los usuarios
+                        $query_usuarios = "SELECT id_usuario, nombre FROM usuario";
+                    } elseif ($rol == 1) {
+                        // Admin normal ve solo usuarios de su departamento
+                        $query_usuarios = "SELECT id_usuario, nombre FROM usuario WHERE id_departamento = '$mi_departamento'";
+                    }
+
+                    $result_usuarios = mysqli_query($conn, $query_usuarios);
+                    while ($row = mysqli_fetch_assoc($result_usuarios)) {
                         $selected = ($usuario == $row['id_usuario']) ? 'selected' : '';
                         echo "<option value='{$row['id_usuario']}' $selected>{$row['nombre']}</option>";
                     }
                     ?>
                 </select>
 
+
                 <label for="departamento">Departamento:</label>
-                <select name="departamento" id="departamento">
+                <select name="departamento" id="departamento" <?php if ($rol == 1)
+                    echo 'disabled'; ?>>
                     <option value="">Selecciona un Departamento</option>
                     <?php
-                    $query = "SELECT id_departamento, Nombre FROM departamento";
+                    if ($rol == 2) {
+                        // Admin master ve todos los departamentos
+                        $query = "SELECT id_departamento, Nombre FROM departamento";
+                    } elseif ($rol == 1) {
+                        // Admin normal ve solo su departamento
+                        $query = "SELECT id_departamento, Nombre FROM departamento WHERE id_departamento = '$mi_departamento'";
+                    }
                     $result = mysqli_query($conn, $query);
                     while ($row = mysqli_fetch_assoc($result)) {
                         $selected = ($departamento == $row['id_departamento']) ? 'selected' : '';
