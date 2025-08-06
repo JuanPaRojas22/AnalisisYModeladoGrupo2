@@ -5,15 +5,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header("Location: login.php");
     exit;
 }
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 
-// DEBUG: Mostrar qué datos se están recibiendo
-// Puedes comentar esto después de hacer la prueba
-echo "<pre>";
-print_r($_POST);
-echo "</pre>";
-exit;
 
 
 
@@ -204,14 +196,17 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
 
             <div style="text-align: center;">
                 <?php if (!empty($data)): ?>
+                    
                     <form action="reporte_horas_extra.php" method="post">
-                        <input type="hidden" name="usuario" value="<?php echo $usuario; ?>">
-                        <input type="hidden" name="departamento" value="<?php echo $departamento; ?>">
+                        <input type="hidden" name="usuario" value="<?php echo htmlspecialchars($usuario); ?>">
+                        <input type="hidden" name="departamento" value="<?php echo htmlspecialchars($departamento); ?>">
                         <button class="btn" type="submit" name="exportar_pdf">
                             <i class="bi bi-file-earmark-arrow-down-fill"></i> Exportar PDF
                         </button>
+                        
 
                     <?php endif; ?>
+                    
                 </form>
             </div>
         <?php endif; ?>
