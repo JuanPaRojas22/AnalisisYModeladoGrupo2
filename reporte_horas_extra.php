@@ -1,4 +1,8 @@
 <?php
+
+$usuario = $_POST['usuario'] ?? '';
+$departamento = $_POST['departamento'] ?? '';
+
 // Conexión a la base de datos
 // Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
@@ -26,7 +30,18 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 // Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
 session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// DEBUG: Mostrar qué datos se están recibiendo
+// Puedes comentar esto después de hacer la prueba
+echo "<pre>";
+print_r($_POST);
+echo "</pre>";
+exit;
+
 require 'fpdf/fpdf.php';  // Para exportar a PDF
+
 
 // Verificar si se recibieron los filtros
 $usuario = isset($_POST['usuario']) ? $_POST['usuario'] : "";

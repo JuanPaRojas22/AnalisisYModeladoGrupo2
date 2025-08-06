@@ -5,6 +5,17 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header("Location: login.php");
     exit;
 }
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// DEBUG: Mostrar qué datos se están recibiendo
+// Puedes comentar esto después de hacer la prueba
+echo "<pre>";
+print_r($_POST);
+echo "</pre>";
+exit;
+
+
 
 //Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
