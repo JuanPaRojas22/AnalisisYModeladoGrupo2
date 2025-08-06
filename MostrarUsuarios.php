@@ -18,7 +18,7 @@ $UsuarioDAO = new UsuarioDAOSImpl();
 $id_departamento = isset($_GET['id_departamento']) ? $_GET['id_departamento'] : 'all';
 $departmento = $UsuarioDAO->getAllDepartments();
 
-// 👉 Obtiene todos los usuarios sin paginar aún
+// Obtiene todos los usuarios sin paginar aún
 if ($id_departamento === 'all') {
     $users_all = $UsuarioDAO->getAllUsers();
 } elseif ($id_departamento) {
@@ -27,7 +27,7 @@ if ($id_departamento === 'all') {
     $users_all = $UsuarioDAO->getAllUsers();
 }
 
-// 👉 Paginación
+// Paginación
 $usuarios_por_pagina = 8;
 $pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 $total_usuarios = count($users_all);
