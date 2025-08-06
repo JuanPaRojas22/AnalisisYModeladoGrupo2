@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 // Verificar si el usuario está logueado
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
@@ -7,48 +6,34 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit;
 }
 // Verificar si el usuario es administrador (id_rol == 2)
-if ($_SESSION['id_rol'] == 3 or $_SESSION['id_rol'] == 1) { // Verificar si el usuario es un empleado
-    header("Location: index.php"); // Redirigir a la página de inicio si no es administrador
+if ($_SESSION['id_rol'] == 3 or $_SESSION['id_rol'] == 1) {
+    header("Location: index.php");
     exit;
 }
+
 require 'template.php';
-
-
-
-// Incluye el archivo donde tienes definida la clase UsuarioDAOSImpl
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
-
-// Instancia el DAO
 $UsuarioDAO = new UsuarioDAOSImpl();
 
-// Obtiene todos los usuarios
-$id_departamento = isset($_GET['id_departamento']) ? $_GET['id_departamento'] : null;
-
+$id_departamento = isset($_GET['id_departamento']) ? $_GET['id_departamento'] : 'all';
 $departmento = $UsuarioDAO->getAllDepartments();
 
-
-// Obtiene los usuarios filtrados por departamento si es necesario
-if ($id_departamento == 'all') {
-    // Obtiene todos los usuarios sin filtrar
-    $users = $UsuarioDAO->getAllUsers();
+// 👉 Obtiene todos los usuarios sin paginar aún
+if ($id_departamento === 'all') {
+    $users_all = $UsuarioDAO->getAllUsers();
 } elseif ($id_departamento) {
-    // Si se seleccionó un departamento específico, obtiene los usuarios filtrados
-    $users = $UsuarioDAO->getUsersByDepartment($id_departamento);
+    $users_all = $UsuarioDAO->getUsersByDepartment($id_departamento);
 } else {
-    // Si no se seleccionó ningún filtro, muestra todos los usuarios
-    $users = $UsuarioDAO->getAllUsers();
+    $users_all = $UsuarioDAO->getAllUsers();
 }
 
+// 👉 Paginación
 $usuarios_por_pagina = 12;
-$pagina_actual = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
+$pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 $total_usuarios = count($users_all);
 $total_paginas = ceil($total_usuarios / $usuarios_por_pagina);
-
-// Calcula qué parte del array mostrar
 $offset = ($pagina_actual - 1) * $usuarios_por_pagina;
 $users = array_slice($users_all, $offset, $usuarios_por_pagina);
-
-
 ?>
 
 
