@@ -198,6 +198,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['responder_faq'])) {
             background-color: white;
             border-radius: 8px;
             padding: 20px;
+            /* CENTRADO */
+            margin: auto;
         }
 
         #faqModal {
