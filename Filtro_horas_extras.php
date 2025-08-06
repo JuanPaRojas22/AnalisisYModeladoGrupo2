@@ -161,17 +161,19 @@ if ($result && mysqli_num_rows($result) > 0) {
                 <div class="button-group">
                     <a href="VerPlanilla.php" class="btn btn-secondary">Devolver</a>
                     <button class="btn" type="submit" name="filtrar" id="btnFiltrar">Filtrar</button>
-                    <?php if (!empty($data)): ?>
-                        <form action="reporte_horas_extra.php" method="post">
-                            <input type="hidden" name="usuario" value="<?php echo $usuario; ?>">
-                            <input type="hidden" name="departamento" value="<?php echo $departamento; ?>">
-                            <button class="btn" type="submit" name="exportar_pdf">
-                                <i class="bi bi-file-earmark-arrow-down-fill"></i> Exportar PDF
-                            </button>
-                        </form>
-                    <?php endif; ?>
-                </div>
             </form>
+
+            <?php if (!empty($data)): ?>
+                <form action="reporte_horas_extra.php" method="post">
+                    <input type="hidden" name="usuario" value="<?php echo $usuario; ?>">
+                    <input type="hidden" name="departamento" value="<?php echo $departamento; ?>">
+                    <button class="btn" type="submit" name="exportar_pdf">
+                        <i class="bi bi-file-earmark-arrow-down-fill"></i> Exportar PDF
+                    </button>
+
+                <?php endif; ?>
+            </form>
+
         <?php endif; ?>
 
 
