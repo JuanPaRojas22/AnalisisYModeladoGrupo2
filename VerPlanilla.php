@@ -346,13 +346,23 @@ $result = $stmt->get_result();
                 <span class="close" onclick="cerrarModal('modal1')">&times;</span>
                 <h3>Ajustes de Planilla</h3>
                 <a href="registrar_horas_extras.php">Registrar Horas extras</a>
+                <?php if ($rol_usuario == 2): ?>
                 <a href="calcular_aguinaldo.php">Calcular Aguinaldos</a>
+                <?php endif; ?>
+                <?php if ($rol_usuario == 2): ?>
                 <a href="RegistroPlanilla.php">Registrar Planilla</a>
+                <?php endif; ?>
                 <a href="permisos_laborales.php">Permisos Laborales</a>
+                <?php if ($rol_usuario == 2): ?>
                 <a href="aplicarBono.php">Aplicar Bono</a>
+                <?php endif; ?>
+                <?php if ($rol_usuario == 2): ?>
                 <a href="actualizarSalarios.php">Ajustar Salario</a>
+                <?php endif; ?>
                 <a href="aplicarRetenciones.php">Aplicar Deducción</a>
+                <?php if ($rol_usuario == 2): ?>
                 <a href="registrar_cambio_puesto.php">Ajustar Puesto</a>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -366,6 +376,10 @@ $result = $stmt->get_result();
                 <a href="verBono.php">Ver Bonos</a>
                 <a href="Filtro_horas_extras.php">Horas Extras</a>
                 <a href="Filtro_clasificacion_empleado.php">Ver Clasificaciones</a>
+                <?php if ($rol_usuario == 3): ?>
+                <a href="permisos_laborales.php">Permisos Laborales</a>
+                <?php endif; ?>
+
             </div>
         </div>
     </div>
