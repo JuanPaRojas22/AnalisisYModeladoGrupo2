@@ -24,12 +24,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
             $_SESSION['mensaje_error'] = "❌ Error al eliminar la deducción.";
         }
 
-        // Redirigir a la misma página sin sobrescribir la variable $pagina
-        header("Location: Verdeducciones.php?pagina=" . $pagina);
-        echo "Redirigiendo a: Verdeducciones.php?pagina=" . $pagina;
-        exit;
+        // No redirigir, continuar y mostrar lista actualizada
+        // Solo ajustar página actual para paginación
+        $pagina_actual = $pagina;
     }
 }
+
 
 
 
