@@ -12,6 +12,7 @@ $id_departamento_logueado = isset($_SESSION['id_departamento']) ? $_SESSION['id_
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'eliminar') {
     $id_deduccion = $_POST['id_deduccion'];
+    $pagina = isset($_POST['pagina']) ? (int) $_POST['pagina'] : 1;
 
     if (is_numeric($id_deduccion)) {
         $stmt_eliminar = $conn->prepare("DELETE FROM deducciones WHERE id_deduccion = ?");
@@ -19,19 +20,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
 
         if ($stmt_eliminar->execute()) {
             $_SESSION['mensaje_exito'] = "✅ Deducción eliminada con éxito.";
-            $pagina = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
-            header("Location: " . $_SERVER['PHP_SELF'] . "?pagina=" . $pagina);
-            exit;
-
         } else {
             $_SESSION['mensaje_error'] = "❌ Error al eliminar la deducción.";
-            $pagina = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
-            header("Location: " . $_SERVER['PHP_SELF'] . "?pagina=" . $pagina);
-            exit;
-
         }
+
+        // Redirigir a la misma página sin sobrescribir la variable $pagina
+        header("Location: VerDeducciones.php?pagina=" . $pagina);
+        exit;
     }
 }
+
 
 
 // Obtener usuarios para filtro solo rol 1 (admin normal)
@@ -227,6 +225,7 @@ $total_paginas = ceil($total_resultado / $por_pagina);
                                                 <form method="POST"
                                                     onsubmit="return confirm('¿Estás seguro de eliminar esta deducción?');">
                                                     <input type="hidden" name="accion" value="eliminar">
+                                                    <input type="hidden" name="pagina" value="<?= $pagina_actual ?>">
                                                     <input type="hidden" name="id_deduccion" value="<?= $row['id_deduccion']; ?>">
                                                     <button type="submit" class="btn-delete btn-sm">
                                                         <i class="bi bi-trash"></i>
