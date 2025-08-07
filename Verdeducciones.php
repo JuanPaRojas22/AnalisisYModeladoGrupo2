@@ -304,7 +304,7 @@ $total_paginas = ceil($total_resultado / $por_pagina);
         td {
             padding: 12px;
             text-align: center;
-            border: 1px solid #ddd;
+            
             color: black;
         }
 
