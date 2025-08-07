@@ -152,7 +152,7 @@ $total_paginas = ceil($total_resultado / $por_pagina);
                 <?php endif; ?>
 
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered">
+                    <table class="table table-striped">
                         <thead class="table-dark">
                             <tr>
                                 <th>Nombre del Usuario</th>
