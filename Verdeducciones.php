@@ -301,7 +301,9 @@ $total_paginas = ceil($total_resultado / $por_pagina);
             color: white;
             padding: 15px 25px;
             cursor: pointer;/* Muestra la manita al pasar el mouse */
-            border-color: red;       
+            border-color: red;
+            font-size: 16px;
+       
         }
 
         .table-container {
