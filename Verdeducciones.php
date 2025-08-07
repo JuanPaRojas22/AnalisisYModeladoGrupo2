@@ -20,22 +20,18 @@ if ($rol == 1 || $rol == 2) {
 }
 
 // Obtener usuarios para filtro solo rol 2 (admin master)
+// Obtener usuarios para filtro solo rol 1 (admin normal)
 $usuarios = [];
 if ($rol == 1) {
     if ($id_departamento_logueado !== null) {
         $sql_usuarios = "SELECT id_usuario, nombre, apellido FROM Usuario WHERE id_departamento = ?";
         $stmt_usuarios = $conn->prepare($sql_usuarios);
         $stmt_usuarios->bind_param("i", $id_departamento_logueado);
-        if (!$stmt_usuarios->execute()) {
-            echo "Error en la consulta de usuarios: " . $stmt_usuarios->error;
-        }
+        $stmt_usuarios->execute();
         $result_usuarios = $stmt_usuarios->get_result();
         $usuarios = $result_usuarios->fetch_all(MYSQLI_ASSOC);
-
-        var_dump($usuarios); // para ver qué usuarios trae
     }
 }
-
 // Paginación
 $por_pagina = 5;
 $pagina_actual = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
