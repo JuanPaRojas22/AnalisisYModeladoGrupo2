@@ -292,7 +292,6 @@ $total_paginas = ceil($total_resultado / $por_pagina);
 
         table {
             width: 100%;
-            border-collapse: collapse;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             background-color: white;
             margin-top: 20px;
