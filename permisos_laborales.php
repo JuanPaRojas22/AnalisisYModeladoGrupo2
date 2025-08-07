@@ -445,7 +445,7 @@ ob_end_flush(); // Libera el búfer y envía la salida al navegador
                     <th>Tipo de Permiso</th>
                     <th>Motivo</th>
                     <th>Estado</th>
-                    <?php if ($rol_usuario == 2 || 1): ?>
+                    <?php if ($rol_usuario == 2 ||$rol_usuario == 1): ?>
                     <th>Acción</th>
                     <?php endif; ?>
 
