@@ -6,7 +6,6 @@ require 'template.php';
 $rol = $_SESSION['id_rol'];
 $id_usuario_logueado = $_SESSION['id_usuario'];
 
-// Obtener departamento del usuario logueado si rol == 1 (admin normal)
 // Obtener departamento del usuario logueado para rol 1 y rol 2
 $id_departamento_logueado = null;
 if ($rol == 1 || $rol == 2) {
@@ -20,18 +19,22 @@ if ($rol == 1 || $rol == 2) {
     }
 }
 
-// ...
-
 // Obtener usuarios para filtro solo rol 2 (admin master)
 $usuarios = [];
 if ($rol == 2) {
-    $sql_usuarios = "SELECT id_usuario, nombre, apellido FROM Usuario WHERE id_departamento = ?";
-    $stmt_usuarios = $conn->prepare($sql_usuarios);
-    $stmt_usuarios->bind_param("i", $id_departamento_logueado);
-    $stmt_usuarios->execute();
-    $result_usuarios = $stmt_usuarios->get_result();
-    while ($row = $result_usuarios->fetch_assoc()) {
-        $usuarios[] = $row;
+    if ($id_departamento_logueado !== null) {
+        $sql_usuarios = "SELECT id_usuario, nombre, apellido FROM Usuario WHERE id_departamento = ?";
+        $stmt_usuarios = $conn->prepare($sql_usuarios);
+        $stmt_usuarios->bind_param("i", $id_departamento_logueado);
+        $stmt_usuarios->execute();
+        $result_usuarios = $stmt_usuarios->get_result();
+        while ($row = $result_usuarios->fetch_assoc()) {
+            $usuarios[] = $row;
+        }
+    } else {
+        // Opcional: manejar caso sin departamento asignado
+        // Por ejemplo, obtener todos o mostrar mensaje
+        // $usuarios = []; // vacío por defecto
     }
 }
 
@@ -148,7 +151,7 @@ if ($rol == 2) {
             <div class="container">
                 <h2 class="fw-bold text-center">Listado de Deducciones</h2>
 
-                <?php if ($id_rol == 1 || $id_rol == 2): ?>
+                <?php if ($rol == 1 || $rol == 2): ?>
                     <div class="filter-container my-3">
                         <form method="POST" action="">
                             <label for="id_usuario">Seleccionar usuario:</label>
