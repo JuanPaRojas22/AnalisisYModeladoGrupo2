@@ -41,6 +41,8 @@ if (!isset($_SESSION['id_usuario'])) {
 
 $id_usuario = $_SESSION['id_usuario'];
 $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
+$rol_usuario = $_SESSION['id_rol'] ?? 3; // Default rol 3 si no existe
+$id_departamento = $_SESSION['id_departamento'] ?? null;
 
 // Incluir la plantilla
 include 'template.php';
@@ -311,7 +313,8 @@ ob_end_flush(); // Libera el búfer y envía la salida al navegador
             width: 100%;
             /* Asegura que los campos ocupen todo el ancho disponible */
         }
-        .button1{
+
+        .button1 {
             background-color: #168761;
         }
     </style>
@@ -341,11 +344,13 @@ ob_end_flush(); // Libera el búfer y envía la salida al navegador
             <button class="btn" onclick="abrirModal('modal3')">
                 <i class="bi bi-journal-plus"> Solicitar Permiso</i>
             </button>
-            <button id="ejecutar_approbar" class="btn">
-                <a href="procesarPermiso.php">
-                    <i class="bi bi-card-checklist"> Aprobar Solicitud</i>
-                </a>
-            </button>
+            <?php if ($rol_usuario == 2 || $rol_usuario == 1): ?>
+                <button id="ejecutar_approbar" class="btn">
+                    <a href="procesarPermiso.php">
+                        <i class="bi bi-card-checklist"> Aprobar Solicitud</i>
+                    </a>
+                </button>
+            <?php endif; ?>
             <button class="btn" onclick="abrirModal('modal2')">
                 <i class="bi bi-file-earmark-medical"></i> Detalles Permisos
             </button>
@@ -425,7 +430,7 @@ ob_end_flush(); // Libera el búfer y envía la salida al navegador
                     <label for="motivo">Motivo:</label>
                     <textarea name="motivo" required></textarea>
 
-                    <button type="submit" class="btn" >Guardar Permiso</button>
+                    <button type="submit" class="btn">Guardar Permiso</button>
                 </form>
             </div>
         </div>
@@ -445,13 +450,34 @@ ob_end_flush(); // Libera el búfer y envía la salida al navegador
             </thead>
             <tbody>
                 <?php
-                $sql = "SELECT p.id_permiso, u.nombre, u.apellido, p.fecha_inicio, p.fecha_fin, p.tipo_permiso, p.motivo, e.descripcion AS estado
-                    FROM permisos_laborales p
-                    JOIN estado_permiso e ON p.id_estado = e.id_estado
-                    JOIN usuario u ON p.id_usuario = u.id_usuario
-                    WHERE p.id_usuario = ?";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("i", $id_usuario);
+                if ($rol_usuario == 1) {
+                    // Rol 1: Admin - ve todos los permisos
+                    $sql = "SELECT p.id_permiso, u.nombre, u.apellido, p.fecha_inicio, p.fecha_fin, p.tipo_permiso, p.motivo, e.descripcion AS estado
+            FROM permisos_laborales p
+            JOIN estado_permiso e ON p.id_estado = e.id_estado
+            JOIN usuario u ON p.id_usuario = u.id_usuario";
+                    $stmt = $conn->prepare($sql);
+
+                } elseif ($rol_usuario == 2 && $id_departamento !== null) {
+                    // Rol 2: Jefe de departamento - ve solo permisos de su departamento
+                    $sql = "SELECT p.id_permiso, u.nombre, u.apellido, p.fecha_inicio, p.fecha_fin, p.tipo_permiso, p.motivo, e.descripcion AS estado
+            FROM permisos_laborales p
+            JOIN estado_permiso e ON p.id_estado = e.id_estado
+            JOIN usuario u ON p.id_usuario = u.id_usuario
+            WHERE u.id_departamento = ?";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("i", $id_departamento);
+
+                } else {
+                    // Rol 3: Usuario normal - ve solo sus propios permisos
+                    $sql = "SELECT p.id_permiso, u.nombre, u.apellido, p.fecha_inicio, p.fecha_fin, p.tipo_permiso, p.motivo, e.descripcion AS estado
+            FROM permisos_laborales p
+            JOIN estado_permiso e ON p.id_estado = e.id_estado
+            JOIN usuario u ON p.id_usuario = u.id_usuario
+            WHERE p.id_usuario = ?";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("i", $id_usuario);
+                }
                 $stmt->execute();
                 $resultado = $stmt->get_result();
                 if ($resultado->num_rows > 0) {
