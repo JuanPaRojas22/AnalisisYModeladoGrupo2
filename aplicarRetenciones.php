@@ -1,6 +1,6 @@
 <?php
 require 'conexion.php';
-$conn = obtenerConexion(); 
+$conn = obtenerConexion();
 session_start();
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
   header("Location: login.php");
@@ -169,144 +169,137 @@ $result_planilla = $conn->query($query_planilla);
 
 
         <style>
-          /* Container Styles */
-          .container-fluid {
-            min-height: 600px;
-            max-width: 1000px;
-            /* Limit the container width */
-            margin: 50px auto;
-            /* Center the container */
-            padding: 30px;
-            /* Padding inside the container */
-            background-color: white;
-            /* White background */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            /* Add shadow */
-            border-radius: 15px;
-            /* Round the corners */
-            height: 100%;
-            color: black;
-          }
-
-          /* Card Body Styles */
-          .card-body {
+          body {
+            background-color: #f4f7f8;
+            font-family: Arial, sans-serif;
+            margin: 0;
             padding: 20px;
           }
 
-          /* Heading Style */
+          .container {
+            max-width: 600px;
+            background: #fff;
+            padding: 30px;
+            margin: 40px auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            color: #222;
+          }
+
           h2 {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
+            color: #147964;
           }
 
-          /* Form Group Styles */
-          .form-group {
-            margin-bottom: 20px;
-            /* Add space between form elements */
+          label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+            color: #444;
           }
 
-          /* Button Styles */
-          button[type="submit"],
-          a.btn {
-            padding: 10px 20px;
+          select,
+          input[type="text"] {
+            width: 100%;
+            padding: 10px 12px;
             font-size: 16px;
-            border-radius: 5px;
-            text-decoration: none;
-            display: inline-block;
-            width: auto;
+            border: 1.5px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
           }
 
-          button[type="submit"] {
-            background-color: #147964;
-            /* Green */
-            color: white;
-            border: none;
-          }
-
-          button[type="submit"]:hover {
-            background-color: #147964;
+          select:focus,
+          input[type="text"]:focus {
+            border-color: #147964;
+            outline: none;
           }
 
           .btn {
             background-color: #147964;
-            /* Blue */
             color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+            margin-right: 10px;
           }
 
           .btn:hover {
-            background-color: #147964;
+            background-color: #0f5f4d;
           }
 
-          .btn-pequeno {
-            padding: 4px 6px;
-            font-size: 12px;
-            line-height: 2;
+          .text-center {
             text-align: center;
-            white-space: normal;
-            /* Permite que el texto haga salto de línea */
+          }
 
+          .alert {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-weight: 600;
+          }
+
+          .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+          }
+
+          .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
           }
         </style>
 
-        <body>
-          <section id="container">
-            <section id="main-content">
-              <section class="wrapper site-min-height">
-                <div class="container-fluid">
-                  <div class="card"
-                    style="border-radius: 15px; padding: 30px; box-shadow: 0 4px 10px rgb(255, 255, 255);">
-                    <div class="card-body">
-                      <h2 class="text-center mb-4">Aplicar Deducción Salarial</h2>
+        <div class="container">
+          <h2>Aplicar Deducción Salarial</h2>
 
-                      <!-- Aquí muestra el mensaje -->
-                      <?php echo $mensaje; ?>
+          <!-- Mensajes -->
+          <?php echo $mensaje; ?>
 
-                      <a href="AgregarDeduccionesextra.php" class="btn">Agregar Deducción Extra</a>
-                      <form action="" method="POST" class="form-horizontal">
-                        <div class="form-group">
-                          <label for="id_usuario">Seleccione un Usuario:</label>
-                          <select id="id_usuario" name="id_usuario" class="form-control" required
-                            onchange="actualizarSalario()">
-                            <option value="">Seleccione un usuario</option>
-                            <?php
-                            if ($result_planilla->num_rows > 0) {
-                              while ($row = $result_planilla->fetch_assoc()) {
-                                echo '<option value="' . $row["id_usuario"] . '" data-salario="' . $row["salario_base"] . '">' . $row["nombre"] . ' ' . $row["apellido"] . '</option>';
-                              }
-                            }
-                            ?>
-                          </select>
-                        </div>
+          <a href="AgregarDeduccionesextra.php" class="btn">Agregar Deducción Extra</a>
 
-                        <div class="form-group">
-                          <label for="salario_base">Salario Actual:</label>
-                          <input type="text" id="salario_actual" name="salario_actual" class="form-control" readonly>
-                          <input type="hidden" id="salario_base" name="salario_base">
-                          <input type="hidden" id="id_planilla" name="id_planilla">
-                        </div>
+          <form action="" method="POST" class="form-horizontal" style="margin-top: 20px;">
+            <label for="id_usuario">Seleccione un Usuario:</label>
+            <select id="id_usuario" name="id_usuario" required onchange="actualizarSalario()">
+              <option value="">Seleccione un usuario</option>
+              <?php
+              if ($result_planilla->num_rows > 0) {
+                while ($row = $result_planilla->fetch_assoc()) {
+                  echo '<option value="' . $row["id_usuario"] . '" data-salario="' . $row["salario_base"] . '">' . htmlspecialchars($row["nombre"]) . ' ' . htmlspecialchars($row["apellido"]) . '</option>';
+                }
+              }
+              ?>
+            </select>
 
-                        <div class="form-group text-center">
-                          <button type="submit" class="btn btn-success">Aplicar Deducción</button>
-                          <a href="VerPlanilla.php" class="btn">Volver</a>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            </section>
-          </section>
+            <label for="salario_base">Salario Actual:</label>
+            <input type="text" id="salario_actual" name="salario_actual" readonly>
+            <input type="hidden" id="salario_base" name="salario_base">
+            <input type="hidden" id="id_planilla" name="id_planilla">
 
-          <script>
-            function actualizarSalario() {
-              const select = document.getElementById("id_usuario");
-              const salario = select.options[select.selectedIndex].getAttribute("data-salario") || "";
-              document.getElementById("salario_actual").value = salario;
-              document.getElementById("salario_base").value = salario;
-            }
-          </script>
-        </body>
+            <div class="text-center">
+              <button type="submit" class="btn">Aplicar Deducción</button>
+              <a href="VerPlanilla.php" class="btn">Volver</a>
+            </div>
+          </form>
+        </div>
+
+        <script>
+          function actualizarSalario() {
+            const select = document.getElementById("id_usuario");
+            const salario = select.options[select.selectedIndex].getAttribute("data-salario") || "";
+            document.getElementById("salario_actual").value = salario;
+            document.getElementById("salario_base").value = salario;
+          }
+        </script>
+</body>
 
 </html>
 
