@@ -19,12 +19,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
 
         if ($stmt_eliminar->execute()) {
             $_SESSION['mensaje_exito'] = "✅ Deducción eliminada con éxito.";
-            header("Location: " . $_SERVER['PHP_SELF']);
+            $pagina = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
+            header("Location: " . $_SERVER['PHP_SELF'] . "?pagina=" . $pagina);
             exit;
+
         } else {
             $_SESSION['mensaje_error'] = "❌ Error al eliminar la deducción.";
-            header("Location: " . $_SERVER['PHP_SELF']);
+            $pagina = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
+            header("Location: " . $_SERVER['PHP_SELF'] . "?pagina=" . $pagina);
             exit;
+
         }
     }
 }
