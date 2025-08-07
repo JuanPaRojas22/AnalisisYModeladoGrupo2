@@ -190,7 +190,7 @@ $total_paginas = ceil($total_resultado / $por_pagina);
                                                     onsubmit="return confirm('¿Estás seguro de eliminar esta deducción?');">
                                                     <input type="hidden" name="accion" value="eliminar">
                                                     <input type="hidden" name="id_deduccion" value="<?= $row['id_deduccion']; ?>">
-                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                    <button type="submit" class="btn-delete btn-sm">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </form>
@@ -296,9 +296,8 @@ $total_paginas = ceil($total_resultado / $por_pagina);
             font-weight: bold;
             border-radius: 5px;
         }
-
-        .btn:hover {
-            background-color: #0a3c2c;
+        .btn-delete{
+            background-color: red;
         }
 
         .table-container {
