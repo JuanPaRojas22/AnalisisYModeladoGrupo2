@@ -213,6 +213,7 @@ if ($rol == 2) {
     background-color: #f4f4f9;
     margin: 0;
     padding: 20px;
+    color: black;
 }
 #id_usuario {
     font-size: 13px; /* Aumenta el tamaño de la fuente */
@@ -286,6 +287,7 @@ th, td {
     padding: 12px;
     text-align: center;
     border: 1px solid #ddd;
+    color: black;
 }
 
 th {
