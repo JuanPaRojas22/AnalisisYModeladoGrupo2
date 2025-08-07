@@ -26,15 +26,13 @@ if ($rol == 2) {
         $sql_usuarios = "SELECT id_usuario, nombre, apellido FROM Usuario WHERE id_departamento = ?";
         $stmt_usuarios = $conn->prepare($sql_usuarios);
         $stmt_usuarios->bind_param("i", $id_departamento_logueado);
-        $stmt_usuarios->execute();
-        $result_usuarios = $stmt_usuarios->get_result();
-        while ($row = $result_usuarios->fetch_assoc()) {
-            $usuarios[] = $row;
+        if (!$stmt_usuarios->execute()) {
+            echo "Error en la consulta de usuarios: " . $stmt_usuarios->error;
         }
-    } else {
-        // Opcional: manejar caso sin departamento asignado
-        // Por ejemplo, obtener todos o mostrar mensaje
-        // $usuarios = []; // vacío por defecto
+        $result_usuarios = $stmt_usuarios->get_result();
+        $usuarios = $result_usuarios->fetch_all(MYSQLI_ASSOC);
+
+        var_dump($usuarios); // para ver qué usuarios trae
     }
 }
 
