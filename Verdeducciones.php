@@ -9,6 +9,27 @@ $id_usuario_logueado = $_SESSION['id_usuario'];
 // Usar id_departamento directamente desde sesión si está definido
 $id_departamento_logueado = isset($_SESSION['id_departamento']) ? $_SESSION['id_departamento'] : null;
 
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'eliminar') {
+    $id_deduccion = $_POST['id_deduccion'];
+
+    if (is_numeric($id_deduccion)) {
+        $stmt_eliminar = $conn->prepare("DELETE FROM deducciones WHERE id_deduccion = ?");
+        $stmt_eliminar->bind_param("i", $id_deduccion);
+
+        if ($stmt_eliminar->execute()) {
+            $_SESSION['mensaje_exito'] = "✅ Deducción eliminada con éxito.";
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit;
+        } else {
+            $_SESSION['mensaje_error'] = "❌ Error al eliminar la deducción.";
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit;
+        }
+    }
+}
+
+
 // Obtener usuarios para filtro solo rol 1 (admin normal)
 $usuarios = [];
 if ($rol == 1 && $id_departamento_logueado !== null) {
@@ -151,7 +172,20 @@ $total_paginas = ceil($total_resultado / $por_pagina);
                     </div>
                 <?php endif; ?>
 
+
+
                 <div class="table-responsive">
+                    <?php
+                    if (isset($_SESSION['mensaje_exito'])) {
+                        echo "<div class='alert alert-success text-center'>" . $_SESSION['mensaje_exito'] . "</div>";
+                        unset($_SESSION['mensaje_exito']);
+                    }
+
+                    if (isset($_SESSION['mensaje_error'])) {
+                        echo "<div class='alert alert-danger text-center'>" . $_SESSION['mensaje_error'] . "</div>";
+                        unset($_SESSION['mensaje_error']);
+                    }
+                    ?>
                     <table class="table table-striped">
                         <thead class="table-dark">
                             <tr>
@@ -296,14 +330,16 @@ $total_paginas = ceil($total_resultado / $por_pagina);
             font-weight: bold;
             border-radius: 5px;
         }
-        .btn-delete{
+
+        .btn-delete {
             background-color: red;
             color: white;
             padding: 15px 25px;
-            cursor: pointer;/* Muestra la manita al pasar el mouse */
+            cursor: pointer;
+            /* Muestra la manita al pasar el mouse */
             border-color: red;
             font-size: 16px;
-       
+
         }
 
         .table-container {
