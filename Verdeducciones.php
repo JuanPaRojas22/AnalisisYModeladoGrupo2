@@ -3,7 +3,7 @@ require 'conexion.php';
 session_start();
 require 'template.php';
 
-$rol = $_SESSION['rol'];
+$rol = $_SESSION['id_rol'];
 $id_usuario_logueado = $_SESSION['id_usuario'];
 
 // Obtener departamento del usuario logueado si rol == 1 (admin normal)
@@ -121,10 +121,7 @@ if ($rol == 2) {
     <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
     <link href="assets/css/style.css" rel="stylesheet">
     <link href="assets/css/style-responsive.css" rel="stylesheet">
-    <style>
-        td, div { color: black !important; }
-        /* Puedes dejar aquí tus estilos personalizados */
-    </style>
+
 </head>
 
 <body>
