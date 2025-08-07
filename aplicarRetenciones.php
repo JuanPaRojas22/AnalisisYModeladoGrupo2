@@ -331,5 +331,3 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
         ?>
 
 </html>
-
-</html>
