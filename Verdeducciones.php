@@ -165,6 +165,9 @@ $total_paginas = ceil($total_resultado / $por_pagina);
                                 <th>Saldo Pendiente</th>
                                 <th>Saldo Pendiente (USD)</th>
                                 <th>Fecha de Creación</th>
+                                <?php if ($rol == 1 || $rol == 2): ?>
+                                    <th>Acciones</th>
+                                <?php endif; ?>
                             </tr>
                         </thead>
                         <tbody>
@@ -181,6 +184,18 @@ $total_paginas = ceil($total_resultado / $por_pagina);
                                         <td><?= number_format($row['saldo_pendiente'], 2); ?></td>
                                         <td><?= number_format($row['saldo_pendiente_dolares'], 2); ?></td>
                                         <td><?= htmlspecialchars($row['fechacreacion']); ?></td>
+                                        <?php if ($rol == 1 || $rol == 2): ?>
+                                            <td>
+                                                <form method="POST"
+                                                    onsubmit="return confirm('¿Estás seguro de eliminar esta deducción?');">
+                                                    <input type="hidden" name="accion" value="eliminar">
+                                                    <input type="hidden" name="id_deduccion" value="<?= $row['id_deduccion']; ?>">
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        <i class="bi bi-trash"></i> Eliminar
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        <?php endif; ?>
                                     </tr>
                                 <?php endwhile; ?>
                             <?php else: ?>
