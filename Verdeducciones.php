@@ -190,20 +190,21 @@ $total_paginas = ceil($total_resultado / $por_pagina);
                             <?php endif; ?>
                         </tbody>
                     </table>
+                    <!-- Paginación -->
+                    <?php if ($total_paginas > 1): ?>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center">
+                                <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
+                                    <li class="page-item <?= ($i == $pagina_actual) ? 'active' : '' ?>">
+                                        <a class="page-link" href="?pagina=<?= $i ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor; ?>
+                            </ul>
+                        </nav>
+                    <?php endif; ?>
+
                 </div>
 
-                <!-- Paginación -->
-                <?php if ($total_paginas > 1): ?>
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination justify-content-center">
-                            <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
-                                <li class="page-item <?= ($i == $pagina_actual) ? 'active' : '' ?>">
-                                    <a class="page-link" href="?pagina=<?= $i ?>"><?= $i ?></a>
-                                </li>
-                            <?php endfor; ?>
-                        </ul>
-                    </nav>
-                <?php endif; ?>
 
                 <div class="text-center mt-3">
                     <a href="VerPlanilla.php" class="btn btn-secondary">Volver</a>
@@ -303,7 +304,7 @@ $total_paginas = ceil($total_resultado / $por_pagina);
         td {
             padding: 12px;
             text-align: center;
-            
+
             color: black;
         }
 
