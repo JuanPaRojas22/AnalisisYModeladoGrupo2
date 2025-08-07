@@ -445,8 +445,8 @@ ob_end_flush(); // Libera el búfer y envía la salida al navegador
                     <th>Tipo de Permiso</th>
                     <th>Motivo</th>
                     <th>Estado</th>
-                    <?php if ($rol_usuario == 2 ||$rol_usuario == 1): ?>
-                    <th>Acción</th>
+                    <?php if ($rol_usuario == 2 || $rol_usuario == 1): ?>
+                        <th>Acción</th>
                     <?php endif; ?>
 
                 </tr>
@@ -491,15 +491,20 @@ ob_end_flush(); // Libera el búfer y envía la salida al navegador
                         <td>{$row['fecha_fin']}</td>
                         <td>{$row['tipo_permiso']}</td>
                         <td>{$row['motivo']}</td>
-                        <td>{$row['estado']}</td>
-                        <td>
-                            <form action='permisos_laborales.php' method='POST'>
-                                <input type='hidden' name='accion' value='eliminar'>
-                                <input type='hidden' name='id_permiso' value='{$row['id_permiso']}'>
-                                <button type='submit' class='btn-danger'><i class='bi bi-trash'></i></button>
-                            </form>
-                        </td>
-                    </tr>";
+                        <td>{$row['estado']}</td>";
+                        if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
+                            echo "<td>
+                                    <form action='permisos_laborales.php' method='POST'>
+                                        <input type='hidden' name='accion' value='eliminar'>
+                                        <input type='hidden' name='id_permiso' value='{$row['id_permiso']}'>
+                                        <button type='submit' class='btn-danger'><i class='bi bi-trash'></i></button>
+                                    </form>
+                                  </td>";
+                        } else {
+                            echo "<td></td>"; // Celda vacía para mantener estructura de la tabla
+                        }
+
+                        echo "</tr>";
                     }
                 } else {
                     echo "<tr><td colspan='7'>No hay permisos registrados.</td></tr>";
