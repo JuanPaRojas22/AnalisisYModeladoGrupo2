@@ -149,10 +149,6 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
             $stmt_check->close();
             $stmt_salario->close();
             $conn->close();
-            
-            header("Location: " . $_SERVER['PHP_SELF']);
-            exit;
-
           } else {
             $mensaje = "No se encontró salario base para el usuario seleccionado.";
           }
@@ -310,6 +306,19 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
             document.getElementById("salario_base").value = salario;
             document.getElementById("id_planilla").value = id_planilla;
           }
+        </script>
+
+        <script>
+          // Si existe mensaje de éxito, recarga la página después de 3 segundos para limpiar POST y formulario
+          document.addEventListener('DOMContentLoaded', function () {
+            const mensaje = <?php echo json_encode($mensaje); ?>;
+            if (mensaje && mensaje.trim() !== "") {
+              setTimeout(() => {
+                // Recarga la página limpiando el POST
+                window.location.href = window.location.href.split('?')[0];
+              }, 3000);
+            }
+          });
         </script>
 
 
