@@ -131,7 +131,7 @@ if ($rol == 2) {
             <div class="container">
                 <h2 class="fw-bold text-center">Listado de Deducciones</h2>
 
-                <?php if ($rol == 1 || $rol == 2): ?>
+                <?php if ($id_rol == 1 || $id_rol == 2): ?>
                 <div class="filter-container my-3">
                     <form method="POST" action="">
                         <label for="id_usuario">Seleccionar usuario:</label>
