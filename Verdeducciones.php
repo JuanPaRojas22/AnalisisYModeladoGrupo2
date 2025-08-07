@@ -21,7 +21,7 @@ if ($rol == 1 || $rol == 2) {
 
 // Obtener usuarios para filtro solo rol 2 (admin master)
 $usuarios = [];
-if ($rol == 2) {
+if ($rol == 1) {
     if ($id_departamento_logueado !== null) {
         $sql_usuarios = "SELECT id_usuario, nombre, apellido FROM Usuario WHERE id_departamento = ?";
         $stmt_usuarios = $conn->prepare($sql_usuarios);
