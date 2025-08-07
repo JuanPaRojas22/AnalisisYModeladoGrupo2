@@ -65,7 +65,7 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
           ];
         }
 
-       
+
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
           // Datos recibidos del formulario
@@ -150,7 +150,7 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
             $stmt_deduccion->close();
             $stmt_check->close();
             $stmt_salario->close();
-            $conn->close();
+
           } else {
             $mensaje = "No se encontró salario base para el usuario seleccionado.";
           }
@@ -247,7 +247,8 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
               <div class="card" style="border-radius: 15px; padding: 30px; box-shadow: 0 4px 10px rgb(255, 255, 255);">
                 <div class="card-body">
                   <h2 class="text-center mb-4">Aplicar Deducción Salarial</h2>
-                  <?php if (!empty($mensaje)) echo $mensaje; ?>
+                  <?php if (!empty($mensaje))
+                    echo $mensaje; ?>
 
                   <a href="AgregarDeduccionesextra.php" class="btn">Agregar Deducción Extra</a>
                   <form action="" method="POST" class="form-horizontal">
@@ -325,5 +326,10 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
           });
         </script>
 
+        <?php
+        $conn->close();
+        ?>
+
+</html>
 
 </html>
