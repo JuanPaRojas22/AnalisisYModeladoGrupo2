@@ -32,7 +32,8 @@ if ($rol == 2) {
 // Paginación
 $por_pagina = 5;
 $pagina_actual = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
-if ($pagina_actual < 1) $pagina_actual = 1;
+if ($pagina_actual < 1)
+    $pagina_actual = 1;
 $offset = ($pagina_actual - 1) * $por_pagina;
 
 // Filtro usuario desde POST (solo para rol 2)
@@ -348,13 +349,13 @@ $total_paginas = ceil($total_resultado / $por_pagina);
             justify-content: center;
             align-items: center;
             margin-top: 20px;
+            gap: 10px;
         }
 
         .filter-container select,
         .filter-container button {
-            margin: 0 10px;
-            padding: 10px;
-            font-size: 16px;
+            width: auto;
+            margin: 0;
         }
     </style>
 </body>
