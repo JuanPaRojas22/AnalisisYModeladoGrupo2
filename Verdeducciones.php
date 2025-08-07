@@ -191,7 +191,7 @@ $total_paginas = ceil($total_resultado / $por_pagina);
                                                     <input type="hidden" name="accion" value="eliminar">
                                                     <input type="hidden" name="id_deduccion" value="<?= $row['id_deduccion']; ?>">
                                                     <button type="submit" class="btn btn-danger btn-sm">
-                                                        <i class="bi bi-trash"></i> Eliminar
+                                                        <i class="bi bi-trash"></i>
                                                     </button>
                                                 </form>
                                             </td>
