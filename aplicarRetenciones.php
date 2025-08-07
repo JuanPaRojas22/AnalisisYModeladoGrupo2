@@ -8,7 +8,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 
 require 'template.php';
 
-$mensaje = "";
+
 if (isset($_SESSION['mensaje_exito'])) {
   $mensaje = "<div class='alert alert-success text-center'>" . $_SESSION['mensaje_exito'] . "</div>";
   unset($_SESSION['mensaje_exito']);
@@ -25,6 +25,8 @@ if (isset($_SESSION['mensaje_exito'])) {
 
 
 <title>Aplicar Deducciones</title>
+
+
 
 
 
@@ -245,6 +247,8 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
               <div class="card" style="border-radius: 15px; padding: 30px; box-shadow: 0 4px 10px rgb(255, 255, 255);">
                 <div class="card-body">
                   <h2 class="text-center mb-4">Aplicar Deducción Salarial</h2>
+                  <?php if (!empty($mensaje)) echo $mensaje; ?>
+
                   <a href="AgregarDeduccionesextra.php" class="btn">Agregar Deducción Extra</a>
                   <form action="" method="POST" class="form-horizontal">
                     <!-- Select Employee -->
