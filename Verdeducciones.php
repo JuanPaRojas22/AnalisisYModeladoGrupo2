@@ -186,6 +186,137 @@ if ($rol == 1 || $rol == 2) {
 
         </section>
     </section>
+    <style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 20px;
+}
+#id_usuario {
+    font-size: 13px; /* Aumenta el tamaño de la fuente */
+    padding: 13px 13px; /* Aumenta el espacio interno */
+    width: auto; /* Ajusta el tamaño automáticamente */
+    height: 50px; /* Aumenta la altura del campo */
+
+}
+
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+}
+
+.title-container {
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center; /* Centra el contenido dentro de la card */
+}
+
+.form-group {
+    display: flex;
+    justify-content: center;  /* Centra el contenido */
+    align-items: center;  /* Alinea verticalmente */
+    gap: 10px;  /* Espacio entre el select y el botón */
+    width: 100%;
+}
+
+.form-select, .btn {
+    font-size: 16px;
+    padding: 10px;
+    width: 30%;  /* Ajusta el tamaño según lo necesario */
+}
+
+.btn {
+    background-color: #0B4F6C;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.btn:hover {
+    background-color: #0a3c2c;
+}
+.table-container {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #116B67;
+    color: white;
+}
+
+td {
+    background-color: #f9f9f9;
+}
+
+tr:nth-child(even) td {
+    background-color: #f1f1f1;
+}
+
+tr:hover {
+    background-color: #e9f7fc;
+}
+
+.form-group {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.btn-secondary {
+    padding: 10px 20px;
+    background-color: #0B4F6C;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #0B4F6C;
+}
+
+
+    .filter-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .filter-container select,
+    .filter-container button {
+        margin: 0 10px;
+        padding: 10px;
+        font-size: 16px;
+    }
+</style>
 </body>
 
 </html>
