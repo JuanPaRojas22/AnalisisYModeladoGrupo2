@@ -149,10 +149,18 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
 
             $_SESSION['mensaje_exito'] = "Retenciones quincenales aplicadas correctamente.<br>Salario Neto quincenal actualizado: ₡" . number_format($salario_neto_quincenal, 2);
 
-            $stmt->close();
-            $stmt_deduccion->close();
-            $stmt_check->close();
-            $stmt_salario->close();
+            if (isset($stmt) && $stmt instanceof mysqli_stmt) {
+              $stmt->close();
+            }
+            if (isset($stmt_deduccion) && $stmt_deduccion instanceof mysqli_stmt) {
+              $stmt_deduccion->close();
+            }
+            if (isset($stmt_check) && $stmt_check instanceof mysqli_stmt) {
+              $stmt_check->close();
+            }
+            if (isset($stmt_salario) && $stmt_salario instanceof mysqli_stmt) {
+              $stmt_salario->close();
+            }
 
           } else {
             $mensaje = "No se encontró salario base para el usuario seleccionado.";
