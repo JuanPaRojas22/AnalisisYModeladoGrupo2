@@ -338,7 +338,7 @@ $total_paginas = ceil($total_resultado / $por_pagina);
         .btn-delete {
             background-color: red;
             color: white;
-            padding: 15px 25px;
+            padding: 10px 20px;
             cursor: pointer;
             /* Muestra la manita al pasar el mouse */
             border-color: red;
