@@ -223,7 +223,6 @@ $total_paginas = ceil($total_resultado / $por_pagina);
                                         <?php if ($rol == 1 || $rol == 2): ?>
                                             <td>
                                                 <form method="POST"
-                                                    onsubmit="return confirm('¿Estás seguro de eliminar esta deducción?');">
                                                     <input type="hidden" name="accion" value="eliminar">
                                                     <input type="hidden" name="pagina" value="<?= $pagina_actual ?>">
                                                     <input type="hidden" name="id_deduccion" value="<?= $row['id_deduccion']; ?>">
