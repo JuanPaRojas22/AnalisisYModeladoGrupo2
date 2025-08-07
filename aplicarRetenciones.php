@@ -65,7 +65,7 @@ JOIN Usuario u ON p.id_usuario = u.id_usuario";
           ];
         }
 
-        $mensaje = "";
+       
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
           // Datos recibidos del formulario
