@@ -7,8 +7,9 @@ $rol = $_SESSION['id_rol'];
 $id_usuario_logueado = $_SESSION['id_usuario'];
 
 // Obtener departamento del usuario logueado si rol == 1 (admin normal)
+// Obtener departamento del usuario logueado para rol 1 y rol 2
 $id_departamento_logueado = null;
-if ($rol == 1) {
+if ($rol == 1 || $rol == 2) {
     $sql_dep = "SELECT id_departamento FROM Usuario WHERE id_usuario = ?";
     $stmt_dep = $conn->prepare($sql_dep);
     $stmt_dep->bind_param("i", $id_usuario_logueado);
@@ -19,16 +20,32 @@ if ($rol == 1) {
     }
 }
 
+// ...
+
+// Obtener usuarios para filtro solo rol 2 (admin master)
+$usuarios = [];
+if ($rol == 2) {
+    $sql_usuarios = "SELECT id_usuario, nombre, apellido FROM Usuario WHERE id_departamento = ?";
+    $stmt_usuarios = $conn->prepare($sql_usuarios);
+    $stmt_usuarios->bind_param("i", $id_departamento_logueado);
+    $stmt_usuarios->execute();
+    $result_usuarios = $stmt_usuarios->get_result();
+    while ($row = $result_usuarios->fetch_assoc()) {
+        $usuarios[] = $row;
+    }
+}
+
 // Paginación
 $por_pagina = 5;
-$pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
-if ($pagina_actual < 1) $pagina_actual = 1;
+$pagina_actual = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
+if ($pagina_actual < 1)
+    $pagina_actual = 1;
 $offset = ($pagina_actual - 1) * $por_pagina;
 
 // Filtro usuario desde POST (solo para rol 2)
 $id_usuario_seleccionado = null;
 if ($rol == 2 && isset($_POST['id_usuario']) && $_POST['id_usuario'] !== '') {
-    $id_usuario_seleccionado = (int)$_POST['id_usuario'];
+    $id_usuario_seleccionado = (int) $_POST['id_usuario'];
 }
 
 // Construir consulta base
@@ -132,20 +149,21 @@ if ($rol == 2) {
                 <h2 class="fw-bold text-center">Listado de Deducciones</h2>
 
                 <?php if ($id_rol == 1 || $id_rol == 2): ?>
-                <div class="filter-container my-3">
-                    <form method="POST" action="">
-                        <label for="id_usuario">Seleccionar usuario:</label>
-                        <select name="id_usuario" id="id_usuario" class="form-select" style="width:auto; display:inline-block;">
-                            <option value="">Ver todos</option>
-                            <?php foreach ($usuarios as $u): ?>
-                                <option value="<?= $u['id_usuario']; ?>" <?= ($id_usuario_seleccionado == $u['id_usuario']) ? 'selected' : ''; ?>>
-                                    <?= htmlspecialchars($u['nombre'] . " " . $u['apellido']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                        <button type="submit" class="btn btn-primary">Filtrar</button>
-                    </form>
-                </div>
+                    <div class="filter-container my-3">
+                        <form method="POST" action="">
+                            <label for="id_usuario">Seleccionar usuario:</label>
+                            <select name="id_usuario" id="id_usuario" class="form-select"
+                                style="width:auto; display:inline-block;">
+                                <option value="">Ver todos</option>
+                                <?php foreach ($usuarios as $u): ?>
+                                    <option value="<?= $u['id_usuario']; ?>" <?= ($id_usuario_seleccionado == $u['id_usuario']) ? 'selected' : ''; ?>>
+                                        <?= htmlspecialchars($u['nombre'] . " " . $u['apellido']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <button type="submit" class="btn btn-primary">Filtrar</button>
+                        </form>
+                    </div>
                 <?php endif; ?>
 
                 <div class="table-responsive">
@@ -181,7 +199,9 @@ if ($rol == 2) {
                                     </tr>
                                 <?php endwhile; ?>
                             <?php else: ?>
-                                <tr><td colspan="10" class="text-center">No hay deducciones para mostrar.</td></tr>
+                                <tr>
+                                    <td colspan="10" class="text-center">No hay deducciones para mostrar.</td>
+                                </tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
@@ -189,15 +209,15 @@ if ($rol == 2) {
 
                 <!-- Paginación -->
                 <?php if ($total_paginas > 1): ?>
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center">
-                        <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
-                            <li class="page-item <?= ($i == $pagina_actual) ? 'active' : '' ?>">
-                                <a class="page-link" href="?pagina=<?= $i ?>"><?= $i ?></a>
-                            </li>
-                        <?php endfor; ?>
-                    </ul>
-                </nav>
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
+                                <li class="page-item <?= ($i == $pagina_actual) ? 'active' : '' ?>">
+                                    <a class="page-link" href="?pagina=<?= $i ?>"><?= $i ?></a>
+                                </li>
+                            <?php endfor; ?>
+                        </ul>
+                    </nav>
                 <?php endif; ?>
 
                 <div class="text-center mt-3">
@@ -208,138 +228,151 @@ if ($rol == 2) {
         </section>
     </section>
     <style>
-  body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 20px;
-    color: black;
-}
-#id_usuario {
-    font-size: 13px; /* Aumenta el tamaño de la fuente */
-    padding: 13px 13px; /* Aumenta el espacio interno */
-    width: auto; /* Ajusta el tamaño automáticamente */
-    height: 50px; /* Aumenta la altura del campo */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            color: black;
+        }
 
-}
+        #id_usuario {
+            font-size: 13px;
+            /* Aumenta el tamaño de la fuente */
+            padding: 13px 13px;
+            /* Aumenta el espacio interno */
+            width: auto;
+            /* Ajusta el tamaño automáticamente */
+            height: 50px;
+            /* Aumenta la altura del campo */
 
-
-.container {
-    max-width: 1000px;
-    margin: auto;
-}
-
-.title-container {
-    text-align: center;
-    margin-top: 50px;
-    margin-bottom: 30px;
-}
-
-.card {
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    text-align: center; /* Centra el contenido dentro de la card */
-}
-
-.form-group {
-    display: flex;
-    justify-content: center;  /* Centra el contenido */
-    align-items: center;  /* Alinea verticalmente */
-    gap: 10px;  /* Espacio entre el select y el botón */
-    width: 100%;
-}
-
-.form-select, .btn {
-    font-size: 16px;
-    padding: 10px;
-    width: 30%;  /* Ajusta el tamaño según lo necesario */
-}
-
-.btn {
-    background-color: #0B4F6C;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    border-radius: 5px;
-}
-
-.btn:hover {
-    background-color: #0a3c2c;
-}
-.table-container {
-    overflow-x: auto;
-    margin-top: 20px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    background-color: white;
-    margin-top: 20px;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-th, td {
-    padding: 12px;
-    text-align: center;
-    border: 1px solid #ddd;
-    color: black;
-}
-
-th {
-    background-color: #116B67;
-    color: white;
-}
-
-td {
-    background-color: #f9f9f9;
-}
-
-tr:nth-child(even) td {
-    background-color: #f1f1f1;
-}
-
-tr:hover {
-    background-color: #e9f7fc;
-}
-
-.form-group {
-    margin-top: 30px;
-    text-align: center;
-}
-
-.btn-secondary {
-    padding: 10px 20px;
-    background-color: #0B4F6C;
-    color: white;
-    border-radius: 5px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-}
-
-.btn-secondary:hover {
-    background-color: #0B4F6C;
-}
+        }
 
 
-    .filter-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 20px;
-    }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
 
-    .filter-container select,
-    .filter-container button {
-        margin: 0 10px;
-        padding: 10px;
-        font-size: 16px;
-    }
-</style>
+        .title-container {
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            /* Centra el contenido dentro de la card */
+        }
+
+        .form-group {
+            display: flex;
+            justify-content: center;
+            /* Centra el contenido */
+            align-items: center;
+            /* Alinea verticalmente */
+            gap: 10px;
+            /* Espacio entre el select y el botón */
+            width: 100%;
+        }
+
+        .form-select,
+        .btn {
+            font-size: 16px;
+            padding: 10px;
+            width: 30%;
+            /* Ajusta el tamaño según lo necesario */
+        }
+
+        .btn {
+            background-color: #0B4F6C;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background-color: #0a3c2c;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+            color: black;
+        }
+
+        th {
+            background-color: #116B67;
+            color: white;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f1f1f1;
+        }
+
+        tr:hover {
+            background-color: #e9f7fc;
+        }
+
+        .form-group {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .btn-secondary {
+            padding: 10px 20px;
+            background-color: #0B4F6C;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #0B4F6C;
+        }
+
+
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .filter-container select,
+        .filter-container button {
+            margin: 0 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
 </body>
 
 </html>
