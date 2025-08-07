@@ -25,7 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
         }
 
         // Redirigir a la misma página sin sobrescribir la variable $pagina
-        header("Location: VerDeducciones.php?pagina=" . $pagina);
+        header("Location: Verdeducciones.php?pagina=" . $pagina);
+        echo "Redirigiendo a: Verdeducciones.php?pagina=" . $pagina;
         exit;
     }
 }
@@ -222,7 +223,7 @@ $total_paginas = ceil($total_resultado / $por_pagina);
                                         <td><?= htmlspecialchars($row['fechacreacion']); ?></td>
                                         <?php if ($rol == 1 || $rol == 2): ?>
                                             <td>
-                                                <form method="POST"
+                                                <form method="POST">
                                                     <input type="hidden" name="accion" value="eliminar">
                                                     <input type="hidden" name="pagina" value="<?= $pagina_actual ?>">
                                                     <input type="hidden" name="id_deduccion" value="<?= $row['id_deduccion']; ?>">
