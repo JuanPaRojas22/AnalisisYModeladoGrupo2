@@ -6,37 +6,33 @@ require 'template.php';
 $rol = $_SESSION['id_rol'];
 $id_usuario_logueado = $_SESSION['id_usuario'];
 
-// Obtener departamento del usuario logueado para rol 1 y rol 2
-$id_departamento_logueado = null;
-if ($rol == 1 || $rol == 2) {
-    $sql_dep = "SELECT id_departamento FROM Usuario WHERE id_usuario = ?";
-    $stmt_dep = $conn->prepare($sql_dep);
-    $stmt_dep->bind_param("i", $id_usuario_logueado);
-    $stmt_dep->execute();
-    $result_dep = $stmt_dep->get_result();
-    if ($row_dep = $result_dep->fetch_assoc()) {
-        $id_departamento_logueado = $row_dep['id_departamento'];
-    }
+// Usar id_departamento directamente desde sesión si está definido
+$id_departamento_logueado = isset($_SESSION['id_departamento']) ? $_SESSION['id_departamento'] : null;
+
+// Obtener usuarios para filtro solo rol 1 (admin normal)
+$usuarios = [];
+if ($rol == 1 && $id_departamento_logueado !== null) {
+    $sql_usuarios = "SELECT id_usuario, nombre, apellido FROM Usuario WHERE id_departamento = ?";
+    $stmt_usuarios = $conn->prepare($sql_usuarios);
+    $stmt_usuarios->bind_param("i", $id_departamento_logueado);
+    $stmt_usuarios->execute();
+    $result_usuarios = $stmt_usuarios->get_result();
+    $usuarios = $result_usuarios->fetch_all(MYSQLI_ASSOC);
 }
 
 // Obtener usuarios para filtro solo rol 2 (admin master)
-// Obtener usuarios para filtro solo rol 1 (admin normal)
-$usuarios = [];
-if ($rol == 1) {
-    if ($id_departamento_logueado !== null) {
-        $sql_usuarios = "SELECT id_usuario, nombre, apellido FROM Usuario WHERE id_departamento = ?";
-        $stmt_usuarios = $conn->prepare($sql_usuarios);
-        $stmt_usuarios->bind_param("i", $id_departamento_logueado);
-        $stmt_usuarios->execute();
-        $result_usuarios = $stmt_usuarios->get_result();
-        $usuarios = $result_usuarios->fetch_all(MYSQLI_ASSOC);
+if ($rol == 2) {
+    $sql_usuarios = "SELECT id_usuario, nombre, apellido FROM Usuario";
+    $result_usuarios = $conn->query($sql_usuarios);
+    while ($row = $result_usuarios->fetch_assoc()) {
+        $usuarios[] = $row;
     }
 }
+
 // Paginación
 $por_pagina = 5;
 $pagina_actual = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
-if ($pagina_actual < 1)
-    $pagina_actual = 1;
+if ($pagina_actual < 1) $pagina_actual = 1;
 $offset = ($pagina_actual - 1) * $por_pagina;
 
 // Filtro usuario desde POST (solo para rol 2)
@@ -110,17 +106,8 @@ $result_deducciones = $stmt->get_result();
 
 $total_resultado = $conn->query("SELECT FOUND_ROWS()")->fetch_row()[0];
 $total_paginas = ceil($total_resultado / $por_pagina);
-
-// Obtener usuarios para filtro solo rol 2 (admin master)
-$usuarios = [];
-if ($rol == 2) {
-    $sql_usuarios = "SELECT id_usuario, nombre, apellido FROM Usuario";
-    $result_usuarios = $conn->query($sql_usuarios);
-    while ($row = $result_usuarios->fetch_assoc()) {
-        $usuarios[] = $row;
-    }
-}
 ?>
+
 
 
 
