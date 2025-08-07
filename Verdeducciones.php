@@ -3,7 +3,7 @@ require 'conexion.php';
 session_start();
 require 'template.php';
 
-$rol = $_SESSION['rol'];
+$rol = $_SESSION['id_rol'];
 $id_usuario_logueado = $_SESSION['id_usuario'];
 
 // Obtener departamento del usuario logueado si rol == 1 (admin normal)
