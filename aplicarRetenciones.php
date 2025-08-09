@@ -1,4 +1,5 @@
 <?php
+ob_start(); // <-- esto antes de cualquier salida
 require 'conexion.php';
 $conn = obtenerConexion();
 session_start();
@@ -305,4 +306,5 @@ $result_planilla = $conn->query($query_planilla);
 
 <?php
 $conn->close();
+ob_end_flush(); // <-- esto asegura que la salida se libere correctamente
 ?>
