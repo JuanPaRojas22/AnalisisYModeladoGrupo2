@@ -240,7 +240,7 @@ if (!isset($_SESSION['id_usuario'])) {
                 textarea
                 {
                 width: 100%;
-                color: black;         /* color del texto */
+                color: black;!important         /* color del texto */
                 padding: 10px;
                 font-size: 16px;
                 margin-bottom: 20px;
@@ -272,7 +272,7 @@ if (!isset($_SESSION['id_usuario'])) {
                     cursor: pointer;
                     transition: all 0.3s ease;
                     text-align: center;
-                    color: black;
+                    color: black !important;
                 }
  
                 select:hover {
