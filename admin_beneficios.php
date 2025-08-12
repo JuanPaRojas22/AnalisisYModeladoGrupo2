@@ -73,54 +73,59 @@ include 'template.php';
 </div>
 
 
-<script>
-function abrirModalAgregar(id_usuario) {
-  // setea el hidden con el usuario seleccionado
-  const hid = document.getElementById('id_usuario');
-  if (!hid) { alert('No se encontró el input oculto #id_usuario'); return; }
-  hid.value = id_usuario;
+<!-- Modal para Agregar Beneficio -->
+<div id="beneficioModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="cerrarModal()">&times;</span>
+        <h3 id="modalTitle" class="modal-title">Agregar Beneficio</h3>
 
-  // limpia campos (opcional)
-  document.getElementById('razon').value = '';
-  document.getElementById('monto').value = '';
-  document.getElementById('medismart').value = '';
-  document.getElementById('valor_total').value = '';
-  document.getElementById('aporte_patrono').value = '';
-  document.getElementById('beneficiarios').value = '';
+        <form id="beneficioForm">
+            <input type="hidden" id="id_usuario" name="id_usuario">
+            <input type="hidden" name="action" value="add">
 
-  // muestra el modal
-  document.getElementById('beneficioModal').style.display = 'flex';
-}
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Razón:</label>
+                    <input type="text" id="razon" name="razon" class="form-control" required>
+                </div>
 
-document.getElementById('beneficioForm').addEventListener('submit', async function (e) {
-  e.preventDefault();
-  const fd = new FormData(this);
+                <div class="form-group">
+                    <label>Monto:</label>
+                    <input type="number" id="monto" name="monto" class="form-control" required>
+                </div>
 
-  // verificación rápida: debe ir el id que pusimos arriba
-  if (!fd.get('id_usuario')) {
-    alert('Falta el ID del usuario destino');
-    return;
-  }
+                <div class="form-group">
+                    <label>ID MediSmart:</label>
+                    <input type="text" id="medismart" name="identificacion_medismart" class="form-control">
+                </div>
 
-  try {
-    const r = await fetch('crud_beneficios.php', { method: 'POST', body: fd });
-    const data = await r.json();
-    if (data.success) {
-      // cierra y refresca
-      document.getElementById('beneficioModal').style.display = 'none';
-      alert('Beneficio agregado correctamente.');
-      location.reload();
-    } else {
-      alert('Error al agregar: ' + (data.message || ''));
-    }
-  } catch (err) {
-    console.error(err);
-    alert('Error en la solicitud.');
-  }
-});
+                <div class="form-group">
+                    <label>Valor Total:</label>
+                    <input type="number" id="valor_total" name="valor_plan_total" class="form-control">
+                </div>
 
-</script>
+                <div class="form-group">
+                    <label>Aporte Patrono:</label>
+                    <input type="number" id="aporte_patrono" name="aporte_patrono" class="form-control">
+                </div>
 
+                <div class="form-group">
+                    <label>Beneficiarios:</label>
+                    <input type="number" id="beneficiarios" name="beneficiarios" class="form-control">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success" style="background-color: #147964; border-color: #147964;">
+                    Guardar
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="mensaje-toast" style="display: none;">Mensaje de ejemplo</div>
 
 <!-- Estilos Mejorados -->
 <style>
@@ -316,72 +321,75 @@ document.getElementById('beneficioForm').addEventListener('submit', async functi
 </style>
 
 <script>
+  // Ocultar el modal al cargar
+  document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("beneficioModal");
+    if (modal) modal.style.display = "none";
+  });
 
-    // Asegurar que el modal esté oculto al cargar la página
-    document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("beneficioModal").style.display = "none";
-    });
+  // Abrir modal y setear el usuario destino
+  function abrirModalAgregar(id_usuario) {
+    document.getElementById("modalTitle").innerText = "Agregar Beneficio";
+    document.getElementById("id_usuario").value = id_usuario;
 
-    // Función para abrir el modal de agregar beneficio
-    function abrirModalAgregar(id_usuario) {
-        document.getElementById("modalTitle").innerText = "Agregar Beneficio";
-        document.getElementById("id_usuario").value = id_usuario;
+    // Limpiar campos
+    document.getElementById("razon").value = "";
+    document.getElementById("monto").value = "";
+    document.getElementById("medismart").value = "";
+    document.getElementById("valor_total").value = "";
+    document.getElementById("aporte_patrono").value = "";
+    document.getElementById("beneficiarios").value = "";
 
-        // Limpiar los campos del formulario
-        document.getElementById("razon").value = "";
-        document.getElementById("monto").value = "";
-        document.getElementById("medismart").value = "";
-        document.getElementById("valor_total").value = "";
-        document.getElementById("aporte_patrono").value = "";
-        document.getElementById("beneficiarios").value = "";
+    document.getElementById("beneficioModal").style.display = "flex";
+  }
 
-        // Mostrar el modal correctamente
-        document.getElementById("beneficioModal").style.display = "flex";
+  // Cerrar modal
+  function cerrarModal() {
+    document.getElementById("beneficioModal").style.display = "none";
+  }
+
+  // Enviar formulario (ADD)
+  document.getElementById("beneficioForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const fd = new FormData(this);
+
+    // Asegurar que id_usuario y action viajan sí o sí
+    const idDestino = document.getElementById("id_usuario").value;
+    if (!idDestino) {
+      mostrarToast("Falta el ID del usuario destino", true);
+      return;
     }
+    fd.set("id_usuario", idDestino);
+    if (!fd.get("action")) fd.set("action", "add");
 
-    // Función para cerrar el modal
-    function cerrarModal() {
-        document.getElementById("beneficioModal").style.display = "none";
+    try {
+      const resp = await fetch("crud_beneficios.php", { method: "POST", body: fd });
+      const data = await resp.json();
+
+      if (data.success) {
+        mostrarToast(data.message || "Beneficio agregado correctamente");
+        cerrarModal();
+        setTimeout(() => location.reload(), 1200);
+      } else {
+        mostrarToast("Error: " + (data.message || "No se pudo agregar el beneficio"), true);
+      }
+    } catch (err) {
+      console.error(err);
+      mostrarToast("Error en la solicitud", true);
     }
+  });
 
-    // Manejo del formulario para agregar beneficio
-    document.getElementById("beneficioForm").addEventListener("submit", function (event) {
-        event.preventDefault(); // Evitar recarga de página
-
-        let formData = new FormData(this);
-
-        fetch("crud_beneficios.php", {
-            method: "POST",
-            body: formData
-        })
-            .then(response => response.json()) //
-            .then(data => {
-                if (data.success) {
-                    mostrarToast(data.message); // Mostrar mensaje 
-                    cerrarModal();
-                    setTimeout(() => {
-                        location.reload(); // Recargar después de mostrar el mensaje
-                    }, 2500);
-                } else {
-                    mostrarToast("Error: " + data.message, true);
-                }
-            })
-
-            .catch(error => console.error("Error:", error));
-    });
-
-
-    function mostrarToast(mensaje, error = false) {
-        const toast = document.getElementById("mensaje-toast");
-        toast.innerText = mensaje;
-        toast.style.backgroundColor = error ? "#dc3545" : "#28a745"; // rojo o verde
-        toast.classList.add("mostrar");
-        toast.style.display = "block";
-
-        setTimeout(() => {
-            toast.classList.remove("mostrar");
-            toast.style.display = "none";
-        }, 3000);
-    }
-
+  // Toast simple
+  function mostrarToast(mensaje, error = false) {
+    const toast = document.getElementById("mensaje-toast");
+    toast.innerText = mensaje;
+    toast.style.backgroundColor = error ? "#dc3545" : "#28a745";
+    toast.classList.add("mostrar");
+    toast.style.display = "block";
+    setTimeout(() => {
+      toast.classList.remove("mostrar");
+      toast.style.display = "none";
+    }, 3000);
+  }
 </script>
