@@ -51,34 +51,38 @@ include 'template.php';
     <h2 class="titulo-beneficios text-center">Gestión de Beneficios</h2>
 
 
-    <div class="row">
-        <?php foreach ($usuarios as $usuario): ?>
-            <div class="col-md-6">
-                <div class="usuario-card">
-                    <h4 class="usuario-nombre"><?= htmlspecialchars($usuario['nombre']) ?></h4>
-                    <p class="usuario-texto"><strong>Total de Beneficios:</strong> <?= $usuario['total_beneficios'] ?></p>
+  <div class="row">
+    <?php foreach ($usuarios as $usuario): ?>
+        <div class="col-md-6">
+            <div class="usuario-card">
+                <h4 class="usuario-nombre"><?= htmlspecialchars($usuario['nombre']) ?></h4>
+                <p class="usuario-texto"><strong>Total de Beneficios:</strong> <?= $usuario['total_beneficios'] ?></p>
 
-                    <div class="usuario-botones">
-                        <form action="detalles_beneficios.php" method="POST" style="display:inline;">
-                            <input type="hidden" name="id_usuario" value="<?= $usuario['id_usuario'] ?>">
-                            <button type="submit" class="btn btn-primary"
-                                style="background-color: #0C536C; border-color: #0C536C;">
-                                Ver Beneficios
-                            </button>
-                        </form>
+                <div class="usuario-botones">
+                    <!-- Ver Beneficios -->
+                    <form action="set_usuario.php" method="POST" style="display:inline;">
+                        <input type="hidden" name="usuario_id" value="<?= (int)$usuario['id_usuario'] ?>">
+                        <button type="submit" class="btn btn-primary"
+                            style="background-color: #0C536C; border-color: #0C536C;">
+                            Ver Beneficios
+                        </button>
+                    </form>
 
-
-                        <button class="btn btn-success ms-2" onclick="abrirModalAgregar(<?= $usuario['id_usuario'] ?>)"
+                    <!-- Agregar Beneficio -->
+                    <form action="set_usuario.php" method="POST" style="display:inline;">
+                        <input type="hidden" name="usuario_id" value="<?= (int)$usuario['id_usuario'] ?>">
+                        <input type="hidden" name="accion" value="agregar">
+                        <button type="submit" class="btn btn-success ms-2"
                             style="background-color: #147665; border-color: #147665;">
                             Agregar Beneficio
                         </button>
-
-                    </div>
+                    </form>
                 </div>
             </div>
-        <?php endforeach; ?>
-    </div>
+        </div>
+    <?php endforeach; ?>
 </div>
+
 
 <!-- Modal para Agregar Beneficio -->
 <div id="beneficioModal" class="modal">

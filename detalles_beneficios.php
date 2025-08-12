@@ -4,51 +4,68 @@ include 'template.php';
 
 // Validar sesión iniciada
 if (!isset($_SESSION['id_usuario'])) {
-    header("Location: login.php"); // Redirige si no hay sesión
+    header("Location: login.php");
     exit;
 }
 
-// Parámetros de conexión
+/* ===========================
+   Conexión a MySQL (SSL)
+   =========================== */
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
 $password = "admin123+";
 $dbname = "gestionEmpleados";
 $port = 3306;
 
-// Ruta al certificado CA para validar SSL
-$ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
-
-// Inicializamos mysqli
 $conn = mysqli_init();
-
-// Configuramos SSL
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
 mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
-// Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
 if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
     die("Error de conexión: " . mysqli_connect_error());
 }
-
-// Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
 
-// Obtener ID del usuario desde la sesión
-$id_usuario = $_SESSION['id_usuario'];
+/* ===========================
+   Determinar usuario objetivo
+   =========================== */
+$isAdminMaster = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin_master');
 
-// Obtener datos del usuario
+// Por defecto: el usuario logueado ve lo suyo
+$targetUserId = (int)$_SESSION['id_usuario'];
+
+// Si es admin master y hay usuario en foco desde admin_beneficios.php → ver ese usuario
+if ($isAdminMaster && isset($_SESSION['benef_user_id'])) {
+    $targetUserId = (int)$_SESSION['benef_user_id'];
+}
+
+/* ===========================
+   Consultas para el usuario en foco
+   =========================== */
+
+// Datos del usuario (nombre para el título)
 $sql_usuario = "SELECT CONCAT(nombre, ' ', apellido) AS nombre FROM usuario WHERE id_usuario = ?";
 $stmt_usuario = $conn->prepare($sql_usuario);
-$stmt_usuario->bind_param("i", $id_usuario);
+$stmt_usuario->bind_param("i", $targetUserId);
 $stmt_usuario->execute();
 $result_usuario = $stmt_usuario->get_result();
 $usuario = $result_usuario->fetch_assoc();
 $stmt_usuario->close();
 
-// Obtener beneficios del usuario
+if (!$usuario) {
+    // Si por alguna razón el foco no existe, vuelve al panel de admin
+    if ($isAdminMaster) {
+        header("Location: admin_beneficios.php");
+        exit;
+    }
+    // Usuario normal: fallback a su propio nombre
+    $usuario = ['nombre' => 'Usuario'];
+}
+
+// Beneficios del usuario en foco
 $sql_beneficios = "SELECT * FROM beneficios WHERE id_usuario = ?";
 $stmt_beneficios = $conn->prepare($sql_beneficios);
-$stmt_beneficios->bind_param("i", $id_usuario);
+$stmt_beneficios->bind_param("i", $targetUserId);
 $stmt_beneficios->execute();
 $result_beneficios = $stmt_beneficios->get_result();
 $beneficios = [];
@@ -63,14 +80,25 @@ $stmt_beneficios->close();
 </head>
 
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Beneficios de <?= htmlspecialchars($usuario['nombre']) ?></h2>
+    <h2 class="text-center mb-4">Beneficios de <?= htmlspecialchars($usuario['nombre'] ?? 'Usuario') ?></h2>
+
     <div class="text-start mb-4">
         <div class="boton-volver-container">
-            <a href="admin_beneficios.php" class="btn-volver">
-                Volver a Administración
-            </a>
+            <?php if ($isAdminMaster): ?>
+                <!-- Si estás en modo admin viendo a otro usuario, muestra "Volver a Administración" y botón para salir del foco -->
+                <a href="admin_beneficios.php" class="btn-volver">Volver a Administración</a>
+
+                <form action="set_usuario.php" method="POST" style="display:inline-block; margin-left:10px;">
+                    <input type="hidden" name="clear_focus" value="1">
+                    <button type="submit" class="btn-volver" style="background:#6c757d;">Salir del modo admin</button>
+                </form>
+            <?php else: ?>
+                <!-- Usuario normal -->
+                <a href="beneficios.php" class="btn-volver">Volver</a>
+            <?php endif; ?>
         </div>
     </div>
+
     <div class="row">
         <?php if (empty($beneficios)): ?>
             <p class="text-center">Este usuario no tiene beneficios registrados.</p>
@@ -79,23 +107,29 @@ $stmt_beneficios->close();
                 <div class="col-md-6">
                     <div class="card beneficio-card">
                         <h5 class="beneficio-title"><?= htmlspecialchars($beneficio['razon']) ?></h5>
-                        <p><strong>Monto:</strong> ₡<?= number_format($beneficio['monto'], 2) ?></p>
+                        <p><strong>Monto:</strong> ₡<?= number_format((float)$beneficio['monto'], 2) ?></p>
                         <p><strong>ID MediSmart:</strong> <?= htmlspecialchars($beneficio['identificacion_medismart']) ?></p>
-                        <p><strong>Valor Total:</strong> ₡<?= number_format($beneficio['valor_plan_total'], 2) ?></p>
-                        <p><strong>Aporte Patrono:</strong> ₡<?= number_format($beneficio['aporte_patrono'], 2) ?></p>
-                        <p><strong>Beneficiarios:</strong> <?= $beneficio['beneficiarios'] ?></p>
+                        <p><strong>Valor Total:</strong> ₡<?= number_format((float)$beneficio['valor_plan_total'], 2) ?></p>
+                        <p><strong>Aporte Patrono:</strong> ₡<?= number_format((float)$beneficio['aporte_patrono'], 2) ?></p>
+                        <p><strong>Beneficiarios:</strong> <?= (int)$beneficio['beneficiarios'] ?></p>
 
                         <div class="beneficio-actions">
-
                             <button class="btn btn-warning"
-                                onclick="abrirModal(<?= $beneficio['id_beneficio'] ?>, '<?= htmlspecialchars($beneficio['razon']) ?>', <?= $beneficio['monto'] ?>, '<?= htmlspecialchars($beneficio['identificacion_medismart']) ?>', <?= $beneficio['valor_plan_total'] ?>, <?= $beneficio['aporte_patrono'] ?>, <?= $beneficio['beneficiarios'] ?>)"
+                                onclick="abrirModal(
+                                    <?= (int)$beneficio['id_beneficio'] ?>,
+                                    '<?= htmlspecialchars($beneficio['razon'], ENT_QUOTES) ?>',
+                                    <?= (float)$beneficio['monto'] ?>,
+                                    '<?= htmlspecialchars($beneficio['identificacion_medismart'], ENT_QUOTES) ?>',
+                                    <?= (float)$beneficio['valor_plan_total'] ?>,
+                                    <?= (float)$beneficio['aporte_patrono'] ?>,
+                                    <?= (int)$beneficio['beneficiarios'] ?>
+                                )"
                                 style="background-color: #0B4F6C; border-color: #0B4F6C;">
                                 Editar
                             </button>
 
-
                             <button class="btn btn-danger ms-2"
-                                onclick="eliminarBeneficio(<?= $beneficio['id_beneficio'] ?>)">Eliminar</button>
+                                onclick="eliminarBeneficio(<?= (int)$beneficio['id_beneficio'] ?>)">Eliminar</button>
                         </div>
                     </div>
                 </div>
@@ -155,7 +189,7 @@ $stmt_beneficios->close();
     </div>
 </div>
 
-<!-- Scripts para Editar -->
+<!-- Scripts para Editar / Eliminar -->
 <script>
     function abrirModal(id, razon, monto, medismart, valorTotal, aportePatrono, beneficiarios) {
         document.getElementById("id_beneficio").value = id;
@@ -183,38 +217,35 @@ $stmt_beneficios->close();
             method: "POST",
             body: formData
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data); // <--- muestra en consola lo que responde el servidor
-                if (data.success) {
-                    alert("Beneficio actualizado correctamente.");
-                    location.reload();
-                } else {
-                    alert("Error al actualizar el beneficio: " + data.message); // <--- alerta con mensaje real del backend
-                }
-            })
-            .catch(error => console.error("Error en la solicitud:", error));
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                alert("Beneficio actualizado correctamente.");
+                location.reload();
+            } else {
+                alert("Error al actualizar el beneficio: " + (data.message || ''));
+            }
+        })
+        .catch(error => console.error("Error en la solicitud:", error));
     });
-
 
     function eliminarBeneficio(id_beneficio) {
         if (confirm("¿Seguro que quieres eliminar este beneficio?")) {
-            fetch("crud_beneficios.php?action=delete&id=" + id_beneficio, {
-                method: "GET"
+            fetch("crud_beneficios.php?action=delete&id=" + encodeURIComponent(id_beneficio), { method: "GET" })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Beneficio eliminado correctamente.");
+                    location.reload();
+                } else {
+                    alert("Error al eliminar el beneficio: " + (data.message || ''));
+                }
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert("Beneficio eliminado correctamente.");
-                        location.reload();
-                    } else {
-                        alert("Error al eliminar el beneficio: " + data.message);
-                    }
-                })
-                .catch(error => console.error("Error en la solicitud:", error));
+            .catch(error => console.error("Error en la solicitud:", error));
         }
     }
 </script>
+
 
 <!-- Manteniendo los Estilos -->
 <style>
