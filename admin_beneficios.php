@@ -118,6 +118,7 @@ document.getElementById('beneficioForm').addEventListener('submit', async functi
     alert('Error en la solicitud.');
   }
 });
+
 </script>
 
 
