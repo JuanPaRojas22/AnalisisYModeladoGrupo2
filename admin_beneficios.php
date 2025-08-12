@@ -57,7 +57,7 @@ include 'template.php';
             </form>
 
   
-           <!-- Agregar Beneficio (como antes: abre el modal en esta misma página) -->
+           <!-- Agregar Beneficio (abre el modal en esta misma página) -->
 <button type="button"
         class="btn btn-success ms-2"
         style="background-color:#147665; border-color:#147665;"
@@ -73,59 +73,53 @@ include 'template.php';
 </div>
 
 
-<!-- Modal para Agregar Beneficio -->
-<div id="beneficioModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="cerrarModal()">&times;</span>
-        <h3 id="modalTitle" class="modal-title">Agregar Beneficio</h3>
+<script>
+function abrirModalAgregar(id_usuario) {
+  // setea el hidden con el usuario seleccionado
+  const hid = document.getElementById('id_usuario');
+  if (!hid) { alert('No se encontró el input oculto #id_usuario'); return; }
+  hid.value = id_usuario;
 
-        <form id="beneficioForm">
-            <input type="hidden" id="id_usuario" name="id_usuario">
-            <input type="hidden" name="action" value="add">
+  // limpia campos (opcional)
+  document.getElementById('razon').value = '';
+  document.getElementById('monto').value = '';
+  document.getElementById('medismart').value = '';
+  document.getElementById('valor_total').value = '';
+  document.getElementById('aporte_patrono').value = '';
+  document.getElementById('beneficiarios').value = '';
 
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Razón:</label>
-                    <input type="text" id="razon" name="razon" class="form-control" required>
-                </div>
+  // muestra el modal
+  document.getElementById('beneficioModal').style.display = 'flex';
+}
 
-                <div class="form-group">
-                    <label>Monto:</label>
-                    <input type="number" id="monto" name="monto" class="form-control" required>
-                </div>
+document.getElementById('beneficioForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const fd = new FormData(this);
 
-                <div class="form-group">
-                    <label>ID MediSmart:</label>
-                    <input type="text" id="medismart" name="identificacion_medismart" class="form-control">
-                </div>
+  // verificación rápida: debe ir el id que pusimos arriba
+  if (!fd.get('id_usuario')) {
+    alert('Falta el ID del usuario destino');
+    return;
+  }
 
-                <div class="form-group">
-                    <label>Valor Total:</label>
-                    <input type="number" id="valor_total" name="valor_plan_total" class="form-control">
-                </div>
+  try {
+    const r = await fetch('crud_beneficios.php', { method: 'POST', body: fd });
+    const data = await r.json();
+    if (data.success) {
+      // cierra y refresca
+      document.getElementById('beneficioModal').style.display = 'none';
+      alert('Beneficio agregado correctamente.');
+      location.reload();
+    } else {
+      alert('Error al agregar: ' + (data.message || ''));
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Error en la solicitud.');
+  }
+});
+</script>
 
-                <div class="form-group">
-                    <label>Aporte Patrono:</label>
-                    <input type="number" id="aporte_patrono" name="aporte_patrono" class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label>Beneficiarios:</label>
-                    <input type="number" id="beneficiarios" name="beneficiarios" class="form-control">
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-success" style="background-color: #147964; border-color: #147964;">
-                    Guardar
-                </button>
-                <button type="button" class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div id="mensaje-toast" style="display: none;">Mensaje de ejemplo</div>
 
 <!-- Estilos Mejorados -->
 <style>
