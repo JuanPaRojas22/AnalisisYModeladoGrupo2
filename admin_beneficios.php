@@ -57,7 +57,7 @@ include 'template.php';
             </form>
 
   
-           <!-- Agregar Beneficio (abre el modal en esta misma página) -->
+           <!-- Agregar Beneficio (como antes: abre el modal en esta misma página) -->
 <button type="button"
         class="btn btn-success ms-2"
         style="background-color:#147665; border-color:#147665;"
