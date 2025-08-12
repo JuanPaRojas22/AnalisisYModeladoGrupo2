@@ -57,6 +57,7 @@ include 'template.php';
             </form>
 
   
+<<<<<<< HEAD
            <!-- Agregar Beneficio (como antes: abre el modal en esta misma página) -->
 <button type="button"
         class="btn btn-success ms-2"
@@ -65,6 +66,12 @@ include 'template.php';
   Agregar Beneficio
 </button>
 
+=======
+            <button class="btn btn-success ms-2" onclick="abrirModalAgregar(<?= $usuario['id_usuario'] ?>)"
+                            style="background-color: #147665; border-color: #147665;">
+                            Agregar Beneficio
+                        </button>
+>>>>>>> parent of 6c20bd2 (Merge pull request #192 from JuanPaRojas22/Maria-Paula)
           </div>
         </div>
       </div>
@@ -321,65 +328,35 @@ include 'template.php';
 </style>
 
 <script>
-  // Ocultar el modal al cargar
-  document.addEventListener("DOMContentLoaded", function () {
-    const modal = document.getElementById("beneficioModal");
-    if (modal) modal.style.display = "none";
-  });
 
-  // Abrir modal y setear el usuario destino
-  function abrirModalAgregar(id_usuario) {
-    document.getElementById("modalTitle").innerText = "Agregar Beneficio";
-    document.getElementById("id_usuario").value = id_usuario;
+    // Asegurar que el modal esté oculto al cargar la página
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("beneficioModal").style.display = "none";
+    });
 
-    // Limpiar campos
-    document.getElementById("razon").value = "";
-    document.getElementById("monto").value = "";
-    document.getElementById("medismart").value = "";
-    document.getElementById("valor_total").value = "";
-    document.getElementById("aporte_patrono").value = "";
-    document.getElementById("beneficiarios").value = "";
+    // Función para abrir el modal de agregar beneficio
+    function abrirModalAgregar(id_usuario) {
+        document.getElementById("modalTitle").innerText = "Agregar Beneficio";
+        document.getElementById("id_usuario").value = id_usuario;
 
-    document.getElementById("beneficioModal").style.display = "flex";
-  }
+        // Limpiar los campos del formulario
+        document.getElementById("razon").value = "";
+        document.getElementById("monto").value = "";
+        document.getElementById("medismart").value = "";
+        document.getElementById("valor_total").value = "";
+        document.getElementById("aporte_patrono").value = "";
+        document.getElementById("beneficiarios").value = "";
 
-  // Cerrar modal
-  function cerrarModal() {
-    document.getElementById("beneficioModal").style.display = "none";
-  }
-
-  // Enviar formulario (ADD)
-  document.getElementById("beneficioForm").addEventListener("submit", async function (event) {
-    event.preventDefault();
-
-    const fd = new FormData(this);
-
-    // Asegurar que id_usuario y action viajan sí o sí
-    const idDestino = document.getElementById("id_usuario").value;
-    if (!idDestino) {
-      mostrarToast("Falta el ID del usuario destino", true);
-      return;
+        // Mostrar el modal correctamente
+        document.getElementById("beneficioModal").style.display = "flex";
     }
-    fd.set("id_usuario", idDestino);
-    if (!fd.get("action")) fd.set("action", "add");
 
-    try {
-      const resp = await fetch("crud_beneficios.php", { method: "POST", body: fd });
-      const data = await resp.json();
-
-      if (data.success) {
-        mostrarToast(data.message || "Beneficio agregado correctamente");
-        cerrarModal();
-        setTimeout(() => location.reload(), 1200);
-      } else {
-        mostrarToast("Error: " + (data.message || "No se pudo agregar el beneficio"), true);
-      }
-    } catch (err) {
-      console.error(err);
-      mostrarToast("Error en la solicitud", true);
+    // Función para cerrar el modal
+    function cerrarModal() {
+        document.getElementById("beneficioModal").style.display = "none";
     }
-  });
 
+<<<<<<< HEAD
   // Toast simple
   function mostrarToast(mensaje, error = false) {
     const toast = document.getElementById("mensaje-toast");
@@ -394,3 +371,46 @@ include 'template.php';
   }
 </script>
  
+=======
+    // Manejo del formulario para agregar beneficio
+    document.getElementById("beneficioForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // Evitar recarga de página
+
+        let formData = new FormData(this);
+
+        fetch("crud_beneficios.php", {
+            method: "POST",
+            body: formData
+        })
+            .then(response => response.json()) //
+            .then(data => {
+                if (data.success) {
+                    mostrarToast(data.message); // Mostrar mensaje 
+                    cerrarModal();
+                    setTimeout(() => {
+                        location.reload(); // Recargar después de mostrar el mensaje
+                    }, 2500);
+                } else {
+                    mostrarToast("Error: " + data.message, true);
+                }
+            })
+
+            .catch(error => console.error("Error:", error));
+    });
+
+
+    function mostrarToast(mensaje, error = false) {
+        const toast = document.getElementById("mensaje-toast");
+        toast.innerText = mensaje;
+        toast.style.backgroundColor = error ? "#dc3545" : "#28a745"; // rojo o verde
+        toast.classList.add("mostrar");
+        toast.style.display = "block";
+
+        setTimeout(() => {
+            toast.classList.remove("mostrar");
+            toast.style.display = "none";
+        }, 3000);
+    }
+
+</script>
+>>>>>>> parent of 6c20bd2 (Merge pull request #192 from JuanPaRojas22/Maria-Paula)
