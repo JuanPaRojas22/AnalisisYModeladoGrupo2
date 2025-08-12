@@ -382,6 +382,8 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
     }
     $stmt_debug->close();
 
+    $nombre_empleado = null;
+
     while ($rowStart <= $highestRow) {
         // Leer un bloque de filas
         $fila = $hoja->rangeToArray('C' . $rowStart . ':I' . min($rowStart + $maxRows - 1, $highestRow), null, true, false);
@@ -460,7 +462,11 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
 
                         }
                     } else {
-                        echo "⚠️ No se encontró empleado: $nombre_empleado<br>";
+                        if ($nombre_empleado) {
+                        echo "📄 Comparando con nombre: [$nombre_empleado]<br>";
+                        } else {
+                        echo "📄 No se comparó ningún nombre de empleado.<br>";
+                        }
                         $stmt->close();
                     }
                 } else {
