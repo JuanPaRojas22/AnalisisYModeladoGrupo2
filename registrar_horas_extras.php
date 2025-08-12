@@ -479,7 +479,11 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
     } // Fin while ($rowStart <= $highestRow)
 } // Fin if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0)
 echo "Horas extras procesadas correctamente.";
-echo "📄 Comparando con nombre: [$nombre_empleado]<br>";
+if ($nombre_empleado) {
+    echo "📄 Comparando con nombre: [$nombre_empleado]<br>";
+} else {
+    echo "📄 No se comparó ningún nombre de empleado.<br>";
+}
 
 
 ?>
