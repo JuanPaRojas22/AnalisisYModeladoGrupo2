@@ -25,25 +25,23 @@ if ($targetUserId <= 0) { echo json_encode(["success"=>false,"message"=>"Usuario
 
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
 
-// ===== CREATE =====
+// ===== CREATE (add) =====
 if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Seguridad: si es admin puede agregar para cualquier usuario; si no, solo para sí mismo
-    $isAdminMaster = isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin_master';
-
-    $id_usuario_post = (int)($_POST['id_usuario'] ?? 0);
+    // Prioridad: id_usuario del form > usuario en foco > usuario logueado
+    $id_usuario_form   = (int)($_POST['id_usuario'] ?? 0);
+    $id_usuario_foco   = (int)($_SESSION['benef_user_id'] ?? 0);
     $id_usuario_sesion = (int)($_SESSION['id_usuario'] ?? 0);
+    $id_usuario        = $id_usuario_form ?: ($id_usuario_foco ?: $id_usuario_sesion);
 
-    $id_usuario = $isAdminMaster ? $id_usuario_post : $id_usuario_sesion;
-
-    $razon           = trim($_POST['razon'] ?? '');
-    $monto           = (float)($_POST['monto'] ?? 0);
-    $medismart       = trim($_POST['identificacion_medismart'] ?? '');
-    $valor_total     = (float)($_POST['valor_plan_total'] ?? 0);
-    $aporte_patrono  = (float)($_POST['aporte_patrono'] ?? 0);
-    $beneficiarios   = (int)($_POST['beneficiarios'] ?? 0);
+    $razon          = trim($_POST['razon'] ?? '');
+    $monto          = (float)($_POST['monto'] ?? 0);
+    $medismart      = trim($_POST['identificacion_medismart'] ?? '');
+    $valor_total    = (float)($_POST['valor_plan_total'] ?? 0);
+    $aporte_patrono = (float)($_POST['aporte_patrono'] ?? 0);
+    $beneficiarios  = (int)($_POST['beneficiarios'] ?? 0);
 
     if ($id_usuario <= 0 || $razon === '') {
-        echo json_encode(["success" => false, "message" => "Datos inválidos"]);
+        echo json_encode(["success"=>false,"message"=>"Datos inválidos (id_usuario o razón)"]);
         exit;
     }
 
@@ -52,24 +50,20 @@ if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
-        echo json_encode(["success" => false, "message" => "Error en prepare: " . $conn->error]);
-        exit;
+        echo json_encode(["success"=>false,"message"=>"Error en prepare: ".$conn->error]); exit;
     }
 
     // Tipos: i s d s d d i
     if (!$stmt->bind_param("isdsddi", $id_usuario, $razon, $monto, $medismart, $valor_total, $aporte_patrono, $beneficiarios)) {
-        echo json_encode(["success" => false, "message" => "Error en bind_param: " . $stmt->error]);
-        exit;
+        echo json_encode(["success"=>false,"message"=>"Error en bind_param: ".$stmt->error]); exit;
     }
 
-    if ($stmt->execute()) {
-        echo json_encode(["success" => true, "message" => "Beneficio agregado correctamente"]);
-    } else {
-        echo json_encode(["success" => false, "message" => "Error al agregar el beneficio"]);
-    }
+    $ok = $stmt->execute();
     $stmt->close();
+    echo json_encode(["success"=>$ok,"message"=>$ok?"Beneficio agregado correctamente":"Error al agregar el beneficio"]);
     exit;
 }
+
 
 // ===== UPDATE =====
 if ($action === 'edit' && $_SERVER['REQUEST_METHOD'] === 'POST') {
