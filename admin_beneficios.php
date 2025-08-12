@@ -57,13 +57,14 @@ include 'template.php';
             </form>
 
             <!-- Agregar Beneficio (fija el foco y redirige) -->
-            <form action="set_usuario.php" method="POST" style="display:inline;">
-              <input type="hidden" name="usuario_id" value="<?= (int)$usuario['id_usuario'] ?>">
-              <input type="hidden" name="accion" value="agregar">
-              <button type="submit" class="btn btn-success ms-2" style="background-color:#147665;border-color:#147665;">
-                Agregar Beneficio
-              </button>
-            </form>
+           <form action="set_usuario.php" method="POST" style="display:inline;">
+  <input type="hidden" name="usuario_id" value="<?= (int)$usuario['id_usuario'] ?>">
+  <input type="hidden" name="accion" value="agregar">
+  <button type="submit" class="btn btn-success ms-2"
+          style="background-color:#147665; border-color:#147665;">
+    Agregar Beneficio
+  </button>
+</form>
           </div>
         </div>
       </div>
