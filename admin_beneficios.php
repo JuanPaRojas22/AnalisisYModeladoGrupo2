@@ -321,72 +321,75 @@ include 'template.php';
 </style>
 
 <script>
+  // Ocultar el modal al cargar
+  document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("beneficioModal");
+    if (modal) modal.style.display = "none";
+  });
 
-    // Asegurar que el modal esté oculto al cargar la página
-    document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("beneficioModal").style.display = "none";
-    });
+  // Abrir modal y setear el usuario destino
+  function abrirModalAgregar(id_usuario) {
+    document.getElementById("modalTitle").innerText = "Agregar Beneficio";
+    document.getElementById("id_usuario").value = id_usuario;
 
-    // Función para abrir el modal de agregar beneficio
-    function abrirModalAgregar(id_usuario) {
-        document.getElementById("modalTitle").innerText = "Agregar Beneficio";
-        document.getElementById("id_usuario").value = id_usuario;
+    // Limpiar campos
+    document.getElementById("razon").value = "";
+    document.getElementById("monto").value = "";
+    document.getElementById("medismart").value = "";
+    document.getElementById("valor_total").value = "";
+    document.getElementById("aporte_patrono").value = "";
+    document.getElementById("beneficiarios").value = "";
 
-        // Limpiar los campos del formulario
-        document.getElementById("razon").value = "";
-        document.getElementById("monto").value = "";
-        document.getElementById("medismart").value = "";
-        document.getElementById("valor_total").value = "";
-        document.getElementById("aporte_patrono").value = "";
-        document.getElementById("beneficiarios").value = "";
+    document.getElementById("beneficioModal").style.display = "flex";
+  }
 
-        // Mostrar el modal correctamente
-        document.getElementById("beneficioModal").style.display = "flex";
+  // Cerrar modal
+  function cerrarModal() {
+    document.getElementById("beneficioModal").style.display = "none";
+  }
+
+  // Enviar formulario (ADD)
+  document.getElementById("beneficioForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const fd = new FormData(this);
+
+    // Asegurar que id_usuario y action viajan sí o sí
+    const idDestino = document.getElementById("id_usuario").value;
+    if (!idDestino) {
+      mostrarToast("Falta el ID del usuario destino", true);
+      return;
     }
+    fd.set("id_usuario", idDestino);
+    if (!fd.get("action")) fd.set("action", "add");
 
-    // Función para cerrar el modal
-    function cerrarModal() {
-        document.getElementById("beneficioModal").style.display = "none";
+    try {
+      const resp = await fetch("crud_beneficios.php", { method: "POST", body: fd });
+      const data = await resp.json();
+
+      if (data.success) {
+        mostrarToast(data.message || "Beneficio agregado correctamente");
+        cerrarModal();
+        setTimeout(() => location.reload(), 1200);
+      } else {
+        mostrarToast("Error: " + (data.message || "No se pudo agregar el beneficio"), true);
+      }
+    } catch (err) {
+      console.error(err);
+      mostrarToast("Error en la solicitud", true);
     }
+  });
 
-    // Manejo del formulario para agregar beneficio
-    document.getElementById("beneficioForm").addEventListener("submit", function (event) {
-        event.preventDefault(); // Evitar recarga de página
-
-        let formData = new FormData(this);
-
-        fetch("crud_beneficios.php", {
-            method: "POST",
-            body: formData
-        })
-            .then(response => response.json()) //
-            .then(data => {
-                if (data.success) {
-                    mostrarToast(data.message); // Mostrar mensaje 
-                    cerrarModal();
-                    setTimeout(() => {
-                        location.reload(); // Recargar después de mostrar el mensaje
-                    }, 2500);
-                } else {
-                    mostrarToast("Error: " + data.message, true);
-                }
-            })
-
-            .catch(error => console.error("Error:", error));
-    });
-
-
-    function mostrarToast(mensaje, error = false) {
-        const toast = document.getElementById("mensaje-toast");
-        toast.innerText = mensaje;
-        toast.style.backgroundColor = error ? "#dc3545" : "#28a745"; // rojo o verde
-        toast.classList.add("mostrar");
-        toast.style.display = "block";
-
-        setTimeout(() => {
-            toast.classList.remove("mostrar");
-            toast.style.display = "none";
-        }, 3000);
-    }
-
+  // Toast simple
+  function mostrarToast(mensaje, error = false) {
+    const toast = document.getElementById("mensaje-toast");
+    toast.innerText = mensaje;
+    toast.style.backgroundColor = error ? "#dc3545" : "#28a745";
+    toast.classList.add("mostrar");
+    toast.style.display = "block";
+    setTimeout(() => {
+      toast.classList.remove("mostrar");
+      toast.style.display = "none";
+    }, 3000);
+  }
 </script>
