@@ -217,6 +217,7 @@ ob_end_flush();  // Envía todo el contenido del búfer al navegador
                 background-color: #f7f7f7;
                 margin: 0;
                 padding: 0;
+                color: black;
             }
 
             .container {

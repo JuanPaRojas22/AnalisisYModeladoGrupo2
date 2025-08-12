@@ -1,34 +1,31 @@
 <?php
 session_start();
-
-
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: login.php");
+    exit;
+}
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
-require_once __DIR__ . '/Impl/VacacionDAOSImpl.php';
+require_once __DIR__ . '/Impl/Historial_Solicitud_Modificacion_VacacionesDAOSImpl.php';
 include "template.php";
-
-// $UsuarioDAO = new UsuarioDAOSImpl();
-// $user_id = $_SESSION['id_usuario'];
 
 // Instancia el DAO
 $UsuarioDAO = new UsuarioDAOSImpl();
-$VacacionDAO = new VacacionDAOSImpl(); 
+$Historial_Solicitud_Modificacion_VacacionesDAO = new Historial_Solicitud_Modificacion_VacacionesDAOSImpl();
+
 // Verifica si el parámetro 'id' está presente en la URL
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
-    $id_vacacion = (int) $_POST['id'];
-    // Obtiene el id del usuario de la vacacion actual
-    $id_usuario = $VacacionDAO->getUserByIdVacacion($id_vacacion);
+    $id_historial_solicitud_modificacion = (int) $_POST['id'];
 
+
+    // Obtiene el id del usuario de la vacacion actual
+    $id_usuario = $Historial_Solicitud_Modificacion_VacacionesDAO->getUserByIdHistorialSolicitudModificacion($id_historial_solicitud_modificacion);
+    
     // Obtiene los detalles del usuario por id
     $user = $UsuarioDAO->getUserById($id_usuario);
 
-    // Obtiene la vacacion actual del usuario
-    //$vacacion = $UsuarioDAO->getVacacionByUserId($id_usuario);
+    // Obtiene el historial de solicitudes de vacacionesa a modificar de los usuarios del departamento del administrador actual
+    $Historial_Solicitud_Modificacion_Vacaciones = $Historial_Solicitud_Modificacion_VacacionesDAO->getHistorialSolicitudModificacionVacaciones($id_historial_solicitud_modificacion);    
 
-    // Obtiene las vacaciones del usuario actual
-    $vacaciones = $VacacionDAO->getDetalleVacacion($id_vacacion);
-
-    // Obtiene los historiales de vacaciones del usuario actual
-    $historial_vacaciones = $UsuarioDAO->getHistorialVacacionesByUserId($id_usuario);
     // Si el usuario no existe
     if (!$user) {
         echo "Usuario no encontrado.";
@@ -67,36 +64,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    
+
 </head>
 
 <body>
-         
-    
-    <section id="main-content">
+
+
+        
+
+<section id="main-content">
         <section class="wrapper site-min-height">
-            <!-- Botón para generar el PDF -->
-
-
             <div class="container">
-                <h1>Solicitud de Vacación</h1>
+                <h1>Solicitud de Modificación de Vacaciones</h1>
                 <div class="btn-container-wrapper">
-                    <form method="post" action="vacaciones.php">
-                        <button type="submit" class="btn-container"><i class="bi bi-arrow-return-left"></i></button>
-                    </form>
-
-                    <div>
+                    <a href="SolicitarVacacion.php" class="btn-container"><i class="bi bi-arrow-return-left"></i></a>
                     
-                    <a href="procesarVacacion.php?id=<?php echo $id_vacacion; ?>&accion=aprobar" class="btn-aprove" style="background-color: #137266; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
-                        <i class="bi bi-check-circle-fill"></i>
-                    </a>
-                    <a href="procesarVacacion.php?id=<?php echo $id_vacacion; ?>&accion=rechazar" class="btn-decline" style="background-color: #C64A4A; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
-                        <i class="bi bi-x-square-fill"></i>
-                    </a>
-            
-                </div>
-
-
                 </div>
                 <div class="user-img">
                     <?php if (!empty($user['direccion_imagen'])): ?>
@@ -107,48 +89,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
                 </div>
 
                 <table class="user-details">
-                    <tr>
-                        <th>Nombre</th>
-                        <td><?php echo htmlspecialchars($user['nombre']); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Apellido</th>
-                        <td><?php echo htmlspecialchars($user['apellido']); ?></td>
-                    </tr>
-                    <?php foreach ($vacaciones as $vacacion): ?>
-                        <tr>
-                            <th>Fecha de inicio</th>
-                            <td><?php echo htmlspecialchars($vacacion['fecha_inicio']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Fecha Fin</th>
-                            <td><?php echo htmlspecialchars($vacacion['fecha_fin']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Días tomados</th>
-                            <td><?php echo htmlspecialchars($vacacion['diasTomado']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Razón</th>
-                            <td><?php echo htmlspecialchars($vacacion['razon']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Estado</th>
-                            <td><?php echo htmlspecialchars($UsuarioDAO->getEstadoVacacionById($vacacion['id_estado_vacacion'])['descripcion']); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                    <?php foreach ($historial_vacaciones as $historial_vacacion): ?>
-                        <tr>
-                            <th>Días restantes</th>
-                            <td><?php echo htmlspecialchars($historial_vacacion['DiasRestantes']); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
+                <tr><th>Nombre</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Nombre']); ?></td></tr>
+                <tr><th>Apellido</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Apellido']); ?></td></tr>
+                <tr><th>Departamento</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Departamento']); ?></td></tr>
+                <tr><th>Nueva Fecha de Inicio</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevaFechaInicio']); ?></td></tr>
+                <tr><th>Nueva Fecha de Fin</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevaFechaFin']); ?></td></tr>
+                <tr><th>Nuevos Días Solicitados</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['NuevosDiasSolicitados']); ?></td></tr>
+                <tr><th>Fecha Inicio Original</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['OriginalFechaInicio']); ?></td></tr>
+                <tr><th>Fecha Fin Original</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['OriginalFechaFin']); ?></td></tr>
+                <tr><th>Días Solicitados Originalmente</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['OriginalDiasSolicitados']); ?></td></tr>
+                <tr><th>Días Restantes</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['DiasRestantes']); ?></td></tr>
+                <tr><th>Estado Solicitud</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['EstadoSolicitudVacacion']); ?></td></tr>
+            
                 </table>
             </div>
 
         </section>
     </section>
-
 
     <style>
         body {
@@ -239,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
         }
 
         .btn-container {
-            background-color: #147964;
+            background-color: #116B67;
             color: white;
             padding: 8px 12px;
             font-size: 16px;
@@ -248,10 +205,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
             text-decoration: none;
             border-radius: 5px;
             transition: background-color 0.3s;
-           
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
     </style>
-        
 
 </body>
 

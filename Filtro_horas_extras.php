@@ -5,6 +5,8 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header("Location: login.php");
     exit;
 }
+
+
 //Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
@@ -37,56 +39,97 @@ if (!isset($_SESSION['id_usuario'])) {
     header("Location: login.php");
     exit;
 }
-
+$rol = $_SESSION['id_rol'];
 $id_usuario = $_SESSION['id_usuario'];
 $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
 
+// Si es admin normal, obtenemos su departamento
+if ($rol == 1) {
+    $res_dep = mysqli_query($conn, "SELECT id_departamento FROM usuario WHERE id_usuario = '$id_usuario'");
+    $dep_row = mysqli_fetch_assoc($res_dep);
+    $mi_departamento = $dep_row['id_departamento'];
+}
+
+
 // Incluir la plantilla
 include 'template.php';
-// Verificar si se han enviado los filtros
-if (isset($_POST['filtrar'])) {
-    $usuario = $_POST['usuario'];
-    $departamento = $_POST['departamento'];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['filtrar'])) {
+        // Solo guarda en sesión si el botón Filtrar fue presionado
+        $_SESSION['filtro_usuario'] = $_POST['usuario'] ?? '';
+        $_SESSION['filtro_departamento'] = $_POST['departamento'] ?? '';
+    }
+
+    // Si la paginación se usó, y no se envió el filtro, NO lo sobrescribas
+    $usuario = $_POST['usuario'] ?? ($_SESSION['filtro_usuario'] ?? '');
+    $departamento = $_POST['departamento'] ?? ($_SESSION['filtro_departamento'] ?? '');
+} else {
+    $usuario = $_SESSION['filtro_usuario'] ?? '';
+    $departamento = $_SESSION['filtro_departamento'] ?? '';
+}
+
+error_log("POST usuario: " . ($_POST['usuario'] ?? 'NULO'));
+error_log("POST departamento: " . ($_POST['departamento'] ?? 'NULO'));
+
+$registros_por_pagina = 8;
+$pagina_actual = isset($_POST['pagina']) ? (int) $_POST['pagina'] : 1;
+$offset = ($pagina_actual - 1) * $registros_por_pagina;
 
 
-    // Mostrar valores de los filtros (para depuración)
-    //var_dump($usuario);
-    //var_dump($departamento);
 
-    // Construir la consulta SQL con los filtros seleccionados
-    $query = "SELECT u.nombre, d.Nombre, SUM(he.horas) AS total_horas_extras, SUM(he.monto_pago) AS monto_pago
-    FROM horas_extra he
+// Mostrar valores de los filtros (para depuración)
+//var_dump($usuario);
+//var_dump($departamento);
+
+// Construir la consulta SQL con los filtros seleccionados
+$query = "SELECT u.nombre, d.Nombre, SUM(he.horas) AS total_horas_extras, SUM(he.monto_pago) AS monto_pago
+    FROM historial_horas_extras he
     JOIN usuario u ON he.id_usuario = u.id_usuario
     JOIN departamento d ON u.id_departamento = d.id_departamento
     WHERE 1";  // Esto asegura que siempre haya una condición base
 
-    // Agregar las condiciones de los filtros si están presentes
-    if (!empty($usuario)) {  // Verificar si el filtro de usuario no está vacío
-        $query .= " AND u.id_usuario = '$usuario'";  // Filtro de usuario
+// Si el usuario es normal (rol = 3), forzar filtro por su ID
+if ($rol == 2) {
+    // Admin master: acceso completo
+    if (!empty($usuario)) {
+        $query .= " AND u.id_usuario = '$usuario'";
     }
-    if (!empty($departamento)) {  // Verificar si el filtro de departamento no está vacío
-        $query .= " AND d.id_departamento = '$departamento'";  // Filtro de departamento
+    if (!empty($departamento)) {
+        $query .= " AND d.id_departamento = '$departamento'";
     }
-
-    $query .= " GROUP BY u.id_usuario, u.nombre, d.Nombre";
-
-    // Muestra la consulta SQL generada para depuración
-//echo "<pre>" . $query . "</pre>";
-
-    // Ejecutar la consulta
-    $result = mysqli_query($conn, $query);
-
-    // Verificar si hay resultados
-    if ($result && mysqli_num_rows($result) > 0) {
-        $data = [];
-        while ($row = mysqli_fetch_assoc($result)) {
-            $data[] = $row;
-        }
-    } else {
-        $data = null;
+} elseif ($rol == 1) {
+    // Admin normal: solo su departamento
+    $query .= " AND d.id_departamento = '$mi_departamento'";
+    if (!empty($usuario)) {
+        $query .= " AND u.id_usuario = '$usuario'";
     }
-
+} else {
+    // Usuario común: solo su información
+    $query .= " AND u.id_usuario = '$id_usuario'";
 }
+
+
+$query .= " GROUP BY u.id_usuario, u.nombre, d.Nombre";
+$query_total = $query; // Guardamos esta sin LIMIT para contar total
+
+$query .= " LIMIT $registros_por_pagina OFFSET $offset";
+
+// Ejecutar la consulta y obtener resultados
+$result = mysqli_query($conn, $query);
+
+$data = [];
+if ($result) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $data[] = $row;
+    }
+}
+// Verificar si hay resultados
+$result_total = mysqli_query($conn, $query_total);
+$total_registros = mysqli_num_rows($result_total);
+$total_paginas = ceil($total_registros / $registros_por_pagina);
+
+
 ?>
 
 <!DOCTYPE html>
@@ -98,7 +141,8 @@ if (isset($_POST['filtrar'])) {
     <title>Filtrar Horas Extras</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        td, div {
+        td,
+        div {
             color: black !important;
         }
     </style>
@@ -106,60 +150,80 @@ if (isset($_POST['filtrar'])) {
 
 <body>
     <div class="container">
-        <h1>Filtrar Horas Extras</h1>
-     
-        <!-- Formulario de filtros -->
-        <form action="Filtro_horas_extras.php" method="post" class="filter-form">
-            <label for="usuario">Usuario:</label>
-            <select name="usuario" id="usuario">
-                <option value="">Selecciona un Usuario</option>
-                <?php
-                // Aquí se llenan los usuarios desde la base de datos
-                $query = "SELECT id_usuario, nombre FROM usuario";
-                $result = mysqli_query($conn, $query);
-                while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<option value='" . $row['id_usuario'] . "'>" . $row['nombre'] . "</option>";
-                }
-                ?>
-            </select>
+        <h1>Listado Horas Extras</h1>
+        <?php if ($rol == 2 || $rol == 1): ?>
+            <form action="Filtro_horas_extras.php" method="post" class="filter-form">
+                <label for="usuario">Usuario:</label>
+                <select name="usuario" id="usuario">
+                    <option value="">Selecciona un Usuario</option>
+                    <?php
+                    if ($rol == 2) {
+                        // Admin master ve todos los usuarios
+                        $query_usuarios = "SELECT id_usuario, nombre FROM usuario";
+                    } elseif ($rol == 1) {
+                        // Admin normal ve solo usuarios de su departamento
+                        $query_usuarios = "SELECT id_usuario, nombre FROM usuario WHERE id_departamento = '$mi_departamento'";
+                    }
 
-            <label for="departamento">Departamento:</label>
-            <select name="departamento" id="departamento">
-                <option value="">Selecciona un Departamento</option>
-                <?php
-                // Aquí se llenan los departamentos desde la base de datos
-                $query = "SELECT id_departamento, Nombre FROM departamento";
-                $result = mysqli_query($conn, $query);
-                while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<option value='" . $row['id_departamento'] . "'>" . $row['Nombre'] . "</option>";
-                }
-                ?>
-            </select>
-                
-            <div class="button-group">
-        <!-- Botón Filtrar -->
-        <a href="VerPlanilla.php" class="btn btn-secondary">
-            <i ></i> Devolver
-        </a>
-        <button class="btn" type="submit" name="filtrar" id="btnFiltrar">
-    <i class="bi bi-funnel"></i> Filtrar
-</button>
-    </form>
+                    $result_usuarios = mysqli_query($conn, $query_usuarios);
+                    while ($row = mysqli_fetch_assoc($result_usuarios)) {
+                        $selected = ($usuario == $row['id_usuario']) ? 'selected' : '';
+                        echo "<option value='{$row['id_usuario']}' $selected>{$row['nombre']}</option>";
+                    }
+                    ?>
+                </select>
 
-    <?php if (!empty($data)): ?>
-        <form action="reporte_horas_extra.php" method="post">
-            <input type="hidden" name="usuario" value="<?php echo $usuario; ?>">
-            <input type="hidden" name="departamento" value="<?php echo $departamento; ?>">
-            <button class="btn" type="submit" name="exportar_pdf">
-                <i class="bi bi-file-earmark-arrow-down-fill"></i> Exportar PDF
-            </button>
-        </form>
-    <?php endif; ?>
-</div>
-     
 
-        <!-- Mostrar los resultados -->
-        <table>
+                <label for="departamento">Departamento:</label>
+                <select name="departamento" id="departamento" <?php if ($rol == 1)
+                    echo 'disabled'; ?>>
+                    <option value="">Selecciona un Departamento</option>
+                    <?php
+                    if ($rol == 2) {
+                        // Admin master ve todos los departamentos
+                        $query = "SELECT id_departamento, Nombre FROM departamento";
+                    } elseif ($rol == 1) {
+                        // Admin normal ve solo su departamento
+                        $query = "SELECT id_departamento, Nombre FROM departamento WHERE id_departamento = '$mi_departamento'";
+                    }
+                    $result = mysqli_query($conn, $query);
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $selected = ($departamento == $row['id_departamento']) ? 'selected' : '';
+                        echo "<option value='{$row['id_departamento']}' $selected>{$row['Nombre']}</option>";
+                    }
+                    ?>
+                </select>
+
+                <div class="button-group">
+                    <a href="VerPlanilla.php" class="btn btn-secondary">Devolver</a>
+                    <button class="btn" type="submit" name="filtrar" id="btnFiltrar">Filtrar</button>
+            </form>
+        <?php endif; ?>
+
+        <?php if (in_array($rol, [1, 2, 3]) && !empty($data)): ?>
+
+            <div style="text-align: center;">
+                <?php if (!empty($data)): ?>
+
+                    <form id="formPDF" action="reporte_horas_extra.php" method="post">
+                        <input type="hidden" name="datos_json" id="datos_json" value="">
+                        <button type="submit" class="btn">Exportar PDF</button>
+                    </form>
+
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+
+
+
+
+    </div>
+
+
+    <!-- Mostrar los resultados -->
+    <div style="overflow-x:auto; margin: 0 auto; width: 100%;">
+        <table id="tablaHoras">
             <thead>
                 <tr>
                     <th>Empleado</th>
@@ -170,7 +234,6 @@ if (isset($_POST['filtrar'])) {
             </thead>
             <tbody>
                 <?php
-                // Mostrar los resultados de las horas extras
                 if (isset($data) && $data !== null) {
                     foreach ($data as $row) {
                         echo "<tr>
@@ -186,19 +249,63 @@ if (isset($_POST['filtrar'])) {
                 ?>
             </tbody>
         </table>
-
+        <?php if ($total_paginas > 1): ?>
+            <div style="text-align:center; margin-top: 20px;">
+                <form method="post" action="Filtro_horas_extras.php" style="display:inline-block;">
+                    <input type="hidden" name="usuario" value="<?php echo htmlspecialchars($usuario); ?>">
+                    <input type="hidden" name="departamento" value="<?php echo htmlspecialchars($departamento); ?>">
+                    <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
+                        <button type="submit" name="pagina" value="<?php echo $i; ?>"
+                            class="btn <?php echo ($i == $pagina_actual) ? 'btn-secondary' : ''; ?>" style="margin:0 3px;">
+                            <?php echo $i; ?>
+                        </button>
+                    <?php endfor; ?>
+                </form>
+            </div>
+        <?php endif; ?>
     </div>
-    <script>
-document.getElementById('btnFiltrar').addEventListener('click', function (e) {
-    const usuario = document.getElementById('usuario').value;
-    const departamento = document.getElementById('departamento').value;
+    <?php if ($rol == 2): ?>
+        <script>
+            document.getElementById('btnFiltrar').addEventListener('click', function (e) {
+                const usuario = document.getElementById('usuario').value;
+                const departamento = document.getElementById('departamento').value;
 
-    if (!usuario && !departamento) {
-        e.preventDefault(); // Detiene el envío del formulario
-        alert('Debe seleccionar un usuario o un departamento para filtrar.');
-    }
-});
-</script>
+                if (!usuario && !departamento) {
+                    e.preventDefault(); // Detiene el envío del formulario
+                    alert('Debe seleccionar un usuario o un departamento para filtrar.');
+                }
+            });
+        </script>
+    <?php endif; ?>
+
+
+    <script>
+        document.getElementById('formPDF').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            let data = [];
+            const rows = document.querySelectorAll('#tablaHoras tbody tr');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length === 4) { // para evitar filas vacías o errores
+                    data.push({
+                        nombre: cells[0].innerText.trim(),
+                        departamento: cells[1].innerText.trim(),
+                        horas_extras: cells[2].innerText.trim(),
+                        monto_pago: cells[3].innerText.trim(),
+                    });
+                }
+            });
+
+            document.getElementById('datos_json').value = JSON.stringify(data);
+
+            // Ahora sí envía el formulario sin prevenir el submit
+            e.target.submit();
+        });
+
+
+    </script>
+
 </body>
 
 </html>
@@ -237,16 +344,19 @@ document.getElementById('btnFiltrar').addEventListener('click', function (e) {
 
 
     .container {
-    width: 40%; /* Ajusta el ancho para hacer la card más pequeña */
-    max-width: 800px; /* Limita el ancho máximo */
-    margin-top: 100px;
-    padding: 20px 40px;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-    margin-left: auto;
-    margin-right: auto;
-}
+        width: 40%;
+        /* Ajusta el ancho para hacer la card más pequeña */
+        max-width: 800px;
+        /* Limita el ancho máximo */
+        margin-top: 100px;
+        padding: 20px 40px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 900px
+    }
 
 
 
@@ -269,29 +379,32 @@ document.getElementById('btnFiltrar').addEventListener('click', function (e) {
     }
 
     .btn {
-    background-color: #0B4F6C;
-    color: white;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px;
-    margin-right: 10px; /* Espacio entre los botones */
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-}
+        background-color: #0B4F6C;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        margin-right: 10px;
+        /* Espacio entre los botones */
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
 
-.btn-secondary {
-    background-color: #555; /* Gris para el botón "Devolver" */
-    color: white;
-}
+    .btn-secondary {
+        background-color: #555;
+        /* Gris para el botón "Devolver" */
+        color: white;
+    }
 
-.btn:hover {
-    background-color: #0E5D6A;
-}
+    .btn:hover {
+        background-color: #0E5D6A;
+    }
 
-.btn-secondary:hover {
-    background-color: #444; /* Gris más oscuro para el hover */
-}
+    .btn-secondary:hover {
+        background-color: #444;
+        /* Gris más oscuro para el hover */
+    }
 
 
     .btn:active {
@@ -302,16 +415,23 @@ document.getElementById('btnFiltrar').addEventListener('click', function (e) {
 
     table {
         width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
         border-collapse: collapse;
         margin-top: 20px;
         border-radius: 8px;
         overflow: hidden;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-
     }
 
     th,
     td {
+        max-width: 150px;
+        /* limita ancho máximo de columna */
+        word-wrap: break-word;
+        /* quiebra palabras largas */
+        white-space: normal;
+        /* permite salto de línea */
         padding: 12px;
         text-align: center;
         font-size: 16px;
@@ -393,111 +513,119 @@ document.getElementById('btnFiltrar').addEventListener('click', function (e) {
 
 
 
-.button-group {
-    display: flex;
-    justify-content: space-between;  /* Alinea a la izquierda, usa center o space-between si prefieres */
-    align-items: center;  /* Alineación vertical */
-    gap: 15px;  /* Espaciado entre los botones */
-    margin-bottom: 20px;
-}
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+        /* Alinea a la izquierda, usa center o space-between si prefieres */
+        align-items: center;
+        /* Alineación vertical */
+        gap: 15px;
+        /* Espaciado entre los botones */
+        margin-bottom: 20px;
+    }
 
-.button-group form {
-    display: inline-block;
-}
-
-
-.filter-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px; /* Espacio entre los elementos */
-    align-items: center;
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
-    max-width: 600px;
-    margin: auto;
-    justify-content: center;
-    
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-width: 200px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
-}
-
-label {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 5px;
-}
-
-select {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 2px solidrgb(15, 15, 15);
-    border-radius: 5px;
-    background: #f9f9f9;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-}
-
-select:hover {
-    border-color: #a88c4a;
-}
-
-select:focus {
-    outline: none;
-    border-color: #805d24;
-    box-shadow: 0 0 5px rgba(200, 150, 60, 0.6);
-}
-
-/* Botón estilizado */
-.btn {
-    background-color: #0E5D6A;
-    color: white;
-    padding: 10px 15px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn:hover {
-    background-color: #0E5D6A;
-}
+    .button-group form {
+        display: inline-block;
+    }
 
 
-.form-container {
-    display: flex;
-    justify-content: start;
-     /* Centra el contenido horizontalmente */
-    align-items: center;
+    .filter-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        /* Espacio entre los elementos */
+        align-items: center;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+        max-width: 600px;
+        margin: auto;
+        justify-content: center;
+
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-width: 200px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+    }
+
+    label {
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    select {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 2px solidrgb(15, 15, 15);
+        border-radius: 5px;
+        background: #f9f9f9;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    select:hover {
+        border-color: #a88c4a;
+    }
+
+    select:focus {
+        outline: none;
+        border-color: #805d24;
+        box-shadow: 0 0 5px rgba(200, 150, 60, 0.6);
+    }
+
+    /* Botón estilizado */
+    .btn {
+        background-color: #0E5D6A;
+        color: white;
+        padding: 10px 15px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #0E5D6A;
+    }
+
+
+    .form-container {
+        display: flex;
+        justify-content: start;
+        /* Centra el contenido horizontalmente */
+        align-items: center;
         /* Centra el contenido verticalmente */
-     width: 100%;
-    /* Asegura que el contenedor ocupe todo el ancho disponible */
-}
-.filter-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px; /* Espacio entre los elementos */
-    align-items: center;
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
-    max-width: 600px; /* Tamaño máximo para la card */
-    margin: auto;
-    justify-content: center;
-    width: 80%; /* Reducción de ancho para que la card sea más pequeña */
-}
+        width: 100%;
+        /* Asegura que el contenedor ocupe todo el ancho disponible */
+    }
+
+    .filter-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        /* Espacio entre los elementos */
+        align-items: center;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+        max-width: 600px;
+        /* Tamaño máximo para la card */
+        margin: auto;
+        justify-content: center;
+        width: 80%;
+        /* Reducción de ancho para que la card sea más pequeña */
+    }
 </style>
 
 </html>

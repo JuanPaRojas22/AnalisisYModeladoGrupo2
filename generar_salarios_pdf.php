@@ -1,7 +1,18 @@
 <?php
 ob_start(); // Inicia el búfer de salida para evitar problemas con las cabeceras
 
-require 'conexion.php';
+// Conexión a la base de datos
+// Parámetros de conexión
+$host = "accespersoneldb.mysql.database.azure.com";
+$user = "adminUser";
+$password = "admin123+";
+$dbname = "gestionEmpleados";
+$port = 3306;
+
+// Ruta al certificado CA para validar SSL
+$ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
+
+
 require_once 'fpdf/fpdf.php'; // Incluir la librería FPDF
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -17,6 +28,18 @@ $id_usuario = $_SESSION['id_usuario'];
 
 // Consulta para obtener la suma total de salarios activos
 $query = "SELECT SUM(salario_neto) AS monto_total_salarios FROM planilla";
+// Inicializamos mysqli
+$conn = mysqli_init();
+
+// Configuramos SSL
+mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
+mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
+
+
+// Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
+if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
+    die("Error de conexión: " . mysqli_connect_error());
+}
 $result = mysqli_query($conn, $query);
 
 if ($result) {

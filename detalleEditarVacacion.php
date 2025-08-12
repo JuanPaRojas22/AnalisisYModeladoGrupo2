@@ -13,8 +13,9 @@ $UsuarioDAO = new UsuarioDAOSImpl();
 $Historial_Solicitud_Modificacion_VacacionesDAO = new Historial_Solicitud_Modificacion_VacacionesDAOSImpl();
 
 // Verifica si el parámetro 'id' está presente en la URL
-if (isset($_GET['id'])) {
-    $id_historial_solicitud_modificacion = $_GET['id'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
+    $id_historial_solicitud_modificacion = (int) $_POST['id'];
+
 
     // Obtiene el id del usuario de la vacacion actual
     $id_usuario = $Historial_Solicitud_Modificacion_VacacionesDAO->getUserByIdHistorialSolicitudModificacion($id_historial_solicitud_modificacion);
@@ -30,10 +31,10 @@ if (isset($_GET['id'])) {
         echo "Usuario no encontrado.";
         exit;
     }
-} else {
-    echo "ID de usuario no proporcionado.";
-    exit;
-}
+    } else {
+        echo "ID de usuario no proporcionado.";
+        exit;
+    }
 
 ?>
 
@@ -65,12 +66,7 @@ if (isset($_GET['id'])) {
     <![endif]-->
 
 </head>
-
 <body>
-
-
-        
-
 <section id="main-content">
         <section class="wrapper site-min-height">
             <!-- Botón para generar el PDF -->
@@ -79,18 +75,18 @@ if (isset($_GET['id'])) {
             <div class="container">
                 <h1>Solicitud de Modificación de Vacaciones</h1>
                 <div class="btn-container-wrapper">
-                    <form method="get" action="EditarVacaciones.php" accept-charset="UTF-8">
-                        <input type="hidden" name="id_usuario" value="<?php echo $user['id_usuario']; ?>">
+                    <form method="post" action="EditarVacaciones.php">
                         <button type="submit" class="btn-container"><i class="bi bi-arrow-return-left"></i></button>
                     </form>
+
                 <div>
                             
                 <a href="procesarEditarVacacion.php?id=<?php echo $id_historial_solicitud_modificacion; ?>&accion=aprobar" class="btn-aprove" style="background-color: #147964; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
-    <i class="bi bi-check-circle-fill"></i>
-</a>                
-<a href="procesarEditarVacacion.php?id=<?php echo $id_historial_solicitud_modificacion; ?>&accion=rechazar" class="btn-decline" style="background-color: #C64A4A; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
-    <i class="bi bi-x-square-fill"></i>
-</a>
+                    <i class="bi bi-check-circle-fill"></i>
+                </a>                
+                <a href="procesarEditarVacacion.php?id=<?php echo $id_historial_solicitud_modificacion; ?>&accion=rechazar" class="btn-decline" style="background-color: #C64A4A; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
+                    <i class="bi bi-x-square-fill"></i>
+                </a>
                     
                 </div>
 

@@ -1,14 +1,18 @@
 <?php
-
-// Verifica si el usuario está autenticado
-if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
-    $nombre = $_SESSION['nombre'];  // Obtener el nombre del usuario
-    $username = $_SESSION['username'];
-    $id_rol = $_SESSION['id_rol'];     // Obtener el ID del rol
-    $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'] : 'assets/img/default-profile.png'; // Imagen de perfil
-
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
+// Verifica si el usuario está autenticado
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+    $nombre = $_SESSION['nombre'];
+    $username = $_SESSION['username'];
+    $id_rol = $_SESSION['id_rol'];
+    $direccion = $_SESSION['direccion_imagen'] ?? 'assets/img/default-profile.png';
+} else {
+    header("Location: login.php");
+    exit();
+}
 
 // Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
@@ -16,40 +20,41 @@ $user = "adminUser";
 $password = "admin123+";
 $dbname = "gestionEmpleados";
 $port = 3306;
-
-// Ruta al certificado CA para validar SSL
 $ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
 
 // Inicializamos mysqli
 $conn = mysqli_init();
-
-// Configuramos SSL
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
 mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
-
-// Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
+// Intentamos conectar
 if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
     die("Error de conexión: " . mysqli_connect_error());
 }
 
-// Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
 
-//echo "Conectado correctamente con SSL.";
+// Consulta: Cantidad de aportes no leídos
+$queryAportes = "SELECT COUNT(*) AS aporte FROM aportes WHERE aporte = 0";
+$resultAportes = $conn->query($queryAportes);
+$rowAportes = $resultAportes->fetch_assoc();
+$aporte = $rowAportes['aporte'];
 
-// Consulta para obtener el número de nuevos aportes
-$query = "SELECT COUNT(*) AS aporte FROM aportes WHERE aporte = 0";  // Ajusta la tabla y condición según tu estructura
-$result = $conn->query($query);
-
-// Obtener el número de nuevos aportes
-$row = $result->fetch_assoc();
-$aporte = $row['aporte'];
-
-// Cerrar la conexión
-
-
+// Consulta: Notificaciones no leídas para el usuario actual
+$notificacion = 0;
+if (isset($_SESSION['id_usuario'])) {
+    $id_usuario = $_SESSION['id_usuario'];
+    $queryNotif = "SELECT COUNT(*) AS sin_leer FROM notificaciones WHERE id_usuario = ? AND leida = 0";
+    $stmtNotif = $conn->prepare($queryNotif);
+    $stmtNotif->bind_param("i", $id_usuario);
+    $stmtNotif->execute();
+    $stmtNotif->bind_result($sin_leer);
+    $stmtNotif->fetch();
+    $notificacion = $sin_leer;
+    $stmtNotif->close();
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -61,6 +66,7 @@ $aporte = $row['aporte'];
     <meta name="author" content="Dashboard">
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 
 
@@ -78,19 +84,15 @@ $aporte = $row['aporte'];
     <link href="assets/css/style-responsive.css" rel="stylesheet">
 
     <script src="assets/js/chart-master/Chart.js"></script>
+    <link rel="stylesheet" href="assets/css/aportes.css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    
-    <!--<style>
-         td, div {
-        color: black !important;
-    }
-    -->
-</style>
+
+    </style>
 
 
     </style>
@@ -99,10 +101,10 @@ $aporte = $row['aporte'];
 <body>
     <section id="container">
         <header class="header black-bg">
-            <div class="sidebar-toggle-box">
+            <div class="sidebar-toggle-box " style="color: white !important;">
                 <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
             </div>
-            <a href="index.php" class="logo"><b>Access Perssonel</b></a>
+            <a href="index.php" class="logo text-decoration-none"><b>Access Perssonel</b></a>
             <div class="nav notify-row" id="top_menu">
                 <!-- Notifications -->
                 <ul class="nav top-menu">
@@ -145,13 +147,10 @@ $aporte = $row['aporte'];
                         </a>
                     </li>
 
-
-
-
-                    <li id="header_profile_bar" class="dropdown">
-                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                    <li id="header_profile_bar" class="dropdown position-relative">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#" style="text-decoration: none;">
                             <i class="fa fa-user"></i>
-                            <span class="badge bg-theme">1</span>
+                            
                         </a>
                         <ul class="dropdown-menu extended inbox">
                             <div class="notify-arrow notify-arrow-green"></div>
@@ -159,10 +158,11 @@ $aporte = $row['aporte'];
                                 <p class="green">User Profile</p>
                             </li>
                             <li><a href="profile.php"><i class="fa fa-cogs"></i> Edit Profile</a></li>
-                            <li><a href="settings.php"><i class="fa fa-cogs"></i> Settings</a></li>
                             <li><a href="logout.php"><i class="fa fa-sign-out"></i> Logout</a></li>
                         </ul>
                     </li>
+
+
 
                 </ul>
 
@@ -188,7 +188,7 @@ $aporte = $row['aporte'];
                                 <h5 class="centered">Bienvenido, <?php echo $_SESSION['nombre']; ?>!</h5>
                             </li>
 
-                           <!-- <li class="mt">
+                            <!-- <li class="mt">
                                 <a class="active" href="index.php">
                                     <i class="fa fa-dashboard"></i>
                                     <span>Dashboard</span>
@@ -196,7 +196,7 @@ $aporte = $row['aporte'];
                             </li>-->
 
 
-                            
+
 
                             <!--
                             <li class="sub-menu">
@@ -209,27 +209,27 @@ $aporte = $row['aporte'];
                                     <li><a href="gallery.html">Gallery</a></li>                           
                                 </ul>
                             </li>-->
-                            
+
                             <li class="sub-menu">
-                            <?php if (in_array($id_rol, [1, 2])): ?>
-                                <a href="javascript:;">
-                                    <i class="fa fa-desktop"></i>
-                                    <span>Reportes</span>
-                                </a>
-                                <ul class="sub">
-                                    <li><a href="reporte_ins.php"><i class="bi bi-person-badge-fill"></i>
-                                            INS</a></li>
-                                    <li><a href="reporte_ccss.php"><i class="bi bi-heart-fill"></i>CCSS</a></li>
-                                    <li><a href="reporte_bac.php"><i class="bi bi-credit-card"></i>
-                                            BAC</a></li>
-                                    <li><a href="ver_reporte.php"><i class="bi bi-brightness-low-fill"></i>
-                                            Vacaciones</a></li>
-                                    <li><a href="reporte_hacienda.php"><i class="bi bi-bank"></i>Hacienda</a></li>
-                                    <li><a href="Dias_Feriados.php"><i class="bi bi-calendar3"></i>
-                                    Feriados</a></li>
-                                    <li><a href="historial_salarios.php"><i class="bi bi-calendar3"></i>
-                                    Historial Salarios</a></li>
-                                </ul>
+                                <?php if (in_array($id_rol, [2])): ?>
+                                    <a href="javascript:;">
+                                        <i class="fa fa-desktop"></i>
+                                        <span>Reportes</span>
+                                    </a>
+                                    <ul class="sub">
+                                        <li><a href="reporte_ins.php"><i class="bi bi-person-badge-fill"></i>
+                                                INS</a></li>
+                                        <li><a href="reporte_ccss.php"><i class="bi bi-heart-fill"></i>CCSS</a></li>
+                                        <li><a href="reporte_bac.php"><i class="bi bi-credit-card"></i>
+                                                BAC</a></li>
+                                        <li><a href="ver_reporte.php"><i class="bi bi-brightness-low-fill"></i>
+                                                Vacaciones</a></li>
+                                        <li><a href="reporte_hacienda.php"><i class="bi bi-bank"></i>Hacienda</a></li>
+                                        <li><a href="Dias_Feriados.php"><i class="bi bi-calendar3"></i>
+                                                Feriados</a></li>
+                                        <li><a href="historial_salarios.php"><i class="bi bi-calendar3"></i>
+                                                Historial Salarios</a></li>
+                                    </ul>
                                 <?php endif; ?>
                             </li>
                             <?php if (in_array($id_rol, [1, 2])): ?>
@@ -243,7 +243,12 @@ $aporte = $row['aporte'];
                                     <ul class="sub">
                                         <li><a href="VerPlanilla.php"><i
                                                     class="bi bi-journal-bookmark"></i><span>Planilla</span></a></li>
-                                        <li><a href="admin_beneficios.php"><i class="bi bi-gift"></i>Beneficios</a></li>
+
+
+                                        <?php if ($_SESSION['id_rol'] == 2): ?>
+                                            <li><a href="admin_beneficios.php"><i
+                                                        class="bi bi-gift"></i><span>Beneficios</span></a></li>
+                                        <?php endif; ?>
 
                                         <?php if ($_SESSION['id_rol'] == 2): ?>
                                             <li><a href="MostrarUsuarios.php"><i
@@ -254,33 +259,81 @@ $aporte = $row['aporte'];
                                             <a href="vacaciones.php" class="nav-link">
                                                 <i class="bi bi-gear"></i> Vacaciones
                                             </a>
-                                    
+
                                         </li>
-                                <li><a href="registrarAusencia.php"><i class="bi bi-person-dash"></i>Registrar Ausencia</a>
-                                </li>
-                                <li><a href="reporteAusencias.php"><i class="bi bi-bar-chart"></i>Reporte de Ausencias</a>
-                                </li>
-                                <li><a href="reporteAntiguedad.php"><i class="bi bi-clock-history"></i>Reporte de
-                                        Antigüedad</a></li>
-                                <li><a href="registrarBeneficiosAntiguedad.php"><i class="bi bi-gift"></i>Registrar Antigüedad</a></li>
-                            <?php endif; ?>
+                                        <li><a href="registrarAusencia.php"><i class="bi bi-person-dash"></i>Registrar
+                                                Ausencia</a>
+                                        </li>
+
+                                        <?php if ($_SESSION['id_rol'] == 2): ?>
+                                            <li><a href="reporteAusencias.php"><i class="bi bi-bar-chart"></i><span>Reporte de
+                                                        Ausencias</span></a></li>
+                                        <?php endif; ?>
+
+                                        <?php if ($_SESSION['id_rol'] == 2): ?>
+                                            <li><a href="reporteAntiguedad.php"><i class="bi bi-clock-history"></i><span>Reporte
+                                                        de
+                                                        Antigüedad</span></a></li>
+                                        <?php endif; ?>
+
+
+                                        <li><a href="registrarBeneficiosAntiguedad.php"><i class="bi bi-gift"></i>Registrar
+                                                Antigüedad</a></li>
+                                    <?php elseif ($id_rol == 3): ?>
+                                        <!-- Mostrar solo Planilla para rol 3 -->
+                                        <li>
+                                            <a href="VerPlanilla.php">
+                                                <i class="bi bi-journal-bookmark"></i>
+                                                <span>Mi Información</span>
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+
+
+                                </ul>
+                            <li><a href="beneficios.php"><i class="bi bi-sun"></i><span>Beneficios</span></a></li>
+                            <li>
+                                <a href="SolicitarVacacion.php">
+                                    <i class="bi bi-sun"></i>
+                                    <span>Vacaciones</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="ver_feriados.php">
+                                    <i class="bi bi-calendar-event"></i>
+                                    <span>Feriados</span>
+                                </a>
+                            </li>
+
+                            <li><a href="historial_salarios.php"><i class="bi bi-calendar3"></i>
+                                    Historial Salarios</a></li>
+                            <li><a href="preguntasfreq.php"><i class="bi bi-question-octagon-fill"></i>Preguntas
+                                    Frecuentes</a></li>
+                            <li>
+                                <a href="ver_notificaciones.php" style="position: relative;">
+                                    <i class="bi bi-bell-fill"></i> Notificaciones
+                                    <?php if ($notificacion > 0): ?>
+                                        <span class="badge bg-danger" style="position: absolute; top: 0; right: -5px;">
+                                            <?php echo $notificacion; ?>
+                                        </span>
+                                    <?php endif; ?>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="tutorial.php">
+                                    <i class="bi bi-question-circle-fill"></i>
+                                    <span>Tutorial</span>
+                                </a>
+                            </li>
+
+                            </a>
 
                         </ul>
-                        <li><a href="beneficios.php"><i class="bi bi-sun"></i><span>Beneficios</span></a></li>
-                        <li>
-                            <a href="SolicitarVacacion.php">
-                                <i class="bi bi-sun"></i>
-                                <span>Vacaciones</span>
-                            </a>
                         </li>
-                        <li><a href="preguntasfreq.php"><i class="bi bi-question-octagon-fill"></i>Preguntas Frecuentes</a></li>
 
-                </ul>
-                </li>
+                        <!-- <li><a href="preguntasfreq.php"><i class="bi bi-question-octagon-fill"></i>Preguntas Frecuentes</a></li>-->
 
-                <!-- <li><a href="preguntasfreq.php"><i class="bi bi-question-octagon-fill"></i>Preguntas Frecuentes</a></li>-->
-
-                </li>
+                        </li>
 
 
                 </ul>
@@ -288,28 +341,35 @@ $aporte = $row['aporte'];
             </div>
         </aside>
 
-        <!-- Botón flotante 
         <button class="boton-flotante" onclick="abrirModal()">✨ Hacer un aporte</button>
-        -->
 
-        <!-- Modal -->
-       <!--  <div id="miModal" class="modal">
-            <div class="modal-contenido">
-                <span class="cerrar" onclick="cerrarModal()">&times;</span>
-                <h2>Haz tu aporte</h2>
-                <form id="enviarAporte">
-                    <input type="text" value=" echo $_SESSION['nombre']; ?>" readonly>
-                    <textarea  id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
-                    <button type="submit" class="enviar">Enviar</button>
-                </form>
-            </div>
-        </div>-->
-                    
         <!-- Footer -->
         <footer class="site-footer">
             <div class="text-center">2025 - Acces Perssonel</div>
         </footer>
     </section>
+
+    <!-- Modal aporte -->
+    <div id="modalAporteContainer">
+        <div id="miModal" class="modal">
+            <div class="modal-contenido">
+                <div id="mensajeAporte"
+                    style="display: none; background-color:rgba(131, 199, 125, 0.78); color:rgb(236, 247, 239); border: 1px solid #c3e6cb; padding: 10px; border-radius: 4px; margin-top: 10px; font-weight: bold;">
+                </div>
+
+                <span class="cerrar" onclick="cerrarModal()">&times;</span>
+                <h2>Haz tu aporte</h2>
+                <form id="enviarAporte">
+                    <div><input type="text" value="<?= $_SESSION['nombre']; ?>" readonly></div>
+                    <div>
+                        <textarea id="aporte" name="aporte" placeholder="Escribe tu aporte..." required></textarea>
+                    </div>
+                    <div><button type="submit" class="enviar">Enviar</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
 
     <script>
@@ -328,11 +388,15 @@ $aporte = $row['aporte'];
                 document.getElementById("miModal").style.display = "none";
             }
 
-           // Función para enviar el aporte
+            // Función para enviar el aporte
             function enviarAporte(event) {
                 event.preventDefault();
-                const mensaje = document.getElementById("aporte").value;
-                console.log("Enviando aporte:", mensaje);
+                const mensaje = document.getElementById("aporte").value.trim();
+
+                if (mensaje.length === 0) {
+                    mostrarToastModal("Por favor escribe un mensaje antes de enviar.", true);
+                    return;
+                }
 
                 const formData = new FormData();
                 formData.append("aporte", mensaje);
@@ -343,12 +407,22 @@ $aporte = $row['aporte'];
                 })
                     .then(res => res.json())
                     .then(data => {
-                        console.log(data); // para ver qué responde PHP
                         if (data.success) {
-                            alert("¡Aporte enviado con éxito!");
+                            const mensajeDiv = document.getElementById("mensajeAporte");
+                            mensajeDiv.textContent = "¡Aporte enviado con éxito!";
+                            mensajeDiv.style.display = "block";
+
                             document.getElementById("aporte").value = "";
-                            cerrarModal(); // Cierra el modal tras enviar
-                        } else {
+
+                            // Esperar 1 segundo antes de cerrar el modal para que el usuario vea el mensaje
+                            setTimeout(() => {
+                                mensajeDiv.style.display = "none"; // opcional: ocultar después
+                                cerrarModal();
+                                location.reload();
+
+                            }, 3000);
+                        }
+                        else {
                             alert("Error: " + data.message);
                         }
                     })
@@ -356,6 +430,7 @@ $aporte = $row['aporte'];
                         alert("Error al enviar el aporte");
                         console.error(err);
                     });
+
             }
 
             // Verificar si los elementos existen antes de agregar los eventos
@@ -383,6 +458,7 @@ $aporte = $row['aporte'];
         });
 
     </script>
+
 
 </body>
 

@@ -3,6 +3,8 @@ session_start();
 require 'conexion.php';
 require 'template.php';
 
+$conn = obtenerConexion(); 
+
 if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['id_rol'])) {
     header("Location: login.php");
     exit;
@@ -10,11 +12,12 @@ if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['id_rol'])) {
 
 $id_usuario = $_SESSION['id_usuario'];
 $id_rol = $_SESSION['id_rol'];
-$id_departamento = $_SESSION['id_departamento'] ?? null;
+$id_departamento = $_SESSION['id_departamento'] ?? null; // Importante para el rol 1
 $departamento_filtro = $_GET['departamento'] ?? '';
 
 $departamentos = [];
-if ($id_rol == 2) { // Solo el admin general puede ver todos los departamentos
+if ($id_rol == 2) {
+    // Admin master: obtiene todos los departamentos para el filtro
     $query_dept = "SELECT id_departamento, nombre FROM departamento";
     $result_dept = $conn->query($query_dept);
     while ($row = $result_dept->fetch_assoc()) {
@@ -23,13 +26,17 @@ if ($id_rol == 2) { // Solo el admin general puede ver todos los departamentos
 }
 
 if ($id_rol == 3) {
-    // Empleado: ve solo sus propios registros
+    // Empleado: ve solo sus pagos
     $sql = "SELECT * FROM pago_planilla WHERE id_usuario = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id_usuario);
 
 } elseif ($id_rol == 1) {
-    // Admin normal: ve los empleados de su mismo departamento
+    // Admin normal: ve pagos de su propio departamento
+    if (empty($id_departamento)) {
+        die("Error: No se ha encontrado el departamento para este administrador.");
+    }
+
     $sql = "SELECT p.*, u.nombre, u.apellido
             FROM pago_planilla p
             JOIN usuario u ON p.id_usuario = u.id_usuario
@@ -38,28 +45,28 @@ if ($id_rol == 3) {
     $stmt->bind_param("i", $id_departamento);
 
 } elseif ($id_rol == 2) {
-    // Admin general: puede filtrar por departamento
-    $sql = "SELECT p.*, u.nombre, u.apellido, d.Nombre AS departamento
-            FROM pago_planilla p
-            JOIN usuario u ON p.id_usuario = u.id_usuario
-            JOIN departamento d ON u.id_departamento = d.id_departamento";
-
     if (!empty($departamento_filtro)) {
-        $sql .= " WHERE d.id_departamento = ?";
+        $sql = "SELECT p.*, u.nombre, u.apellido, d.nombre AS departamento
+                FROM pago_planilla p
+                JOIN usuario u ON p.id_usuario = u.id_usuario
+                JOIN departamento d ON u.id_departamento = d.id_departamento
+                WHERE d.id_departamento = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $departamento_filtro);
     } else {
+        $sql = "SELECT p.*, u.nombre, u.apellido, d.nombre AS departamento
+                FROM pago_planilla p
+                JOIN usuario u ON p.id_usuario = u.id_usuario
+                JOIN departamento d ON u.id_departamento = d.id_departamento";
         $stmt = $conn->prepare($sql);
     }
 }
 
 $stmt->execute();
 $result = $stmt->get_result();
+
 ?>
 
-$stmt->execute();
-$result = $stmt->get_result();
-?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -67,6 +74,7 @@ $result = $stmt->get_result();
     <meta charset="UTF-8">
     <title>Historial de Pagos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="aportes.css" />
     <style>
         body {
             background-color: #f7f7f7;

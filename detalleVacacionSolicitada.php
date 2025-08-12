@@ -8,8 +8,9 @@ include "template.php";
 $UsuarioDAO = new UsuarioDAOSImpl();
 $VacacionDAO = new VacacionDAOSImpl(); 
 // Verifica si el parámetro 'id' está presente en la URL
-if (isset($_GET['id'])) {
-    $id_vacacion = $_GET['id'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
+    $id_vacacion = (int) $_POST['id'];
+
     // Obtiene el id del usuario de la vacacion actual
     $id_usuario_vacacion = $VacacionDAO->getUserByIdVacacion($id_vacacion);
 

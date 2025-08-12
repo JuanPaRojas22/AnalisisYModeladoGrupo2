@@ -16,6 +16,13 @@ $HistorialVacacionDAO = new historialVacacionesDAOSImpl();
 $user_id = $_SESSION['id_usuario'];
 $diasRestantes = $HistorialVacacionDAO->getDiasRestantes($user_id);
 
+// Obtener los dias reservados por el empleado para que no pueda solicitar vacaciones en esas fechas
+$fechasReservadas = $VacacionDAO->getFechasReservadasEmpleado($user_id);
+
+$rangosFechas = array_map(function ($row) {
+    return ["from" => $row['fecha_inicio'], "to" => $row['fecha_fin']];
+}, $fechasReservadas);
+
 $mensaje_exito = "";
 $errores = [];
 
@@ -31,25 +38,30 @@ function getDiasEntreFechas($inicio, $fin) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Capturar datos del formulario
     $fecha_inicio = $_POST['fecha_inicio'] ?? '';
     $fecha_fin = $_POST['fecha_fin'] ?? '';
     $razon = $_POST['razon'] ?? '';
     $observaciones = $_POST['observaciones'] ?? '';
-    $diasTomado = $_POST['diasTomado'] ?? '';
     $medio_dia = $_POST['medio_dia'] ?? '';
+    $seleccion_medio_dia = isset($_POST['seleccion_medio_dia']);
 
-    // Validaciones básicas
-    if (empty($fecha_inicio)) $errores[] = "La fecha de inicio es obligatoria.";
-    if (empty($fecha_fin)) $errores[] = "La fecha de fin es obligatoria.";
-    if (empty($diasTomado)) $errores[] = "Los días tomados son obligatorios.";
-    if (empty($razon)) $errores[] = "La razón es obligatoria.";
-    if (empty($observaciones)) $errores[] = "Las observaciones son obligatorias.";
+    // Validar campos obligatorios
+    if (empty($fecha_inicio))
+        $errores[] = "La fecha de inicio es obligatoria.";
+    if (empty($fecha_fin))
+        $errores[] = "La fecha de fin es obligatoria.";
+    if (empty($razon))
+        $errores[] = "La razón es obligatoria.";
+    if (empty($observaciones))
+        $errores[] = "Las observaciones son obligatorias.";
 
     // Calcular días del rango
     $dias_rango = getDiasEntreFechas($fecha_inicio, $fecha_fin);
+    $total_dias = count($dias_rango);
 
-    // Si el usuario aún no ha seleccionado el día de medio día y el número es decimal
-    if (empty($medio_dia) && fmod(floatval($diasTomado), 1) !== 0.0 && empty($errores)) {
+    // Preguntar por medio día si el rango es mayor a 1 día y aún no se ha seleccionado
+    if (!$seleccion_medio_dia && $total_dias > 0 && empty($errores)) {
         ?>
         <!DOCTYPE html>
         <html lang="es">
@@ -73,28 +85,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </head>
         <body>
         <div class="container">
-            <h2>¿Cuál de estos días será medio día?</h2>
+            <h2>¿Deseas que alguno de estos días sea medio día?</h2>
             <form method="POST">
                 <input type="hidden" name="fecha_inicio" value="<?= htmlspecialchars($fecha_inicio) ?>">
                 <input type="hidden" name="fecha_fin" value="<?= htmlspecialchars($fecha_fin) ?>">
                 <input type="hidden" name="razon" value="<?= htmlspecialchars($razon) ?>">
                 <input type="hidden" name="observaciones" value="<?= htmlspecialchars($observaciones) ?>">
-                <input type="hidden" name="diasTomado" value="<?= htmlspecialchars($diasTomado) ?>">
+                <input type="hidden" name="seleccion_medio_dia" value="1">
                 <div class="form-group">
                     <?php foreach ($dias_rango as $dia): ?>
                         <div>
                             <input type="radio" name="medio_dia" value="<?= $dia ?>" required> <?= $dia ?>
                         </div>
                     <?php endforeach; ?>
+                    <div>
+                        <input type="radio" name="medio_dia" value="omitir" required> No, todos completos
+                    </div>
                 </div>
-                <button type="submit" class="btn">Confirmar</button>
-                <a href="SolicitarMedioDia.php" class="btn">Cancelar</a>
+                <button type="submit" class="btn">Continuar</button>
             </form>
         </div>
         </body>
         </html>
         <?php
         exit;
+    }
+
+    // Calcular días tomados
+    if (!empty($medio_dia) && $medio_dia !== 'omitir') {
+        $diasTomado = $total_dias - 1 + 0.5;
+    } else {
+        $diasTomado = $total_dias;
     }
 
     // Validar días disponibles
@@ -106,18 +127,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errores)) {
         $id_historial = $HistorialVacacionDAO->getHistorialVacaciones($user_id);
         $fechacreacion = date("Y-m-d H:i:s");
-        $usuariocreacion = $_SESSION['username'] ?? "admin";
+        $usuariocreacion = "admin";
         $fechamodificacion = date("Y-m-d H:i:s");
-        $usuariomodificacion = $_SESSION['username'] ?? "admin";
-        $id_estado_vacacion = 1; // Pendiente
+        $usuariomodificacion = "admin";
+        $id_estado_vacacion = 1;
         $SolicitudEditar = 'No';
 
-        // Registrar la vacación
-        $VacacionDAO->IngresarVacacion(
+        $resultado = $VacacionDAO->IngresarVacacion(
             $razon,
             $diasTomado,
             $fecha_inicio,
-            $observaciones . ($medio_dia ? " | Medio día: $medio_dia" : ""),
+            $observaciones . (!empty($medio_dia) && $medio_dia !== 'omitir' ? " | Medio día: $medio_dia" : ""),
             $user_id,
             $id_historial,
             $fechacreacion,
@@ -129,17 +149,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fecha_fin
         );
 
-        // Descontar los días directamente en la base de datos
-        include 'conexion.php'; 
-        $diasTomadoFloat = floatval($diasTomado);
-        $sql = "UPDATE historial_vacaciones SET DiasRestantes = DiasRestantes - ? WHERE id_usuario = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("di", $diasTomadoFloat, $user_id);
-        $stmt->execute();
-        $stmt->close();
+        if (!empty($resultado)) {
+            $errores = array_merge($errores, $resultado);
+        } else {
+            // Descontar los días directamente en la base de datos
+            include 'conexion.php'; 
+            $diasTomadoFloat = floatval($diasTomado);
+            $sql = "UPDATE historial_vacaciones SET DiasRestantes = DiasRestantes - ? WHERE id_usuario = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("di", $diasTomadoFloat, $user_id);
+            $stmt->execute();
+            $stmt->close();
 
-        $mensaje_exito = "Solicitud de vacaciones ingresada correctamente.";
-        $diasRestantes = $HistorialVacacionDAO->getDiasRestantes($user_id);
+            $mensaje_exito = "Solicitud de vacaciones ingresada correctamente.";
+            $diasRestantes = $HistorialVacacionDAO->getDiasRestantes($user_id);
+        }
     }
 }
 ?>
@@ -148,8 +172,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Solicitar Medio Día de Vacación</title>
+  <title>Solicitar Vacaciones con Medio Día</title>
   <link href="assets/css/bootstrap.css" rel="stylesheet">
+  <!-- Flatpickr CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <style>
     body { font-family: 'Open Sans', sans-serif; background: #f9f9f9; }
     .container { background: #fff; padding: 40px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 50%; margin: 80px auto; }
@@ -163,6 +189,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     .btn:hover { background-color: #147964; }
     .alert { margin-bottom: 20px; }
+    .flatpickr-day.reservado {
+        background-color: red !important;
+        color: white !important;
+        border-radius: 50%;
+    }
   </style>
 </head>
 <body>
@@ -188,16 +219,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="POST">
       <div class="form-group">
-        <label for="fecha_inicio">Fecha de inicio:</label>
-        <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" required>
+        <label for="fecha_inicio_solicitud">Fecha Inicio:</label>
+        <input type="text" id="fecha_inicio_solicitud" name="fecha_inicio" class="form-control" placeholder="Ingrese la fecha de inicio" autofocus>
       </div>
       <div class="form-group">
-        <label for="fecha_fin">Fecha de fin:</label>
-        <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" required>
-      </div>
-      <div class="form-group">
-        <label for="diasTomado">Días a tomar (puede ser decimal, ej: 3.5):</label>
-        <input type="number" step="0.5" min="0.5" id="diasTomado" name="diasTomado" class="form-control" required>
+        <label for="fecha_fin_solicitud">Fecha Fin:</label>
+        <input type="text" id="fecha_fin_solicitud" name="fecha_fin" class="form-control" placeholder="Ingrese la fecha de fin">
       </div>
       <div class="form-group">
         <label for="razon">Razón:</label>
@@ -212,7 +239,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <a href="SolicitarVacacion.php" class="btn">Volver</a>
       </div>
     </form>
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        // Fechas reservadas
+        const fechasReservadas = <?php echo json_encode($rangosFechas); ?>;
+
+        function configurarCalendario(idCampo) {
+            flatpickr(idCampo, {
+                dateFormat: "Y-m-d",
+                disable: fechasReservadas.map(date => ({ from: date, to: date })),
+                onDayCreate: function (dObj, dStr, fp, dayElem) {
+                    const date = dayElem.dateObj.toISOString().split('T')[0];
+                    fechasReservadas.forEach(range => {
+                        if (date >= range.from && date <= range.to) {
+                            dayElem.classList.add("reservado");
+                            dayElem.style.pointerEvents = "none";
+                            dayElem.style.opacity = "0.5";
+                        }
+                    });
+                }
+            });
+        }
+
+        configurarCalendario("#fecha_inicio_solicitud");
+        configurarCalendario("#fecha_fin_solicitud");
+    </script>
   </div>
 </body>
 </html>
-

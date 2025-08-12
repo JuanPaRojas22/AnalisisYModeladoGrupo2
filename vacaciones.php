@@ -387,18 +387,23 @@ mysqli_set_charset($conn, "utf8mb4");
                             if ($result->num_rows > 0) {
                                 while ($row = $result->fetch_assoc()) {
                                     echo "<tr>
-                                <td>" . $row['Nombre'] . "</td>
-                                <td>" . $row['Apellido'] . "</td>
-                                <td>" . $row['Departamento'] . "</td>
-                                <td>" . $row['fecha_inicio'] . "</td>
-                                <td>" . $row['diasTomado'] . "</td>
-                                <td>" . $row['DiasRestantes'] . "</td>
-                                <td>" . $row['descripcion'] . "</td>
-                                <td>" . $row['razon'] . "</td>
-                                <td><a class='btn btn-success' style='font-size: 2.5rem;' href='detalleVacacion.php?id=" . $row['id_vacacion'] . "' >
-                                    <i class='bi bi-file-earmark-person'></i> 
-                                </a></td>
-                              </tr>";
+                                            <td>" . $row['Nombre'] . "</td>
+                                            <td>" . $row['Apellido'] . "</td>
+                                            <td>" . $row['Departamento'] . "</td>
+                                            <td>" . $row['fecha_inicio'] . "</td>
+                                            <td>" . $row['diasTomado'] . "</td>
+                                            <td>" . $row['DiasRestantes'] . "</td>
+                                            <td>" . $row['descripcion'] . "</td>
+                                            <td>" . $row['razon'] . "</td>
+                                            <td>
+                                                <form action='detalleVacacion.php' method='post' >
+                                                    <input type='hidden' name='id' value='" . $row['id_vacacion'] . "'>
+                                                    <button type='submit' class='btn btn-success' style='font-size: 2.5rem;'>
+                                                        <i class='bi bi-file-earmark-person'></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                          </tr>";
                                 }
                             } else {
                                 echo "<tr><td colspan='9' class='no-records'>No se encontraron registros.</td></tr>";

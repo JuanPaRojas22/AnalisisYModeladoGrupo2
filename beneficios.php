@@ -43,6 +43,11 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Invitado';
 include 'template.php';
 ?>
 
+<head>
+    <title>Beneficios Medicos</title>
+    <link rel="stylesheet" href="aportes.css" />
+</head>
+
 <!-- Contenedor Principal -->
 <div class="container mt-4">
     <h2 class="text-center">Mis Beneficios Médicos Activos</h2>

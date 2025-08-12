@@ -12,12 +12,21 @@ $VacacionDAO = new VacacionDAOSImpl();
 $Historial_Solicitud_Modificacion_VacacionesDAO = new Historial_Solicitud_Modificacion_VacacionesDAOSImpl();
 $HistorialVacacionDAO = new historialVacacionesDAOSImpl();
 
+$user_id = $_SESSION['id_usuario'];
+
+// Obtener los dias reservados por el empleado para que no pueda solicitar vacaciones en esas fechas
+$fechasReservadas = $VacacionDAO->getFechasReservadasEmpleado($user_id);
+
+$rangosFechas = array_map(function ($row) {
+    return ["from" => $row['fecha_inicio'], "to" => $row['fecha_fin']];
+}, $fechasReservadas);
+
 //var_dump($_SESSION);
 // Por si el id viene en la URL, guardarlo en sesión
-if (isset($_GET['id'])) {
-    $_SESSION['id_vacacion'] = $_GET['id'];
-
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
+    $_SESSION['id_vacacion'] = $_POST['id'];
 }
+
 
 // Se Verifica que id_vacacion esté disponible en sesión
 if (!isset($_SESSION['id_vacacion'])) {
@@ -59,7 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($id_usuario)) $errores[] = "El usuario es requerido."; // 
     if (empty($razon_modificacion)) $errores[] = "La razón de la modificación es requerida.";
 
-
     // Si hay errores, mostrarlos
     if (!empty($errores)) {
         var_dump($id_vacacion);
@@ -69,24 +77,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo "<script>alert('$error');</script>";
             
         }
-    } else {
-            
+    } else { 
             $Historial_Solicitud_Modificacion_VacacionesDAO->IngresarHistorialSolicitudModificacionVacaciones
             ($id_vacacion, $fecha_solicitud, $fecha_resolucion, $fecha_inicio, $fecha_fin, $dias_solicitados, 
             $id_usuario, $usuario_aprobador, $razon_modificacion, $estado); 
-            echo "<script>alert('Solicitud de edicion de vacaciones ingresada correctamente.');</script>";
-            
-        
+            echo "<script>alert('Solicitud de edicion de vacaciones ingresada correctamente.');</script>";             
     }
 }    
 
-
 ?>
-
 
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <style>
     body {
         font-family: 'Ruda', sans-serif;
@@ -106,7 +111,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         position: relative;
         text-align: center;
     }
-
     h1 {
         color: #333;
         margin-bottom: 20px;
@@ -209,6 +213,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     td, div {
             color: black !important;
         }
+        .flatpickr-day.reservado {
+                            background-color: red !important;
+                            color: white !important;
+                            border-radius: 50%;
+                        }
 </style>
 
 
@@ -222,11 +231,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <hr>
 
     <form action="SolicitarEdicionVacacion.php" method="post">
-        <label for="fecha_inicio"><b>Fecha de Inicio</b></label>
-        <input type="date" placeholder="Ingrese la fecha de inicio" name="fecha_inicio" required>
+        
+        <label for="fecha_inicio_solicitud">Fecha Inicio:</label>
+                                <input type="text" id="fecha_inicio_solicitud" name="fecha_inicio" class="form-control"
+                                    placeholder="Ingrese la fecha de inicio" autofocus>
 
-        <label for="fecha_fin"><b>Fecha de Fin</b></label>
-        <input type="date" placeholder="Ingrese la fecha de fin" name="fecha_fin" required>
+                                <label for="fecha_fin_solicitud">Fecha Fin:</label>
+                                <input type="text" id="fecha_fin_solicitud" name="fecha_fin" class="form-control"
+                                    placeholder="Ingrese la fecha de fin" autofocus>
 
         <label for="dias_solicitados"><b>Días Tomados</b></label>
         <input type="number" placeholder="Ingrese los días tomados" name="dias_solicitados" required>
@@ -239,6 +251,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         
     </form>
+     <!-- Flatpickr JS -->
+                        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+                        <script>
+                            // Fechas reservadas (ejemplo)
+                            const fechasReservadas = <?php echo json_encode($rangosFechas); ?>;
+
+                            function configurarCalendario(idCampo) {
+                                flatpickr(idCampo, {
+                                    dateFormat: "Y-m-d",
+                                    disable: fechasReservadas.map(date => ({ from: date, to: date })), // Se deshabilitan fechas reservadas
+                                    onDayCreate: function (dObj, dStr, fp, dayElem) {
+                                        const date = dayElem.dateObj.toISOString().split('T')[0];
+                                        // Verificar si la fecha está reservada
+                                        fechasReservadas.forEach(range => {
+                                            if (date >= range.from && date <= range.to) {
+                                                dayElem.classList.add("reservado");
+                                                dayElem.style.pointerEvents = "none";  // Bloquea la selección
+                                                dayElem.style.opacity = "0.5";  // Hace que parezcan deshabilitadas
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+
+
+                            configurarCalendario("#fecha_inicio_solicitud");
+                            configurarCalendario("#fecha_fin_solicitud");
+                        </script>
 </div>
 
 </body>

@@ -1,8 +1,12 @@
 <?php
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
- 
-session_start();
+
 require 'conexion.php';
 require "template.php";
  
@@ -19,8 +23,7 @@ if (!isset($_SESSION['id_usuario'])) {
  
 <head>
  
- 
- 
+
 </head>
  
 <body>
@@ -237,6 +240,7 @@ if (!isset($_SESSION['id_usuario'])) {
                 textarea
                 {
                 width: 100%;
+                color: black;!important         /* color del texto */
                 padding: 10px;
                 font-size: 16px;
                 margin-bottom: 20px;
@@ -268,7 +272,7 @@ if (!isset($_SESSION['id_usuario'])) {
                     cursor: pointer;
                     transition: all 0.3s ease;
                     text-align: center;
-                    color: black;
+                    color: black !important;
                 }
  
                 select:hover {

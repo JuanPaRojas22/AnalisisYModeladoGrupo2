@@ -356,7 +356,7 @@ class VacacionDAOSImpl implements VacacionDAO
         }
 
         // Se comprueba que los días totales de las fechas solicitadas no sean mayores o menores a la cantidad de días solicitados
-        if ($dias_solicitados != $diasTomado) {
+        if (!($diasTomado == $dias_solicitados || $diasTomado == $dias_solicitados - 0.5)) {
             $errores[] = "La cantidad de días solicitados no coincide con las fechas ingresadas";
         }
 
@@ -456,7 +456,7 @@ class VacacionDAOSImpl implements VacacionDAO
     $stmtVacaciones = $function_conn->prepare(
         "SELECT fecha_inicio, fecha_fin
         FROM vacacion
-        WHERE id_usuario = ? AND (id_estado_vacacion = 1 OR id_estado_vacacion = 2)"
+        WHERE id_usuario = ? AND (id_estado_vacacion = 1 OR id_estado_vacacion = 2 OR id_estado_vacacion = 4)"
     );
     $stmtVacaciones->bind_param("i", $id_usuario);
     $stmtVacaciones->execute();
@@ -523,7 +523,7 @@ class VacacionDAOSImpl implements VacacionDAO
     }
 
     public function contarVacacionesPorEstado($id_usuario, $estados) {
-        global $conn;
+       $conn = $this->conn;
         $placeholders = implode(',', array_fill(0, count($estados), '?'));
         $types = str_repeat('i', count($estados) + 1);
         $params = array_merge([$id_usuario], $estados);
@@ -534,10 +534,6 @@ class VacacionDAOSImpl implements VacacionDAO
         $result = $stmt->get_result()->fetch_assoc();
         return $result['total'] ?? 0;
     }
-
-
-
-
 
 }   
 

@@ -29,7 +29,7 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 mysqli_set_charset($conn, "utf8mb4");
 
 // Obtener preguntas frecuentes (últimas 5)
-$query_faq = "SELECT * FROM preguntasfrecuentes ORDER BY fecha_creacion DESC LIMIT 5";
+$query_faq = "SELECT id_faq, pregunta, respuesta, respondida FROM preguntasfrecuentes ORDER BY fecha_creacion DESC LIMIT 5";
 $result_faq = $conn->query($query_faq);
 
 // Obtener preguntas de los usuarios
@@ -52,9 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_usuario'])) {
 }
 
 // Procesar el formulario de agregar pregunta frecuente
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && isset($_POST['respuesta_faq'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['form_type']) && $_POST['form_type'] == 'add_faq') {
     $pregunta_faq = $_POST['pregunta_faq'];
-    $respuesta_faq = $_POST['respuesta_faq'];
+    $respuesta_faq = ''; // o NULL
     $fecha_creacion = date('Y-m-d');
 
     $query = "INSERT INTO preguntasfrecuentes (pregunta, respuesta, fecha_creacion) VALUES (?, ?, ?)";
@@ -65,11 +65,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
 
     $result_faq = $conn->query($query_faq);
 }
+
+// Procesar respuesta a una FAQ existente
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['responder_faq'])) {
+    $id_faq = $_POST['id_faq'];
+    $respuesta = $_POST['respuesta_faq'];
+
+    $query = "UPDATE preguntasfrecuentes SET respuesta = ?, respondida = 1 WHERE id_faq = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("si", $respuesta, $id_faq);
+    $stmt->execute();
+    $stmt->close();
+
+    // Actualizar resultados
+    $result_faq = $conn->query($query_faq);
+}
+
+
+
 ?>
 
 
 <!DOCTYPE html>
-<html lang="es">
 
 <head>
     <meta charset="UTF-8">
@@ -81,11 +98,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
     <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
     <link href="assets/css/style-responsive.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
         body {
-            font-family: 'Ruda', sans-serif;
+
             background-color: #f7f7f7;
             margin: 0;
             padding: 0;
@@ -175,13 +191,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
             color: black;
         }
 
-.modal-contenido {
-    width: 60%;
-    max-width: 700px;
-    background-color: white;
-    border-radius: 8px;
-    padding: 20px;
-}
+        .modal-contenido {
+            color: #000000;
+            width: 60%;
+            max-width: 700px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            /* CENTRADO */
+            margin: auto;
+        }
+
+        #faqModal {
+            display: none;
+            /* ya tienes esto en JS */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            /* ocupa toda la pantalla */
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* fondo semi-transparente */
+            justify-content: center;
+            /* centra horizontal */
+            align-items: center;
+            /* centra vertical */
+            z-index: 1050;
+            /* para estar arriba */
+        }
+
 
         h3 {
             font-size: 32px;
@@ -190,12 +229,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
             /* Midnight Green for titles */
         }
 
-.preguntas-titulo {
-    font-size: 28px;
-    font-weight: bold;
-    color: #137266; /* Pine Green */
-}
-</style>
+        .preguntas-titulo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #137266;
+            /* Pine Green */
+        }
+    </style>
 </head>
 
 <body>
@@ -213,14 +253,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
                                 data-bs-toggle="collapse" data-bs-target="#collapse<?php echo $i; ?>" aria-expanded="true"
                                 aria-controls="collapse<?php echo $i; ?>">
                                 <?php echo $row['pregunta']; ?>
+                                <?php if (!empty($row['respuesta'])): ?>
+                                    <span class="badge bg-success ms-2">Respondida ✅</span>
+                                <?php else: ?>
+                                    <span class="badge bg-danger ms-2">Sin responder ❌</span>
+                                <?php endif; ?>
                             </button>
                         </h2>
                         <div id="collapse<?php echo $i; ?>"
                             class="accordion-collapse collapse <?php echo ($i === 0) ? 'show' : ''; ?>"
                             aria-labelledby="heading<?php echo $i; ?>" data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
-                                <?php echo $row['respuesta']; ?>
+                                <?php if ($row['respondida'] == 1): ?>
+                                    <?= nl2br(htmlspecialchars($row['respuesta'])); ?>
+                                <?php else: ?>
+                                    <?php if (isset($_SESSION['id_rol']) && in_array($_SESSION['id_rol'], [1, 2])): ?>
+                                        <form method="POST">
+                                            <input type="hidden" name="id_faq" value="<?= $row['id_faq']; ?>">
+                                            <div class="mb-2">
+                                                <label for="respuesta_faq" class="form-label">Agregar Respuesta:</label>
+                                                <textarea id="respuesta_faq" name="respuesta_faq" class="form-control"
+                                                    required></textarea>
+                                            </div>
+                                            <button type="submit" name="responder_faq" class="btn btn-success btn-sm">Enviar
+                                                Respuesta</button>
+                                        </form>
+                                    <?php endif; ?>
+
+                                <?php endif; ?>
                             </div>
+
                         </div>
                     </div>
                     <?php $i++; ?>
@@ -229,7 +291,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
                 <p>No hay preguntas frecuentes disponibles.</p>
             <?php endif; ?>
             <!-- Botón para abrir el modal de agregar FAQ -->
-            <button id="openFaqModalBtn" class="btn btn-primary mt-3" style="background-color: #09354b;">Agregar Pregunta</button>
+            <button id="openFaqModalBtn" class="btn btn-primary mt-3" style="background-color: #09354b;">Agregar
+                Pregunta</button>
+
 
             <!-- Modal para agregar FAQ -->
             <div id="faqModal" class="modal">
@@ -237,18 +301,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
                     <span class="close" id="closeFaqModalBtn">&times;</span>
                     <h2>Agregar Pregunta Frecuente</h2>
                     <form method="POST">
+                        <input type="hidden" name="form_type" value="add_faq">
                         <div class="mb-3">
                             <label for="pregunta_faq" class="form-label">Pregunta:</label>
                             <textarea name="pregunta_faq" id="pregunta_faq" class="form-control" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="respuesta_faq" class="form-label">Respuesta:</label>
-                            <textarea name="respuesta_faq" id="respuesta_faq" class="form-control" required></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Guardar</button>
                     </form>
                 </div>
             </div>
+
 
 
         </div>
@@ -267,7 +329,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
     const closeFaqBtn = document.getElementById('closeFaqModalBtn');
 
     openFaqBtn.addEventListener('click', () => {
-        faqModal.style.display = 'block';
+        faqModal.style.display = 'flex';
     });
 
     closeFaqBtn.addEventListener('click', () => {
@@ -280,6 +342,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pregunta_faq']) && iss
         }
     });
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 <?php
 // Cerrar la conexión a la base de datos
 $conn->close();
