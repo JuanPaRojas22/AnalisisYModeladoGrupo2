@@ -54,10 +54,7 @@ $stmt->close();
   <div class="text-start mb-4">
     <div class="boton-volver-container">
       <a href="admin_beneficios.php" class="btn-volver">Volver a Administración</a>
-      <form action="set_usuario.php" method="POST" style="display:inline-block;margin-left:10px;">
-        <input type="hidden" name="clear_focus" value="1">
-        <button type="submit" class="btn-volver" style="background:#6c757d;">Salir del modo admin</button>
-      </form>
+      
     </div>
   </div>
 
