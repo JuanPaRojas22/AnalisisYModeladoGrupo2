@@ -1,86 +1,74 @@
 <?php
 session_start();
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    header("Location: login.php");
-    exit;
+    header("Location: login.php"); exit;
 }
-// Parámetros de conexión
+
+// Conexión MySQL (SSL)
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
 $password = "admin123+";
 $dbname = "gestionEmpleados";
 $port = 3306;
 
-// Ruta al certificado CA para validar SSL
-$ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
-
-// Inicializamos mysqli
 $conn = mysqli_init();
-
-// Configuramos SSL
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
 mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
-
-// Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
 if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
     die("Error de conexión: " . mysqli_connect_error());
 }
-
-// Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
 
-// Obtener todos los usuarios con sus beneficios
-$sql = "SELECT u.id_usuario, CONCAT(u.nombre, ' ', u.apellido) AS nombre, COUNT(b.id_beneficio) AS total_beneficios
-FROM usuario u
-LEFT JOIN beneficios b ON u.id_usuario = b.id_usuario
-GROUP BY u.id_usuario, u.nombre, u.apellido
-ORDER BY u.nombre";
-
+// Traer usuarios + conteo de beneficios
+$sql = "SELECT u.id_usuario,
+               CONCAT(u.nombre, ' ', u.apellido) AS nombre,
+               COUNT(b.id_beneficio) AS total_beneficios
+        FROM usuario u
+        LEFT JOIN beneficios b ON u.id_usuario = b.id_usuario
+        GROUP BY u.id_usuario, u.nombre, u.apellido
+        ORDER BY u.nombre";
 $resultado = $conn->query($sql);
 $usuarios = [];
-
-while ($row = $resultado->fetch_assoc()) {
-    $usuarios[] = $row;
-}
+while ($row = $resultado->fetch_assoc()) { $usuarios[] = $row; }
 
 include 'template.php';
 ?>
 <link rel="stylesheet" href="aportes.css" />
-<div class="container mt-5">
-    <h2 class="titulo-beneficios text-center">Gestión de Beneficios</h2>
 
+<div class="container mt-5">
+  <h2 class="titulo-beneficios text-center">Gestión de Beneficios</h2>
 
   <div class="row">
     <?php foreach ($usuarios as $usuario): ?>
-        <div class="col-md-6">
-            <div class="usuario-card">
-                <h4 class="usuario-nombre"><?= htmlspecialchars($usuario['nombre']) ?></h4>
-                <p class="usuario-texto"><strong>Total de Beneficios:</strong> <?= $usuario['total_beneficios'] ?></p>
+      <div class="col-md-6">
+        <div class="usuario-card">
+          <h4 class="usuario-nombre"><?= htmlspecialchars($usuario['nombre']) ?></h4>
+          <p class="usuario-texto"><strong>Total de Beneficios:</strong> <?= (int)$usuario['total_beneficios'] ?></p>
 
-                <div class="usuario-botones">
-                    <!-- Ver Beneficios -->
-                    <form action="set_usuario.php" method="POST" style="display:inline;">
-                        <input type="hidden" name="usuario_id" value="<?= (int)$usuario['id_usuario'] ?>">
-                        <button type="submit" class="btn btn-primary"
-                            style="background-color: #0C536C; border-color: #0C536C;">
-                            Ver Beneficios
-                        </button>
-                    </form>
+          <div class="usuario-botones">
+            <!-- Ver Beneficios (fija el foco y redirige a detalles) -->
+            <form action="set_usuario.php" method="POST" style="display:inline;">
+              <input type="hidden" name="usuario_id" value="<?= (int)$usuario['id_usuario'] ?>">
+              <input type="hidden" name="next" value="detalles">
+              <button type="submit" class="btn btn-primary" style="background-color:#0C536C;border-color:#0C536C;">
+                Ver Beneficios
+              </button>
+            </form>
 
-                    <!-- Agregar Beneficio -->
-                    <form action="set_usuario.php" method="POST" style="display:inline;">
-                        <input type="hidden" name="usuario_id" value="<?= (int)$usuario['id_usuario'] ?>">
-                        <input type="hidden" name="accion" value="agregar">
-                        <button type="submit" class="btn btn-success ms-2"
-                            style="background-color: #147665; border-color: #147665;">
-                            Agregar Beneficio
-                        </button>
-                    </form>
-                </div>
-            </div>
+            <!-- Agregar Beneficio (fija el foco y redirige) -->
+            <form action="set_usuario.php" method="POST" style="display:inline;">
+              <input type="hidden" name="usuario_id" value="<?= (int)$usuario['id_usuario'] ?>">
+              <input type="hidden" name="accion" value="agregar">
+              <button type="submit" class="btn btn-success ms-2" style="background-color:#147665;border-color:#147665;">
+                Agregar Beneficio
+              </button>
+            </form>
+          </div>
         </div>
+      </div>
     <?php endforeach; ?>
+  </div>
 </div>
 
 
