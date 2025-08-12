@@ -57,7 +57,6 @@ include 'template.php';
             </form>
 
   
-<<<<<<< HEAD
            <!-- Agregar Beneficio (como antes: abre el modal en esta misma página) -->
 <button type="button"
         class="btn btn-success ms-2"
@@ -66,12 +65,6 @@ include 'template.php';
   Agregar Beneficio
 </button>
 
-=======
-            <button class="btn btn-success ms-2" onclick="abrirModalAgregar(<?= $usuario['id_usuario'] ?>)"
-                            style="background-color: #147665; border-color: #147665;">
-                            Agregar Beneficio
-                        </button>
->>>>>>> parent of 6c20bd2 (Merge pull request #192 from JuanPaRojas22/Maria-Paula)
           </div>
         </div>
       </div>
@@ -356,22 +349,6 @@ include 'template.php';
         document.getElementById("beneficioModal").style.display = "none";
     }
 
-<<<<<<< HEAD
-  // Toast simple
-  function mostrarToast(mensaje, error = false) {
-    const toast = document.getElementById("mensaje-toast");
-    toast.innerText = mensaje;
-    toast.style.backgroundColor = error ? "#dc3545" : "#28a745";
-    toast.classList.add("mostrar");
-    toast.style.display = "block";
-    setTimeout(() => {
-      toast.classList.remove("mostrar");
-      toast.style.display = "none";
-    }, 3000);
-  }
-</script>
- 
-=======
     // Manejo del formulario para agregar beneficio
     document.getElementById("beneficioForm").addEventListener("submit", function (event) {
         event.preventDefault(); // Evitar recarga de página
@@ -413,4 +390,3 @@ include 'template.php';
     }
 
 </script>
->>>>>>> parent of 6c20bd2 (Merge pull request #192 from JuanPaRojas22/Maria-Paula)
