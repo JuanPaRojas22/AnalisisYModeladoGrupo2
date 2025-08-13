@@ -1,51 +1,52 @@
 <?php
-ob_start();  // Inicia el búfer de salida
+ob_start();
 session_start();
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 include "template.php";
 
-
-// Parámetros de conexión
+// Conexión a DB
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
 $password = "admin123+";
 $dbname = "gestionEmpleados";
 $port = 3306;
-
-// Ruta al certificado CA para validar SSL
 $ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
 
-// Inicializamos mysqli
 $conn = mysqli_init();
-
-// Configuramos SSL
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
 mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
-
-// Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
 if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
     die("Error de conexión: " . mysqli_connect_error());
 }
-
-// Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
-// Instancia el DAO
+
+// Instancia DAO
 $UsuarioDAO = new UsuarioDAOSImpl();
-$user_id = $_POST['id_usuario'] ?? $_SESSION['id_usuario']; // <-- CAMBIO
-if ($_SESSION['id_rol'] != 2 && $user_id != $_SESSION['id_usuario']) { // <-- CAMBIO
-    echo "No tienes permisos para editar a este usuario.";
-    exit;
+
+// Obtener ID del usuario a editar (POST primero, luego GET, si no sesión)
+$user_id = $_POST['id_usuario'] ?? $_GET['id_usuario'] ?? $_SESSION['id_usuario'];
+
+// Validar permisos
+if ($_SESSION['id_rol'] != 2 && $user_id != $_SESSION['id_usuario']) {
+    die("No tienes permisos para editar a este usuario.");
 }
+
+// Obtener datos del usuario
 $user = $UsuarioDAO->getUserById($user_id);
 if (!$user) {
-    echo "Usuario no encontrado.";
-    exit;
+    die("Usuario no encontrado.");
 }
 
+// Datos para selects
 $ocupaciones = $conn->query("SELECT id_ocupacion, nombre_ocupacion FROM ocupaciones ORDER BY nombre_ocupacion");
 $nacionalidades = $conn->query("SELECT id_nacionalidad, pais FROM nacionalidades ORDER BY pais");
 
+// Historial vacaciones
+$historial_vacaciones = $UsuarioDAO->getHistorialVacacionesByUserId($user_id);
+$dias_vacaciones = $historial_vacaciones['DiasRestantes'] ?? 0;
+
+// Procesar formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = trim($_POST['nombre']);
     $apellido = trim($_POST['apellido']);
@@ -56,229 +57,141 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $numero_telefonico = trim($_POST['numero_telefonico']);
     $direccion_domicilio = trim($_POST['direccion_domicilio']);
     $estado_civil = trim($_POST['estado_civil']);
-    $sexo = isset($_POST['sexo']) ? trim($_POST['sexo']) : '';
+    $sexo = $_POST['sexo'] ?? '';
     $id_ocupacion = trim($_POST['id_ocupacion']);
     $id_nacionalidad = trim($_POST['id_nacionalidad']);
-    $direccion_imagen = $_FILES['direccion_imagen'];
+    $dias_vacaciones = (int)($_POST['dias_vacaciones'] ?? 0);
     $errores = [];
 
     if (!filter_var($correo_electronico, FILTER_VALIDATE_EMAIL)) {
         $errores[] = "Correo electrónico no válido.";
     }
 
-    // Mantener imagen actual si no se sube nueva
+    // Imagen
     $direccion_imagen = $user['direccion_imagen'];
     if (isset($_FILES['direccion_imagen']) && $_FILES['direccion_imagen']['error'] === UPLOAD_ERR_OK) {
         $direccion_imagen = file_get_contents($_FILES['direccion_imagen']['tmp_name']);
     }
 
-    $resultado = $UsuarioDAO->updateUser($nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_ocupacion, $id_nacionalidad, $user_id);
-    // Actualizar días de vacaciones
-    $dias_vacaciones = isset($_POST['dias_vacaciones']) ? (int) $_POST['dias_vacaciones'] : 0;
+    if (empty($errores)) {
+        $resultado = $UsuarioDAO->updateUser(
+            $nombre, $apellido, $fecha_nacimiento, $fecha_ingreso,
+            $correo_electronico, $username, $numero_telefonico, $direccion_imagen,
+            $sexo, $estado_civil, $direccion_domicilio, $id_ocupacion, $id_nacionalidad, $user_id
+        );
 
-    $stmt = $conn->prepare("UPDATE historial_vacaciones SET DiasRestantes = ? WHERE id_usuario = ?");
-    $stmt->bind_param("ii", $dias_vacaciones, $user_id);
-    $stmt->execute();
-
-    if ($stmt->affected_rows === 0) {
-        // Si no existe registro de vacaciones, insertar uno nuevo
-        $stmt->close();
-        $stmt = $conn->prepare("INSERT INTO historial_vacaciones (id_usuario,DiasRestantes) VALUES (?, ?)");
-        $stmt->bind_param("ii", $user_id, $dias_vacaciones);
+        // Actualizar historial vacaciones
+        $stmt = $conn->prepare("UPDATE historial_vacaciones SET DiasRestantes = ? WHERE id_usuario = ?");
+        $stmt->bind_param("ii", $dias_vacaciones, $user_id);
         $stmt->execute();
+        if ($stmt->affected_rows === 0) {
+            $stmt->close();
+            $stmt = $conn->prepare("INSERT INTO historial_vacaciones (id_usuario,DiasRestantes) VALUES (?, ?)");
+            $stmt->bind_param("ii", $user_id, $dias_vacaciones);
+            $stmt->execute();
+        }
+        $stmt->close();
+
+        if ($resultado === true) {
+            $_SESSION['mensaje_exito'] = "Usuario modificado con éxito✅.";
+            // Recargar la página del mismo usuario
+            header("Location: editarPerfil.php?id_usuario=" . $user_id);
+            exit;
+        } else {
+            $errores[] = $resultado;
+        }
     }
 
-    $stmt->close();
-
-
-    if ($resultado === true) {
-        $_SESSION['nombre'] = $nombre;
-        $_SESSION['apellido'] = $apellido;
-        $_SESSION['direccion_imagen'] = $direccion_imagen;
-        $_SESSION['mensaje_exito'] = "Usuario modificado con éxito✅.";
-        header("Location: profile.php?");
-        exit;
-    } else {
-        echo "<p style='color: red;'>$resultado</p>"; // Mostrar el error
+    if (!empty($errores)) {
+        foreach ($errores as $error) {
+            echo "<p style='color:red;'>$error</p>";
+        }
     }
 
+    // Refrescar datos del usuario después de actualización
+    $user = $UsuarioDAO->getUserById($user_id);
 }
-// Obtener usuario desde la sesión
-//$user_id = $_SESSION['id_usuario'];
-//$user = $UsuarioDAO->getUserById($user_id);
-
-if (!$user) {
-    echo "Usuario no encontrado.";
-    exit;
-}
-
-// Obtener vacaciones e historial
-$vacaciones = $UsuarioDAO->getVacacionesByUserId($user_id);
-$historial_vacaciones = $UsuarioDAO->getHistorialVacacionesByUserId($user_id);
-$dias_vacaciones = $historial_vacaciones['dias_disponibles'] ?? 0;
-
 
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Perfil</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
-            /* Blanco cremoso */
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            max-width: 800px;
-            color: black;
-            background-color: #f7f7f7;
-            /* Blanco cremoso */
-            margin: 50px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
-        }
-
-        .card {
-            padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
-        }
-
-        .img-fluid {
-            border-radius: 50%;
-            width: 150px;
-            height: 150px;
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .btn {
-            display: inline-block;
-            background-color: #0B4F6C;
-            color: white;
-            padding: 12px 20px;
-            font-size: 18px;
-            font-weight: bold;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            margin-left: 50%;
-            transition: background-color 0.3s;
-            cursor: pointer;
-            border: none;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editar Perfil</title>
+<style>
+/* Tus estilos aquí */
+</style>
 </head>
-
 <body>
+<div class="container">
+    <h3>Editar Usuario</h3>
+    <form action="editarPerfil.php" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($user['id_usuario']); ?>">
 
+        <label>Nombre:</label>
+        <input type="text" name="nombre" value="<?php echo htmlspecialchars($user['nombre']); ?>" required>
 
-    <div class="container">
+        <label>Apellido:</label>
+        <input type="text" name="apellido" value="<?php echo htmlspecialchars($user['apellido']); ?>" required>
 
-        <div class="row">
-            <div class="col-md-3 text-center">
-                <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" class="img-fluid">
+        <label>Fecha de Nacimiento:</label>
+        <input type="date" name="fecha_nacimiento" value="<?php echo htmlspecialchars($user['fecha_nacimiento']); ?>" required>
 
-            </div>
-            <div class="col-md-9">
-                <h3>Información del Usuario</h3>
-                <form action="editarPerfil.php?id=<?php echo $user['id_usuario']; ?>" method="post"
-                    enctype="multipart/form-data">
-                    <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($user['id_usuario']); ?>">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label>Nombre:</label>
-                            <input type="text" class="form-control" name="nombre"
-                                value="<?php echo htmlspecialchars($user['nombre']); ?>" required>
-                            <label>Apellido:</label>
-                            <input type="text" class="form-control" name="apellido"
-                                value="<?php echo htmlspecialchars($user['apellido']); ?>" required>
-                            <label>Fecha de Nacimiento:</label>
-                            <input type="date" class="form-control" name="fecha_nacimiento"
-                                value="<?php echo htmlspecialchars($user['fecha_nacimiento']); ?>" required>
-                            <label>Fecha de Ingreso:</label>
-                            <input type="date" class="form-control" name="fecha_ingreso"
-                                value="<?php echo htmlspecialchars($user['fecha_ingreso']); ?>" required>
-                            <label>Correo Electrónico:</label>
-                            <input type="email" class="form-control" name="correo_electronico"
-                                value="<?php echo htmlspecialchars($user['correo_electronico']); ?>" required>
-                            <div class="form-group">
-                                <label for="direccion_imagen">Foto de perfil:</label>
-                                <input type="file" class="form-control" id="direccion_imagen" name="direccion_imagen"
-                                    accept="image/*">
-                            </div>
+        <label>Fecha de Ingreso:</label>
+        <input type="date" name="fecha_ingreso" value="<?php echo htmlspecialchars($user['fecha_ingreso']); ?>" required>
 
-                        </div>
-                        <div class="col-md-6">
-                            <label>Usuario:</label>
-                            <input type="text" class="form-control" name="username"
-                                value="<?php echo htmlspecialchars($user['username']); ?>" required>
-                            <label>Teléfono:</label>
-                            <input type="text" class="form-control" name="numero_telefonico"
-                                value="<?php echo htmlspecialchars($user['numero_telefonico']); ?>" required>
-                            <label>Dirección:</label>
-                            <input type="text" class="form-control" name="direccion_domicilio"
-                                value="<?php echo htmlspecialchars($user['direccion_domicilio']); ?>" required>
-                            <label>Estado Civil:</label>
-                            <select name="estado_civil" class="form-control" required>
-                                <option value="">Seleccione estado civil</option>
-                                <option value="Soltero" <?php echo ($user['estado_civil'] == 'Soltero') ? 'selected' : ''; ?>>Soltero</option>
-                                <option value="Casado" <?php echo ($user['estado_civil'] == 'Casado') ? 'selected' : ''; ?>>Casado</option>
-                                <option value="Divorciado" <?php echo ($user['estado_civil'] == 'Divorciado') ? 'selected' : ''; ?>>Divorciado</option>
-                            </select>
-                            <label>Sexo:</label>
-                            <select name="sexo" class="form-control" required>
-                                <option value="M" <?php echo ($user['sexo'] == 'M') ? 'selected' : ''; ?>>M</option>
-                                <option value="F" <?php echo ($user['sexo'] == 'F') ? 'selected' : ''; ?>>F</option>
-                            </select>
-                            <label>Ocupación:</label>
-                            <select name="id_ocupacion" class="form-control">
-                                <?php while ($row = $ocupaciones->fetch_assoc()) {
-                                    $selected = ($row['id_ocupacion'] == $user['id_ocupacion']) ? 'selected' : '';
-                                    echo '<option value="' . $row['id_ocupacion'] . '" ' . $selected . '>' . $row['nombre_ocupacion'] . '</option>';
-                                } ?>
-                            </select>
-                            <label>Nacionalidad:</label>
-                            <select name="id_nacionalidad" class="form-control">
-                                <?php while ($row = $nacionalidades->fetch_assoc()) {
-                                    $selected = ($row['id_nacionalidad'] == $user['id_nacionalidad']) ? 'selected' : '';
-                                    echo '<option value="' . $row['id_nacionalidad'] . '" ' . $selected . '>' . $row['pais'] . '</option>';
-                                } ?>
-                            </select>
-                            <label>Días de Vacaciones Disponibles:</label>
-                            <input type="number" class="form-control" name="dias_vacaciones"
-                                value="<?php echo htmlspecialchars($dias_vacaciones); ?>" min="0">
+        <label>Correo Electrónico:</label>
+        <input type="email" name="correo_electronico" value="<?php echo htmlspecialchars($user['correo_electronico']); ?>" required>
 
-                        </div>
+        <label>Foto de perfil:</label>
+        <input type="file" name="direccion_imagen" accept="image/*">
 
-                    </div>
-            </div>
-            <button type="submit" class="btn"><i class="bi bi-arrow-clockwise"></i></button>
-            </form>
-        </div>
-    </div>
-    </div>
-    </div>
+        <label>Usuario:</label>
+        <input type="text" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required>
 
+        <label>Teléfono:</label>
+        <input type="text" name="numero_telefonico" value="<?php echo htmlspecialchars($user['numero_telefonico']); ?>" required>
 
+        <label>Dirección:</label>
+        <input type="text" name="direccion_domicilio" value="<?php echo htmlspecialchars($user['direccion_domicilio']); ?>" required>
+
+        <label>Estado Civil:</label>
+        <select name="estado_civil" required>
+            <option value="Soltero" <?php echo ($user['estado_civil']=='Soltero')?'selected':''; ?>>Soltero</option>
+            <option value="Casado" <?php echo ($user['estado_civil']=='Casado')?'selected':''; ?>>Casado</option>
+            <option value="Divorciado" <?php echo ($user['estado_civil']=='Divorciado')?'selected':''; ?>>Divorciado</option>
+        </select>
+
+        <label>Sexo:</label>
+        <select name="sexo" required>
+            <option value="M" <?php echo ($user['sexo']=='M')?'selected':''; ?>>M</option>
+            <option value="F" <?php echo ($user['sexo']=='F')?'selected':''; ?>>F</option>
+        </select>
+
+        <label>Ocupación:</label>
+        <select name="id_ocupacion">
+        <?php while($row = $ocupaciones->fetch_assoc()) {
+            $sel = ($row['id_ocupacion']==$user['id_ocupacion'])?'selected':'';
+            echo "<option value='{$row['id_ocupacion']}' $sel>{$row['nombre_ocupacion']}</option>";
+        } ?>
+        </select>
+
+        <label>Nacionalidad:</label>
+        <select name="id_nacionalidad">
+        <?php while($row = $nacionalidades->fetch_assoc()) {
+            $sel = ($row['id_nacionalidad']==$user['id_nacionalidad'])?'selected':'';
+            echo "<option value='{$row['id_nacionalidad']}' $sel>{$row['pais']}</option>";
+        } ?>
+        </select>
+
+        <label>Días de Vacaciones:</label>
+        <input type="number" name="dias_vacaciones" value="<?php echo htmlspecialchars($dias_vacaciones); ?>" min="0">
+
+        <button type="submit">Guardar Cambios</button>
+    </form>
+</div>
 </body>
-
 </html>
 
-<?php
-ob_end_flush();
-?>
+<?php ob_end_flush(); ?>
