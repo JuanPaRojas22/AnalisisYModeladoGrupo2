@@ -77,28 +77,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 }
-// Verifica si el parámetro 'id' está presente en la URL
-if (isset($_GET['id'])) {
-    $id_usuario = $_GET['id'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_usuario'])){
+$user = $UsuarioDAO->getUserById($id_usuario);
+$vacaciones = $UsuarioDAO->getVacacionesByUserId($id_usuario);
+$historial_vacaciones = $UsuarioDAO->getHistorialVacacionesByUserId($id_usuario);
 
-    // Obtiene los detalles del usuario por id
-    $user = $UsuarioDAO->getUserById($id_usuario);
-
-    // Obtiene las vacaciones del usuario actual
-    $vacaciones = $UsuarioDAO->getVacacionesByUserId($id_usuario);
-
-    // Obtiene los historiales de vacaciones del usuario actual
-    $historial_vacaciones = $UsuarioDAO->getHistorialVacacionesByUserId($id_usuario);
-
-
-
-    // Si el usuario no existe
-    if (!$user) {
-        echo "Usuario no encontrado.";
-        exit;
-    }
-} else {
-    echo "ID de usuario no proporcionado.";
+}else {
+    echo "Usuario no encontrado.";
     exit;
 }
 
