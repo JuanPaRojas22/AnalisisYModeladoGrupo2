@@ -74,7 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Leer el contenido del archivo y convertirlo en binario
             $direccion_imagen = file_get_contents($_FILES['direccion_imagen']['tmp_name']);
         } else {
-            echo "<script>alert('No se subió ningún archivo o ocurrió un error.');</script>";
         }
 
     if (empty($errores)) {
