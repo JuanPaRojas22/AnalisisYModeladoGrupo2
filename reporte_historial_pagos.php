@@ -2,7 +2,7 @@
 header('Content-Type: text/html; charset=utf-8');
 require_once 'fpdf/fpdf.php';
 
-// --- Conexión (igual a tu versión) ---
+// ========= Conexión Azure =========
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
 $password = "admin123+";
@@ -10,36 +10,45 @@ $dbname = "gestionEmpleados";
 $port = 3306;
 
 $ssl_ca = "/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem";
+
 $conn = mysqli_init();
 mysqli_ssl_set($conn, NULL, NULL, $ssl_ca, NULL, NULL);
 mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
-if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT)) {
+if (
+    !$conn->real_connect(
+        $host, $user, $password, $dbname, $port, NULL,
+        MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT
+    )
+) {
     die("Error de conexión: " . mysqli_connect_error());
 }
+
 mysqli_set_charset($conn, "utf8mb4");
 
-// --- Sesión y datos del usuario ---
+// ========= Sesión / Roles =========
 session_start();
-$id_rol          = $_SESSION['id_rol']         ?? null;
-$id_usuario_ses  = $_SESSION['id_usuario']     ?? null;
-$id_depto_sesion = $_SESSION['id_departamento']?? null;
+$id_rol          = $_SESSION['id_rol']          ?? null;
+$id_usuario_ses  = $_SESSION['id_usuario']      ?? null;
+$id_depto_sesion = $_SESSION['id_departamento'] ?? null;
 
-// --- Parámetros por POST (sin exponer en URL) ---
+// ========= Parámetros por POST (sin exponer en URL) =========
 $fecha_inicio = $_POST['fecha_inicio'] ?? '2000-01-01';
 $fecha_fin    = $_POST['fecha_fin']    ?? date('Y-m-d');
 
-// Para admin master opcionalmente viene vacío = todos
-$departamento_post = isset($_POST['departamento']) && $_POST['departamento'] !== ''
-    ? (int)$_POST['departamento']
-    : null;
+// Para compatibilidad: puede venir como "departamento" (rol 2) o "id_departamento" (rol 1)
+$departamento_post = null;
+if (isset($_POST['departamento']) && $_POST['departamento'] !== '') {
+    $departamento_post = (int)$_POST['departamento'];
+} elseif (isset($_POST['id_departamento']) && $_POST['id_departamento'] !== '') {
+    $departamento_post = (int)$_POST['id_departamento'];
+}
 
-// Para admin normal enviamos un flag para forzar su depto de sesión
-$forzar_depto_sesion = isset($_POST['forzar_departamento_sesion']);
-
-// ---- PDF helper classes (igual a tu versión, con Header/Footer) ----
-class PDF extends FPDF {
-    function Header() {
+// ========= PDF =========
+class PDF extends FPDF
+{
+    function Header()
+    {
         $pageWidth = $this->GetPageWidth();
         $logoWidth = 60;
         $logoX = ($pageWidth - $logoWidth) / 2;
@@ -51,12 +60,16 @@ class PDF extends FPDF {
         $this->Cell(0, 10, 'Generado el ' . date('d/m/Y'), 0, 1, 'C');
         $this->Ln(5);
     }
-    function Footer() {
+
+    function Footer()
+    {
         $this->SetY(-15);
         $this->SetFont('Arial', 'I', 10);
         $this->Cell(0, 10, 'Página ' . $this->PageNo(), 0, 0, 'C');
     }
-    function TableRow($label, $value) {
+
+    function TableRow($label, $value)
+    {
         $this->SetFont('Arial', 'B', 12);
         $this->Cell(50, 10, utf8_decode($label), 1, 0, 'L');
         $this->SetFont('Arial', '', 12);
@@ -64,17 +77,20 @@ class PDF extends FPDF {
     }
 }
 
-class GenerarReportePagos {
+class GenerarReportePagos
+{
     private $conn;
     public function __construct($conn) { $this->conn = $conn; }
 
-    public function getHistorialPagos($fecha_inicio, $fecha_fin, $id_usuario = null, $id_departamento = null) {
+    public function getHistorialPagos($fecha_inicio, $fecha_fin, $id_usuario = null, $id_departamento = null)
+    {
         $sql = "SELECT p.*, u.nombre, u.apellido, d.nombre AS departamento
                 FROM pago_planilla p
                 INNER JOIN usuario u ON p.id_usuario = u.id_usuario
                 INNER JOIN departamento d ON u.id_departamento = d.id_departamento
                 WHERE p.fecha_pago BETWEEN ? AND ?";
-        $types = "ss";
+
+        $types  = "ss";
         $params = [$fecha_inicio, $fecha_fin];
 
         if (!empty($id_usuario)) {
@@ -82,11 +98,13 @@ class GenerarReportePagos {
             $types .= "i";
             $params[] = $id_usuario;
         }
+
         if (!empty($id_departamento)) {
             $sql .= " AND u.id_departamento = ?";
             $types .= "i";
             $params[] = $id_departamento;
         }
+
         $sql .= " ORDER BY p.fecha_pago DESC";
 
         $stmt = $this->conn->prepare($sql);
@@ -95,13 +113,15 @@ class GenerarReportePagos {
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function generarPDF($fecha_inicio, $fecha_fin, $id_usuario, $id_departamento) {
+    public function generarPDF($fecha_inicio, $fecha_fin, $id_usuario, $id_departamento)
+    {
         $pagos = $this->getHistorialPagos($fecha_inicio, $fecha_fin, $id_usuario, $id_departamento);
 
         if (empty($pagos)) {
             echo "<script>alert('No hay datos para generar el PDF.'); window.close();</script>";
             exit;
         }
+
         $pdf = new PDF();
         $pdf->AddPage();
 
@@ -118,30 +138,34 @@ class GenerarReportePagos {
             $pdf->TableRow('Tipo de Quincena', $row['tipo_quincena']);
             $pdf->Ln(10);
         }
+
         $pdf->Output('D', 'reporte_historial_pagos.pdf');
     }
 }
 
-// ----- Lógica de filtros por rol -----
+// ========= Lógica de filtros por rol =========
 $id_usuario_filtro = null;
 $id_depto_filtro   = null;
 
 if ($id_rol == 3 && $id_usuario_ses) {
     // Empleado: solo su usuario
     $id_usuario_filtro = (int)$id_usuario_ses;
+
 } elseif ($id_rol == 1) {
-    // Admin normal: fuerza su depto de sesión
+    // Admin normal: fuerza su depto desde sesión
     if (!$id_depto_sesion) { die("Departamento no disponible en sesión."); }
     $id_depto_filtro = (int)$id_depto_sesion;
+
 } elseif ($id_rol == 2) {
-    // Admin master: usa el que llegó por POST (o todos si null)
-    if ($departamento_post) {
+    // Admin master: usa el depto recibido por POST (o todos si null)
+    if (!empty($departamento_post)) {
         $id_depto_filtro = (int)$departamento_post;
     }
+
 } else {
     die("Rol no autorizado.");
 }
 
-// --- Generar PDF ---
+// ========= Generar PDF =========
 $reporte = new GenerarReportePagos($conn);
 $reporte->generarPDF($fecha_inicio, $fecha_fin, $id_usuario_filtro, $id_depto_filtro);
