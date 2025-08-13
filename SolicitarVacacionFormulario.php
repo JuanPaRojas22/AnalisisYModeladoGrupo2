@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
     <?php endif; ?>
 
-    <form method="POST">
+    <form action="SolicitarVacacionFormulario.php" method="POST">
       <div class="form-group">
         <label for="fecha_inicio_solicitud">Fecha Inicio:</label>
         <input type="text" id="fecha_inicio_solicitud" name="fecha_inicio" class="form-control" placeholder="Ingrese la fecha de inicio" autofocus>
