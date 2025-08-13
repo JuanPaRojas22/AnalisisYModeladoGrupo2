@@ -8,14 +8,13 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 }
 
 // Obtener el ID del usuario a editar del parámetro GET
-$user_id = isset($_GET['id']) ? $_GET['id'] : $_SESSION['id_usuario'];
+$user_id = $_POST['id'] ?? $_SESSION['id_usuario'];
 
 // Si no hay ID en GET y el usuario no es administrador master, redirigir
-if (!isset($_GET['id']) && $_SESSION['id_rol'] != 2) {
+if (!$user_id && $_SESSION['id_rol'] != 2) {
     header("Location: index.php");
     exit;
 }
-
 // Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";

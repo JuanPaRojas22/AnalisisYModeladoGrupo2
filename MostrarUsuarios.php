@@ -29,7 +29,7 @@ if ($id_departamento === 'all') {
 
 // Paginación
 $usuarios_por_pagina = 8;
-$pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+$pagina_actual = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
 $total_usuarios = count($users_all);
 $total_paginas = ceil($total_usuarios / $usuarios_por_pagina);
 $offset = ($pagina_actual - 1) * $usuarios_por_pagina;
@@ -126,10 +126,13 @@ $users = array_slice($users_all, $offset, $usuarios_por_pagina);
                                 </p>
 
                                 <div class="d-flex justify-content-center gap-2 mt-3">
-                                    <a href="profileUser.php?id=<?= $user['id_usuario'] ?>"
-                                        class="btn btn-outline-primary btn-sm rounded-pill" title="Editar">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
+                                    <form action="profileUser.php" method="POST" style="display:inline;">
+                                        <input type="hidden" name="id" value="<?= $user['id_usuario'] ?>">
+                                        <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill"
+                                            title="Editar">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                    </form>
                                     <a href="detalle.php?id=<?= $user['id_usuario'] ?>"
                                         class="btn btn-outline-info btn-sm rounded-pill" title="Ver">
                                         <i class="bi bi-file-earmark-person"></i>

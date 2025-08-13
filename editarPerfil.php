@@ -64,6 +64,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $resultado = $UsuarioDAO->updateUser($nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_ocupacion, $id_nacionalidad, $user_id);
+    // Actualizar días de vacaciones
+    $dias_vacaciones = isset($_POST['dias_vacaciones']) ? (int) $_POST['dias_vacaciones'] : 0;
+
+    $stmt = $conn->prepare("UPDATE historial_vacaciones SET dias_disponibles = ? WHERE id_usuario = ?");
+    $stmt->bind_param("ii", $dias_vacaciones, $user_id);
+    $stmt->execute();
+
+    if ($stmt->affected_rows === 0) {
+        // Si no existe registro de vacaciones, insertar uno nuevo
+        $stmt->close();
+        $stmt = $conn->prepare("INSERT INTO historial_vacaciones (id_usuario, dias_disponibles) VALUES (?, ?)");
+        $stmt->bind_param("ii", $user_id, $dias_vacaciones);
+        $stmt->execute();
+    }
+
+    $stmt->close();
+
 
     if ($resultado === true) {
         $_SESSION['nombre'] = $nombre;
@@ -89,6 +106,7 @@ if (isset($_GET['id'])) {
 
     // Obtiene los historiales de vacaciones del usuario actual
     $historial_vacaciones = $UsuarioDAO->getHistorialVacacionesByUserId($id_usuario);
+    $dias_vacaciones = $historial_vacaciones['dias_disponibles'] ?? 0; // Ajusta el nombre de la columna real
 
 
 
@@ -243,6 +261,10 @@ if (isset($_GET['id'])) {
                                     echo '<option value="' . $row['id_nacionalidad'] . '" ' . $selected . '>' . $row['pais'] . '</option>';
                                 } ?>
                             </select>
+                            <label>Días de Vacaciones Disponibles:</label>
+                            <input type="number" class="form-control" name="dias_vacaciones"
+                                value="<?php echo htmlspecialchars($dias_vacaciones); ?>" min="0">
+
                         </div>
 
                     </div>
