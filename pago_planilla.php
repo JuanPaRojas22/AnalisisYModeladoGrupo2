@@ -70,16 +70,22 @@ if (isset($_POST['ejecutar_pago'])) {
             $dia = date("d", strtotime($fecha_pago));
             $tipo_quincena = ($dia >= 1 && $dia <= 15) ? 'Primera Quincena' : 'Segunda Quincena';
 
-            // Verificar si ya existe pago
-            $query_existente = "SELECT 1 FROM pago_planilla WHERE id_usuario = ? AND tipo_quincena = ? AND MONTH(fecha_pago) = MONTH(CURDATE()) AND YEAR(fecha_pago) = YEAR(CURDATE())";
+            // Verificar si ya existe pago para esta fecha y quincena
+            $query_existente = "SELECT 1 
+            FROM pago_planilla 
+            WHERE id_usuario = ? 
+            AND tipo_quincena = ? 
+            AND MONTH(fecha_pago) = MONTH(?) 
+            AND YEAR(fecha_pago) = YEAR(?)";
             $stmt_existente = $conn->prepare($query_existente);
-            $stmt_existente->bind_param("is", $id_usuario, $tipo_quincena);
+            $stmt_existente->bind_param("isss", $id_usuario, $tipo_quincena, $fecha_pago, $fecha_pago);
             $stmt_existente->execute();
             $stmt_existente->store_result();
 
             if ($stmt_existente->num_rows > 0) {
                 $stmt_existente->close();
-                continue;
+                // Opcional: solo continuar si force=false
+                continue;  // Salta este usuario
             }
             $stmt_existente->close();
 
