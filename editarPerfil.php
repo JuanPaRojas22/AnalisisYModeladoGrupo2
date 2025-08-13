@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sexo = $_POST['sexo'] ?? '';
     $id_ocupacion = trim($_POST['id_ocupacion']);
     $id_nacionalidad = trim($_POST['id_nacionalidad']);
-    $dias_vacaciones = (int)($_POST['dias_vacaciones'] ?? 0);
+    $dias_vacaciones = (int) ($_POST['dias_vacaciones'] ?? 0);
     $errores = [];
 
     if (!filter_var($correo_electronico, FILTER_VALIDATE_EMAIL)) {
@@ -75,9 +75,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errores)) {
         $resultado = $UsuarioDAO->updateUser(
-            $nombre, $apellido, $fecha_nacimiento, $fecha_ingreso,
-            $correo_electronico, $username, $numero_telefonico, $direccion_imagen,
-            $sexo, $estado_civil, $direccion_domicilio, $id_ocupacion, $id_nacionalidad, $user_id
+            $nombre,
+            $apellido,
+            $fecha_nacimiento,
+            $fecha_ingreso,
+            $correo_electronico,
+            $username,
+            $numero_telefonico,
+            $direccion_imagen,
+            $sexo,
+            $estado_civil,
+            $direccion_domicilio,
+            $id_ocupacion,
+            $id_nacionalidad,
+            $user_id
         );
 
         // Actualizar historial vacaciones
@@ -115,83 +126,148 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Editar Perfil</title>
-<style>
-/* Tus estilos aquí */
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil</title>
+    <style>
+        /* Tus estilos aquí */
+    </style>
 </head>
+
 <body>
-<div class="container">
-    <h3>Editar Usuario</h3>
-    <form action="editarPerfil.php" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($user['id_usuario']); ?>">
+    <div class="container">
+        <h3>Editar Usuario</h3>
+        <form action="editarPerfil.php" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($user['id_usuario']); ?>">
 
-        <label>Nombre:</label>
-        <input type="text" name="nombre" value="<?php echo htmlspecialchars($user['nombre']); ?>" required>
+            <label>Nombre:</label>
+            <input type="text" name="nombre" value="<?php echo htmlspecialchars($user['nombre']); ?>" required>
 
-        <label>Apellido:</label>
-        <input type="text" name="apellido" value="<?php echo htmlspecialchars($user['apellido']); ?>" required>
+            <label>Apellido:</label>
+            <input type="text" name="apellido" value="<?php echo htmlspecialchars($user['apellido']); ?>" required>
 
-        <label>Fecha de Nacimiento:</label>
-        <input type="date" name="fecha_nacimiento" value="<?php echo htmlspecialchars($user['fecha_nacimiento']); ?>" required>
+            <label>Fecha de Nacimiento:</label>
+            <input type="date" name="fecha_nacimiento"
+                value="<?php echo htmlspecialchars($user['fecha_nacimiento']); ?>" required>
 
-        <label>Fecha de Ingreso:</label>
-        <input type="date" name="fecha_ingreso" value="<?php echo htmlspecialchars($user['fecha_ingreso']); ?>" required>
+            <label>Fecha de Ingreso:</label>
+            <input type="date" name="fecha_ingreso" value="<?php echo htmlspecialchars($user['fecha_ingreso']); ?>"
+                required>
 
-        <label>Correo Electrónico:</label>
-        <input type="email" name="correo_electronico" value="<?php echo htmlspecialchars($user['correo_electronico']); ?>" required>
+            <label>Correo Electrónico:</label>
+            <input type="email" name="correo_electronico"
+                value="<?php echo htmlspecialchars($user['correo_electronico']); ?>" required>
 
-        <label>Foto de perfil:</label>
-        <input type="file" name="direccion_imagen" accept="image/*">
+            <label>Foto de perfil:</label>
+            <input type="file" name="direccion_imagen" accept="image/*">
 
-        <label>Usuario:</label>
-        <input type="text" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required>
+            <label>Usuario:</label>
+            <input type="text" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required>
 
-        <label>Teléfono:</label>
-        <input type="text" name="numero_telefonico" value="<?php echo htmlspecialchars($user['numero_telefonico']); ?>" required>
+            <label>Teléfono:</label>
+            <input type="text" name="numero_telefonico"
+                value="<?php echo htmlspecialchars($user['numero_telefonico']); ?>" required>
 
-        <label>Dirección:</label>
-        <input type="text" name="direccion_domicilio" value="<?php echo htmlspecialchars($user['direccion_domicilio']); ?>" required>
+            <label>Dirección:</label>
+            <input type="text" name="direccion_domicilio"
+                value="<?php echo htmlspecialchars($user['direccion_domicilio']); ?>" required>
 
-        <label>Estado Civil:</label>
-        <select name="estado_civil" required>
-            <option value="Soltero" <?php echo ($user['estado_civil']=='Soltero')?'selected':''; ?>>Soltero</option>
-            <option value="Casado" <?php echo ($user['estado_civil']=='Casado')?'selected':''; ?>>Casado</option>
-            <option value="Divorciado" <?php echo ($user['estado_civil']=='Divorciado')?'selected':''; ?>>Divorciado</option>
-        </select>
+            <label>Estado Civil:</label>
+            <select name="estado_civil" required>
+                <option value="Soltero" <?php echo ($user['estado_civil'] == 'Soltero') ? 'selected' : ''; ?>>Soltero</option>
+                <option value="Casado" <?php echo ($user['estado_civil'] == 'Casado') ? 'selected' : ''; ?>>Casado</option>
+                <option value="Divorciado" <?php echo ($user['estado_civil'] == 'Divorciado') ? 'selected' : ''; ?>>Divorciado
+                </option>
+            </select>
 
-        <label>Sexo:</label>
-        <select name="sexo" required>
-            <option value="M" <?php echo ($user['sexo']=='M')?'selected':''; ?>>M</option>
-            <option value="F" <?php echo ($user['sexo']=='F')?'selected':''; ?>>F</option>
-        </select>
+            <label>Sexo:</label>
+            <select name="sexo" required>
+                <option value="M" <?php echo ($user['sexo'] == 'M') ? 'selected' : ''; ?>>M</option>
+                <option value="F" <?php echo ($user['sexo'] == 'F') ? 'selected' : ''; ?>>F</option>
+            </select>
 
-        <label>Ocupación:</label>
-        <select name="id_ocupacion">
-        <?php while($row = $ocupaciones->fetch_assoc()) {
-            $sel = ($row['id_ocupacion']==$user['id_ocupacion'])?'selected':'';
-            echo "<option value='{$row['id_ocupacion']}' $sel>{$row['nombre_ocupacion']}</option>";
-        } ?>
-        </select>
+            <label>Ocupación:</label>
+            <select name="id_ocupacion">
+                <?php while ($row = $ocupaciones->fetch_assoc()) {
+                    $sel = ($row['id_ocupacion'] == $user['id_ocupacion']) ? 'selected' : '';
+                    echo "<option value='{$row['id_ocupacion']}' $sel>{$row['nombre_ocupacion']}</option>";
+                } ?>
+            </select>
 
-        <label>Nacionalidad:</label>
-        <select name="id_nacionalidad">
-        <?php while($row = $nacionalidades->fetch_assoc()) {
-            $sel = ($row['id_nacionalidad']==$user['id_nacionalidad'])?'selected':'';
-            echo "<option value='{$row['id_nacionalidad']}' $sel>{$row['pais']}</option>";
-        } ?>
-        </select>
+            <label>Nacionalidad:</label>
+            <select name="id_nacionalidad">
+                <?php while ($row = $nacionalidades->fetch_assoc()) {
+                    $sel = ($row['id_nacionalidad'] == $user['id_nacionalidad']) ? 'selected' : '';
+                    echo "<option value='{$row['id_nacionalidad']}' $sel>{$row['pais']}</option>";
+                } ?>
+            </select>
 
-        <label>Días de Vacaciones:</label>
-        <input type="number" name="dias_vacaciones" value="<?php echo htmlspecialchars($dias_vacaciones); ?>" min="0">
+            <label>Días de Vacaciones:</label>
+            <input type="number" name="dias_vacaciones" value="<?php echo htmlspecialchars($dias_vacaciones); ?>"
+                min="0">
 
-        <button type="submit">Guardar Cambios</button>
-    </form>
-</div>
+            <button type="submit">Guardar Cambios</button>
+        </form>
+    </div>
 </body>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f7f7;
+        /* Blanco cremoso */
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 800px;
+        color: black;
+        background-color: #f7f7f7;
+        /* Blanco cremoso */
+        margin: 50px auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
+    }
+
+    .card {
+        padding: 20px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
+    }
+
+    .img-fluid {
+        border-radius: 50%;
+        width: 150px;
+        height: 150px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .btn {
+        display: inline-block;
+        background-color: #0B4F6C;
+        color: white;
+        padding: 12px 20px;
+        font-size: 18px;
+        font-weight: bold;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        margin-left: 50%;
+        transition: background-color 0.3s;
+        cursor: pointer;
+        border: none;
+    }
+</style>
+
 </html>
 
 <?php ob_end_flush(); ?>
