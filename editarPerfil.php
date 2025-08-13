@@ -94,31 +94,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 }
-// Verifica si el parámetro 'id' está presente en la URL
-if (isset($_GET['id'])) {
-    $id_usuario = $_GET['id'];
+// Obtener usuario desde la sesión
+$user_id = $_SESSION['id_usuario'];
+$user = $UsuarioDAO->getUserById($user_id);
 
-    // Obtiene los detalles del usuario por id
-    $user = $UsuarioDAO->getUserById($id_usuario);
-
-    // Obtiene las vacaciones del usuario actual
-    $vacaciones = $UsuarioDAO->getVacacionesByUserId($id_usuario);
-
-    // Obtiene los historiales de vacaciones del usuario actual
-    $historial_vacaciones = $UsuarioDAO->getHistorialVacacionesByUserId($id_usuario);
-    $dias_vacaciones = $historial_vacaciones['dias_disponibles'] ?? 0; // Ajusta el nombre de la columna real
-
-
-
-    // Si el usuario no existe
-    if (!$user) {
-        echo "Usuario no encontrado.";
-        exit;
-    }
-} else {
-    echo "ID de usuario no proporcionado.";
+if (!$user) {
+    echo "Usuario no encontrado.";
     exit;
 }
+
+// Obtener vacaciones e historial
+$vacaciones = $UsuarioDAO->getVacacionesByUserId($user_id);
+$historial_vacaciones = $UsuarioDAO->getHistorialVacacionesByUserId($user_id);
+$dias_vacaciones = $historial_vacaciones['dias_disponibles'] ?? 0;
+
 
 ?>
 
