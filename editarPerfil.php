@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Actualizar días de vacaciones
     $dias_vacaciones = isset($_POST['dias_vacaciones']) ? (int) $_POST['dias_vacaciones'] : 0;
 
-    $stmt = $conn->prepare("UPDATE historial_vacaciones SET dias_disponibles = ? WHERE id_usuario = ?");
+    $stmt = $conn->prepare("UPDATE historial_vacaciones SET DiasRestantes = ? WHERE id_usuario = ?");
     $stmt->bind_param("ii", $dias_vacaciones, $user_id);
     $stmt->execute();
 
