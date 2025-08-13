@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'conexion.php';
-require 'template.php';
+
 
 $conn = obtenerConexion();
 
@@ -21,6 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['departamento'])) {
     header("Location: historial_salarios.php"); // limpia la URL
     exit;
 }
+
+
 // Valor actual del filtro (desde sesión)
 $departamento_filtro = $_SESSION['filtro_departamento_pagos'] ?? '';
 
@@ -74,7 +76,7 @@ if ($id_rol == 3) {
         $stmt = $conn->prepare($sql);
     }
 }
-
+require 'template.php';
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
