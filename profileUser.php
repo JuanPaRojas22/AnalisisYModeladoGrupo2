@@ -212,7 +212,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="btn-container">
             <form action="editarPerfil.php" method="post">
-                <input type="hidden" name="id_usuario" value="<?php echo $usuario['id_usuario']; ?>">
+                <input type="hidden" name="id_usuario" value="<?php echo $user['id_usuario']; ?>">
                 <button type="submit">Editar</button>
             </form>
 
