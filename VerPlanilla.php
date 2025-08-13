@@ -277,6 +277,9 @@ $result = $stmt->get_result();
             border-radius: 5px;
             background-color: #147964;
         }
+        .custom-input{
+            color: black;
+        }
 
         .modal-content a:hover {
             background-color: darkgray;
