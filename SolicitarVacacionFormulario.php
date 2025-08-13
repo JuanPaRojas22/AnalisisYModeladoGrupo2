@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errores = array_merge($errores, $resultado);
         } else {
             // Descontar los días directamente en la base de datos
-            require_once __DIR__ . '/../conexion.php';
+            require_once __DIR__ . '/conexion.php';
             $diasTomadoFloat = floatval($total_dias);
             $sql = "UPDATE historial_vacaciones SET DiasRestantes = DiasRestantes - ? WHERE id_usuario = ?";
             $stmt = $conn->prepare($sql);
