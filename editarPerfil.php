@@ -32,8 +32,17 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 mysqli_set_charset($conn, "utf8mb4");
 // Instancia el DAO
 $UsuarioDAO = new UsuarioDAOSImpl();
-$user_id = $_SESSION['id_usuario'];
+$user_id = $_POST['id_usuario'] ?? $_SESSION['id_usuario']; // <-- CAMBIO
+if ($_SESSION['id_rol'] != 2 && $user_id != $_SESSION['id_usuario']) { // <-- CAMBIO
+    echo "No tienes permisos para editar a este usuario.";
+    exit;
+}
 $user = $UsuarioDAO->getUserById($user_id);
+if (!$user) {
+    echo "Usuario no encontrado.";
+    exit;
+}
+
 $ocupaciones = $conn->query("SELECT id_ocupacion, nombre_ocupacion FROM ocupaciones ORDER BY nombre_ocupacion");
 $nacionalidades = $conn->query("SELECT id_nacionalidad, pais FROM nacionalidades ORDER BY pais");
 
@@ -57,8 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errores[] = "Correo electrónico no válido.";
     }
 
+    // Mantener imagen actual si no se sube nueva
     $direccion_imagen = $user['direccion_imagen'];
-
     if (isset($_FILES['direccion_imagen']) && $_FILES['direccion_imagen']['error'] === UPLOAD_ERR_OK) {
         $direccion_imagen = file_get_contents($_FILES['direccion_imagen']['tmp_name']);
     }
