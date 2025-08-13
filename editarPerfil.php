@@ -1,8 +1,9 @@
 <?php
-ob_start();
+ob_start();  // Inicia el búfer de salida
 session_start();
 require_once __DIR__ . '/Impl/UsuarioDAOSImpl.php';
 include "template.php";
+
 
 // Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
@@ -10,41 +11,33 @@ $user = "adminUser";
 $password = "admin123+";
 $dbname = "gestionEmpleados";
 $port = 3306;
+
+// Ruta al certificado CA para validar SSL
 $ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
 
+// Inicializamos mysqli
 $conn = mysqli_init();
+
+// Configuramos SSL
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
 mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
+
+// Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
 if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
     die("Error de conexión: " . mysqli_connect_error());
 }
 
+// Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
-
+// Instancia el DAO
 $UsuarioDAO = new UsuarioDAOSImpl();
+$user_id = $_SESSION['id_usuario'];
+$user = $UsuarioDAO->getUserById($user_id);
 $ocupaciones = $conn->query("SELECT id_ocupacion, nombre_ocupacion FROM ocupaciones ORDER BY nombre_ocupacion");
 $nacionalidades = $conn->query("SELECT id_nacionalidad, pais FROM nacionalidades ORDER BY pais");
 
-$user = null;
-$vacaciones = null;
-$historial_vacaciones = null;
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_POST['id_usuario'])) {
-        echo "ID de usuario no proporcionado.";
-        exit;
-    }
-
-    $user_id = $_POST['id_usuario'];
-    $user = $UsuarioDAO->getUserById($user_id);
-
-    if (!$user) {
-        echo "Usuario no encontrado.";
-        exit;
-    }
-
-    // Procesar edición
     $nombre = trim($_POST['nombre']);
     $apellido = trim($_POST['apellido']);
     $fecha_nacimiento = trim($_POST['fecha_nacimiento']);
@@ -57,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sexo = isset($_POST['sexo']) ? trim($_POST['sexo']) : '';
     $id_ocupacion = trim($_POST['id_ocupacion']);
     $id_nacionalidad = trim($_POST['id_nacionalidad']);
+    $direccion_imagen = $_FILES['direccion_imagen'];
     $errores = [];
 
     if (!filter_var($correo_electronico, FILTER_VALIDATE_EMAIL)) {
@@ -64,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $direccion_imagen = $user['direccion_imagen'];
+
     if (isset($_FILES['direccion_imagen']) && $_FILES['direccion_imagen']['error'] === UPLOAD_ERR_OK) {
         $direccion_imagen = file_get_contents($_FILES['direccion_imagen']['tmp_name']);
     }
@@ -71,24 +66,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $resultado = $UsuarioDAO->updateUser($nombre, $apellido, $fecha_nacimiento, $fecha_ingreso, $correo_electronico, $username, $numero_telefonico, $direccion_imagen, $sexo, $estado_civil, $direccion_domicilio, $id_ocupacion, $id_nacionalidad, $user_id);
 
     if ($resultado === true) {
+        $_SESSION['nombre'] = $nombre;
+        $_SESSION['apellido'] = $apellido;
+        $_SESSION['direccion_imagen'] = $direccion_imagen;
         $_SESSION['mensaje_exito'] = "Usuario modificado con éxito✅.";
-        header("Location: profileUser.php?id_usuario=" . urlencode($user_id));
+        header("Location: profile.php?");
         exit;
     } else {
-        echo "<p style='color: red;'>$resultado</p>";
+        echo "<p style='color: red;'>$resultado</p>"; // Mostrar el error
     }
 
-    // Recargar datos actualizados
-    $user = $UsuarioDAO->getUserById($user_id);
-    $vacaciones = $UsuarioDAO->getVacacionesByUserId($user_id);
-    $historial_vacaciones = $UsuarioDAO->getHistorialVacacionesByUserId($user_id);
-} elseif (isset($_GET['id'])) {
-    // Cargar datos para mostrar el formulario
-    $user_id = $_GET['id'];
-    $user = $UsuarioDAO->getUserById($user_id);
-    $vacaciones = $UsuarioDAO->getVacacionesByUserId($user_id);
-    $historial_vacaciones = $UsuarioDAO->getHistorialVacacionesByUserId($user_id);
+}
+// Verifica si el parámetro 'id' está presente en la URL
+if (isset($_GET['id'])) {
+    $id_usuario = $_GET['id'];
 
+    // Obtiene los detalles del usuario por id
+    $user = $UsuarioDAO->getUserById($id_usuario);
+
+    // Obtiene las vacaciones del usuario actual
+    $vacaciones = $UsuarioDAO->getVacacionesByUserId($id_usuario);
+
+    // Obtiene los historiales de vacaciones del usuario actual
+    $historial_vacaciones = $UsuarioDAO->getHistorialVacacionesByUserId($id_usuario);
+
+
+
+    // Si el usuario no existe
     if (!$user) {
         echo "Usuario no encontrado.";
         exit;
@@ -97,8 +101,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo "ID de usuario no proporcionado.";
     exit;
 }
-?>
 
+?>
 
 <!DOCTYPE html>
 <html lang="es">
