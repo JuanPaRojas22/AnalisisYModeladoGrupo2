@@ -54,14 +54,14 @@ GROUP BY id_usuario";
     }
     $stmt->execute();
     $result = $stmt->get_result();
-    
+
     while ($row = $result->fetch_assoc()) {
         $id_usuario = $row["id_usuario"];
         $total_sum = $row["total_salario"] + $row["total_bonos"] + $row["total_horas_extras"];
-    
+
         // Calcular el aguinaldo (dividir entre 12)
         $aguinaldo = $total_sum / 12;
-    
+
         // Verificar si ya existe un aguinaldo registrado en el mismo año para este usuario
         $year = date("Y");
         $query_check = "SELECT COUNT(*) FROM historial_aguinaldo WHERE id_usuario = ? AND YEAR(fecha_pago) = ?";
@@ -74,7 +74,7 @@ GROUP BY id_usuario";
         $stmt_check->bind_result($count);
         $stmt_check->fetch();
         $stmt_check->close();
-    
+
         if ($count > 0) {
             header("Location: Calcular_aguinaldo.php?aguinaldo_registrado=error");
             exit;  // Muy importante para evitar seguir ejecutando
@@ -86,23 +86,20 @@ GROUP BY id_usuario";
                 die("Error en prepare: " . $conn->error);
             }
             $stmt_insert->bind_param("idss", $id_usuario, $aguinaldo, $fecha_pago, $metodo_pago);
-    
+
             if ($stmt_insert->execute()) {
-                echo "<br>ID Usuario: " . $id_usuario . "<br>";
-                echo "Total sumado: " . $total_sum . "<br>";
-                echo "Aguinaldo calculado: " . $aguinaldo . "<br>";
-                echo "Método de pago: " . $metodo_pago . "<br>";
-                echo "Fecha de pago: " . $fecha_pago . "<br>";
-                echo "Aguinaldo registrado correctamente para el usuario con ID: " . $id_usuario . "<br>";
+                header("Location: calcular_aguinaldo.php?mensaje=exito");
+                exit;
+
             } else {
                 echo "Error al registrar el aguinaldo para el usuario con ID: " . $id_usuario . "<br>";
             }
             $stmt_insert->close();
         }
     }
-    
+
     $stmt->close();
-    
+
 
     // Cerrar la conexión después de que todo haya terminado
 
@@ -127,6 +124,12 @@ ob_end_flush();  // Envía todo el contenido del búfer al navegador
         <div class="container">
 
             <h1>Listado de Aguinaldos</h1>
+
+            <?php if (isset($_GET['mensaje']) && $_GET['mensaje'] == 'exito'): ?>
+                <div class="alert alert-success mt-3 text-center mx-auto text-dark">
+                    ¡Aguinaldo calculado y registrado correctamente!
+                </div>
+            <?php endif; ?>
 
             <!-- Mostrar tabla con los datos de historial de aguinaldo -->
 
