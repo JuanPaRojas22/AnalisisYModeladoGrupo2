@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($stmt->affected_rows === 0) {
         // Si no existe registro de vacaciones, insertar uno nuevo
         $stmt->close();
-        $stmt = $conn->prepare("INSERT INTO historial_vacaciones (id_usuario, dias_disponibles) VALUES (?, ?)");
+        $stmt = $conn->prepare("INSERT INTO historial_vacaciones (id_usuario,DiasRestantes) VALUES (?, ?)");
         $stmt->bind_param("ii", $user_id, $dias_vacaciones);
         $stmt->execute();
     }
