@@ -1,31 +1,32 @@
 <?php
 session_start();
-require 'conexion.php';
+require 'conexion.php'; // Asegúrate que este archivo no imprime nada ni tiene BOM
 
-
-$conn = obtenerConexion();
-
+// 1) Guardas/validas sesión ANTES de imprimir cualquier cosa
 if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['id_rol'])) {
-    header("Location: login.php");
+    header('Location: login.php', true, 303);
     exit;
 }
+
+// 2) PRG: manejar el filtro por POST y redirigir a GET limpio (sin id en URL)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && array_key_exists('departamento', $_POST)) {
+    $_SESSION['filtro_departamento_pagos'] = ($_POST['departamento'] === '') ? '' : (int)$_POST['departamento'];
+    header('Location: ' . $_SERVER['PHP_SELF'], true, 303);
+    exit;
+}
+
+// 3) Ahora sí: abre la conexión y sigue con la lógica
+$conn = obtenerConexion();
 
 $id_usuario      = $_SESSION['id_usuario'];
 $id_rol          = $_SESSION['id_rol'];
-$id_departamento = $_SESSION['id_departamento'] ?? null; // para rol 1
+$id_departamento = $_SESSION['id_departamento'] ?? null;
 
-// =================== MANEJO DEL FILTRO SIN URL ===================
-// Guardamos el filtro en sesión con PRG (POST-Redirect-GET) para que no se vea en la URL
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['departamento'])) {
-    $_SESSION['filtro_departamento_pagos'] = ($_POST['departamento'] === '') ? '' : (int)$_POST['departamento'];
-    header("Location: historial_salarios.php"); // limpia la URL
-    exit;
-}
-
-
-// Valor actual del filtro (desde sesión)
 $departamento_filtro = $_SESSION['filtro_departamento_pagos'] ?? '';
 
+// Si usas template.php en esta vista, inclúyelo DESPUÉS del PRG, por ejemplo aquí:
+ require 'template.php';
+ 
 // =================== COMBO DE DEPARTAMENTOS PARA ROL 2 ===================
 $departamentos = [];
 if ($id_rol == 2) {
@@ -76,7 +77,7 @@ if ($id_rol == 3) {
         $stmt = $conn->prepare($sql);
     }
 }
-require 'template.php';
+
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
