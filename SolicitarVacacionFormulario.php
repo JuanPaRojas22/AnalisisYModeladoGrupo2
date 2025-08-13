@@ -1,5 +1,8 @@
 <?php
 session_start();
+ob_start();
+
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -208,5 +211,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         configurarCalendario("#fecha_inicio_solicitud");
         configurarCalendario("#fecha_fin_solicitud");
     </script>
+
   </div>
 </body>
+<?php
+    // Cerrar la conexión
+    $conn->close();
+    ob_end_flush(); // Liberar el búfer y enviar la salida al navegador
+    ?>
+
+
+
+
+
+
+
+    
+    
