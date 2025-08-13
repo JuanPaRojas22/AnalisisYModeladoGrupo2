@@ -1,111 +1,102 @@
 <?php
 ob_start();  // Inicia el búfer de salida
+
 // Conexión a la base de datos
-// Parámetros de conexión
 $host = "accespersoneldb.mysql.database.azure.com";
 $user = "adminUser";
 $password = "admin123+";
 $dbname = "gestionEmpleados";
 $port = 3306;
 
-// Ruta al certificado CA para validar SSL
-$ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
-
-// Inicializamos mysqli
 $conn = mysqli_init();
-
-// Configuramos SSL
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
 mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
-
-// Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
 if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
     die("Error de conexión: " . mysqli_connect_error());
 }
 
-// Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
+
 session_start();
 include "template.php";
+
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header("Location: login.php");
     exit;
 }
 
+$mensaje = '';
+$usuarios_procesados = 0; // Contador opcional para mostrar mensaje al final
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $metodo_pago = $_POST["metodo_pago"];
     $fecha_pago = date("Y-m-d");
 
-    // Calcular el aguinaldo para todos los usuarios
-    $query_calculo = "SELECT id_usuario, 
-    SUM(salario_base) AS total_salario, 
-    SUM(total_bonos) AS total_bonos, 
-    SUM(pago_horas_extras) AS total_horas_extras
-FROM pago_planilla 
-WHERE fecha_pago >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH) 
-GROUP BY id_usuario";
+    // Obtener todos los usuarios
+    $query_usuarios = "SELECT id_usuario FROM usuario";
+    $result_usuarios = $conn->query($query_usuarios);
 
-    // Verificar si la conexión sigue abierta antes de ejecutar la consulta
-    $stmt = $conn->prepare($query_calculo);
-    if (!$stmt) {
-        die("Error en prepare: " . $conn->error);
-    }
-    $stmt->execute();
-    $result = $stmt->get_result();
+    if ($result_usuarios && $result_usuarios->num_rows > 0) {
+        while ($row = $result_usuarios->fetch_assoc()) {
+            $id_usuario = $row['id_usuario'];
 
-    while ($row = $result->fetch_assoc()) {
-        $id_usuario = $row["id_usuario"];
-        $total_sum = $row["total_salario"] + $row["total_bonos"] + $row["total_horas_extras"];
+            // Verificar si ya tiene aguinaldo registrado en este año
+            $year = date("Y");
+            $query_check = "SELECT COUNT(*) FROM historial_aguinaldo WHERE id_usuario = ? AND YEAR(fecha_pago) = ?";
+            $stmt_check = $conn->prepare($query_check);
+            $stmt_check->bind_param("ii", $id_usuario, $year);
+            $stmt_check->execute();
+            $stmt_check->bind_result($count);
+            $stmt_check->fetch();
+            $stmt_check->close();
 
-        // Calcular el aguinaldo (dividir entre 12)
-        $aguinaldo = $total_sum / 12;
+            if ($count > 0) {
+                continue; // Ya tiene aguinaldo, pasar al siguiente usuario
+            }
 
-        // Verificar si ya existe un aguinaldo registrado en el mismo año para este usuario
-        $year = date("Y");
-        $query_check = "SELECT COUNT(*) FROM historial_aguinaldo WHERE id_usuario = ? AND YEAR(fecha_pago) = ?";
-        $stmt_check = $conn->prepare($query_check);
-        if (!$stmt_check) {
-            die("Error en prepare: " . $conn->error);
-        }
-        $stmt_check->bind_param("ii", $id_usuario, $year);
-        $stmt_check->execute();
-        $stmt_check->bind_result($count);
-        $stmt_check->fetch();
-        $stmt_check->close();
+            // Calcular total de pagos del último año
+            $query_totales = "SELECT 
+                SUM(salario_base) AS total_salario, 
+                SUM(total_bonos) AS total_bonos, 
+                SUM(pago_horas_extras) AS total_horas_extras
+                FROM pago_planilla 
+                WHERE id_usuario = ? AND fecha_pago >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)";
+            $stmt_totales = $conn->prepare($query_totales);
+            $stmt_totales->bind_param("i", $id_usuario);
+            $stmt_totales->execute();
+            $stmt_totales->bind_result($total_salario, $total_bonos, $total_horas_extras);
+            $stmt_totales->fetch();
+            $stmt_totales->close();
 
-        if ($count > 0) {
-            header("Location: Calcular_aguinaldo.php?aguinaldo_registrado=error");
-            exit;  // Muy importante para evitar seguir ejecutando
-        } else {
-            $query_insert = "INSERT INTO historial_aguinaldo (id_usuario, total_aguinaldo, fecha_pago, metodo_pago) 
-                             VALUES (?, ?, ?, ?)";
+            $total_salario = $total_salario ?? 0;
+            $total_bonos = $total_bonos ?? 0;
+            $total_horas_extras = $total_horas_extras ?? 0;
+
+            $aguinaldo = ($total_salario + $total_bonos + $total_horas_extras) / 12;
+
+            // Insertar el aguinaldo
+            $query_insert = "INSERT INTO historial_aguinaldo (id_usuario, total_aguinaldo, fecha_pago, metodo_pago) VALUES (?, ?, ?, ?)";
             $stmt_insert = $conn->prepare($query_insert);
-            if (!$stmt_insert) {
-                die("Error en prepare: " . $conn->error);
-            }
             $stmt_insert->bind_param("idss", $id_usuario, $aguinaldo, $fecha_pago, $metodo_pago);
-
-            if ($stmt_insert->execute()) {
-                header("Location: calcular_aguinaldo.php?mensaje=exito");
-                exit;
-
-            } else {
-                echo "Error al registrar el aguinaldo para el usuario con ID: " . $id_usuario . "<br>";
-            }
+            $stmt_insert->execute();
             $stmt_insert->close();
+
+            $usuarios_procesados++;
         }
+
+        if ($usuarios_procesados > 0) {
+            $mensaje = "Aguinaldos calculados y registrados correctamente para {$usuarios_procesados} usuarios.";
+        } else {
+            $mensaje = "Todos los usuarios ya tienen aguinaldo registrado este año.";
+        }
+    } else {
+        $mensaje = "No se encontraron usuarios para procesar aguinaldo.";
     }
-
-    $stmt->close();
-
-
-    // Cerrar la conexión después de que todo haya terminado
-
 }
-ob_end_flush();  // Envía todo el contenido del búfer al navegador
 
+$conn->close();
+ob_end_flush();
 ?>
 
 
@@ -204,15 +195,6 @@ ob_end_flush();  // Envía todo el contenido del búfer al navegador
                 ?>
             </tbody>
         </table>
-
-
-
-
-
-
-
-
-
 
         <style>
             body {
