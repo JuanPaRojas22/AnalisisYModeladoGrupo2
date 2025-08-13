@@ -770,7 +770,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </script>
                     </div>
                     <div class="d-flex justify-content-center mb-3">
-                        <ul class="nav nav-tabs">
+                        <ul class="nav nav-tabs mx-auto">
                             <li class="nav-item">
                                 <a class="nav-link <?= $filtro === 'pendiente' ? 'active' : '' ?>"
                                     href="?filtro=pendiente">Pendientes</a>
