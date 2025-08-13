@@ -770,7 +770,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </script>
                     </div>
                     <div class="text-center mb-3">
-                        <div class="d-inline-block">
+                        <div style="width: 70%;">
                             <ul class="nav nav-tabs">
 
                                 <li class="nav-item">
