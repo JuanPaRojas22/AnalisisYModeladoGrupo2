@@ -85,9 +85,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Mensaje final
         if ($usuarios_procesados > 0) {
-            $mensaje = "Aguinaldos calculados y registrados correctamente para {$usuarios_procesados} usuarios.";
+            $mensaje = "Aguinaldos calculados y registrados correctamente.";
         } else {
-            $mensaje = "Todos los usuarios ya tienen aguinaldo registrado este año.";
+            $mensaje = "Los aguinaldos ya fueron calculados para el año {$year}.";
         }
     } else {
         $mensaje = "No se encontraron usuarios para procesar aguinaldo.";
@@ -138,6 +138,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <th>Método de Pago</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         <?php
                         $query_historial = "
@@ -145,21 +146,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                            h.total_aguinaldo, h.fecha_pago, h.metodo_pago
                     FROM historial_aguinaldo h
                     JOIN usuario u ON h.id_usuario = u.id_usuario
-                    ORDER BY h.fecha_pago DESC
-                ";
+                    ORDER BY h.fecha_pago DESC";
                         $result_historial = $conn->query($query_historial);
+                        // Calcular el total de aguinaldos
+                        $query_total = "SELECT SUM(total_aguinaldo) AS total_general FROM historial_aguinaldo";
+                        $result_total = $conn->query($query_total);
+                        $total_general = 0;
+                        if ($result_total && $row_total = $result_total->fetch_assoc()) {
+                            $total_general = $row_total['total_general'] ?? 0;
+                        }
 
                         if ($result_historial && $result_historial->num_rows > 0) {
                             while ($row = $result_historial->fetch_assoc()) {
                                 echo "<tr>
-                            <td>{$row['nombre']}</td>
-                            <td>{$row['apellido']}</td>
-                            <td>{$row['correo_electronico']}</td>
-                            <td>{$row['total_aguinaldo']}</td>
-                            <td>{$row['fecha_pago']}</td>
-                            <td>{$row['metodo_pago']}</td>
-                        </tr>";
+                <td>{$row['nombre']}</td>
+                <td>{$row['apellido']}</td>
+                <td>{$row['correo_electronico']}</td>
+                <td>{$row['total_aguinaldo']}</td>
+                <td>{$row['fecha_pago']}</td>
+                <td>{$row['metodo_pago']}</td>
+            </tr>";
                             }
+                            // Fila de total
+                            echo "<tr>
+            <td colspan='3' style='text-align:right; font-weight:bold;'>Total de Aguinaldos:</td>
+            <td style='font-weight:bold;'>" . number_format($total_general, 2) . "</td>
+            <td colspan='2'></td>
+        </tr>";
                         } else {
                             echo "<tr><td colspan='6' class='no-records'>No se encontraron registros de aguinaldo.</td></tr>";
                         }
