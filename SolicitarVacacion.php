@@ -277,6 +277,7 @@ mysqli_set_charset($conn, "utf8mb4");
                             background-color: #f7f7f7;
                             margin: 0;
                             padding: 0;
+                            color: black;
                         }
 
                         .container {
