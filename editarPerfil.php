@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($resultado === true) {
         $_SESSION['mensaje_exito'] = "Usuario modificado con éxito✅.";
-        header("Location: profile.php");
+        header("Location: profileUser.php?id_usuario=" . urlencode($user_id));
         exit;
     } else {
         echo "<p style='color: red;'>$resultado</p>";
