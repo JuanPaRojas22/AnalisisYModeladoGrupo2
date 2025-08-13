@@ -194,7 +194,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-left: 250px;
             padding: 60px;
         }
-        
     </style>
 </head>
 
@@ -207,34 +206,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <section class="wrapper site-min-height">
 
                 <!-- /MAIN CONTENT -->
-                 <?php
+                <?php
                 // Verificar si el usuario está logueado
                 // Conexión a la base de datos
 // Parámetros de conexión
-$host = "accespersoneldb.mysql.database.azure.com";
-$user = "adminUser";
-$password = "admin123+";
-$dbname = "gestionEmpleados";
-$port = 3306;
+                $host = "accespersoneldb.mysql.database.azure.com";
+                $user = "adminUser";
+                $password = "admin123+";
+                $dbname = "gestionEmpleados";
+                $port = 3306;
 
-// Ruta al certificado CA para validar SSL
-$ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
+                // Ruta al certificado CA para validar SSL
+                $ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
 
-// Inicializamos mysqli
-$conn = mysqli_init();
+                // Inicializamos mysqli
+                $conn = mysqli_init();
 
-// Configuramos SSL
-mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
-mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
+                // Configuramos SSL
+                mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
+                mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
 
-// Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
-if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
-    die("Error de conexión: " . mysqli_connect_error());
-}
+                // Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
+                if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
+                    die("Error de conexión: " . mysqli_connect_error());
+                }
 
-// Establecemos el charset
-mysqli_set_charset($conn, "utf8mb4");
+                // Establecemos el charset
+                mysqli_set_charset($conn, "utf8mb4");
 
                 // Consulta para obtener el departamento del usuario
                 
@@ -244,22 +243,22 @@ mysqli_set_charset($conn, "utf8mb4");
                 $offset = ($page - 1) * $limit;
 
                 $filtro = $_GET['filtro'] ?? 'pendiente';
-                switch($filtro) {
-                case 'pendiente':
-                    $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [1,4], $limit, $offset);
-                    break;
-                case 'aprobadas':
-                    $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [2], $limit, $offset);
-                    break;
-                case 'rechazadas':
-                    $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [3], $limit, $offset);
-                    break;
-                case 'modificadas':
-                    // obtiene exclusivamente las vacaciones modificadas aprobadas o pendientes
-                    $result = $Historial_Solicitud_Modificacion_VacacionesDAO->getHistorialSolicitudModificacionPorUsuario($id_usuario, $limit, $offset);
-                    break;
-                default:
-                    $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [1], $limit, $offset);
+                switch ($filtro) {
+                    case 'pendiente':
+                        $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [1, 4], $limit, $offset);
+                        break;
+                    case 'aprobadas':
+                        $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [2], $limit, $offset);
+                        break;
+                    case 'rechazadas':
+                        $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [3], $limit, $offset);
+                        break;
+                    case 'modificadas':
+                        // obtiene exclusivamente las vacaciones modificadas aprobadas o pendientes
+                        $result = $Historial_Solicitud_Modificacion_VacacionesDAO->getHistorialSolicitudModificacionPorUsuario($id_usuario, $limit, $offset);
+                        break;
+                    default:
+                        $result = $VacacionDAO->getVacacionesPorEstado($id_usuario, [1], $limit, $offset);
                 }
 
                 ?>
@@ -321,8 +320,8 @@ mysqli_set_charset($conn, "utf8mb4");
                             cursor: pointer;
                             border: none;
                         }
-                        
-         
+
+
                         .btn:hover {
                             background-color: #147964;
                         }
@@ -570,29 +569,32 @@ mysqli_set_charset($conn, "utf8mb4");
                             color: white;
                             border-color: #116B67;
                         }
+
                         /* Estilo base para los tabs */
-            .nav-tabs .nav-link {
-    color: #147964;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    font-weight: bold;
-}
+                        .nav-tabs .nav-link {
+                            color: #147964;
+                            background-color: #f9f9f9;
+                            border: 1px solid #ddd;
+                            font-weight: bold;
+                        }
 
-/* Estilo cuando están activos (seleccionados) */
-.nav-tabs .nav-link.active {
-    background-color: #116B67;
-    color: white;
-    border-color: #116B67 #116B67 #f9f9f9;
-}
+                        /* Estilo cuando están activos (seleccionados) */
+                        .nav-tabs .nav-link.active {
+                            background-color: #116B67;
+                            color: white;
+                            border-color: #116B67 #116B67 #f9f9f9;
+                        }
 
-/* Opcional: quitar borde inferior del tab activo */
-.nav-tabs {
-    border-bottom: 1px solid #ddd;
-}
-.acciones-botones {
+                        /* Opcional: quitar borde inferior del tab activo */
+                        .nav-tabs {
+                            border-bottom: 1px solid #ddd;
+                        }
+
+                        .acciones-botones {
                             display: flex;
                             gap: 5px;
-                            align-items: center; /* 🔧 Esto alinea verticalmente todo */
+                            align-items: center;
+                            /* 🔧 Esto alinea verticalmente todo */
                         }
 
                         .acciones-botones form,
@@ -602,7 +604,7 @@ mysqli_set_charset($conn, "utf8mb4");
                         }
 
                         .acciones-botones form button,
-                        .acciones-botones > button {
+                        .acciones-botones>button {
                             font-size: 14px !important;
                             padding: 6px 10px !important;
                             border-radius: 4px;
@@ -628,8 +630,6 @@ mysqli_set_charset($conn, "utf8mb4");
                         .btn-warning-disabled:hover {
                             background-color: #5a6268;
                         }
-
-
                     </style>
                 </head>
 
@@ -637,7 +637,7 @@ mysqli_set_charset($conn, "utf8mb4");
                     <div class="container">
                         <h1>Mis Vacaciones</h1>
 
-                        <!-- Botones para Solicitar Vacación y en donde si el usuario gusta, poder escoger una vacacion de medio dia. --> 
+                        <!-- Botones para Solicitar Vacación y en donde si el usuario gusta, poder escoger una vacacion de medio dia. -->
                         <div class="row"
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                             <!--
@@ -654,7 +654,7 @@ mysqli_set_charset($conn, "utf8mb4");
                                 <strong>Días Restantes:</strong> <?php echo $diasRestantes; ?>
                             </div>
                         </div>
-                        
+
                         <!-- Fechas inicio y fin con botón PDF y buscador -->
                         <div class="row-fechas-pdf d-flex align-items-center gap-2 flex-wrap">
                             <label for="fecha_inicio">Fecha Inicio:</label>
@@ -663,15 +663,17 @@ mysqli_set_charset($conn, "utf8mb4");
                             <label for="fecha_fin">Fecha Fin:</label>
                             <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" required
                                 style="flex: 1; width: 200px;">
-                            <form id="formulario_pdf" action="generar_reporteVacaciones.php" method="GET" style="display: inline-block; width: auto;">
+                            <form id="formulario_pdf" action="generar_reporteVacaciones.php" method="GET"
+                                style="display: inline-block; width: auto;">
                                 <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($id_usuario) ?>">
-                                <input type="hidden" name="id_departamento" value="<?= htmlspecialchars($id_departamento) ?>">
+                                <input type="hidden" name="id_departamento"
+                                    value="<?= htmlspecialchars($id_departamento) ?>">
                                 <input type="hidden" id="fecha_inicio_hidden" name="fecha_inicio">
                                 <input type="hidden" id="fecha_fin_hidden" name="fecha_fin">
                                 <button type="submit" class="btn btn-success">Descargar PDF</button>
                             </form>
                         </div>
-                        
+
                         <!-- Buscador colocado a la derecha -->
                         <div class="mb-3" style="margin-left: 30%;">
                             <input type="date" id="buscarFecha" class="form-control" style="width: 400px;" />
@@ -767,149 +769,154 @@ mysqli_set_charset($conn, "utf8mb4");
                             configurarCalendario("#fecha_fin_solicitud");
                         </script>
                     </div>
-                    
-                        <ul class="nav nav-tabs justify-content-center mb-3 ">
+                    <div class="d-flex justify-content-center mb-3">
+                        <ul class="nav nav-tabs">
                             <li class="nav-item">
-                                <a class="nav-link <?= $filtro === 'pendiente' ? 'active' : '' ?>" href="?filtro=pendiente">Pendientes</a>
+                                <a class="nav-link <?= $filtro === 'pendiente' ? 'active' : '' ?>"
+                                    href="?filtro=pendiente">Pendientes</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link <?= $filtro === 'aprobadas' ? 'active' : '' ?>" href="?filtro=aprobadas">Aprobadas</a>
+                                <a class="nav-link <?= $filtro === 'aprobadas' ? 'active' : '' ?>"
+                                    href="?filtro=aprobadas">Aprobadas</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link <?= $filtro === 'rechazadas' ? 'active' : '' ?>" href="?filtro=rechazadas">Rechazadas</a>
+                                <a class="nav-link <?= $filtro === 'rechazadas' ? 'active' : '' ?>"
+                                    href="?filtro=rechazadas">Rechazadas</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link <?= $filtro === 'modificadas' ? 'active' : '' ?>" href="?filtro=modificadas">Modificadas</a>
+                                <a class="nav-link <?= $filtro === 'modificadas' ? 'active' : '' ?>"
+                                    href="?filtro=modificadas">Modificadas</a>
                             </li>
                         </ul>
+                    </div>
 
                     <!-- <a href="EditarVacaciones.php">Editar Vacaciones</a> -->
                     <link rel="stylesheet"
                         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Apellido</th>
-                                    <th>Departamento</th>
-                                    <th>Fecha Inicio</th>
-                                    <th>Fecha Fin</th>
-                                    <th>Dias Tomados</th>
-                                    <th>Dias Restantes</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                // Mostrar los resultados de la consulta
-                                if ($result->num_rows > 0) {
-                                    while ($row = $result->fetch_assoc()) {
-                                        echo "<tr>";
-                                        echo "<td>" . $row['nombre'] . "</td>";
-                                        echo "<td>" . $row['apellido'] . "</td>";
-                                        echo "<td>" . $row['Departamento'] . "</td>";
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Departamento</th>
+                                <th>Fecha Inicio</th>
+                                <th>Fecha Fin</th>
+                                <th>Dias Tomados</th>
+                                <th>Dias Restantes</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            // Mostrar los resultados de la consulta
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                                    echo "<tr>";
+                                    echo "<td>" . $row['nombre'] . "</td>";
+                                    echo "<td>" . $row['apellido'] . "</td>";
+                                    echo "<td>" . $row['Departamento'] . "</td>";
 
-                                        if ($filtro === 'modificadas') {
-                                            echo "<td>{$row['fecha_inicio']}</td>";
-                                            echo "<td>{$row['fecha_fin']}</td>";
-                                            echo "<td>{$row['dias_solicitados']}</td>";
-                                            echo "<td>{$row['DiasRestantes']}</td>";
-                                            echo "<td>{$row['estado_modificacion']}</td>";
-                                        } else {
-                                            echo "<td>{$row['fecha_inicio']}</td>";
-                                            echo "<td>{$row['fecha_fin']}</td>";
-                                            echo "<td>{$row['diasTomado']}</td>";
-                                            echo "<td>{$row['DiasRestantes']}</td>";
-                                            echo "<td>{$row['descripcion']}</td>";
-                                        }
+                                    if ($filtro === 'modificadas') {
+                                        echo "<td>{$row['fecha_inicio']}</td>";
+                                        echo "<td>{$row['fecha_fin']}</td>";
+                                        echo "<td>{$row['dias_solicitados']}</td>";
+                                        echo "<td>{$row['DiasRestantes']}</td>";
+                                        echo "<td>{$row['estado_modificacion']}</td>";
+                                    } else {
+                                        echo "<td>{$row['fecha_inicio']}</td>";
+                                        echo "<td>{$row['fecha_fin']}</td>";
+                                        echo "<td>{$row['diasTomado']}</td>";
+                                        echo "<td>{$row['DiasRestantes']}</td>";
+                                        echo "<td>{$row['descripcion']}</td>";
+                                    }
 
-                                        if ($filtro !== 'modificadas') {
-    echo "<td><div class='acciones-botones'>";
+                                    if ($filtro !== 'modificadas') {
+                                        echo "<td><div class='acciones-botones'>";
 
-    // Botón Detalle
-    echo '<form action="detalleVacacionSolicitada.php" method="POST">
+                                        // Botón Detalle
+                                        echo '<form action="detalleVacacionSolicitada.php" method="POST">
             <input type="hidden" name="id" value="' . htmlspecialchars($row['id_vacacion']) . '">
             <button type="submit" class="btn btn-primary">
                 <i class="bi bi-file-earmark-person"></i>
             </button>
           </form>';
 
-    // Botón Editar
-    $puedeEditar = $VacacionDAO->puedeEditarVacacion($row['id_vacacion']);
-    if ($puedeEditar) {
-        echo '<form action="SolicitarEdicionVacacion.php" method="POST">
+                                        // Botón Editar
+                                        $puedeEditar = $VacacionDAO->puedeEditarVacacion($row['id_vacacion']);
+                                        if ($puedeEditar) {
+                                            echo '<form action="SolicitarEdicionVacacion.php" method="POST">
                 <input type="hidden" name="id" value="' . htmlspecialchars($row['id_vacacion']) . '">
                 <button type="submit" class="btn btn-success">
                     <i class="bi bi-pencil-square"></i>
                 </button>
               </form>';
-    } else {
-        // Mismo tamaño y diseño, pero gris-azulado con alerta
-        echo '<button class="btn-warning-disabled" onclick="alert(\'No se puede editar esta vacación. Deben faltar al menos 8 días para su inicio.\')">
+                                        } else {
+                                            // Mismo tamaño y diseño, pero gris-azulado con alerta
+                                            echo '<button class="btn-warning-disabled" onclick="alert(\'No se puede editar esta vacación. Deben faltar al menos 8 días para su inicio.\')">
                 <i class="bi bi-pencil-square"></i>
               </button>';
-    }
+                                        }
 
-    echo "</div></td>";
-} else {
-    echo "<td><div class='acciones-botones'>";
+                                        echo "</div></td>";
+                                    } else {
+                                        echo "<td><div class='acciones-botones'>";
 
-    // Botón Detalle para modificadas
-    echo '<form action="detalleEditarVacacionUsuario.php" method="POST">
+                                        // Botón Detalle para modificadas
+                                        echo '<form action="detalleEditarVacacionUsuario.php" method="POST">
             <input type="hidden" name="id" value="' . htmlspecialchars($row['id_registro']) . '">
             <button type="submit" class="btn btn-success">
                 <i class="bi bi-file-earmark-person"></i>
             </button>
           </form>';
 
-    echo "</div></td>";
-}
-
                                         echo "</div></td>";
-                                        echo "</tr>";
                                     }
-                                } else {
-                                    echo "<tr><td colspan='9' class='no-records'>No se encontraron registros.</td></tr>";
+
+                                    echo "</div></td>";
+                                    echo "</tr>";
                                 }
-                                ?>
-                            </tbody>
-                        </table>
-
-
-                        <?php
-                            // Obtener total de resultados según el filtro actual
-                            $totalFilas = 0;
-                            switch ($filtro) {
-                                case 'pendiente':
-                                    $totalFilas = $VacacionDAO->contarVacacionesPorEstado($id_usuario, [1]);
-                                    break;
-                                case 'aprobadas':
-                                    $totalFilas = $VacacionDAO->contarVacacionesPorEstado($id_usuario, [2,4]);
-                                    break;
-                                case 'rechazadas':
-                                    $totalFilas = $VacacionDAO->contarVacacionesPorEstado($id_usuario, [3]);
-                                    break;
-                                case 'modificadas':
-                                    $totalFilas = $Historial_Solicitud_Modificacion_VacacionesDAO->contarHistorialModificadoPorUsuario($id_usuario);
-                                    break;
-                                default:
-                                    $totalFilas = $VacacionDAO->contarVacacionesPorEstado($id_usuario, [1]);
-                                    break;
+                            } else {
+                                echo "<tr><td colspan='9' class='no-records'>No se encontraron registros.</td></tr>";
                             }
-
-                            $totalPaginas = ceil($totalFilas / $limit);
                             ?>
+                        </tbody>
+                    </table>
 
-                            <nav aria-label="Paginación">
-                                <ul class="pagination justify-content-center">
-                                    <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
-                                        <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                                            <a class="page-link" href="?page=<?= $i ?>&filtro=<?= $filtro ?>"><?= $i ?></a>
-                                        </li>
-                                    <?php endfor; ?>
-                                </ul>
-                            </nav>
+
+                    <?php
+                    // Obtener total de resultados según el filtro actual
+                    $totalFilas = 0;
+                    switch ($filtro) {
+                        case 'pendiente':
+                            $totalFilas = $VacacionDAO->contarVacacionesPorEstado($id_usuario, [1]);
+                            break;
+                        case 'aprobadas':
+                            $totalFilas = $VacacionDAO->contarVacacionesPorEstado($id_usuario, [2, 4]);
+                            break;
+                        case 'rechazadas':
+                            $totalFilas = $VacacionDAO->contarVacacionesPorEstado($id_usuario, [3]);
+                            break;
+                        case 'modificadas':
+                            $totalFilas = $Historial_Solicitud_Modificacion_VacacionesDAO->contarHistorialModificadoPorUsuario($id_usuario);
+                            break;
+                        default:
+                            $totalFilas = $VacacionDAO->contarVacacionesPorEstado($id_usuario, [1]);
+                            break;
+                    }
+
+                    $totalPaginas = ceil($totalFilas / $limit);
+                    ?>
+
+                    <nav aria-label="Paginación">
+                        <ul class="pagination justify-content-center">
+                            <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                                <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                    <a class="page-link" href="?page=<?= $i ?>&filtro=<?= $filtro ?>"><?= $i ?></a>
+                                </li>
+                            <?php endfor; ?>
+                        </ul>
+                    </nav>
 
             </section>
             <script>
@@ -933,28 +940,28 @@ mysqli_set_charset($conn, "utf8mb4");
                     }
                 }
 
-                    document.getElementById('buscarFecha').addEventListener('input', function () {
-                        const fechaBuscada = this.value;
-                        const filas = document.querySelectorAll('table tbody tr');
+                document.getElementById('buscarFecha').addEventListener('input', function () {
+                    const fechaBuscada = this.value;
+                    const filas = document.querySelectorAll('table tbody tr');
 
-                        filas.forEach(fila => {
-                            const fechaInicio = fila.children[3].textContent.trim();
-                            if (fechaInicio.includes(fechaBuscada) || fechaBuscada === "") {
-                                fila.style.display = "";
-                            } else {
-                                fila.style.display = "none";
-                            }
-                        });
+                    filas.forEach(fila => {
+                        const fechaInicio = fila.children[3].textContent.trim();
+                        if (fechaInicio.includes(fechaBuscada) || fechaBuscada === "") {
+                            fila.style.display = "";
+                        } else {
+                            fila.style.display = "none";
+                        }
                     });
+                });
 
                 document.getElementById("formulario_pdf").addEventListener("submit", function (e) {
-                const fechaInicio = document.getElementById("fecha_inicio").value;
-                const fechaFin = document.getElementById("fecha_fin").value;
+                    const fechaInicio = document.getElementById("fecha_inicio").value;
+                    const fechaFin = document.getElementById("fecha_fin").value;
 
-                document.getElementById("fecha_inicio_hidden").value = fechaInicio;
-                document.getElementById("fecha_fin_hidden").value = fechaFin;
+                    document.getElementById("fecha_inicio_hidden").value = fechaInicio;
+                    document.getElementById("fecha_fin_hidden").value = fechaFin;
                 });
-                
+
 
 
             </script>
