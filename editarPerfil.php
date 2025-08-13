@@ -104,8 +104,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 }
 // Obtener usuario desde la sesión
-$user_id = $_SESSION['id_usuario'];
-$user = $UsuarioDAO->getUserById($user_id);
+//$user_id = $_SESSION['id_usuario'];
+//$user = $UsuarioDAO->getUserById($user_id);
 
 if (!$user) {
     echo "Usuario no encontrado.";
