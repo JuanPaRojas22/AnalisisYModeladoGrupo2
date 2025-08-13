@@ -95,8 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-$conn->close();
-ob_end_flush();
+
 ?>
 
 
@@ -319,3 +318,8 @@ ob_end_flush();
                 color: #888;
             }
         </style>
+
+        <?php
+        $conn->close();
+        ob_end_flush();
+        ?>
