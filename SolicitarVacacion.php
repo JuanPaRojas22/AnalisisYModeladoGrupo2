@@ -769,10 +769,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             configurarCalendario("#fecha_fin_solicitud");
                         </script>
                     </div>
-                    <div class="text-center mb-3">
-                        <div style="width: 70%;">
+                    <div class="text-end mb-3">
+                        <div class="d-inline-block">
                             <ul class="nav nav-tabs">
-
                                 <li class="nav-item">
                                     <a class="nav-link <?= $filtro === 'pendiente' ? 'active' : '' ?>"
                                         href="?filtro=pendiente">Pendientes</a>
@@ -792,6 +791,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </ul>
                         </div>
                     </div>
+
 
                     <!-- <a href="EditarVacaciones.php">Editar Vacaciones</a> -->
                     <link rel="stylesheet"
