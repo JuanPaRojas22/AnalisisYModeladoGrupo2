@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <!-- Flatpickr CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <style>
-    body { font-family: 'Open Sans', sans-serif; background: #f9f9f9; }
+    body { font-family: 'Open Sans', sans-serif; background: #f9f9f9; color:black; }
     .container { background: #fff; padding: 40px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 50%; margin: 80px auto; }
     .form-group { margin-bottom: 20px; }
     .btn { 
