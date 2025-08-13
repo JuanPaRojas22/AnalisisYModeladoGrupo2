@@ -769,25 +769,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             configurarCalendario("#fecha_fin_solicitud");
                         </script>
                     </div>
-                    <div class="d-flex justify-content-center mb-3">
-                        <ul class="nav nav-tabs mx-auto">
-                            <li class="nav-item">
-                                <a class="nav-link <?= $filtro === 'pendiente' ? 'active' : '' ?>"
-                                    href="?filtro=pendiente">Pendientes</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link <?= $filtro === 'aprobadas' ? 'active' : '' ?>"
-                                    href="?filtro=aprobadas">Aprobadas</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link <?= $filtro === 'rechazadas' ? 'active' : '' ?>"
-                                    href="?filtro=rechazadas">Rechazadas</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link <?= $filtro === 'modificadas' ? 'active' : '' ?>"
-                                    href="?filtro=modificadas">Modificadas</a>
-                            </li>
-                        </ul>
+                    <div class="text-center mb-3">
+                        <div class="d-inline-block">
+                            <ul class="nav nav-tabs">
+
+                                <li class="nav-item">
+                                    <a class="nav-link <?= $filtro === 'pendiente' ? 'active' : '' ?>"
+                                        href="?filtro=pendiente">Pendientes</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= $filtro === 'aprobadas' ? 'active' : '' ?>"
+                                        href="?filtro=aprobadas">Aprobadas</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= $filtro === 'rechazadas' ? 'active' : '' ?>"
+                                        href="?filtro=rechazadas">Rechazadas</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= $filtro === 'modificadas' ? 'active' : '' ?>"
+                                        href="?filtro=modificadas">Modificadas</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
 
                     <!-- <a href="EditarVacaciones.php">Editar Vacaciones</a> -->
