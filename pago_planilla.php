@@ -66,22 +66,30 @@ if (isset($_POST['ejecutar_pago'])) {
                 continue;
             }
 
-            // Calcular quincena
+            // Calcular quincena según la fecha de pago
             $dia = date("d", strtotime($fecha_pago));
             $tipo_quincena = ($dia >= 1 && $dia <= 15) ? 'Primera Quincena' : 'Segunda Quincena';
 
-            // Verificar si ya existe pago
-            $query_existente = "SELECT 1 FROM pago_planilla WHERE id_usuario = ? AND tipo_quincena = ? AND MONTH(fecha_pago) = MONTH(CURDATE()) AND YEAR(fecha_pago) = YEAR(CURDATE())";
+            // Verificar si ya existe pago para este usuario y quincena
+            $query_existente = "SELECT 1 
+                    FROM pago_planilla 
+                    WHERE id_usuario = ? 
+                      AND tipo_quincena = ? 
+                      AND MONTH(fecha_pago) = MONTH(?) 
+                      AND YEAR(fecha_pago) = YEAR(?)";
             $stmt_existente = $conn->prepare($query_existente);
-            $stmt_existente->bind_param("is", $id_usuario, $tipo_quincena);
+            $stmt_existente->bind_param("isss", $id_usuario, $tipo_quincena, $fecha_pago, $fecha_pago);
             $stmt_existente->execute();
             $stmt_existente->store_result();
 
-            if ($stmt_existente->num_rows > 0) {
-                $stmt_existente->close();
+            $existe_pago = $stmt_existente->num_rows > 0;
+            $stmt_existente->close();
+
+            if ($existe_pago) {
+                // Solo saltar este usuario si ya tiene pago registrado
                 continue;
             }
-            $stmt_existente->close();
+
 
             // Obtener bonos
             $query_bonos = "SELECT SUM(monto_total) FROM bonos WHERE id_usuario = ?";
@@ -143,14 +151,16 @@ if (isset($_POST['ejecutar_pago'])) {
             $stmt_insert->close();
         }
 
-        $mensaje = ($pagos_realizados > 0)
-            ? "Los pagos fueron ejecutados correctamente."
-            : "Ya se realizaron los pagos para esta Quincena.";
-    } else {
-        $mensaje = "No se encontraron usuarios para procesar pagos.";
-    }
+        if ($pagos_realizados > 0) {
+            $mensaje = "Los pagos fueron ejecutados correctamente.";
+        } elseif ($result_usuarios && $result_usuarios->num_rows > 0) {
+            $mensaje = "Ya se habían generado los pagos para esta quincena.";
+        } else {
+            $mensaje = "No se encontraron usuarios para procesar pagos.";
+        }
 
-    $conn->close();
-    echo json_encode(['mensaje' => $mensaje]);
+        $conn->close();
+        echo json_encode(['mensaje' => $mensaje]);
+    }
 }
 ?>

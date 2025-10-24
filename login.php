@@ -20,66 +20,71 @@ if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_C
 
 mysqli_set_charset($conn, "utf8mb4");
 
-// Inicializar bloqueo por intentos fallidos
-if (!isset($_SESSION['intentos_fallidos'])) {
-    $_SESSION['intentos_fallidos'] = 0;
-    $_SESSION['bloqueado_hasta'] = null;
-}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim($_POST['username'] ?? '');
+    $password = trim($_POST['password'] ?? '');
 
-// Verifica si está bloqueado
-if ($_SESSION['bloqueado_hasta'] !== null && time() < $_SESSION['bloqueado_hasta']) {
-    $tiempoRestante = $_SESSION['bloqueado_hasta'] - time();
-    $minutos = floor($tiempoRestante / 60);
-    $segundos = $tiempoRestante % 60;
-    $error_message = "Cuenta bloqueada. Intente nuevamente en $minutos minutos y $segundos segundos.";
-} else {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $username = $_POST['username'] ?? '';
-        $password = $_POST['password'] ?? '';
+    if (!empty($username) && !empty($password)) {
+        // Traemos datos con control de intentos y bloqueo
+        $sql = "SELECT id_usuario, username, nombre, id_rol, id_departamento, password, intentos_fallidos, bloqueado_hasta 
+                FROM usuario WHERE username = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('s', $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        if (!empty($username) && !empty($password)) {
-            // Solo traemos los campos necesarios
-            $sql = "SELECT id_usuario, username, nombre, id_rol, id_departamento, password FROM USUARIO WHERE username = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param('s', $username);
-            $stmt->execute();
-            $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $usuario = $result->fetch_assoc();
 
-            if ($result->num_rows > 0) {
-                $usuario = $result->fetch_assoc();
-
+            // Comprobar si está bloqueado
+            if (!empty($usuario['bloqueado_hasta']) && strtotime($usuario['bloqueado_hasta']) > time()) {
+                $tiempoRestante = strtotime($usuario['bloqueado_hasta']) - time();
+                $minutos = floor($tiempoRestante / 60);
+                $segundos = $tiempoRestante % 60;
+                $error_message = "Cuenta bloqueada. Intente nuevamente en $minutos minutos y $segundos segundos.";
+            } else {
                 if (password_verify($password, $usuario['password'])) {
-                    // Login exitoso: reinicia intentos y guarda en sesión
-                    $reset_sql = "UPDATE USUARIO SET intentos_fallidos = 0, bloqueado_hasta = NULL WHERE username = ?";
+                    // Login exitoso → resetear intentos y bloqueo
+                    $reset_sql = "UPDATE usuario SET intentos_fallidos = 0, bloqueado_hasta = NULL WHERE id_usuario = ?";
                     $reset_stmt = $conn->prepare($reset_sql);
-                    $reset_stmt->bind_param('s', $username);
+                    $reset_stmt->bind_param('i', $usuario['id_usuario']);
                     $reset_stmt->execute();
 
-                    // Guardar datos de sesión
+                    // Guardar datos en sesión
                     $_SESSION['id_usuario'] = $usuario['id_usuario'];
                     $_SESSION['username'] = $usuario['username'];
                     $_SESSION['nombre'] = $usuario['nombre'];
                     $_SESSION['id_rol'] = $usuario['id_rol'];
-                    $_SESSION['id_departamento'] = $usuario['id_departamento']; // 👈 IMPORTANTE
+                    $_SESSION['id_departamento'] = $usuario['id_departamento'];
                     $_SESSION['logged_in'] = true;
 
                     header("Location: index.php");
                     exit();
                 } else {
-                    $_SESSION['intentos_fallidos']++;
-                    if ($_SESSION['intentos_fallidos'] >= 5) {
-                        $_SESSION['bloqueado_hasta'] = time() + (5 * 60);
+                    // Incrementar intentos
+                    $nuevos_intentos = $usuario['intentos_fallidos'] + 1;
+
+                    if ($nuevos_intentos >= 5) {
+                        $bloqueo_hasta = date('Y-m-d H:i:s', time() + (5 * 60)); // 5 min
+                        $update_sql = "UPDATE usuario SET intentos_fallidos = ?, bloqueado_hasta = ? WHERE id_usuario = ?";
+                        $stmt = $conn->prepare($update_sql);
+                        $stmt->bind_param('isi', $nuevos_intentos, $bloqueo_hasta, $usuario['id_usuario']);
+                        $stmt->execute();
                         $error_message = "Cuenta bloqueada por demasiados intentos. Intente más tarde.";
                     } else {
-                        $error_message = "Contraseña incorrecta. Intento {$_SESSION['intentos_fallidos']} de 5.";
+                        $update_sql = "UPDATE usuario SET intentos_fallidos = ? WHERE id_usuario = ?";
+                        $stmt = $conn->prepare($update_sql);
+                        $stmt->bind_param('ii', $nuevos_intentos, $usuario['id_usuario']);
+                        $stmt->execute();
+                        $error_message = "Contraseña incorrecta. Intento $nuevos_intentos de 5.";
                     }
                 }
-            } else {
-                $error_message = "Usuario no encontrado.";
             }
         } else {
-            $error_message = "Por favor, completa todos los campos.";
+            $error_message = "Usuario no encontrado.";
         }
+    } else {
+        $error_message = "Por favor, completa todos los campos.";
     }
 }
 ?>

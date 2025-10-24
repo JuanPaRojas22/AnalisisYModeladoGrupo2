@@ -1,7 +1,5 @@
 <?php
-ob_start();
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+
 // Conexión a la base de datos
 // Parámetros de conexión
 require "template.php";
@@ -382,6 +380,8 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
     }
     $stmt_debug->close();
 
+    $nombre_empleado = null;
+
     while ($rowStart <= $highestRow) {
         // Leer un bloque de filas
         $fila = $hoja->rangeToArray('C' . $rowStart . ':I' . min($rowStart + $maxRows - 1, $highestRow), null, true, false);
@@ -398,12 +398,21 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
 
             if (!empty($nombre_empleado)) {
                 $query_emp = "SELECT planilla.id_usuario, planilla.id_planilla, planilla.salario_base, planilla.salario_neto 
+
               FROM planilla 
               INNER JOIN usuario ON planilla.id_usuario = usuario.id_usuario
-              WHERE LOWER(CONCAT(TRIM(usuario.nombre), ' ', TRIM(usuario.apellido))) = LOWER(?)";
+              WHERE LOWER(CONCAT(TRIM(usuario.nombre), ' ', TRIM(usuario.apellido))) LIKE  LOWER(?)
+              AND usuario.id_departamento = ?";
 
                 $stmt = $conn->prepare($query_emp);
                 $stmt->bind_param("si", $nombre_empleado, $departamento_admin);
+
+                    "FROM planilla 
+                      INNER JOIN usuario ON planilla.id_usuario = usuario.id_usuario
+                      WHERE LOWER(CONCAT(TRIM(usuario.nombre), ' ', TRIM(usuario.apellido))) = LOWER(?) 
+                      AND usuario.id_departamento = ?";
+                    $stmt = $conn->prepare($query_emp);
+                    $stmt->bind_param("si", $nombre_empleado, $departamento_admin);
 
                 if ($stmt->execute()) {
                     $stmt->bind_result($id_usuario, $id_planilla, $salario_base, $salario_neto);
@@ -460,7 +469,11 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
 
                         }
                     } else {
-                        echo "⚠️ No se encontró empleado: $nombre_empleado<br>";
+                        if ($nombre_empleado) {
+                        echo "📄 Comparando con nombre: [$nombre_empleado]<br>";
+                        } else {
+                        echo "📄 No se comparó ningún nombre de empleado.<br>";
+                        }
                         $stmt->close();
                     }
                 } else {
@@ -473,14 +486,12 @@ if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0) {
     } // Fin while ($rowStart <= $highestRow)
 } // Fin if (isset($_FILES['archivo_excel']) && $_FILES['archivo_excel']['error'] == 0)
 echo "Horas extras procesadas correctamente.";
-echo "📄 Comparando con nombre: [$nombre_empleado]<br>";
+if ($nombre_empleado) {
+    echo "📄 Comparando con nombre: [$nombre_empleado]<br>";
+} else {
+    echo "📄 No se comparó ningún nombre de empleado.<br>";
+}
 
 
 ?>
 
-
-<?php
-// Cerrar la conexión
-$conn->close();
-ob_end_flush(); // Liberar el búfer y enviar la salida al navegador
-?>
