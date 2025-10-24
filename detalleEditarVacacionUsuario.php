@@ -80,13 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
                     <a href="SolicitarVacacion.php" class="btn-container"><i class="bi bi-arrow-return-left"></i></a>
                     
                 </div>
-                <div class="user-img">
-                    <?php if (!empty($user['direccion_imagen'])): ?>
-                        <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" alt="Imagen del usuario">
-                    <?php else: ?>
-                        <p>No hay imagen disponible</p>
-                    <?php endif; ?>
-                </div>
 
                 <table class="user-details">
                 <tr><th>Nombre</th><td><?php echo htmlspecialchars($Historial_Solicitud_Modificacion_Vacaciones['Nombre']); ?></td></tr>

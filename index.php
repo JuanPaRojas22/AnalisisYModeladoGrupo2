@@ -20,9 +20,7 @@ $direccion = isset($_SESSION['direccion_imagen']) ? $_SESSION['direccion_imagen'
     <meta name="description" content="">
     <meta name="author" content="Dashboard">
     <title>Home</title>
-
-
-
+    
     <style>
         body {
 

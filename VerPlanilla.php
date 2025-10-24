@@ -8,6 +8,10 @@ if (!isset($_SESSION['id_usuario'])) {
     exit();
 }
 
+// Conexión a la base de datos
+include 'conexion_local.php';
+
+
 $rol_usuario = $_SESSION['id_rol'] ?? null;
 $id_usuario = $_SESSION['id_usuario'];
 $id_departamento = $_SESSION['id_departamento'] ?? null;

@@ -1,27 +1,7 @@
 <?php
+session_start();
 // Conexión a la base de datos
-// Parámetros de conexión
-$host = "accespersoneldb.mysql.database.azure.com";
-$user = "adminUser";
-$password = "admin123+";
-$dbname = "gestionEmpleados";
-$port = 3306;
-
-// Ruta al certificado CA para validar SSL
-$ssl_ca = '/home/site/wwwroot/certs/BaltimoreCyberTrustRoot.crt.pem';
-
-// Inicializamos mysqli
-$conn = mysqli_init();
-
-// Configuramos SSL
-mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
-mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
-
-
-// Intentamos conectar usando SSL (con la bandera MYSQLI_CLIENT_SSL)
-if (!$conn->real_connect($host, $user, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
-    die("Error de conexión: " . mysqli_connect_error());
-}
+include 'conexion_local.php';
 
 // Establecemos el charset
 mysqli_set_charset($conn, "utf8mb4");
@@ -57,38 +37,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ) {
         echo "<script>alert('Por favor, complete todos los campos obligatorios.');</script>";
     } else {
-        // Excepcion para aceptar solo cierto tipo de archivos de imagen
-        
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-        $fileType = mime_content_type($_FILES['direccion_imagen']['tmp_name']);
-        $fileName = $_FILES['direccion_imagen']['name'];
-        $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
-
-        // Validar el tipo MIME y la extensión
-        if (!in_array($fileType, $allowedTypes) || !in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])) {
-            echo "<script>
-                        alert('Solo se permiten archivos de imagen JPG, PNG o GIF.');
-                        window.location.href = 'createUser.php';
-                  </script>";
-            exit;
-        }
-        
-
-        // Manejo de la imagen (por defecto NULL)
-        $direccion_imagen = null;
-        if (isset($_FILES['direccion_imagen']) && $_FILES['direccion_imagen']['error'] === UPLOAD_ERR_OK) {
-            $direccion_imagen = file_get_contents($_FILES['direccion_imagen']['tmp_name']);
-        }
 
         // Preparar la consulta SQL
         $stmt = $conn->prepare("INSERT INTO Usuario 
             (id_departamento, id_rol, nombre, apellido, 
             fecha_nacimiento, fecha_ingreso, correo_electronico, 
-            username, password, numero_telefonico, direccion_imagen, 
+            username, password, numero_telefonico, 
             sexo, estado_civil, fechacreacion, usuariocreacion, 
             fechamodificacion, usuariomodificacion, id_estado, direccion_domicilio, 
             id_ocupacion, id_nacionalidad) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         // Encriptar la contraseña antes de guardarla
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
@@ -132,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($stmt) {
             // Asignar los parámetros recibidos por el formulario
-            $stmt->bind_param("iissssssssbssssssissi",
+            $stmt->bind_param("iissssssssbsssssissi",
                 $id_departamento,
                 $id_rol,
                 $nombre,
@@ -143,7 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $username,
                 $password_hash,
                 $numero_telefonico,
-                $direccion_imagen,
                 $sexo,
                 $estado_civil,
                 $fechacreacion,
@@ -155,11 +112,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $id_ocupacion,
                 $id_nacionalidad
             );
-
-            // Enviar la imagen como datos binarios si existe
-            if ($direccion_imagen !== null) {
-                $stmt->send_long_data(10, $direccion_imagen);
-            }
 
             // Ejecutar la consulta
             if ($stmt->execute()) {
@@ -340,9 +292,6 @@ $nacionalidades = $conn->query("SELECT id_nacionalidad, pais FROM nacionalidades
 
           <label for="password">Contraseña:</label>
           <input type="password" id="password" name="password" class="form-control">
-
-          <label for="direccion_imagen">Foto de perfil:</label>
-          <input type="file" id="direccion_imagen" name="direccion_imagen" class="form-control">
 
           <label for="sexo">Sexo:</label>
           <select id="sexo" name="sexo" class="form-control">

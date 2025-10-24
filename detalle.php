@@ -59,13 +59,6 @@ if (isset($_GET['id'])) {
                         <button type="submit" class="btn-container"><i class="bi bi-box-arrow-down"></i></button>
                     </form>
                 </div>
-                <div class="user-img">
-                    <?php if (!empty($user['direccion_imagen'])): ?>
-                        <img src="<?php echo htmlspecialchars($user['direccion_imagen']); ?>" alt="Imagen del usuario">
-                    <?php else: ?>
-                        <p>No hay imagen disponible</p>
-                    <?php endif; ?>
-                </div>
 
                 <table class="user-details">
                     <tr>

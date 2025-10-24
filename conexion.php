@@ -9,9 +9,9 @@ function obtenerConexion(): mysqli
 
     $ssl_ca = '/home/site/wwwroot/certs/fullchain.pem';
 
-    if (!file_exists($ssl_ca)) {
-        die("❌ Certificado SSL no encontrado en: $ssl_ca");
-    }
+    //if (!file_exists($ssl_ca)) {
+        //die("❌ Certificado SSL no encontrado en: $ssl_ca");
+    //}
 
     $conn = mysqli_init();
 
