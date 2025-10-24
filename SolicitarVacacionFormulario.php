@@ -214,17 +214,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   </div>
 </body>
-<?php
-    // Cerrar la conexión
-    $conn->close();
-    ob_end_flush(); // Liberar el búfer y enviar la salida al navegador
-    ?>
 
-
-
-
-
-
-
-    
-    
